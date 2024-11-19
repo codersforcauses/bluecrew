@@ -22,10 +22,10 @@ const handlePing = async () => {
 
 <template>
   <div id="healthcheck">
-    <h1>Healthcheck</h1>
-    <button id="ping" @click="handlePing" :disabled="isLoading">
+    <h1>Healthcheck <v-icon icon="mdi-heart-pulse" /></h1>
+    <v-btn id="ping" @click="handlePing" :loading="isLoading">
       {{ isLoading ? 'Loading' : 'Ping' }}
-    </button>
+    </v-btn>
     <p>
       Response from server: <span>{{ healthcheckMessage }}</span>
     </p>
