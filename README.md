@@ -42,7 +42,7 @@ If you modify anything in the `docker` folder, you need to add the `--build` fla
 
 Edit the `.env` file in the respective directory (client or server).
 
-### Manual Setup
+### Manual Setup (for if you aren't using the devcontainer)
 
 Setup environment variables:
 1. In the `client` folder, copy the content from `.env.example` into a new file called `.env`
