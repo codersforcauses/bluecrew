@@ -1,7 +1,4 @@
 on:
-  # cronjob trigger once a day
-  schedule:
-    - cron: "0 0 * * 0"
   # manual trigger
   workflow_dispatch:
 jobs:
