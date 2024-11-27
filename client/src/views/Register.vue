@@ -33,7 +33,7 @@
         }}</span>
       </div>
 
-      <button type="submit" :disabled="!isFormValid">注册</button>
+      <button type="submit" :disabled="!isFormValid">registe</button>
     </form>
   </div>
 </template>
