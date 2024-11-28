@@ -1,64 +1,55 @@
+<script setup>
+import { reactive } from 'vue'
+
+const formData = reactive({
+  username: '',
+  email: '',
+  firstName: '',
+  lastName: '',
+  password: '',
+  confirmPassword: '',
+})
+</script>
+
 <template>
   <div class="register-container">
-    <h1>User Registration</h1>
-    <form @submit.prevent="handleSubmit" class="register-form">
+    <h3>Create an account</h3>
+    <form class="register-form">
       <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" id="username" v-model="formData.username" @blur="validateUsername" />
-        <span class="error-message" v-if="errors.username">{{ errors.username }}</span>
+        <label for="username">Username</label>
+        <input type="text" id="username" v-model="formData.username" />
       </div>
 
       <div class="form-group">
-        <label for="email">mail:</label>
-        <input type="email" id="email" v-model="formData.email" @blur="validateEmail" />
-        <span class="error-message" v-if="errors.email">{{ errors.email }}</span>
+        <label for="email">Email</label>
+        <input type="email" id="email" v-model="formData.email" />
       </div>
 
       <div class="form-group">
-        <label for="password">password:</label>
-        <input type="password" id="password" v-model="formData.password" @blur="validatePassword" />
-        <span class="error-message" v-if="errors.password">{{ errors.password }}</span>
+        <label for="firstName">First Name</label>
+        <input type="firstName" id="firstName" v-model="formData.firstName" />
       </div>
 
       <div class="form-group">
-        <label for="confirmPassword">confirm password:</label>
-        <input
-          type="password"
-          id="confirmPassword"
-          v-model="formData.confirmPassword"
-          @blur="validateConfirmPassword"
-        />
-        <span class="error-message" v-if="errors.confirmPassword">{{
-          errors.confirmPassword
-        }}</span>
+        <label for="lastName">Last Name</label>
+        <input type="lastName" id="lastName" v-model="formData.lastName" />
       </div>
 
-      <button type="submit" :disabled="!isFormValid">registe</button>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" v-model="formData.password" />
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password:</label>
+        <input type="password" id="confirmPassword" v-model="formData.confirmPassword" />
+      </div>
+      <button type="submit" :disabled="!isFormValid">Sign Up</button>
     </form>
+
+    <h3>Already have an account?Sign In</h3>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'Register',
-  data() {
-    return {
-      formData: {
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-      },
-      errors: {
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-      },
-    }
-  },
-}
-</script>
 
 <style scoped>
 .register-container {
