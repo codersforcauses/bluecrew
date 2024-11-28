@@ -17,32 +17,57 @@ const formData = reactive({
     <form class="register-form">
       <div class="form-group">
         <label for="username">Username</label>
-        <input type="text" id="username" v-model="formData.username" />
+        <input
+          type="text"
+          id="username"
+          v-model="formData.username"
+          placeholder="Enter your username"
+        />
       </div>
 
       <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" id="email" v-model="formData.email" />
+        <input type="email" id="email" v-model="formData.email" placeholder="Enter your email" />
       </div>
 
       <div class="form-group">
         <label for="firstName">First Name</label>
-        <input type="firstName" id="firstName" v-model="formData.firstName" />
+        <input
+          type="firstName"
+          id="firstName"
+          v-model="formData.firstName"
+          placeholder="Enter your first name"
+        />
       </div>
 
       <div class="form-group">
         <label for="lastName">Last Name</label>
-        <input type="lastName" id="lastName" v-model="formData.lastName" />
+        <input
+          type="lastName"
+          id="lastName"
+          v-model="formData.lastName"
+          placeholder="Enter your last name"
+        />
       </div>
 
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" v-model="formData.password" />
+        <input
+          type="password"
+          id="password"
+          v-model="formData.password"
+          placeholder="Enter your password"
+        />
       </div>
 
       <div class="form-group">
         <label for="confirmPassword">Confirm Password:</label>
-        <input type="password" id="confirmPassword" v-model="formData.confirmPassword" />
+        <input
+          type="password"
+          id="confirmPassword"
+          v-model="formData.confirmPassword"
+          placeholder="Confirm your password"
+        />
       </div>
       <button type="submit" :disabled="!isFormValid">Sign Up</button>
     </form>
