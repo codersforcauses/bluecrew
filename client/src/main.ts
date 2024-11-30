@@ -22,8 +22,8 @@ const colourTheme = {
     titles: '#D12974',
     accent: '#3FBEE0',
     containers: '#E9DAC4',
-    text: '#4F4F4F'
-  }
+    text: '#4F4F4F',
+  },
 }
 
 const vuetify = createVuetify({
