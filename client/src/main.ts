@@ -18,9 +18,10 @@ const app = createApp(App)
 const colourTheme = {
   colors: {
     primary: '#193855',
-    secondary: '#D12974',
+    titles: '#D12974',
     accent: '#3FBEE0',
-    containers: '#E9DAC4'
+    containers: '#E9DAC4',
+    text: '#4F4F4F'
   }
 }
 
