@@ -15,6 +15,7 @@ import router from './router'
 
 const app = createApp(App)
 
+// Object to store colour theme hexcodes
 const colourTheme = {
   colors: {
     primary: '#193855',
