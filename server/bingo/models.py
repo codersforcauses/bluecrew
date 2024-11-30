@@ -3,8 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser
 
 
 class User(AbstractBaseUser):
-    # userID
-    # username
+    userID = models.BigAutoField(primary_key=True)
+    username = models.CharField(max_length=30)
     firstName = models.CharField(max_length=30)
     lastName = models.CharField(max_length=30)
     email = models.EmailField(
@@ -15,6 +15,13 @@ class User(AbstractBaseUser):
     # passwordHash
     # bio
     # totalPoints
-    # visibility
+
+    class Visibility(models.IntegerChoices):
+        PUBLIC = (2, "Public")
+        FRIENDS = (1, "Friends Only")
+        BLUECREW = (0, "BlueCrew Only")
+    visibility = models.IntegerField(
+        choices=Visibility
+    )
     # avatar
     pass
