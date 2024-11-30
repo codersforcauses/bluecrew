@@ -18,11 +18,11 @@ const app = createApp(App)
 // Object to store colour theme hexcodes
 const colourTheme = {
   colors: {
-    primary: '#193855',
-    titles: '#D12974',
-    accent: '#3FBEE0',
-    containers: '#E9DAC4',
-    text: '#4F4F4F',
+    primaryBlue: '#193855',
+    pink: '#D12974',
+    lightBlue: '#3FBEE0',
+    creamWhite: '#E9DAC4',
+    textGrey: '#4F4F4F',
   },
 }
 
