@@ -15,11 +15,23 @@ import router from './router'
 
 const app = createApp(App)
 
+const colourTheme = {
+  colors: {
+    primary: '#193855',
+    secondary: '#D12974',
+    accent: '#3FBEE0',
+    containers: '#E9DAC4'
+  }
+}
+
 const vuetify = createVuetify({
   components,
   directives,
   theme: {
-    defaultTheme: 'light',
+    defaultTheme: 'colourTheme',
+    themes: {
+      colourTheme,
+    },
   },
 })
 
