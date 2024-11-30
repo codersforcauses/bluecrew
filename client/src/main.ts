@@ -22,7 +22,7 @@ const colourTheme = {
     primaryPink: '#D12974',
     lightBlue: '#3FBEE0',
     creamWhite: '#E9DAC4',
-    textGrey: '#4F4F4F',
+    primaryGrey: '#4F4F4F',
   },
 }
 
