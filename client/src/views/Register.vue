@@ -13,7 +13,10 @@ const formData = reactive({
 
 <template>
   <div class="register-container">
-    <h3>Create an account</h3>
+    <div class="header">
+      <button class="close-button" @click="handleClose">×</button>
+    </div>
+    <p class="form-header">Create an account</p>
     <form class="register-form">
       <div class="form-group">
         <label for="username">Username</label>
@@ -72,77 +75,76 @@ const formData = reactive({
       <button type="submit" :disabled="!isFormValid">Sign Up</button>
     </form>
 
-    <h3>Already have an account?Sign In</h3>
+    <footer>Already have an account?Sign In</footer>
   </div>
 </template>
 
 <style scoped>
 .register-container {
-  max-width: 400px;
-  margin: 40px auto;
-  padding: 20px;
+  width: 100%;
+  padding: 50px;
+  background: white;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
-h1 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 30px;
+.close-button {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 24px;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 5px 10px;
 }
-
-.register-form {
+.form-header {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  margin-bottom: 10px;
+  align-items: center;
+  font-weight: bold;
+  color: red;
+}
+.register-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 3px;
+  margin-bottom: 10px; /* 每个表单组之间的间距 */
 }
-
 label {
   font-weight: bold;
-  color: #555;
+  color: red;
 }
 
 input {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-input:focus {
-  outline: none;
-  border-color: #4caf50;
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);
-}
-
-.error-message {
-  color: #f44336;
-  font-size: 14px;
-}
-
-button {
+  width: 100%;
   padding: 12px;
-  background-color: #4caf50;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  background: burlywood;
+}
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #28365f;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 25px;
   cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.3s;
+  margin-top: 10px;
 }
-
-button:hover {
-  background-color: #45a049;
-}
-
-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
+footer {
+  color: red;
 }
 </style>
