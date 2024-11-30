@@ -19,7 +19,7 @@ const app = createApp(App)
 const colourTheme = {
   colors: {
     primaryBlue: '#193855',
-    pink: '#D12974',
+    primaryPink: '#D12974',
     lightBlue: '#3FBEE0',
     creamWhite: '#E9DAC4',
     textGrey: '#4F4F4F',
