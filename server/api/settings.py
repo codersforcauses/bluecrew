@@ -38,6 +38,16 @@ ALLOWED_HOSTS = (
     else []
 )
 
+# SimpleJWT configuration
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+# Change this to point to custom user model
+# AUTH_USER_MODEL = "myapp.CustomUser"
 
 # Application definition
 
@@ -52,6 +62,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "api.healthcheck",
+    # For localisations/translations
+    "rest_framework_simplejwt",
 ]
 
 MIDDLEWARE = [
