@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "api.healthcheck",
     # For localisations/translations
     "rest_framework_simplejwt",
+    "bingo",
 ]
 
 MIDDLEWARE = [
