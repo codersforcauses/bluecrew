@@ -1,14 +1,14 @@
 <script setup>
-import { reactive } from 'vue'
+  import { reactive } from 'vue'
 
-const formData = reactive({
-  username: '',
-  email: '',
-  firstName: '',
-  lastName: '',
-  password: '',
-  confirmPassword: '',
-})
+  const formData = reactive({
+    username: '',
+    email: '',
+    firstName: '',
+    lastName: '',
+    password: '',
+    confirmPassword: '',
+  })
 </script>
 
 <template>
