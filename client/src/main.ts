@@ -15,11 +15,25 @@ import router from './router'
 
 const app = createApp(App)
 
+// Object to store colour theme hexcodes
+const colourTheme = {
+  colors: {
+    primaryBlue: '#193855',
+    primaryPink: '#D12974',
+    lightBlue: '#3FBEE0',
+    creamWhite: '#E9DAC4',
+    primaryGrey: '#4F4F4F',
+  },
+}
+
 const vuetify = createVuetify({
   components,
   directives,
   theme: {
-    defaultTheme: 'light',
+    defaultTheme: 'colourTheme',
+    themes: {
+      colourTheme,
+    },
   },
 })
 
