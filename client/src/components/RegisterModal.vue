@@ -1,20 +1,26 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, defineProps, defineEmits } from 'vue'
 
 const formData = reactive({
   username: '',
   email: '',
   firstName: '',
   lastName: '',
+  dateOfBirth: '',
+  genderId: '',
+  indigenousTIS: '',
   password: '',
   confirmPassword: '',
 })
+
+
 </script>
 
-<template>
+<template> 
   <div class="register-container">
     <div class="header">
-      <button class="close-button" @click="handleClose">×</button>
+      <slot />
+      <button class="close-button" @click="$emit('close')">×</button>
       <img src="/bc-logo.png"></img>
     </div>
     <strong class="text-primaryPink">Create an account</strong>
@@ -59,6 +65,39 @@ const formData = reactive({
           v-model="formData.lastName"
           class = "bg-primaryBrown"
           placeholder="Enter your last name"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="dateOfBirth" class="text-primaryPink">Date of Birth</label>
+        <input
+          type="dateOfBirth"
+          id="dateOfBirth"
+          v-model="formData.dateOfBirth"
+          class = "bg-primaryBrown"
+          placeholder="Enter your date of birth"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="genderId" class="text-primaryPink">Gender Identity</label>
+        <input
+          type="genderId"
+          id="genderId"
+          v-model="formData.genderId"
+          class = "bg-primaryBrown"
+          placeholder="Enter your gender idendity"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="indigenousTIS" class="text-primaryPink">Indigenous or Torres Strait Islander</label>
+        <input
+          type="indigenousTIS"
+          id="indigenousTIS"
+          v-model="formData.indigenousTIS"
+          class = "bg-primaryBrown"
+          placeholder="Do you identify as an Indigenous Australian or a Torres Strait Islander"
         />
       </div>
 
