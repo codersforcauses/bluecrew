@@ -1,13 +1,9 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import RegisterModal from './components/RegisterModal.vue'
+import { ref } from 'vue'
 
-export default {
-  name: "App",
-  data: () => ({
-    showModal: false,
-  }),
-};
+const isOpen = ref(false)
 </script>
 
 <template>

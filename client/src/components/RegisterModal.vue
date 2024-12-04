@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, defineProps, defineEmits } from 'vue'
+import { reactive, defineEmits } from 'vue'
 
 const formData = reactive({
   username: '',
@@ -13,15 +13,14 @@ const formData = reactive({
   confirmPassword: '',
 })
 
-
+defineEmits(['close'])
 </script>
 
-<template> 
+<template>
   <div class="register-container">
     <div class="header">
-      <slot />
-      <button class="close-button" @click="$emit('close')">×</button>
-      <img src="/bc-logo.png"></img>
+      <button class="close-button" @click="$emit('close'), $router.push('/')">x</button>
+      <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
     </div>
     <strong class="text-primaryPink">Create an account</strong>
     <form class="register-form">
@@ -31,19 +30,20 @@ const formData = reactive({
           type="text"
           id="username"
           v-model="formData.username"
-          class = "bg-primaryBrown"
+          class="bg-primaryBrown"
           placeholder="Enter your username"
         />
       </div>
 
       <div class="form-group">
         <label for="email" class="text-primaryPink">Email</label>
-        <input 
-        type="email" 
-        id="email" 
-        v-model="formData.email" 
-        class = "bg-primaryBrown"
-        placeholder="Enter your email" />
+        <input
+          type="email"
+          id="email"
+          v-model="formData.email"
+          class="bg-primaryBrown"
+          placeholder="Enter your email"
+        />
       </div>
 
       <div class="form-group">
@@ -52,7 +52,7 @@ const formData = reactive({
           type="firstName"
           id="firstName"
           v-model="formData.firstName"
-          class = "bg-primaryBrown"
+          class="bg-primaryBrown"
           placeholder="Enter your first name"
         />
       </div>
@@ -63,7 +63,7 @@ const formData = reactive({
           type="lastName"
           id="lastName"
           v-model="formData.lastName"
-          class = "bg-primaryBrown"
+          class="bg-primaryBrown"
           placeholder="Enter your last name"
         />
       </div>
@@ -74,7 +74,7 @@ const formData = reactive({
           type="dateOfBirth"
           id="dateOfBirth"
           v-model="formData.dateOfBirth"
-          class = "bg-primaryBrown"
+          class="bg-primaryBrown"
           placeholder="Enter your date of birth"
         />
       </div>
@@ -85,18 +85,20 @@ const formData = reactive({
           type="genderId"
           id="genderId"
           v-model="formData.genderId"
-          class = "bg-primaryBrown"
+          class="bg-primaryBrown"
           placeholder="Enter your gender idendity"
         />
       </div>
 
       <div class="form-group">
-        <label for="indigenousTIS" class="text-primaryPink">Indigenous or Torres Strait Islander</label>
+        <label for="indigenousTIS" class="text-primaryPink"
+          >Indigenous or Torres Strait Islander</label
+        >
         <input
           type="indigenousTIS"
           id="indigenousTIS"
           v-model="formData.indigenousTIS"
-          class = "bg-primaryBrown"
+          class="bg-primaryBrown"
           placeholder="Do you identify as an Indigenous Australian or a Torres Strait Islander"
         />
       </div>
@@ -107,7 +109,7 @@ const formData = reactive({
           type="password"
           id="password"
           v-model="formData.password"
-          class = "bg-primaryBrown"
+          class="bg-primaryBrown"
           placeholder="Enter your password"
         />
       </div>
@@ -118,14 +120,14 @@ const formData = reactive({
           type="password"
           id="confirmPassword"
           v-model="formData.confirmPassword"
-          class = "bg-primaryBrown"
+          class="bg-primaryBrown"
           placeholder="Confirm your password"
         />
       </div>
-      <button type="submit" class="bg-primaryBlue text-creamyWhite" :disabled="!isFormValid">Sign Up</button>
+      <button type="submit" class="bg-primaryBlue text-creamyWhite">Sign Up</button>
     </form>
 
-    <footer class="text-primaryPink">Already have an account?  Sign In</footer>
+    <footer class="text-primaryPink">Already have an account? <a href="#">Sign In</a></footer>
   </div>
 </template>
 
@@ -136,18 +138,6 @@ const formData = reactive({
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-}
-
-.close-button {
-  display: flex;
-  justify-content: flex-end;
-  font-size: 24px;
-  background: none;
-  border: none;
-  color: #666;
-  cursor: pointer;
-  padding: 5px 10px;
-  box-shadow: none;
 }
 
 .register-form {
@@ -178,7 +168,7 @@ img {
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 10px;
-  width: 100px; 
+  width: 100px;
 }
 
 label {
@@ -204,8 +194,26 @@ button {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16);
 }
 
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.close-button {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-self: flex-end;
+  justify-content: center;
+  font-size: 20px;
+  background: none;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+}
+
 footer {
   font-weight: bold;
 }
-
 </style>
