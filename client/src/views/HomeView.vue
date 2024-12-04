@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import server from '@/utils/server'
+import NavBarDesktop from "@/components/NavBarDesktop.vue";
 
 const isLoading = ref(false)
 const healthcheckMessage = ref('')
@@ -22,6 +23,7 @@ const handlePing = async () => {
 
 <template>
   <div id="healthcheck">
+    <NavBarDesktop />
     <h1>Healthcheck <v-icon icon="mdi-heart-pulse" /></h1>
     <v-btn id="ping" @click="handlePing" :loading="isLoading">
       {{ isLoading ? 'Loading' : 'Ping' }}
