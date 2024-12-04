@@ -15,6 +15,7 @@ const formData = reactive({
   <div class="register-container">
     <div class="header">
       <button class="close-button" @click="handleClose">×</button>
+      <img src="/bc-logo.png"></img>
     </div>
     <strong class="text-primaryPink">Create an account</strong>
     <form class="register-form">
@@ -131,6 +132,14 @@ strong {
   margin-bottom: 10px;
   align-items: center;
   font-weight: bold;
+}
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 10px;
+  width: 100px; 
 }
 
 label {
