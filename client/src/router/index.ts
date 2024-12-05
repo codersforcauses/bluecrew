@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import PlaceholderView from '../views/PlaceholderView.vue';
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,10 +10,6 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
     },
-    { path: '/leaderboard', name: 'leaderboard', component: PlaceholderView },
-    { path: '/friends', name: 'friends', component: PlaceholderView },
-    { path: '/preferences', name: 'preferences', component: PlaceholderView },
-    { path: '/login', name: 'login', component: PlaceholderView },
   ],
 })
 
