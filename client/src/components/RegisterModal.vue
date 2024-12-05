@@ -85,7 +85,7 @@ defineEmits(['close'])
       <div class="form-group">
         <label for="genderId" class="text-primaryPink">Gender Identity</label>
         <v-select
-          color="primaryBrown"
+          bg-color="primaryBrown"
           label="Select gender identity"
           :items="['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say']"
         ></v-select>
@@ -96,7 +96,7 @@ defineEmits(['close'])
           Indigenous or Torres Strait Islander
         </label>
         <v-select
-          color="primaryBrown"
+          bg-color="primaryBrown"
           label="Please select"
           :items="['Yes', 'No', 'Prefer not to say']"
           variant="solo-filled"
