@@ -70,37 +70,46 @@ defineEmits(['close'])
 
       <div class="form-group">
         <label for="dateOfBirth" class="text-primaryPink">Date of Birth</label>
-        <input
-          type="dateOfBirth"
-          id="dateOfBirth"
-          v-model="formData.dateOfBirth"
-          class="bg-primaryBrown"
-          placeholder="Enter your date of birth"
-        />
+        <div class="relative">
+          <input
+            type="date"
+            id="dateOfBirth"
+            v-model="formData.dateOfBirth"
+            class="bg-primaryBrown w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-primaryPink appearance-none cursor-pointer"
+            placeholder="Enter your date of birth"
+          />
+        </div>
       </div>
 
       <div class="form-group">
         <label for="genderId" class="text-primaryPink">Gender Identity</label>
-        <input
-          type="genderId"
+        <select
           id="genderId"
           v-model="formData.genderId"
-          class="bg-primaryBrown"
-          placeholder="Enter your gender idendity"
-        />
+          class="bg-primaryBrown w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-primaryPink cursor-pointer"
+        >
+          <option value="">Select gender identity</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="non-binary">Non-binary</option>
+          <option value="other">Other</option>
+          <option value="prefer-not-to-say">Prefer not to say</option>
+        </select>
       </div>
 
       <div class="form-group">
-        <label for="indigenousTIS" class="text-primaryPink"
-          >Indigenous or Torres Strait Islander</label
-        >
-        <input
-          type="indigenousTIS"
+        <label for="indigenousTIS" class="text-primaryPink">
+          Indigenous or Torres Strait Islander
+        </label>
+        <select
           id="indigenousTIS"
           v-model="formData.indigenousTIS"
-          class="bg-primaryBrown"
-          placeholder="Do you identify as an Indigenous Australian or a Torres Strait Islander"
-        />
+          class="bg-primaryBrown w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-primaryPink cursor-pointer"
+        >
+          <option value="">Please select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
       </div>
 
       <div class="form-group">
