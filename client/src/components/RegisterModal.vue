@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { reactive, defineEmits } from 'vue'
+import { createVuetify } from 'vuetify'
 
 const formData = reactive({
   username: '',
@@ -83,33 +84,23 @@ defineEmits(['close'])
 
       <div class="form-group">
         <label for="genderId" class="text-primaryPink">Gender Identity</label>
-        <select
-          id="genderId"
-          v-model="formData.genderId"
-          class="bg-primaryBrown w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-primaryPink cursor-pointer"
-        >
-          <option value="">Select gender identity</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="non-binary">Non-binary</option>
-          <option value="other">Other</option>
-          <option value="prefer-not-to-say">Prefer not to say</option>
-        </select>
+        <v-select
+          color="primaryBrown"
+          label="Select gender identity"
+          :items="['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say']"
+        ></v-select>
       </div>
 
       <div class="form-group">
         <label for="indigenousTIS" class="text-primaryPink">
           Indigenous or Torres Strait Islander
         </label>
-        <select
-          id="indigenousTIS"
-          v-model="formData.indigenousTIS"
-          class="bg-primaryBrown w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-primaryPink cursor-pointer"
-        >
-          <option value="">Please select</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-        </select>
+        <v-select
+          color="primaryBrown"
+          label="Please select"
+          :items="['Yes', 'No', 'Prefer not to say']"
+          variant="solo-filled"
+        ></v-select>
       </div>
 
       <div class="form-group">
