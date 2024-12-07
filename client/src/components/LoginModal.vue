@@ -10,19 +10,18 @@
         <v-card-title class="d-flex justify-center">
           <img src="@/assets/bluecrew-logo.png" alt="Blue Crew Logo" style="width: 100px;" />
         </v-card-title>
-        <v-card-subtitle class="text-center text-h6 mt-2">
+        <v-card-subtitle class="text-center subtitle mt-2">
           Welcome Back
         </v-card-subtitle>
         <v-card-text>
           <p class="text-center mb-4">Login to your existing account</p>
 
-          <v-form ref="form" v-model="valid" lazy-validation>
+          <v-form v-model="valid" lazy-validation>
             <v-text-field
               v-model="username"
               label="Username"
               required
               outlined
-              dense
             ></v-text-field>
 
             <v-text-field
@@ -31,7 +30,6 @@
               type="password"
               required
               outlined
-              dense
             ></v-text-field>
 
             <v-btn class="mt-2" @click="forgotPassword">
@@ -90,7 +88,7 @@ export default defineComponent({
   </script>
 
   <style scoped>
-  .text-h6 {
+  .subtitle {
     font-weight: bold;
     color: #8a2be2; /* Customize color */
   }
