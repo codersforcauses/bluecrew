@@ -9,10 +9,7 @@ const dialog = ref(false)
   <div class="pa-4 text-center">
     <v-dialog max-width="30%" v-model="dialog" scrollable persistent>
       <template v-slot:activator="{ props: activatorProps }">
-        <v-btn 
-        class="bg-primaryBlue"
-        v-bind="activatorProps" 
-        text="Registration"></v-btn>
+        <v-btn class="bg-primaryBlue" v-bind="activatorProps" text="Registration"></v-btn>
       </template>
 
       <v-card>
@@ -25,5 +22,4 @@ const dialog = ref(false)
   <RouterView />
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
