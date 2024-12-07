@@ -96,7 +96,7 @@ export default defineComponent({
   <style scoped>
   .subtitle {
     font-weight: bold;
-    color: var(--v-primaryPink);
+    opacity: 1;
   }
 
   a {
