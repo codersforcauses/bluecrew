@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import server from '@/utils/server'
-import NavBarDesktop from '@/conponents/NavBarDesktop.vue'
+import NavBarDesktop from '@/components/NavBarDesktop.vue';
 
 const isLoading = ref(false)
 const healthcheckMessage = ref('')
