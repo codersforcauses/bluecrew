@@ -10,14 +10,14 @@
         <v-card-title class="d-flex justify-center">
           <img src="@/assets/bluecrew-logo.png" alt="Blue Crew Logo" style="width: 100px;" />
         </v-card-title>
-        <v-card-subtitle class="text-center subtitle mt-2">
+        <v-card-subtitle class="text-center subtitle ">
           Welcome Back
         </v-card-subtitle>
         <v-card-text>
           <p class="text-center mb-4">Login to your existing account</p>
 
           <v-form v-model="valid" lazy-validation>
-            <v-card-subtitle class="text-left subtitle">
+            <v-card-subtitle class="text-left subtitle mb-3 pa-0 text-primaryPink">
               Username
             </v-card-subtitle>
             <v-text-field
@@ -27,7 +27,7 @@
               outlined
             ></v-text-field>
 
-            <v-card-subtitle class="text-left subtitle">
+            <v-card-subtitle class="text-left subtitle  mb-3 pa-0 text-primaryPink">
               Password
             </v-card-subtitle>
             <v-text-field
@@ -96,7 +96,7 @@ export default defineComponent({
   <style scoped>
   .subtitle {
     font-weight: bold;
-    color: #8a2be2; /* Customize color */
+    color: var(--v-primaryPink);
   }
 
   a {
