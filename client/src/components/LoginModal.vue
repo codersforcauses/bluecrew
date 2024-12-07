@@ -7,10 +7,19 @@
       </template>
 
       <v-card>
+        <v-container>
+            <v-row> 
+                <v-spacer />
+                <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
+            </v-row>
+        </v-container>
+
         <v-card-title class="d-flex justify-center">
           <img src="@/assets/bluecrew-logo.png" alt="Blue Crew Logo" style="width: 100px;" />
         </v-card-title>
-        <v-card-subtitle class="text-center subtitle ">
+
+        
+        <v-card-subtitle class="text-center subtitle mt-2">
           Welcome Back
         </v-card-subtitle>
         <v-card-text>
@@ -62,35 +71,35 @@
   </template>
 
   <script lang="ts">
-  import { defineComponent, ref } from "vue";
-export default defineComponent({
-    name: "LoginModal",
-    setup() {
-      const dialog = ref(false);
-      const username = ref("");
-      const password = ref("");
-      const valid = ref(false);
+    import { defineComponent, ref } from "vue";
+    export default defineComponent({
+        name: "LoginModal",
+        setup() {
+        const dialog = ref(false);
+        const username = ref("");
+        const password = ref("");
+        const valid = ref(false);
 
-      const login = () => {
-        // Implement login logic here
-        console.log("Logging in with:", { username: username.value, password: password.value });
-      };
+        const login = () => {
+            // Implement login logic here
+            console.log("Logging in with:", { username: username.value, password: password.value });
+        };
 
-      const forgotPassword = () => {
-        // Implement forgot password functionality
-        console.log("Forgot password clicked");
-      };
+        const forgotPassword = () => {
+            // Implement forgot password functionality
+            console.log("Forgot password clicked");
+        };
 
-      return {
-        dialog,
-        username,
-        password,
-        valid,
-        login,
-        forgotPassword,
-      };
-    },
-  });
+        return {
+            dialog,
+            username,
+            password,
+            valid,
+            login,
+            forgotPassword,
+        };
+        },
+    });
   </script>
 
   <style scoped>
