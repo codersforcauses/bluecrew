@@ -75,7 +75,7 @@ defineEmits(['close'])
             type="date"
             id="dateOfBirth"
             v-model="formData.dateOfBirth"
-            class="bg-primaryBrown w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-primaryPink appearance-none cursor-pointer"
+            class="bg-primaryBrown cursor-pointer"
             placeholder="Enter your date of birth"
           />
         </div>
