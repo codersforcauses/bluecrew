@@ -19,7 +19,7 @@ defineEmits(['close'])
 <template>
   <div class="register-container">
     <div class="header">
-      <button class="close-button" @click="$emit('close'), $router.push('/')">x</button>
+      <button class="close-button" @click="$emit('close'), $router.push('/')">X</button>
       <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
     </div>
     <strong class="text-primaryPink">Create an account</strong>
@@ -209,9 +209,12 @@ button {
   display: flex;
   align-self: flex-end;
   justify-content: center;
+  align-items: center;
   font-size: 20px;
   background: none;
-  color: #666;
+  color: black;
+  border: 3px;
+  border-color: black;
   cursor: pointer;
   padding: 0;
 }
