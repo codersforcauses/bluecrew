@@ -17,16 +17,22 @@
           <p class="text-center mb-4">Login to your existing account</p>
 
           <v-form v-model="valid" lazy-validation>
+            <v-card-subtitle class="text-left subtitle">
+              Username
+            </v-card-subtitle>
             <v-text-field
               v-model="username"
-              label="Username"
+              label="Enter your username"
               required
               outlined
             ></v-text-field>
 
+            <v-card-subtitle class="text-left subtitle">
+              Password
+            </v-card-subtitle>
             <v-text-field
               v-model="password"
-              label="Password"
+              label="Enter your password"
               type="password"
               required
               outlined
