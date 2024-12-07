@@ -8,6 +8,7 @@ class Challenge(models.Model):
         ('act', 'Act'),
     ]
 
+    # django has automatic primary key id field
     name = models.CharField(max_length=200, unique=True)
     description = models.TextField(blank=True)
     challenge_type = models.CharField(max_length=10, choices=CHALLENGE_TYPES)
