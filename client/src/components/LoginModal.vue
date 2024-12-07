@@ -52,12 +52,13 @@
             </v-btn>
 
             <v-btn
-              class="mt-4"
-              color="primary"
-              block
+              class="d-flex justify-center mt-4 w-50 mx-auto"
+              color="primaryBlue"
+              :style="{ height: '50px' }"
               :disabled="!valid"
               @click="login"
-            >
+              rounded
+              >
               Sign In
             </v-btn>
           </v-form>
