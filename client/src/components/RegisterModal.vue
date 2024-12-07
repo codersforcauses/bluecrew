@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { reactive, defineEmits } from 'vue'
-import { createVuetify } from 'vuetify'
 
 const formData = reactive({
   username: '',
@@ -20,7 +19,7 @@ defineEmits(['close'])
 <template>
   <div class="register-container">
     <div class="header">
-      <button class="close-button" @click="$emit('close'), $router.push('/')">x</button>
+      <button class="close-button" @click="$emit('close'), $routqer.push('/')">x</button>
       <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
     </div>
     <strong class="text-primaryPink">Create an account</strong>
@@ -127,7 +126,7 @@ defineEmits(['close'])
       <button type="submit" class="bg-primaryBlue text-creamyWhite">Sign Up</button>
     </form>
 
-    <footer class="text-primaryPink">Already have an account? <a href="#">Sign In</a></footer>
+    <footer class="text-primaryPink">Already have an account? <a href="#" class="text-primaryPink">Sign In</a></footer>
   </div>
 </template>
 
@@ -215,5 +214,10 @@ button {
 
 footer {
   font-weight: bold;
+}
+
+a {
+  font-weight: bold;
+  text-decoration: underline;
 }
 </style>
