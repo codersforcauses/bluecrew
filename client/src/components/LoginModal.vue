@@ -1,12 +1,14 @@
 <template>
-    <v-dialog v-model="dialog" max-width="400px" persistent>
+    <v-dialog v-model="dialog" max-width="400px">
       <template v-slot:activator="{props: activatorProps }">
-        <v-btn color="primary" dark v-bind="activatorProps">Login</v-btn>
+        <v-btn
+            v-bind="activatorProps"
+            text = "Login"></v-btn>
       </template>
 
       <v-card>
         <v-card-title class="d-flex justify-center">
-          <img src="@/assets/logo.svg" alt="Blue Crew Logo" style="width: 100px;" />
+          <img src="@/assets/bluecrew-logo.png" alt="Blue Crew Logo" style="width: 100px;" />
         </v-card-title>
         <v-card-subtitle class="text-center text-h6 mt-2">
           Welcome Back
