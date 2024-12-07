@@ -4,8 +4,8 @@
     <v-toolbar-items class="nav-bar-items">
       <v-btn text :class="{'active-link': isActive('home')}" :to="{ name: 'home' }">Home</v-btn>
       <v-btn text :class="{'active-link': isActive('leaderboard')}" :to="{ name: 'leaderboard' }">Leaderboard</v-btn>
-      <v-btn text :class="{'active-link': isActive('friends')}" :to="{ name: 'friends' }">Friends</v-btn>
-      <v-btn text :class="{'active-link': isActive('preferences')}" :to="{ name: 'preferences' }">Preferences</v-btn>
+      <v-btn text :class="{'active-link': isActive('friends')} " :style="{opacity: isLoggedIn ? 1 : 0.5}" @click="handleNavigation('friends')">Friends</v-btn>
+      <v-btn text :class="{'active-link': isActive('preferences')}" :style="{opacity: isLoggedIn ? 1 : 0.5}" @click="handleNavigation('preferences')">Preferences</v-btn>
 
       <v-btn text class="status-btn" v-if="isLoggedIn">{{ userName }}</v-btn>
       <v-btn text class="status-btn" v-else :to="{ name: 'login' }">Login</v-btn>
@@ -15,9 +15,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
+const router = useRouter();
 const isLoggedIn = ref(false); 
 const userName = ref('User123');
 
@@ -27,6 +28,14 @@ window.userName = userName;
 
 const isActive = (name: string) => {
   return route.name === name;
+};
+
+const handleNavigation = (page: string) => {
+  if (!isLoggedIn.value) {
+    alert('You must be logged in to access this page.');
+    return; 
+  }
+  router.push({ name: page }); 
 };
 
 </script>
