@@ -29,7 +29,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser):
     REQUIRED_FIELDS = ["email"]
 
-    user_ID = models.BigAutoField(primary_key=True)
+    user_id = models.BigAutoField(primary_key=True)
 
     username = models.CharField(max_length=30, unique=True)
     USERNAME_FIELD = "username"
