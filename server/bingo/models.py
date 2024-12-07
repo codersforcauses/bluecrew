@@ -3,7 +3,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 
 
 class User(AbstractBaseUser):
-    REQUIRED_FIELDS = ["username", "firstName", "lastName", "birthdate", "email", "visibility", "avatar"]
+    REQUIRED_FIELDS = ["firstName", "lastName", "birthdate", "email", "visibility", "avatar"]
 
     userID = models.BigAutoField(primary_key=True)
 
