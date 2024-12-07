@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { reactive, defineEmits } from 'vue'
+import { ref, defineEmits } from 'vue'
 
-const formData = reactive({
+const formData = ref({
   username: '',
   email: '',
   firstName: '',
@@ -24,16 +24,16 @@ defineEmits(['close'])
     </div>
     <strong class="text-primaryPink">Create an account</strong>
     <form class="register-form">
-      <div class="form-group">
+      <v-responsive max-width="1200">
         <label for="username" class="text-primaryPink">Username</label>
-        <input
-          type="text"
-          id="username"
-          v-model="formData.username"
-          class="bg-primaryBrown"
-          placeholder="Enter your username"
-        />
-      </div>
+        <v-text-field 
+        hide-details="auto" 
+        label="Enter your username"
+        v-model="formData.username"
+        class="bg-primaryBrown"
+        variant="outlined">
+      </v-text-field>
+      </v-responsive>
 
       <div class="form-group">
         <label for="email" class="text-primaryPink">Email</label>
@@ -161,6 +161,7 @@ strong {
   width: 100%;
   display: flex;
   flex-direction: column;
+  font-size: 20px;
   margin-bottom: 10px;
   align-items: center;
   font-weight: bold;
@@ -176,6 +177,7 @@ img {
 
 label {
   font-weight: bold;
+  padding-bottom: 10px;
 }
 
 input {
