@@ -4,27 +4,21 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 
 class UserManager(BaseUserManager):
 
-    def create_user(self, username, email, firstName, lastName, birthdate, password=None):
+    def create_user(self, username, email, password=None):
 
         user = self.model(
             username=username,
-            email=self.normalize_email(email),
-            firstName=firstName,
-            lastName=lastName,
-            birthdate=birthdate
+            email=self.normalize_email(email)
         )
 
         user.set_password(password)
         user.save(using=self.db)
         return user
 
-    def create_superuser(self, username, email, firstName, lastName, birthdate, password=None):
+    def create_superuser(self, username, email, password=None):
         user = self.create_user(
             username=username,
             email=email,
-            firstName=firstName,
-            lastName=lastName,
-            birthdate=birthdate,
             password=password
         )
         user.is_admin = True
@@ -33,18 +27,18 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    REQUIRED_FIELDS = ["firstName", "lastName", "birthdate", "email"]
+    REQUIRED_FIELDS = ["email"]
 
-    userID = models.BigAutoField(primary_key=True)
+    user_ID = models.BigAutoField(primary_key=True)
 
     username = models.CharField(max_length=30, unique=True)
     USERNAME_FIELD = "username"
 
-    firstName = models.CharField(max_length=30, blank=False)
-    lastName = models.CharField(max_length=30, blank=False)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
     bio = models.CharField(max_length=300)
-    totalPoints = models.IntegerField(default=0)
-    birthdate = models.DateField(blank=False)
+    total_points = models.IntegerField(default=0)
+    birthdate = models.DateField(null=True)
 
     email = models.EmailField(
         max_length=320,
