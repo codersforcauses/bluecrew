@@ -1,12 +1,12 @@
 <template>
     <v-dialog v-model="dialog" max-width="400px" persistent>
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn color="primary" dark v-bind="attrs" v-on="on">Login</v-btn>
+      <template v-slot:activator="{props: activatorProps }">
+        <v-btn color="primary" dark v-bind="activatorProps">Login</v-btn>
       </template>
 
       <v-card>
         <v-card-title class="d-flex justify-center">
-          <img src="@/assets/logo.png" alt="Blue Crew Logo" style="width: 100px;" />
+          <img src="@/assets/logo.svg" alt="Blue Crew Logo" style="width: 100px;" />
         </v-card-title>
         <v-card-subtitle class="text-center text-h6 mt-2">
           Welcome Back
@@ -32,7 +32,7 @@
               dense
             ></v-text-field>
 
-            <v-btn text class="mt-2" @click="forgotPassword">
+            <v-btn class="mt-2" @click="forgotPassword">
               Forgot Password?
             </v-btn>
 
