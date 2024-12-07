@@ -19,7 +19,7 @@ defineEmits(['close'])
 <template>
   <div class="register-container">
     <div class="header">
-      <button class="close-button" @click="$emit('close'), $routqer.push('/')">x</button>
+      <button class="close-button" @click="$emit('close'), $router.push('/')">x</button>
       <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
     </div>
     <strong class="text-primaryPink">Create an account</strong>
@@ -87,6 +87,7 @@ defineEmits(['close'])
           bg-color="primaryBrown"
           label="Select gender identity"
           :items="['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say']"
+          hide-details
         ></v-select>
       </div>
 
@@ -99,6 +100,7 @@ defineEmits(['close'])
           label="Please select"
           :items="['Yes', 'No', 'Prefer not to say']"
           variant="solo-filled"
+          hide-details
         ></v-select>
       </div>
 
@@ -126,7 +128,9 @@ defineEmits(['close'])
       <button type="submit" class="bg-primaryBlue text-creamyWhite">Sign Up</button>
     </form>
 
-    <footer class="text-primaryPink">Already have an account? <a href="#" class="text-primaryPink">Sign In</a></footer>
+    <footer class="text-primaryPink">
+      Already have an account? <a href="#" class="text-primaryPink">Sign In</a>
+    </footer>
   </div>
 </template>
 
@@ -150,7 +154,7 @@ defineEmits(['close'])
   display: flex;
   flex-direction: column;
   gap: 3px;
-  margin-bottom: 10px; /* 每个表单组之间的间距 */
+  margin-bottom: 16px;
 }
 
 strong {
