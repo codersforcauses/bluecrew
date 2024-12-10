@@ -26,65 +26,61 @@ defineEmits(['close'])
     <form class="register-form">
       <v-responsive max-width="1200">
         <label for="username" class="text-primaryPink">Username</label>
-        <v-text-field 
-        hide-details="auto" 
-        label="Enter your username"
-        v-model="formData.username"
-        class="bg-primaryBrown"
-        variant="outlined">
-      </v-text-field>
+        <v-text-field
+          hide-details="auto"
+          label="Enter your username"
+          v-model="formData.username"
+          class="bg-primaryBrown"
+          variant="outlined"
+        ></v-text-field>
+      </v-responsive>
+
+      <v-responsive max-width="1200">
+        <label for="email" class="text-primaryPink">Email</label>
+        <v-text-field
+          hide-details="auto"
+          label="Enter your email"
+          v-model="formData.email"
+          class="bg-primaryBrown"
+          variant="outlined"
+        ></v-text-field>
+      </v-responsive>
+
+      <v-responsive max-width="1200">
+        <label for="firstName" class="text-primaryPink">First Name</label>
+        <v-text-field
+          hide-details="auto"
+          label="Enter your first name"
+          v-model="formData.firstName"
+          class="bg-primaryBrown"
+          variant="outlined"
+        ></v-text-field>
+      </v-responsive>
+
+      <v-responsive max-width="1200">
+        <label for="lastName" class="text-primaryPink">Username</label>
+        <v-text-field
+          hide-details="auto"
+          label="Enter your last name"
+          v-model="formData.lastName"
+          class="bg-primaryBrown"
+          variant="outlined"
+        ></v-text-field>
       </v-responsive>
 
       <div class="form-group">
-        <label for="email" class="text-primaryPink">Email</label>
-        <input
-          type="email"
-          id="email"
-          v-model="formData.email"
-          class="bg-primaryBrown"
-          placeholder="Enter your email"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="firstName" class="text-primaryPink">First Name</label>
-        <input
-          type="firstName"
-          id="firstName"
-          v-model="formData.firstName"
-          class="bg-primaryBrown"
-          placeholder="Enter your first name"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="lastName" class="text-primaryPink">Last Name</label>
-        <input
-          type="lastName"
-          id="lastName"
-          v-model="formData.lastName"
-          class="bg-primaryBrown"
-          placeholder="Enter your last name"
-        />
-      </div>
-
-      <div class="form-group">
         <label for="dateOfBirth" class="text-primaryPink">Date of Birth</label>
-        <div class="relative">
-          <input
-            type="date"
-            id="dateOfBirth"
-            v-model="formData.dateOfBirth"
-            class="bg-primaryBrown cursor-pointer"
-            placeholder="Enter your date of birth"
-          />
-        </div>
+        <v-date-input
+          v-model="formData.dateOfBirth"
+          label="Select a date"
+          max-width="1200"
+        ></v-date-input>
       </div>
 
       <div class="form-group">
         <label for="genderId" class="text-primaryPink">Gender Identity</label>
         <v-select
-          bg-color="primaryBrown"
+          class="bg-primaryBrown"
           label="Select gender identity"
           :items="['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say']"
           hide-details
