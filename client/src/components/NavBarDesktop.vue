@@ -2,10 +2,12 @@
   <v-toolbar class="nav-bar" density="comfortable">
     <v-spacer></v-spacer>
     <v-toolbar-items class="nav-bar-items">
-      <v-btn :class="{'active-link': isActive('home')}" :to="{ name: 'home' }">Home</v-btn>
-      <v-btn :class="{'active-link': isActive('leaderboard')}" :to="{ name: 'leaderboard' }">Leaderboard</v-btn>
-      <v-btn :class="{'active-link': isActive('friends')} " :style="{opacity: isLoggedIn ? 1 : 0.5}" @click="handleNavigation('friends')">Friends</v-btn>
-      <v-btn :class="{'active-link': isActive('preferences')}" :style="{opacity: isLoggedIn ? 1 : 0.5}" @click="handleNavigation('preferences')">Preferences</v-btn>
+      <v-btn :class="{ 'active-link': isActive('home') }" :to="{ name: 'home' }">Home</v-btn>
+      <v-btn :class="{ 'active-link': isActive('leaderboard') }" :to="{ name: 'leaderboard' }">Leaderboard</v-btn>
+      <v-btn :class="{ 'active-link': isActive('friends') }" :style="{ opacity: isLoggedIn ? 1 : 0.5 }"
+        @click="handleNavigation('friends')">Friends</v-btn>
+      <v-btn :class="{ 'active-link': isActive('preferences') }" :style="{ opacity: isLoggedIn ? 1 : 0.5 }"
+        @click="handleNavigation('preferences')">Preferences</v-btn>
 
       <v-btn class="status-btn" v-if="isLoggedIn">{{ userName }}</v-btn>
       <v-btn class="status-btn" v-else :to="{ name: 'login' }">Login</v-btn>
@@ -19,7 +21,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
-const isLoggedIn = ref(false); 
+const isLoggedIn = ref(false);
 const userName = ref('User123');
 
 
@@ -30,15 +32,16 @@ const isActive = (name: string) => {
 const handleNavigation = (page: string) => {
   if (!isLoggedIn.value) {
     alert('You must be logged in to access this page.');
-    return; 
+    return;
   }
-  router.push({ name: page }); 
+  router.push({ name: page });
 };
 
 </script>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
+
 .nav-bar {
   display: flex;
   background-color: white;

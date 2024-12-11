@@ -2,51 +2,52 @@
     <div class="mobile-nav">
         <!-- Only hamburger button when menu is closed -->
         <div v-if="!isMenuOpen" class="menu-trigger">
-            <div class="menu-icon" @click="toggleMenu">
-                <van-icon name="bars" color="#FF1493" size="28" />
-            </div>
+            <v-btn icon @click="toggleMenu" class="menu-icon">
+                <v-icon color="#FF1493" size="28">mdi-menu</v-icon>
+            </v-btn>
         </div>
 
-        <!-- Navigation menu popup with header -->
-        <van-popup v-model:show="isMenuOpen" position="top" :overlay="true" class="menu-popup">
+        <!-- Navigation menu drawer with header -->
+        <v-navigation-drawer v-model="isMenuOpen" location="top" temporary class="menu-drawer">
             <!-- Header bar that appears with menu -->
             <div class="nav-header">
                 <div class="header-content">
-                    <img src="@/assets/logo.png" alt="Blue Crew Logo" class="logo">
+                    <!-- don't need the logo now -->
+                    <!-- <img src="@/assets/logo.png" alt="Blue Crew Logo" class="logo"> -->
                     <div class="username">Guest Mode</div>
-                    <div class="menu-icon" @click="toggleMenu">
-                        <van-icon name="bars" color="#FF1493" size="28" />
-                    </div>
+                    <v-btn icon @click="toggleMenu" class="menu-icon">
+                        <v-icon color="#FF1493" size="28">mdi-menu</v-icon>
+                    </v-btn>
                 </div>
             </div>
 
             <div class="menu-content">
                 <!-- Navigation buttons -->
                 <div class="menu-items">
-                    <button class="menu-button">
-                        <span class="button-text">Home</span>
-                    </button>
+                    <v-btn block class="menu-button" variant="text" height="54">
+                        Home
+                    </v-btn>
 
-                    <button class="menu-button disabled">
-                        <van-icon name="lock" class="lock-icon" />
+                    <v-btn block class="menu-button disabled" variant="text" height="54" disabled>
+                        <v-icon class="lock-icon">mdi-lock</v-icon>
                         <span class="button-text">User Preferences</span>
-                    </button>
+                    </v-btn>
 
-                    <button class="menu-button disabled">
-                        <van-icon name="lock" class="lock-icon" />
+                    <v-btn block class="menu-button disabled" variant="text" height="54" disabled>
+                        <v-icon class="lock-icon">mdi-lock</v-icon>
                         <span class="button-text">Friends</span>
-                    </button>
+                    </v-btn>
 
-                    <button class="menu-button">
-                        <span class="button-text">Leaderboard</span>
-                    </button>
+                    <v-btn block class="menu-button" variant="text" height="54">
+                        Leaderboard
+                    </v-btn>
                 </div>
 
                 <!-- Authentication section -->
                 <div class="auth-section">
-                    <button class="sign-in-button" @click="handleAuth">
+                    <v-btn class="sign-in-button" outlined @click="handleAuth">
                         Sign In
-                    </button>
+                    </v-btn>
 
                     <div class="signup-hint">
                         Don't have an account?
@@ -54,13 +55,12 @@
                     </div>
                 </div>
             </div>
-        </van-popup>
+        </v-navigation-drawer>
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
-import { Icon as VanIcon, Popup as VanPopup } from 'vant'
 
 // State management
 const isMenuOpen = ref(false)
@@ -85,7 +85,6 @@ const handleAuth = () => {
     width: 100%;
 }
 
-/* Initial menu trigger button styles */
 .menu-trigger {
     position: fixed;
     top: 16px;
@@ -93,7 +92,11 @@ const handleAuth = () => {
     z-index: 1000;
 }
 
-/* Header styles */
+.menu-icon {
+    background-color: white !important;
+    border-radius: 8px !important;
+}
+
 .nav-header {
     background-color: #193855;
     padding: 12px 16px;
@@ -122,19 +125,8 @@ const handleAuth = () => {
     flex-grow: 1;
 }
 
-.menu-icon {
-    background-color: white;
-    padding: 8px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
-/* Menu popup styles */
-.menu-popup {
-    background-color: #193855;
+.menu-drawer {
+    background-color: #193855 !important;
 }
 
 .menu-content {
@@ -144,7 +136,6 @@ const handleAuth = () => {
     gap: 16px;
 }
 
-/* Navigation buttons styles */
 .menu-items {
     display: flex;
     flex-direction: column;
@@ -152,37 +143,30 @@ const handleAuth = () => {
 }
 
 .menu-button {
-    width: 100%;
-    background-color: rgba(233, 218, 196, 0.8);
-    border: none;
-    border-radius: 12px;
-    padding: 14px;
+    background-color: rgba(233, 218, 196, 0.8) !important;
+    border-radius: 12px !important;
+    font-family: 'Poppins', 'Arial', sans-serif !important;
+    font-size: 24px !important;
+    font-weight: 900 !important;
+    text-transform: none !important;
     position: relative;
-    min-height: 54px;
-    font-family: 'Poppins', 'Arial', sans-serif;
-    font-size: 24px;
-    font-weight: 900;
+}
+
+.menu-button.disabled {
+    background-color: #A9A9A9 !important;
+    opacity: 0.8 !important;
 }
 
 .button-text {
     width: 100%;
     text-align: center;
-    display: block;
-}
-
-.menu-button.disabled {
-    opacity: 0.8;
-    background-color: #A9A9A9;
 }
 
 .lock-icon {
     position: absolute;
     left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
 }
 
-/* Authentication section styles */
 .auth-section {
     display: flex;
     flex-direction: column;
@@ -192,15 +176,15 @@ const handleAuth = () => {
 }
 
 .sign-in-button {
-    width: 200px;
-    background-color: transparent;
-    color: white;
-    border: 2px solid white;
-    border-radius: 25px;
-    padding: 12px 24px;
-    font-size: 20px;
-    font-weight: 900;
-    cursor: pointer;
+    width: 200px !important;
+    background-color: transparent !important;
+    color: white !important;
+    border: 2px solid white !important;
+    border-radius: 25px !important;
+    padding: 12px 24px !important;
+    font-size: 20px !important;
+    font-weight: 900 !important;
+    text-transform: none !important;
 }
 
 .signup-hint {
@@ -214,10 +198,5 @@ const handleAuth = () => {
     color: white;
     text-decoration: underline;
     font-weight: 700;
-}
-
-/* Vant component overrides */
-:deep(.van-popup) {
-    background-color: #193855 !important;
 }
 </style>
