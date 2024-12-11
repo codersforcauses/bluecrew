@@ -47,7 +47,7 @@ REST_FRAMEWORK = {
 }
 
 # Change this to point to custom user model
-# AUTH_USER_MODEL = "myapp.CustomUser"
+AUTH_USER_MODEL = "bingo.User"
 
 # Application definition
 
