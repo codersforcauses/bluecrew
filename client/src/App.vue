@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import RegisterModal from './components/RegisterModal.vue'
 </script>
 
 <template>
-  <RouterView />
+  <div class="pa-4 text-center">
+    <RegisterModal />
+    <RouterView />
+  </div>
 </template>
 
-<style></style>
+<style scoped></style>
