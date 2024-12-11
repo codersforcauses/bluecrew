@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import { ref, defineEmits } from 'vue'
+import { createVuetify } from 'vuetify'
+import { VDateInput } from 'vuetify/labs/VDateInput'
+
+const vuetify = createVuetify({
+  components: {
+    VDateInput,
+  },
+})
 
 const formData = ref({
   username: '',
@@ -24,7 +32,7 @@ defineEmits(['close'])
     </div>
     <strong class="text-primaryPink">Create an account</strong>
     <form class="register-form">
-      <v-responsive max-width="1200">
+      <div class="form-group">
         <label for="username" class="text-primaryPink">Username</label>
         <v-text-field
           hide-details="auto"
@@ -33,9 +41,9 @@ defineEmits(['close'])
           class="bg-primaryBrown"
           variant="outlined"
         ></v-text-field>
-      </v-responsive>
+      </div>
 
-      <v-responsive max-width="1200">
+      <div class="form-group">
         <label for="email" class="text-primaryPink">Email</label>
         <v-text-field
           hide-details="auto"
@@ -44,9 +52,9 @@ defineEmits(['close'])
           class="bg-primaryBrown"
           variant="outlined"
         ></v-text-field>
-      </v-responsive>
+      </div>
 
-      <v-responsive max-width="1200">
+      <div class="form-group">
         <label for="firstName" class="text-primaryPink">First Name</label>
         <v-text-field
           hide-details="auto"
@@ -55,10 +63,10 @@ defineEmits(['close'])
           class="bg-primaryBrown"
           variant="outlined"
         ></v-text-field>
-      </v-responsive>
+      </div>
 
-      <v-responsive max-width="1200">
-        <label for="lastName" class="text-primaryPink">Username</label>
+      <div class="form-group">
+        <label for="lastName" class="text-primaryPink">Last Name</label>
         <v-text-field
           hide-details="auto"
           label="Enter your last name"
@@ -66,14 +74,19 @@ defineEmits(['close'])
           class="bg-primaryBrown"
           variant="outlined"
         ></v-text-field>
-      </v-responsive>
+      </div>
 
       <div class="form-group">
         <label for="dateOfBirth" class="text-primaryPink">Date of Birth</label>
         <v-date-input
-          v-model="formData.dateOfBirth"
+          hide-details="auto"
           label="Select a date"
+          v-model="formData.dateOfBirth"
+          class="bg-primaryBrown"
           max-width="1200"
+          variant="outlined"
+          prepend-icon=""
+          persistent-placeholder
         ></v-date-input>
       </div>
 
@@ -83,7 +96,8 @@ defineEmits(['close'])
           class="bg-primaryBrown"
           label="Select gender identity"
           :items="['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say']"
-          hide-details
+          hide-details="auto"
+          variant="outlined"
         ></v-select>
       </div>
 
@@ -92,34 +106,34 @@ defineEmits(['close'])
           Indigenous or Torres Strait Islander
         </label>
         <v-select
-          bg-color="primaryBrown"
+          class="bg-primaryBrown"
           label="Please select"
           :items="['Yes', 'No', 'Prefer not to say']"
-          variant="solo-filled"
+          variant="outlined"
           hide-details
         ></v-select>
       </div>
 
       <div class="form-group">
         <label for="password" class="text-primaryPink">Password</label>
-        <input
-          type="password"
-          id="password"
+        <v-text-field
+          hide-details="auto"
+          label="Enter your password"
           v-model="formData.password"
           class="bg-primaryBrown"
-          placeholder="Enter your password"
-        />
+          variant="outlined"
+        ></v-text-field>
       </div>
 
       <div class="form-group">
-        <label for="confirmPassword" class="text-primaryPink">Confirm Password:</label>
-        <input
-          type="password"
-          id="confirmPassword"
+        <label for="confirmPassword" class="text-primaryPink">Confirm Password</label>
+        <v-text-field
+          hide-details="auto"
+          label="Confirm your password"
           v-model="formData.confirmPassword"
           class="bg-primaryBrown"
-          placeholder="Confirm your password"
-        />
+          variant="outlined"
+        ></v-text-field>
       </div>
       <button type="submit" class="bg-primaryBlue text-creamyWhite">Sign Up</button>
     </form>
