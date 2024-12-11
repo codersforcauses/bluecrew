@@ -15,7 +15,7 @@ const router = createRouter({
     { path: '/leaderboard', name: 'leaderboard', component: PlaceholderView },
     { path: '/friends', name: 'friends', component: PlaceholderView },
     { path: '/preferences', name: 'preferences', component: PlaceholderView },
-    { path: '/login', name: 'login', component: PlaceholderView },
+    { path: '/signup', name: 'signup', component: PlaceholderView },
   ],
 })
 

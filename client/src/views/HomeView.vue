@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import server from '@/utils/server'
-import NavBarDesktop from '@/components/NavBarDesktop.vue';
-import NavBarMobile from '@/components/NavBarMobile.vue';
-import { useDisplay } from 'vuetify'
 
-const { smAndDown } = useDisplay()
 
 const isLoading = ref(false)
 const healthcheckMessage = ref('')
@@ -27,12 +23,6 @@ const handlePing = async () => {
 
 <template>
   <div id="healthcheck">
-    <div v-if="smAndDown">
-      <NavBarMobile />
-    </div>
-    <div v-else>
-      <NavBarDesktop />
-    </div>
     <h1>Healthcheck <v-icon icon="mdi-heart-pulse" /></h1>
     <v-btn id="ping" @click="handlePing" :loading="isLoading">
       {{ isLoading ? 'Loading' : 'Ping' }}

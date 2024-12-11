@@ -10,7 +10,7 @@
         @click="handleNavigation('preferences')">Preferences</v-btn>
 
       <v-btn class="status-btn" v-if="isLoggedIn">{{ userName }}</v-btn>
-      <v-btn class="status-btn" v-else :to="{ name: 'login' }">Login</v-btn>
+      <v-btn class="status-btn" v-else :to="{ name: 'signup' }">Login</v-btn>
     </v-toolbar-items>
   </v-toolbar>
 </template>

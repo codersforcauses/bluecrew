@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import NavBarMobile from '@/components/NavBarMobile.vue'
+import NavBarWrapper from '@/components/NavBarWrapper.vue';
+
 </script>
 
 <template>
-  <div>
-    <NavBarMobile />
-    <RouterView />
-  </div>
+  <v-app>
+    <NavBarWrapper />
+    <v-main>
+      <RouterView />
+    </v-main>
+  </v-app>
 </template>
 
 <style>
