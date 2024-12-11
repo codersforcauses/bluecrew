@@ -36,7 +36,7 @@ export default {
     font-weight: 300;
   }
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 600px) {
     .footer{
       height: 50px;
       font-size: 12px;
