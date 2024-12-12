@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin, AbstractBaseUser, BaseUserManager
+from datetime import date
 
 
 class UserManager(BaseUserManager):
@@ -36,11 +37,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=30, unique=True)
     USERNAME_FIELD = "username"
 
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    bio = models.CharField(max_length=300)
+    first_name = models.CharField(max_length=30, blank=True)
+    last_name = models.CharField(max_length=30, blank=True)
+    bio = models.CharField(max_length=300, blank=True)
     total_points = models.IntegerField(default=0)
-    birthdate = models.DateField(null=True)
+    birthdate = models.DateField(default=date(2000, 1, 1))
 
     email = models.EmailField(
         max_length=320,
@@ -59,7 +60,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=0
     )
 
-    avatar = models.IntegerField(default=0, choices=map(lambda i: (i, f"Avatar {i}"), range(6)))
+    avatar = models.IntegerField(default=0, choices=map(
+        lambda i: (i, f"Avatar {i}"), range(6)))
 
     is_active = models.BooleanField(default=True)
 
