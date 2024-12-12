@@ -1,13 +1,5 @@
 <script setup lang="ts">
 import { ref, defineEmits } from 'vue'
-import { createVuetify } from 'vuetify'
-import { VDateInput } from 'vuetify/labs/VDateInput'
-
-const vuetify = createVuetify({
-  components: {
-    VDateInput,
-  },
-})
 
 const formData = ref({
   username: '',
@@ -23,6 +15,7 @@ const formData = ref({
 
 const dialog = ref(false)
 const emit = defineEmits(['close'])
+const datePickerDialog = ref(false)
 
 const openDialog = () => {
   dialog.value = true
@@ -31,6 +24,20 @@ const openDialog = () => {
 const closeDialog = () => {
   dialog.value = false
   emit('close')
+}
+
+const openDatePicker = () => {
+  datePickerDialog.value = true
+}
+
+const closeDatePicker = () => {
+  datePickerDialog.value = false
+}
+
+const selectDate = (date: { year: number; month: number; day: number }) => {
+  // Format the date as a string (YYYY-MM-DD)
+  formData.value.dateOfBirth = `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`
+  closeDatePicker()
 }
 
 const submitForm = () => {
@@ -102,15 +109,32 @@ const submitForm = () => {
 
             <div class="form-group">
               <label for="dateOfBirth" class="text-primaryPink">Date of Birth</label>
-              <v-date-input
+              <v-text-field
                 hide-details="auto"
                 label="Select a date"
                 v-model="formData.dateOfBirth"
                 class="bg-primaryBrown"
                 variant="outlined"
-                prepend-icon=""
-                persistent-placeholder
-              ></v-date-input>
+                readonly
+                @click="openDatePicker"
+              ></v-text-field>
+              
+              <v-dialog
+                v-model="datePickerDialog"
+                max-width="290px"
+              >
+                <v-card>
+                  <v-date-picker
+                    @update:model-value="selectDate"
+                    show-adjacent-months
+                    landscape
+                  ></v-date-picker>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn @click="closeDatePicker">Cancel</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
             </div>
 
             <div class="form-group">
