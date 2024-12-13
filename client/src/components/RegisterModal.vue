@@ -34,10 +34,12 @@ const closeDatePicker = () => {
   datePickerDialog.value = false
 }
 
-const selectDate = (date: { year: number; month: number; day: number }) => {
-  // Format the date as a string (YYYY-MM-DD)
-  formData.value.dateOfBirth = `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`
-  closeDatePicker()
+const selectDate = (value: string | null) => {
+  if (value) {
+    const date = new Date(value)
+    formData.value.dateOfBirth = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`
+    closeDatePicker()
+  }
 }
 
 const submitForm = () => {
@@ -47,7 +49,7 @@ const submitForm = () => {
 
 <template>
   <div>
-    <v-btn class="bg-primaryBlue" @click="openDialog" text="Registration"></v-btn>
+    <v-btn id="register-button" class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center" @click="openDialog" text="Registration"></v-btn>
     
     <v-dialog 
       v-model="dialog" 
@@ -112,26 +114,30 @@ const submitForm = () => {
               <v-text-field
                 hide-details="auto"
                 label="Select a date"
+                placeholder="dd-mm-yyyy"
                 v-model="formData.dateOfBirth"
                 class="bg-primaryBrown"
                 variant="outlined"
                 readonly
+                persistent-placeholder
                 @click="openDatePicker"
               ></v-text-field>
               
               <v-dialog
                 v-model="datePickerDialog"
-                max-width="290px"
               >
                 <v-card>
-                  <v-date-picker
-                    @update:model-value="selectDate"
-                    show-adjacent-months
-                    landscape
-                  ></v-date-picker>
+                  <v-row justify="space-around">
+                    <v-date-picker
+                      @update:model-value="selectDate"
+                      min-height="300px"
+                      min-width="50px"
+                      show-adjacent-months
+                    ></v-date-picker>
+                  </v-row>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn @click="closeDatePicker">Cancel</v-btn>
+                    <v-btn class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center" @click="closeDatePicker">Cancel</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -186,7 +192,7 @@ const submitForm = () => {
                 variant="outlined"
               ></v-text-field>
             </div>
-            <button type="submit" class="bg-primaryBlue text-creamyWhite">Sign Up</button>
+            <v-btn id="register-button" class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center">Sign Up</v-btn>
           </form>
 
           <footer class="text-primaryPink">
@@ -278,6 +284,7 @@ button {
 
 footer {
   font-weight: bold;
+  text-align: center;
 }
 
 a {
