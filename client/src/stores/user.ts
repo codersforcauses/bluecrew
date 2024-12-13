@@ -3,7 +3,6 @@ import { useStorage } from '@vueuse/core'
 import { computed } from 'vue'
 import type { User } from '@/types/user'
 
-
 export const useUserStore = defineStore('user', () => {
   //Import userData from types/user
   const userData = useStorage<User | null>('userData', null)
