@@ -7,7 +7,7 @@
 <script setup lang="ts"></script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
 .footer {
   background-color: #193855;
   width: 100%;
@@ -22,7 +22,6 @@
   z-index: 1000;
   color: white;
   font-size: 20px;
-  font-family: 'Poppins', sans-serif;
 }
 
 .footerText {
