@@ -19,11 +19,11 @@
         </v-card-title>
 
         
-        <v-card-subtitle class="text-center subtitle mt-2">
+        <v-card-subtitle class="text-center subtitle mt-2 text-primaryPink">
           Welcome Back
         </v-card-subtitle>
         <v-card-text>
-          <p class="text-center mb-4">Login to your existing account</p>
+          <p class="text-center mb-4 text-primaryPink">Login to your existing account</p>
 
           <v-form v-model="valid" lazy-validation>
             <v-card-subtitle class="text-left subtitle mb-3 pa-0 text-primaryPink">
@@ -64,8 +64,8 @@
           </v-form>
         </v-card-text>
 
-        <v-card-actions class="d-flex justify-center">
-          <p>Don't have an account? <a href="/signup">Sign up</a></p>
+        <v-card-actions class="d-flex justify-center text-primaryPink">
+          <p>Don't have an account? <a href="/signup" class="text-primaryPink">Sign up</a></p>
         </v-card-actions>
       </v-card>
     </v-dialog>
