@@ -45,11 +45,12 @@
               type="password"
               required
               outlined
+              hide-detials
             ></v-text-field>
 
-            <v-btn class="mt-2" @click="forgotPassword">
+            <a href="/forgot-password" class="text-lightBlue">
               Forgot Password?
-            </v-btn>
+            </a>
 
             <v-btn
               class="d-flex justify-center mt-4 w-50 mx-auto"
