@@ -7,7 +7,6 @@
 <script setup lang="ts"></script>
 
 <style scoped>
-
 .footer {
   background-color: #193855;
   width: 100%;
