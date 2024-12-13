@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import BluecrewFooter from  "@/components/BluecrewFooter.vue";
+import BluecrewFooter from '@/components/BluecrewFooter.vue'
 </script>
 
 <template>
