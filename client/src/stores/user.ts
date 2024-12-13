@@ -4,7 +4,6 @@ import { computed } from 'vue'
 import type { User } from '@/types/user'
 
 export const useUserStore = defineStore('user', () => {
-  //Import userData from types/user
   const userData = useStorage<User | null>('userData', null)
   const accessToken = useStorage<string | null>('accessToken', null)
   const refreshToken = useStorage<string | null>('refreshToken', null)
