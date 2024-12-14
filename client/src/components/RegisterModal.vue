@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
+import { ref } from 'vue'
 import { useModalStore } from '@/stores/modal'
+import type { UserRegistrationForm } from '@/types/user';
 import { useDisplay } from 'vuetify'
 
 const { xs } = useDisplay()
 const modalStore = useModalStore()
 
-const formData = ref({
+const formData = ref<UserRegistrationForm>({
   username: '',
   email: '',
   firstName: '',
@@ -28,7 +29,8 @@ const submitForm = () => {
 </script>
 
 <template>
-  <v-dialog
+  <div>
+    <v-dialog
     v-model="modalStore.isRegisterModalOpen"
     :max-width="xs ? '100%' : '400px'"
     :fullscreen="xs"
