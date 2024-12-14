@@ -24,6 +24,7 @@ const colourTheme = {
     lightBlue: '#3FBEE0',
     creamWhite: '#E9DAC4',
     primaryGrey: '#4F4F4F',
+    primaryBrown: '#EDE1D0',
   },
 }
 

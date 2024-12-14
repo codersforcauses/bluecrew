@@ -32,8 +32,11 @@
             <v-text-field
               v-model="username"
               label="Enter your username"
+              hide-details="auto"
               required
               outlined
+              class="bg-primaryBrown"
+              variant="outlined"
             ></v-text-field>
 
             <v-card-subtitle class="text-left subtitle  mb-3 pa-0 text-primaryPink">
@@ -42,10 +45,13 @@
             <v-text-field
               v-model="password"
               label="Enter your password"
+              hide-details="auto"
               type="password"
               required
               outlined
               hide-detials
+              class="bg-primaryBrown"
+              variant="outlined"
             ></v-text-field>
 
             <a href="/forgot-password" class="text-lightBlue">
@@ -114,6 +120,7 @@
     color: #ff4081;
     text-decoration: none;
   }
+  
 
   a:hover {
     text-decoration: underline;
