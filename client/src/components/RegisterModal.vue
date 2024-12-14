@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useModalStore } from '@/stores/modal'
-import type { UserRegistrationForm } from '@/types/user';
+import type { UserRegistrationForm } from '@/types/user'
 import { useDisplay } from 'vuetify'
 
 const { xs } = useDisplay()
@@ -19,6 +19,15 @@ const formData = ref<UserRegistrationForm>({
   confirmPassword: '',
 })
 
+const isDialogVisible = computed({
+  get: () => modalStore.currentModal === 'register',
+  set: (value: boolean) => {
+    if (!value) {
+      modalStore.closeModal()
+    }
+  },
+})
+
 const closeDialog = () => {
   modalStore.closeModal()
 }
@@ -31,20 +40,20 @@ const submitForm = () => {
 <template>
   <div>
     <v-dialog
-    v-model="modalStore.isRegisterModalOpen"
-    :max-width="xs ? '100%' : '400px'"
-    :fullscreen="xs"
-    scrollable
-    persistent
-  >
-    <v-card>
-      <v-card-text style="height: auto; overflow-y: auto">
-        <div class="header">
-          <button class="close-button" @click="closeDialog">x</button>
-          <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
-        </div>
-        <strong class="text-primaryPink">Create an account</strong>
-        <form class="register-form" @submit.prevent="submitForm">
+      v-model="isDialogVisible"
+      :max-width="xs ? '100%' : '400px'"
+      :fullscreen="xs"
+      scrollable
+      persistent
+    >
+      <v-card>
+        <v-card-text style="height: auto; overflow-y: auto">
+          <div class="header">
+            <button class="close-button" @click="closeDialog">x</button>
+            <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
+          </div>
+          <strong class="text-primaryPink">Create an account</strong>
+          <form class="register-form" @submit.prevent="submitForm">
             <div class="form-group">
               <label for="username" class="text-primaryPink">Username</label>
               <v-text-field

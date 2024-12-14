@@ -20,15 +20,10 @@ function openRegisterButton() {
     Registration
   </v-btn>
 
-  <RegisterModal
-    :visible="modalStore.currentModal === 'register'"
-    @close="modalStore.closeModal"
-  />
+  <RegisterModal v-if="modalStore.currentModal === 'register'" @close="modalStore.closeModal" />
 
   <RouterView />
   <BluecrewFooter />
 </template>
-
-
 
 <style scoped></style>
