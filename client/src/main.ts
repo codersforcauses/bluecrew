@@ -4,7 +4,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
-// Vuetifyq
+// Vuetify
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
@@ -23,6 +23,7 @@ const colourTheme = {
     lightBlue: '#3FBEE0',
     creamWhite: '#E9DAC4',
     primaryGrey: '#4F4F4F',
+    primaryBrown: '#EDE1D0',
   },
 }
 

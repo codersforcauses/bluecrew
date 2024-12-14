@@ -8,4 +8,4 @@ import BluecrewFooter from '@/components/BluecrewFooter.vue'
   <BluecrewFooter />
 </template>
 
-<style></style>
+<style scoped></style>
