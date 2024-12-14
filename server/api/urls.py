@@ -17,6 +17,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from bingo.views import delete_friendship
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -27,4 +28,6 @@ urlpatterns = [
     path("api/healthcheck/", include(("api.healthcheck.urls"))),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('delete-friendship/<int:friendship_id>/',
+         delete_friendship, name='delete_friendship'),
 ]
