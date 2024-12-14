@@ -96,8 +96,10 @@ class Challenge(models.Model):
 
 class FriendshipTable(models.Model):
     id = models.AutoField(primary_key=True)
-    requester = models.ForeignKey(User, on_delete=models.CASCADE)
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE)
+    requester = models.ForeignKey(
+        User, related_name="sent_requests", on_delete=models.CASCADE)
+    receiver = models.ForeignKey(
+        User, related_name="received_requests", on_delete=models.CASCADE)
 
     PENDING = "pending"
     ACCEPTED = "accepted"
