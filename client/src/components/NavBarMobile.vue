@@ -9,9 +9,9 @@
 
         <!-- Navigation menu drawer with header -->
         <v-navigation-drawer v-model="isMenuOpen" location="top" temporary class="menu-drawer" width="100%">
-            <!-- Menu header with Guest Mode/Username text -->
+            <!-- Menu header with dynamic text based on login status -->
             <div class="menu-header">
-                <span class="guest-mode">{{ isLoggedIn ? 'user_name' : 'Guest Mode' }}</span>
+                <span class="guest-mode">{{ userStore.userData?.userName || 'Guest Mode' }}</span>
                 <v-btn icon @click="toggleMenu" class="menu-icon fixed-position">
                     <v-icon color="#FF1493" size="28">mdi-menu</v-icon>
                 </v-btn>
@@ -24,15 +24,15 @@
                         <span class="button-text">Home</span>
                     </v-btn>
 
-                    <v-btn block class="menu-button" :class="{ 'disabled': !isLoggedIn }" variant="text" height="64"
-                        :disabled="!isLoggedIn">
-                        <v-icon v-if="!isLoggedIn" class="lock-icon" size="24">mdi-lock</v-icon>
+                    <v-btn block class="menu-button" :class="{ 'disabled': !userStore.isLoggedIn }" variant="text"
+                        height="64" :disabled="!userStore.isLoggedIn">
+                        <v-icon v-if="!userStore.isLoggedIn" class="lock-icon" size="24">mdi-lock</v-icon>
                         <span class="button-text">User Preferences</span>
                     </v-btn>
 
-                    <v-btn block class="menu-button" :class="{ 'disabled': !isLoggedIn }" variant="text" height="64"
-                        :disabled="!isLoggedIn">
-                        <v-icon v-if="!isLoggedIn" class="lock-icon" size="24">mdi-lock</v-icon>
+                    <v-btn block class="menu-button" :class="{ 'disabled': !userStore.isLoggedIn }" variant="text"
+                        height="64" :disabled="!userStore.isLoggedIn">
+                        <v-icon v-if="!userStore.isLoggedIn" class="lock-icon" size="24">mdi-lock</v-icon>
                         <span class="button-text">Friends</span>
                     </v-btn>
 
@@ -44,10 +44,10 @@
                 <!-- Authentication section -->
                 <div class="auth-section">
                     <v-btn class="sign-in-button" rounded @click="handleAuth">
-                        {{ isLoggedIn ? 'Log Out' : 'Sign In' }}
+                        {{ userStore.isLoggedIn ? 'Log Out' : 'Sign In' }}
                     </v-btn>
 
-                    <div class="signup-hint" v-if="!isLoggedIn">
+                    <div class="signup-hint" v-if="!userStore.isLoggedIn">
                         Don't have an account?
                         <router-link to="/signup" class="signup-link">Sign up</router-link>
                     </div>
@@ -59,19 +59,26 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useUserStore } from '@/stores/user'
+import { useModalStore } from '@/stores/modal'
 
 // State management
 const isMenuOpen = ref(false)
-const isLoggedIn = ref(false)  // log state variable for testing
+const userStore = useUserStore()
+const modalStore = useModalStore()
 
 // Methods
 const toggleMenu = () => {
     isMenuOpen.value = !isMenuOpen.value
 }
 
-const handleAuth = () => {
-    // change log state
-    isLoggedIn.value = !isLoggedIn.value
+const handleAuth = async () => {
+    if (userStore.isLoggedIn) {
+        await userStore.logout()
+    } else {
+        modalStore.openLogin()
+    }
+    isMenuOpen.value = false
 }
 </script>
 
