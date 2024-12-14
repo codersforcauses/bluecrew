@@ -130,5 +130,10 @@ class Friendship(models.Model):
         ).exists():
             raise ValidationError("A reverse friendship already exists.")
 
+            # Ensure requester and receiver are not the same
+        if self.requester == self.receiver:
+            raise ValidationError(
+                "Requester and receiver cannot be the same user.")
+
     def __str__(self):
         return f"Friend request from {self.requester} to {self.receiver} ({self.status.capitalize()})"

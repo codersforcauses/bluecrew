@@ -102,3 +102,9 @@ class FriendshipTest(TestCase):
         with self.assertRaises(ValidationError):
             Friendship.objects.create(
                 requester=self.user2, receiver=self.user1).full_clean()
+
+    def test_friends_with_self(self):
+        # Test that a user cannot have a friendship with themselves
+        with self.assertRaises(ValidationError):
+            Friendship.objects.create(
+                requester=self.user1, receiver=self.user1).full_clean()
