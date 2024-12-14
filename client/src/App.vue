@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import RegisterModal from './components/RegisterModal.vue'
+import BluecrewFooter from '@/components/BluecrewFooter.vue'
 </script>
 
 <template>
-  <div class="pa-4 text-center">
-    <RegisterModal />
-    <RouterView />
-  </div>
+  <RouterView />
+  <BluecrewFooter />
 </template>
 
 <style scoped></style>
