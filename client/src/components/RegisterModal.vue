@@ -32,18 +32,18 @@ const submitForm = () => {
 
 <template>
   <div>
-    <v-btn id="register-button" class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center" @click="openDialog" text="Registration"></v-btn>
-    
-    <v-dialog 
-      v-model="dialog" 
-      max-width="400px" 
-      scrollable 
-      persistent
-    >
+    <v-btn
+      id="register-button"
+      class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center"
+      @click="openDialog"
+      text="Registration"
+    ></v-btn>
+
+    <v-dialog v-model="dialog" max-width="400px" scrollable persistent>
       <v-card>
         <v-card-text style="height: auto; overflow-y: auto">
           <div class="header">
-            <button class="close-button" @click="closeDialog">X</button>
+            <button class="close-button" @click="closeDialog">x</button>
             <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
           </div>
           <strong class="text-primaryPink">Create an account</strong>
@@ -155,7 +155,11 @@ const submitForm = () => {
                 variant="outlined"
               ></v-text-field>
             </div>
-            <v-btn id="register-button" class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center">Sign Up</v-btn>
+            <v-btn
+              id="register-button"
+              class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center"
+              >Sign Up</v-btn
+            >
           </form>
 
           <footer class="text-primaryPink">
@@ -186,6 +190,7 @@ strong {
   display: flex;
   flex-direction: column;
   font-size: 20px;
+  font-family: poppins;
   margin-bottom: 10px;
   align-items: center;
   font-weight: bold;
@@ -201,15 +206,8 @@ img {
 
 label {
   font-weight: bold;
+  font-family: poppins;
   padding-bottom: 10px;
-}
-
-input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
 }
 
 button {
@@ -218,6 +216,7 @@ button {
   border: none;
   border-radius: 25px;
   cursor: pointer;
+  font-family: poppins;
   font-size: 16px;
   margin-top: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16);
@@ -246,12 +245,14 @@ button {
 }
 
 footer {
-  font-weight: bold;
   text-align: center;
+  font-family: poppins;
+  font-weight: bold;
 }
 
 a {
-  font-weight: bold;
   text-decoration: underline;
+  font-family: poppins;
+  font-weight: bold;
 }
 </style>
