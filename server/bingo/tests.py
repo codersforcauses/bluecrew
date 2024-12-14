@@ -1,6 +1,7 @@
 from django.test import TestCase
-from .models import Challenge
+from .models import Challenge, User
 from django.core.exceptions import ValidationError
+from datetime import date
 
 
 class ChallengeTest(TestCase):
@@ -39,3 +40,26 @@ class ChallengeTest(TestCase):
             points=15,
         )
         self.assertEqual(challenge.total_completions, 0)
+
+
+class UsersTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            username="Test",
+            password="A generic, valid password",
+            first_name="Jane",
+            last_name="Doe",
+            birthdate=date(1, 1, 1)
+        )
+
+    def creation(self):
+        try:
+            User.objects.get(username="Test")
+        except User.DoesNotExist:
+            self.fail("User was not properly created")
+
+    def random_queries_fail(self):
+        self.assertRaises(User.DoesNotExist, User.objects.get, username="Barry")
+
+    def base_users_not_staff(self):
+        self.assertFalse(self.user.is_staff)
