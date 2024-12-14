@@ -3,16 +3,16 @@ import { useDisplay } from 'vuetify';
 import NavBarMobile from '@/components/NavBarMobile.vue';
 import NavBarDesktop from '@/components/NavBarDesktop.vue';
 
-const { smAndDown } = useDisplay();
+const { smAndUp } = useDisplay();
 </script>
 
 <template>
   <div>
-    <div v-if="smAndDown">
-      <NavBarMobile />
+    <div v-if="smAndUp">
+      <NavBarDesktop />
     </div>
     <div v-else>
-      <NavBarDesktop />
+      <NavBarMobile />
     </div>
   </div>
 </template>
