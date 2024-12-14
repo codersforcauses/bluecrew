@@ -7,8 +7,8 @@ const formData = ref({
   firstName: '',
   lastName: '',
   dateOfBirth: '',
-  genderId: '',
-  indigenousTIS: '',
+  genderId: null,
+  indigenousTIS: null,
   password: '',
   confirmPassword: '',
 })
