@@ -81,9 +81,9 @@ class UsersTest(TestCase):
 
     def test_username_uniqueness(self):
         self.assertRaises(
-            IntegrityError, 
-            User.objects.create, 
-            username="Test", 
-            password="A different valid password", 
+            IntegrityError,
+            User.objects.create,
+            username="Test",
+            password="A different valid password",
             email="test@example.net"
         )
