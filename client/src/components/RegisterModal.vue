@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue'
+import { defineProps } from 'vue'
+import { useModalStore } from '@/stores/modal'
 import { useDisplay } from 'vuetify'
 
 const { xs } = useDisplay()
+const modalStore = useModalStore()
 
 const formData = ref({
   username: '',
@@ -16,16 +18,8 @@ const formData = ref({
   confirmPassword: '',
 })
 
-const dialog = ref(false)
-const emit = defineEmits(['close'])
-
-const openDialog = () => {
-  dialog.value = true
-}
-
 const closeDialog = () => {
-  dialog.value = false
-  emit('close')
+  modalStore.closeModal()
 }
 
 const submitForm = () => {
@@ -34,29 +28,21 @@ const submitForm = () => {
 </script>
 
 <template>
-  <div>
-    <v-btn
-      id="register-button"
-      class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center"
-      @click="openDialog"
-      text="Registration"
-    ></v-btn>
-
-    <v-dialog
-      v-model="dialog"
-      :max-width="xs ? '100%' : '400px'"
-      :fullscreen="xs"
-      scrollable
-      persistent
-    >
-      <v-card>
-        <v-card-text style="height: auto; overflow-y: auto">
-          <div class="header">
-            <button class="close-button" @click="closeDialog">x</button>
-            <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
-          </div>
-          <strong class="text-primaryPink">Create an account</strong>
-          <form class="register-form" @submit.prevent="submitForm">
+  <v-dialog
+    v-model="modalStore.isRegisterModalOpen"
+    :max-width="xs ? '100%' : '400px'"
+    :fullscreen="xs"
+    scrollable
+    persistent
+  >
+    <v-card>
+      <v-card-text style="height: auto; overflow-y: auto">
+        <div class="header">
+          <button class="close-button" @click="closeDialog">x</button>
+          <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
+        </div>
+        <strong class="text-primaryPink">Create an account</strong>
+        <form class="register-form" @submit.prevent="submitForm">
             <div class="form-group">
               <label for="username" class="text-primaryPink">Username</label>
               <v-text-field
