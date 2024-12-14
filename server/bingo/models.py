@@ -60,6 +60,18 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=0
     )
 
+    class Gender(models.IntegerChoices):
+        MALE = (0, "Male")
+        FEMALE = (1, "Female")
+        NB = (2, "Non-Binary")
+        OTHER = (3, "Other")
+        NA = (4, "Prefer not to say")
+    gender_identity = models.IntegerField(
+        choices=Gender,
+        blank=False,
+        default=4
+    )
+
     avatar = models.IntegerField(default=0, choices=map(
         lambda i: (i, f"Avatar {i}"), range(6)))
 
