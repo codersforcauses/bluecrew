@@ -15,7 +15,6 @@ const formData = ref({
 
 const dialog = ref(false)
 const emit = defineEmits(['close'])
-const datePickerDialog = ref(false)
 
 const openDialog = () => {
   dialog.value = true
@@ -24,22 +23,6 @@ const openDialog = () => {
 const closeDialog = () => {
   dialog.value = false
   emit('close')
-}
-
-const openDatePicker = () => {
-  datePickerDialog.value = true
-}
-
-const closeDatePicker = () => {
-  datePickerDialog.value = false
-}
-
-const selectDate = (value: string | null) => {
-  if (value) {
-    const date = new Date(value)
-    formData.value.dateOfBirth = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`
-    closeDatePicker()
-  }
 }
 
 const submitForm = () => {
@@ -112,45 +95,25 @@ const submitForm = () => {
             <div class="form-group">
               <label for="dateOfBirth" class="text-primaryPink">Date of Birth</label>
               <v-text-field
+                type="date"
                 hide-details="auto"
                 label="Select a date"
                 placeholder="dd-mm-yyyy"
                 v-model="formData.dateOfBirth"
                 class="bg-primaryBrown"
                 variant="outlined"
-                readonly
                 persistent-placeholder
-                @click="openDatePicker"
               ></v-text-field>
-              
-              <v-dialog
-                v-model="datePickerDialog"
-              >
-                <v-card>
-                  <v-row justify="space-around">
-                    <v-date-picker
-                      @update:model-value="selectDate"
-                      min-height="300px"
-                      min-width="50px"
-                      show-adjacent-months
-                    ></v-date-picker>
-                  </v-row>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center" @click="closeDatePicker">Cancel</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
             </div>
 
             <div class="form-group">
               <label for="genderId" class="text-primaryPink">Gender Identity</label>
               <v-select
+                hide-details="auto"
                 class="bg-primaryBrown"
                 label="Select gender identity"
                 :items="['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say']"
                 v-model="formData.genderId"
-                hide-details="auto"
                 variant="outlined"
               ></v-select>
             </div>
