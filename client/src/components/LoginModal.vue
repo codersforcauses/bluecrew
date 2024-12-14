@@ -1,3 +1,50 @@
+
+<script lang="ts">
+import { defineComponent, ref } from "vue"
+import { defineEmits } from "vue"
+
+export default defineComponent({
+    name: "LoginModal",
+    setup() {
+    
+    const dialog = ref(false)
+    const emit = defineEmits(['close'])
+
+    const openDialog = () => {
+      dialog.value = true
+    }
+
+    const closeDialog = () => {
+      dialog.value = false
+      emit('close')
+    }
+
+    const username = ref("");
+    const password = ref("");
+    const valid = ref(false);
+
+    const login = () => {
+        // Implement login logic here
+        console.log("Logging in with:", { username: username.value, password: password.value });
+    };
+
+    const forgotPassword = () => {
+        // Implement forgot password functionality
+        console.log("Forgot password clicked");
+    };
+
+    return {
+        dialog,
+        username,
+        password,
+        valid,
+        login,
+        forgotPassword,
+    };
+    },
+});
+</script>
+
 <template>
     <v-dialog v-model="dialog" max-width="400px">
       <template v-slot:activator="{props: activatorProps }">
@@ -10,7 +57,7 @@
         <v-container>
             <v-row> 
                 <v-spacer />
-                <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
+                <button class="close-button" @click='closeDialog'><v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon></button>
             </v-row>
         </v-container>
 
@@ -79,37 +126,6 @@
     </v-dialog>
   </template>
 
-  <script lang="ts">
-    import { defineComponent, ref } from "vue";
-    export default defineComponent({
-        name: "LoginModal",
-        setup() {
-        const dialog = ref(false);
-        const username = ref("");
-        const password = ref("");
-        const valid = ref(false);
-
-        const login = () => {
-            // Implement login logic here
-            console.log("Logging in with:", { username: username.value, password: password.value });
-        };
-
-        const forgotPassword = () => {
-            // Implement forgot password functionality
-            console.log("Forgot password clicked");
-        };
-
-        return {
-            dialog,
-            username,
-            password,
-            valid,
-            login,
-            forgotPassword,
-        };
-        },
-    });
-  </script>
 
   <style scoped>
   .subtitle {
