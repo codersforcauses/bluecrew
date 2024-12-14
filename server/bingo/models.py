@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin, AbstractBaseUser, BaseUserManager
 from datetime import date
+from django.db.models import Q
+from django.core.exceptions import ValidationError
 
 
 class UserManager(BaseUserManager):
@@ -114,7 +116,19 @@ class Friendship(models.Model):
     )
 
     class Meta:
-        unique_together = ('requester', 'receiver')
+        # Ensure the combination of requester and receiver is unique
+        constraints = [
+            models.UniqueConstraint(
+                fields=["requester", "receiver"], name="unique_friendship"
+            )
+        ]
+
+    def clean(self):
+        # Ensure no reverse friendships exist
+        if Friendship.objects.filter(
+            Q(requester=self.receiver, receiver=self.requester)
+        ).exists():
+            raise ValidationError("A reverse friendship already exists.")
 
     def __str__(self):
         return f"Friend request from {self.requester} to {self.receiver} ({self.status.capitalize()})"
