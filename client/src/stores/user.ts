@@ -10,6 +10,11 @@ export const useUserStore = defineStore('user', () => {
 
   const isLoggedIn = computed(() => userData.value !== null)
 
+  // Set Deafult userData to null
+  if (userData.value) {
+    userData.value = null
+  }
+
   //Logout Status
   const logout = () => {
     userData.value = null

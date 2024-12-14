@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import server from '@/utils/server'
 
-
 const isLoading = ref(false)
 const healthcheckMessage = ref('')
 

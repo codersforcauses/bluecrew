@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useDisplay } from 'vuetify';
-import NavBarMobile from '@/components/NavBarMobile.vue';
-import NavBarDesktop from '@/components/NavBarDesktop.vue';
+import { useDisplay } from 'vuetify'
+import NavBarMobile from '@/components/NavBarMobile.vue'
+import NavBarDesktop from '@/components/NavBarDesktop.vue'
 
-const { smAndUp } = useDisplay();
+const { smAndUp } = useDisplay()
 </script>
 
 <template>
