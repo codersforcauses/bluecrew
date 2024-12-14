@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin, AbstractBaseUser, BaseUserManager
 from datetime import date
+from django.db.models import Q
+from django.core.exceptions import ValidationError
 
 
 class UserManager(BaseUserManager):
@@ -92,3 +94,46 @@ class Challenge(models.Model):
     def __str__(self):
         # Format when printed: Challenge ID: Name (Challenge Type)
         return f"Challenge {self.id}: {self.name} ({self.challenge_type.capitalize()})"
+
+
+class Friendship(models.Model):
+    id = models.AutoField(primary_key=True)
+    requester = models.ForeignKey(
+        User, related_name="sent_requests", on_delete=models.CASCADE)
+    receiver = models.ForeignKey(
+        User, related_name="received_requests", on_delete=models.CASCADE)
+
+    PENDING = "pending"
+    ACCEPTED = "accepted"
+    STATUS = [
+        (PENDING, "Pending"),
+        (ACCEPTED, "Accepted")
+    ]
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS,
+        default=PENDING
+    )
+
+    class Meta:
+        # Ensure the combination of requester and receiver is unique
+        constraints = [
+            models.UniqueConstraint(
+                fields=["requester", "receiver"], name="unique_friendship"
+            )
+        ]
+
+    def clean(self):
+        # Ensure no reverse friendships exist
+        if Friendship.objects.filter(
+            Q(requester=self.receiver, receiver=self.requester)
+        ).exists():
+            raise ValidationError("A reverse friendship already exists.")
+
+            # Ensure requester and receiver are not the same
+        if self.requester == self.receiver:
+            raise ValidationError(
+                "Requester and receiver cannot be the same user.")
+
+    def __str__(self):
+        return f"Friend request from {self.requester} to {self.receiver} ({self.status.capitalize()})"
