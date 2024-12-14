@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useModalStore } from '@/stores/modal'
 import server from '@/utils/server'
+import RegisterModal from '@/components/RegisterModal.vue'
+
+const modalStore = useModalStore()
+
+function openRegisterButton() {
+  modalStore.openRegister()
+}
 
 const isLoading = ref(false)
 const healthcheckMessage = ref('')
@@ -21,6 +29,16 @@ const handlePing = async () => {
 </script>
 
 <template>
+  <v-btn
+    id="register-button"
+    class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center"
+    @click="openRegisterButton"
+  >
+    Registration
+  </v-btn>
+
+  <RegisterModal v-if="modalStore.currentModal === 'register'" @close="modalStore.closeModal" />
+
   <div id="healthcheck">
     <h1>Healthcheck <v-icon icon="mdi-heart-pulse" /></h1>
     <v-btn id="ping" @click="handlePing" :loading="isLoading">
