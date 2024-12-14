@@ -28,6 +28,15 @@ const closeDialog = () => {
 const submitForm = () => {
   closeDialog()
 }
+
+let screenWidthDesktop: boolean = true
+const screenWidth = screen.width
+
+if (screenWidth < 600) {
+  screenWidthDesktop = false
+} else {
+  screenWidthDesktop = true
+}
 </script>
 
 <template>
@@ -39,7 +48,13 @@ const submitForm = () => {
       text="Registration"
     ></v-btn>
 
-    <v-dialog v-model="dialog" max-width="400px" scrollable persistent>
+    <v-dialog
+      v-model="dialog"
+      :max-width="screenWidthDesktop ? '400px' : '100%'"
+      :fullscreen="!screenWidthDesktop"
+      scrollable
+      persistent
+    >
       <v-card>
         <v-card-text style="height: auto; overflow-y: auto">
           <div class="header">
@@ -124,7 +139,7 @@ const submitForm = () => {
               <v-select
                 hide-details="auto"
                 class="bg-primaryBrown"
-                placeholder="Select whether you identify as an Aboriginal or a Torres Strait Islander"
+                placeholder="Please select"
                 :items="['Yes', 'No', 'Prefer not to say']"
                 v-model="formData.indigenousTIS"
                 variant="outlined"
