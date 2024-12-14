@@ -63,3 +63,7 @@ class UsersTest(TestCase):
 
     def base_users_not_staff(self):
         self.assertFalse(self.user.is_staff)
+
+    def superusers_are_staff(self):
+        self.user.is_superuser = True
+        self.assertTrue(self.user.is_staff)
