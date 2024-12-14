@@ -72,6 +72,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=4
     )
 
+    indigenous_identity = models.BooleanField(default=False)
+
     avatar = models.IntegerField(default=0, choices=map(
         lambda i: (i, f"Avatar {i}"), range(6)))
 
