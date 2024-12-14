@@ -94,7 +94,7 @@ class Challenge(models.Model):
         return f"Challenge {self.id}: {self.name} ({self.challenge_type.capitalize()})"
 
 
-class FriendshipTable(models.Model):
+class Friendship(models.Model):
     id = models.AutoField(primary_key=True)
     requester = models.ForeignKey(
         User, related_name="sent_requests", on_delete=models.CASCADE)
@@ -112,6 +112,9 @@ class FriendshipTable(models.Model):
         choices=STATUS,
         default=PENDING
     )
+
+    class Meta:
+        unique_together = ('requester', 'receiver')
 
     def __str__(self):
         return f"Friend request from {self.requester} to {self.receiver} ({self.status.capitalize()})"
