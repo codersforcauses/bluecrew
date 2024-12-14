@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, defineEmits } from 'vue'
+import { useDisplay } from 'vuetify'
+
+const { xs } = useDisplay()
 
 const formData = ref({
   username: '',
@@ -28,15 +31,6 @@ const closeDialog = () => {
 const submitForm = () => {
   closeDialog()
 }
-
-let screenWidthDesktop: boolean = true
-const screenWidth = screen.width
-
-if (screenWidth < 600) {
-  screenWidthDesktop = false
-} else {
-  screenWidthDesktop = true
-}
 </script>
 
 <template>
@@ -50,8 +44,8 @@ if (screenWidth < 600) {
 
     <v-dialog
       v-model="dialog"
-      :max-width="screenWidthDesktop ? '400px' : '100%'"
-      :fullscreen="!screenWidthDesktop"
+      :max-width="xs ? '100%' : '400px'"
+      :fullscreen="xs"
       scrollable
       persistent
     >
