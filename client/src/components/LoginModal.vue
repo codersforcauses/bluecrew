@@ -20,10 +20,10 @@
 
         
         <v-card-subtitle class="text-center subtitle mt-2 text-primaryPink">
-          Welcome Back
+          <h3><b>Welcome Back</b></h3>
         </v-card-subtitle>
         <v-card-text>
-          <p class="text-center mb-4 text-primaryPink">Login to your existing account</p>
+          <p class="text-center subtitle mb-4 text-primaryPink"><b>Login to your existing account</b></p>
 
           <v-form v-model="valid" lazy-validation>
             <v-card-subtitle class="text-left subtitle mb-3 pa-0 text-primaryPink">
@@ -31,7 +31,7 @@
             </v-card-subtitle>
             <v-text-field
               v-model="username"
-              label="Enter your username"
+              placeholder="Enter your username"
               hide-details="auto"
               required
               outlined
@@ -44,7 +44,7 @@
             </v-card-subtitle>
             <v-text-field
               v-model="password"
-              label="Enter your password"
+              placeholder="Enter your password"
               hide-details="auto"
               type="password"
               required
@@ -55,7 +55,7 @@
             ></v-text-field>
 
             <a href="/forgot-password" class="text-lightBlue">
-              Forgot Password?
+            <b>Forgot Password?</b>
             </a>
 
             <v-btn
@@ -65,6 +65,7 @@
               :disabled="!valid"
               @click="login"
               rounded
+              elevation="12"
               >
               Sign In
             </v-btn>
@@ -72,7 +73,7 @@
         </v-card-text>
 
         <v-card-actions class="d-flex justify-center text-primaryPink">
-          <p>Don't have an account? <a href="/signup" class="text-primaryPink">Sign up</a></p>
+          <p><b>Don't have an account?</b> <a href="/signup" class="text-primaryPink">Sign up</a></p>
         </v-card-actions>
       </v-card>
     </v-dialog>
