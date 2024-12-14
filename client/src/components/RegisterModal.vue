@@ -52,7 +52,7 @@ const submitForm = () => {
               <label for="username" class="text-primaryPink">Username</label>
               <v-text-field
                 hide-details="auto"
-                label="Enter your username"
+                placeholder="Enter your username"
                 v-model="formData.username"
                 class="bg-primaryBrown"
                 variant="outlined"
@@ -63,7 +63,7 @@ const submitForm = () => {
               <label for="email" class="text-primaryPink">Email</label>
               <v-text-field
                 hide-details="auto"
-                label="Enter your email"
+                placeholder="Enter your email"
                 v-model="formData.email"
                 class="bg-primaryBrown"
                 variant="outlined"
@@ -74,7 +74,7 @@ const submitForm = () => {
               <label for="firstName" class="text-primaryPink">First Name</label>
               <v-text-field
                 hide-details="auto"
-                label="Enter your first name"
+                placeholder="Enter your first name"
                 v-model="formData.firstName"
                 class="bg-primaryBrown"
                 variant="outlined"
@@ -85,7 +85,7 @@ const submitForm = () => {
               <label for="lastName" class="text-primaryPink">Last Name</label>
               <v-text-field
                 hide-details="auto"
-                label="Enter your last name"
+                placeholder="Enter your last name"
                 v-model="formData.lastName"
                 class="bg-primaryBrown"
                 variant="outlined"
@@ -97,7 +97,6 @@ const submitForm = () => {
               <v-text-field
                 type="date"
                 hide-details="auto"
-                label="Select a date"
                 placeholder="dd-mm-yyyy"
                 v-model="formData.dateOfBirth"
                 class="bg-primaryBrown"
@@ -111,7 +110,7 @@ const submitForm = () => {
               <v-select
                 hide-details="auto"
                 class="bg-primaryBrown"
-                label="Select gender identity"
+                placeholder="Select your gender identity"
                 :items="['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say']"
                 v-model="formData.genderId"
                 variant="outlined"
@@ -123,12 +122,12 @@ const submitForm = () => {
                 Indigenous or Torres Strait Islander
               </label>
               <v-select
+                hide-details="auto"
                 class="bg-primaryBrown"
-                label="Please select"
+                placeholder="Select whether you identify as an Aboriginal or a Torres Strait Islander"
                 :items="['Yes', 'No', 'Prefer not to say']"
                 v-model="formData.indigenousTIS"
                 variant="outlined"
-                hide-details
               ></v-select>
             </div>
 
@@ -136,7 +135,7 @@ const submitForm = () => {
               <label for="password" class="text-primaryPink">Password</label>
               <v-text-field
                 hide-details="auto"
-                label="Enter your password"
+                placeholder="Enter your password"
                 v-model="formData.password"
                 type="password"
                 class="bg-primaryBrown"
@@ -148,7 +147,7 @@ const submitForm = () => {
               <label for="confirmPassword" class="text-primaryPink">Confirm Password</label>
               <v-text-field
                 hide-details="auto"
-                label="Confirm your password"
+                placeholder="Confirm your password"
                 v-model="formData.confirmPassword"
                 type="password"
                 class="bg-primaryBrown"
