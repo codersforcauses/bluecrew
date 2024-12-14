@@ -92,3 +92,24 @@ class Challenge(models.Model):
     def __str__(self):
         # Format when printed: Challenge ID: Name (Challenge Type)
         return f"Challenge {self.id}: {self.name} ({self.challenge_type.capitalize()})"
+
+
+class FriendshipTable(models.Model):
+    id = models.AutoField(primary_key=True)
+    requester = models.ForeignKey(User, on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    PENDING = "pending"
+    ACCEPTED = "accepted"
+    STATUS = [
+        (PENDING, "Pending"),
+        (ACCEPTED, "Accepted")
+    ]
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS,
+        default=PENDING
+    )
+
+    def __str__(self):
+        return f"Friend request from {self.requester} to {self.receiver} ({self.status.capitalize()})"
