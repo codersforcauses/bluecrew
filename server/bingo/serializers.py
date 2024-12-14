@@ -28,7 +28,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     def validate_password(self, value):
         validate_password(value)
         return value
-    
+
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
