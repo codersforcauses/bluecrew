@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from .models import Challenge
 from django.core.exceptions import ValidationError
 
@@ -39,3 +39,24 @@ class ChallengeTest(TestCase):
             points=15,
         )
         self.assertEqual(challenge.total_completions, 0)
+
+
+class RegisterUserTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_register_user(self):
+        response = self.client.post(
+            '/register/', {'username': 'test_user', 'email': 'test@gmail.com',
+                           'first_name': 'larry', 'last_name': 'bird', 'password': 'SuperSecure123'}
+        )
+
+        self.assertEqual(response.status_code, 201)
+
+    def test_register_user_error(self):
+        response = self.client.post(
+            '/register/', {'username': 'forgotten_fields', 'email': 'test@gmail.com',
+                           'password': 'SuperSecure123'}
+        )
+
+        self.assertEqual(response.status_code, 400)
