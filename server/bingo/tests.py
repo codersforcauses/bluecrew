@@ -70,8 +70,12 @@ class UsersTest(TestCase):
         self.user.is_superuser = True
         self.assertTrue(self.user.is_staff)
 
-    def test_enums_within_bounds(self):
+    def test_gender_bounds(self):
         self.user.gender_identity = 7
+        self.assertRaises(ValidationError, self.user.full_clean)
+
+    def test_visibility_bounds(self):
+        self.user.visibility = -1
         self.assertRaises(ValidationError, self.user.full_clean)
 
     def test_change_gender_identity(self):
@@ -86,4 +90,13 @@ class UsersTest(TestCase):
             username="Test",
             password="A different valid password",
             email="test@example.net"
+        )
+
+    def test_email_uniqueness(self):
+        self.assertRaises(
+            IntegrityError,
+            User.objects.create,
+            username="Assess",
+            password="A string of random characters",
+            email="test@example.com"
         )
