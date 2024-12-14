@@ -80,6 +80,7 @@ class RegisterUserTest(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
+
 class FriendshipTest(TestCase):
     def setUp(self):
         # Create test users
@@ -146,4 +147,3 @@ class FriendshipTest(TestCase):
         with self.assertRaises(ValidationError):
             Friendship.objects.create(
                 requester=self.user1, receiver=self.user1).full_clean()
-
