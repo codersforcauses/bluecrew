@@ -182,14 +182,14 @@ class CurrentUserViewTest(TestCase):
 
         # Check response data matches expected TypeScript interface
         self.assertEqual(response.data["userId"], self.user.user_id)
-        self.assertEqual(response.data["userName"], "testuser")
-        self.assertEqual(response.data["firstName"], "Test")
-        self.assertEqual(response.data["lastName"], "User")
-        self.assertEqual(response.data["bio"], "Test bio")
-        self.assertEqual(response.data["totalPoints"], 100)
-        self.assertEqual(response.data["email"], "test@example.com")
-        self.assertEqual(response.data["visibility"], 2)  # Using PUBLIC (2)
-        self.assertEqual(response.data["avatar"], 1)
+        self.assertEqual(response.data["userName"], self.user.username)
+        self.assertEqual(response.data["firstName"], self.user.first_name)
+        self.assertEqual(response.data["lastName"], self.user.last_name)
+        self.assertEqual(response.data["bio"], self.user.bio)
+        self.assertEqual(response.data["totalPoints"], self.user.total_points)
+        self.assertEqual(response.data["email"], self.user.email)
+        self.assertEqual(response.data["visibility"], self.user.visibility)  # Using PUBLIC (2)
+        self.assertEqual(response.data["avatar"], self.user.avatar)
 
     def test_get_current_user_unauthenticated(self):
         """Test getting current user details when not authenticated"""
