@@ -19,13 +19,13 @@ defineProps<{
             cover
             src="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
         ></v-img>
-        <v-text class="me-auto font-weight-bold truncate-single-line">{{ name }}</v-text>
+        <v-text class="me-auto font-weight-bold truncate-name">{{ name }}</v-text>
         <v-text :class="[isHighlighted ? 'font-weight-bold' : '' ]" class="text-right points">{{ points }} pts</v-text>
     </v-col>
 </template>
 
 <style scoped>
-.truncate-single-line {
+.truncate-name {
     white-space: nowrap;        
     overflow: hidden;          
     text-overflow: ellipsis;     
