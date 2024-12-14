@@ -100,6 +100,8 @@ class UsersTest(TestCase):
             password="A string of random characters",
             email="test@example.com"
         )
+
+
 class RegisterUserTest(TestCase):
     def setUp(self):
         self.client = Client()
