@@ -20,7 +20,6 @@ from django.urls import path, include
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    # Moved authentication/bingo related urls to bingo/.
-    path('api/', include('bingo.urls')),
+    path("admin/", admin.site.urls),
+    path("api/", include("bingo.urls")),
 ]
