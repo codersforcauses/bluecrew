@@ -42,6 +42,11 @@
     background: url('/beach-header.jpg') no-repeat center center;
     background-size: cover;
   }
+
+  .image-section img{
+    width: 100%;
+    height: 20%;
+  }
   
   /* Content Section */
   .content-section {
