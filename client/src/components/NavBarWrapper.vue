@@ -54,6 +54,14 @@ const handleNavigation = (page: string) => {
   router.push({ name: page });
 };
 
+const handleSignInClick = (action: 'login' | 'register') => {
+  if (action === 'login') {
+    modalStore.openLogin();
+  } else if (action === 'register') {
+    modalStore.openRegister();
+  }
+};
+
 defineExpose({
   navBarHeight,
 });
@@ -72,6 +80,7 @@ export type NavBarWrapperExpose = {
         :user-name="truncatedUserName"
         @navigate="handleNavigation"
         @auth="handleAuth"
+        @sign-in-click="handleSignInClick"
       />
     </div>
 
@@ -82,6 +91,7 @@ export type NavBarWrapperExpose = {
         :user-name="truncatedUserName"
         @navigate="handleNavigation"
         @auth="handleAuth"
+        @sign-in-click="handleSignInClick"
       />
     </div>
   </div>

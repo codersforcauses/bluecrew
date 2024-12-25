@@ -2,21 +2,34 @@
   <v-toolbar class="nav-bar" density="comfortable">
     <v-spacer></v-spacer>
     <v-toolbar-items class="nav-bar-items">
-      <v-btn @click="emit('navigate', 'home')">Home</v-btn>
-      <v-btn @click="emit('navigate', 'leaderboard')">Leaderboard</v-btn>
+      <v-btn @click="$emit('navigate', 'home')">Home</v-btn>
+      <v-btn @click="$emit('navigate', 'leaderboard')">Leaderboard</v-btn>
       <v-btn
         :style="{ opacity: isLoggedIn ? 1 : 0.5 }"
-        @click="emit('navigate', 'friends')"
+        @click="$emit('navigate', 'friends')"
       >
         Friends
       </v-btn>
       <v-btn
         :style="{ opacity: isLoggedIn ? 1 : 0.5 }"
-        @click="emit('navigate', 'preferences')"
+        @click="$emit('navigate', 'preferences')"
       >
         Preferences
       </v-btn>
-      <v-btn @click="emit('auth')">{{ isLoggedIn ? 'Log Out' : 'Sign In' }}</v-btn>
+      <v-menu open-on-hover>
+        <template #activator="{ props }">
+          <v-btn v-bind="props">
+            {{ isLoggedIn ? 'Log Out' : 'Sign In' }}
+          </v-btn>
+        </template>
+        <v-list v-if="!isLoggedIn">
+          <v-list-item @click="$emit('sign-in-click', 'login')">Log In</v-list-item>
+          <v-list-item @click="$emit('sign-in-click', 'register')">Register</v-list-item>
+        </v-list>
+        <v-list v-else>
+          <v-list-item @click="$emit('auth')">Log Out</v-list-item>
+        </v-list>
+      </v-menu>
     </v-toolbar-items>
   </v-toolbar>
 </template>
@@ -29,9 +42,8 @@ defineProps({
   userName: String,
 });
 
-const emit = defineEmits(['navigate', 'auth']);
+defineEmits(['navigate', 'auth', 'sign-in-click']);
 </script>
-
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
@@ -62,7 +74,7 @@ const emit = defineEmits(['navigate', 'auth']);
 }
 
 .nav-bar-items .v-btn {
-  text-transform: none !important;
+  text-transform: none;
   font-size: 20px;
   letter-spacing: -0.1px;
   font-weight: 500;

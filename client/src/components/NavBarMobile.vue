@@ -106,21 +106,21 @@ const auth = () => {
 }
 
 .menu-icon {
-  background-color: white !important;
-  border-radius: 8px !important;
+  background-color: white;
+  border-radius: 8px;
 }
 
 .fixed-position {
-  position: fixed !important;
-  top: 16px !important;
-  right: 16px !important;
+  position: fixed;
+  top: 16px;
+  right: 16px;
   z-index: 1000;
 }
 
 .menu-drawer {
-  background-color: #193855 !important;
-  padding-top: 16px !important;
-  min-height: 490px !important;
+  background-color: #193855;
+  padding-top: 16px;
+  min-height: 490px;
 }
 
 .menu-header {
@@ -154,21 +154,21 @@ const auth = () => {
 }
 
 .menu-button {
-  background-color: #e9dac4 !important;
-  border-radius: 16px !important;
-  font-family: 'Poppins', Arial, sans-serif !important;
-  font-size: 20px !important;
-  font-weight: 900 !important;
-  text-transform: none !important;
+  background-color: #e9dac4;
+  border-radius: 16px;
+  font-family: 'Poppins', Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  text-transform: none;
   position: relative;
-  letter-spacing: 0 !important;
+  letter-spacing: 0;
   opacity: 0.8;
-  height: 56px !important;
+  height: 56px;
 }
 
 .menu-button.disabled {
-  background-color: #a9a9a9 !important;
-  opacity: 0.8 !important;
+  background-color: #a9a9a9;
+  opacity: 0.8;
 }
 
 .button-text {
@@ -194,17 +194,17 @@ const auth = () => {
 }
 
 .sign-in-button {
-  width: 160px !important;
-  background-color: transparent !important;
-  color: white !important;
-  border: 2px solid white !important;
-  border-radius: 30px !important;
-  height: 48px !important;
-  font-family: 'Lilita One', Arial, sans-serif !important;
-  font-size: 24px !important;
-  font-weight: 400 !important;
-  text-transform: none !important;
-  letter-spacing: 0 !important;
+  width: 160px;
+  background-color: transparent;
+  color: white;
+  border: 2px solid white;
+  border-radius: 30px;
+  height: 48px;
+  font-family: 'Lilita One', Arial, sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .signup-hint {
