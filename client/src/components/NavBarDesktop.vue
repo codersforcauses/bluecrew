@@ -18,13 +18,13 @@
       </v-btn>
       <v-menu open-on-hover>
         <template #activator="{ props }">
-          <v-btn v-bind="props">
+          <v-btn v-bind="props" class="menu-list">
             {{ isLoggedIn ? 'Log Out' : 'Sign In' }}
           </v-btn>
         </template>
-        <v-list v-if="!isLoggedIn">
-          <v-list-item @click="$emit('sign-in-click', 'login')">Log In</v-list-item>
-          <v-list-item @click="$emit('sign-in-click', 'register')">Register</v-list-item>
+        <v-list v-if="!isLoggedIn" class="menu-item">
+          <v-list-item class="menu-button" @click="$emit('sign-in-click', 'login')">Log In</v-list-item>
+          <v-list-item class="menu-button" @click="$emit('sign-in-click', 'register')">Register</v-list-item>
         </v-list>
         <v-list v-else>
           <v-list-item @click="$emit('auth')">Log Out</v-list-item>
@@ -46,22 +46,12 @@ defineEmits(['navigate', 'auth', 'sign-in-click']);
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
 
 .nav-bar {
   display: flex;
   background-color: white;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  width: auto;
-  height: 48px;
-  top: 52px;
-  right: 55px;
-  max-width: 100%;
-  margin: 0 auto;
-  z-index: 1000;
-}
+} 
+
 
 .nav-bar-items {
   display: flex;
@@ -86,19 +76,24 @@ defineEmits(['navigate', 'auth', 'sign-in-click']);
   color: #193855;
 }
 
-.menu-list .menu-item {
+.menu-item {
   display: flex;
   align-items: center;
+  flex-direction: column;
   justify-content: center;
   height: 48px;
   font-family: 'Lilita One', cursive;
-  font-size: 24px !important;
-  font-weight: 600 !important;
+  font-size: 20px !important;
+  font-weight: 500 !important;
   color: #d12974 !important;
   background-color: transparent !important;
   border-radius: 12px;
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
+}
+
+.menu-list .menu-item {
+  width: 100%; 
 }
 </style>

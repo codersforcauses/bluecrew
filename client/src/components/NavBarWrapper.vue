@@ -47,10 +47,6 @@ const handleAuth = async () => {
 };
 
 const handleNavigation = (page: string) => {
-  if (!isLoggedIn.value && ['friends', 'preferences'].includes(page)) {
-    alert('You must be logged in to access this page.');
-    return;
-  }
   router.push({ name: page });
 };
 
@@ -72,7 +68,7 @@ export type NavBarWrapperExpose = {
 </script>
 
 <template>
-  <div>
+  <div class = "sticky-nav">
     <!-- Desktop Version -->
     <div v-if="smAndUp" class="nav-bar-desktop">
       <NavBarDesktop
@@ -97,12 +93,16 @@ export type NavBarWrapperExpose = {
   </div>
 </template>
 
-<style scoped>
-.nav-bar-desktop {
-  height: 48px;
+<style>
+.sticky-nav {
+  position: fixed; 
+  top: 0; 
+  left: 0;
+  width: 100%; 
+  z-index: 999; 
+  box-shadow: none !important;
+  background-color: white !important;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.nav-bar-mobile {
-  height: 16px;
-}
 </style>

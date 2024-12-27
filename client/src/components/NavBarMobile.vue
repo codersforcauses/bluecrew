@@ -29,26 +29,20 @@
           <v-btn
             block
             class="menu-button"
-            :class="{ disabled: !isLoggedIn }"
             variant="text"
             height="64"
-            :disabled="!isLoggedIn"
-            @click="navigate('user-preferences')"
+            @click="navigate('preferences')"
           >
-            <v-icon v-if="!isLoggedIn" class="lock-icon" size="24">mdi-lock</v-icon>
             <span class="button-text">User Preferences</span>
           </v-btn>
 
           <v-btn
             block
             class="menu-button"
-            :class="{ disabled: !isLoggedIn }"
             variant="text"
             height="64"
-            :disabled="!isLoggedIn"
             @click="navigate('friends')"
           >
-            <v-icon v-if="!isLoggedIn" class="lock-icon" size="24">mdi-lock</v-icon>
             <span class="button-text">Friends</span>
           </v-btn>
 
@@ -100,9 +94,9 @@ const auth = () => {
 
 .menu-trigger {
   position: fixed;
-  top: 16px;
-  right: 16px;
-  z-index: 1000;
+  top: 0;
+  right: 0;
+  z-index: 999;
 }
 
 .menu-icon {
@@ -112,9 +106,9 @@ const auth = () => {
 
 .fixed-position {
   position: fixed;
-  top: 16px;
-  right: 16px;
-  z-index: 1000;
+  top: 0;
+  right: 0px;
+  z-index: 999;
 }
 
 .menu-drawer {
