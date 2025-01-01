@@ -4,18 +4,17 @@ import RegisterModal from '@/components/RegisterModal.vue'
 import { useDisplay } from 'vuetify'
 
 const modalStore = useModalStore()
-const { mobile } = useDisplay()
+const { xs } = useDisplay()
 
 function openRegisterButton() {
   modalStore.openRegister()
 }
-//import { useDisplay } from 'vuetify' // Used to figure out if page is landscape/portrait
 </script>
 
 <template>
   <div class="landing-page">
     <!-- Desktop Version -->
-    <template v-if="!mobile">
+    <template v-if="!xs">
       <div class="header">
         <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image"/>
       </div>
