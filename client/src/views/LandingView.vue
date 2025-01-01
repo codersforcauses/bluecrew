@@ -105,7 +105,7 @@ function openRegisterButton() {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
+  display: boxed;
 }
 
 .content-section {
@@ -117,8 +117,9 @@ function openRegisterButton() {
 .buttons {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 1rem;
+  gap: 20px;
+  max-width: 400px;
+  margin: 20px auto;
 }
 
 /* Mobile Styles */
