@@ -16,7 +16,7 @@ function openRegisterButton() {
     <!-- Desktop Version -->
     <template v-if="!xs">
       <div class="header">
-        <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image"/>
+        <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
       </div>
       <div class="content-section">
         <div class="logo">
@@ -90,7 +90,6 @@ function openRegisterButton() {
     <RegisterModal v-if="modalStore.currentModal === 'register'" @close="modalStore.closeModal" />
   </div>
 </template>
-  
 
 <style scoped>
 .header {
@@ -170,4 +169,3 @@ function openRegisterButton() {
   margin-top: 2rem;
 }
 </style>
-  
