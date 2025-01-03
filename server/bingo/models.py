@@ -137,7 +137,7 @@ class Friendship(models.Model):
 
     def __str__(self):
         return f"Friend request from {self.requester} to {self.receiver} ({self.status.capitalize()})"
-    
+
 
 class ChallengeInteraction(models.Model):
     # Model to track an interaction between a user and a challenge.
