@@ -175,7 +175,8 @@ class ChallengeInteractionTest(TestCase):
         self.assertFalse(interaction.consent)
         self.assertIsNotNone(interaction.date_started)
         self.assertIsNone(interaction.date_completed)
-        self.assertIsNone(interaction.image)
+        # For now test that image is "empty"
+        self.assertEqual(interaction.image.name, "")
 
     def test_complete_challenge(self):
         # Test updating the 'completed' status and setting 'date_completed'.
