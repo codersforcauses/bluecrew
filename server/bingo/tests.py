@@ -22,7 +22,9 @@ class ChallengeTest(TestCase):
         self.assertEqual(challenge.challenge_type, "act")
         self.assertEqual(challenge.points, 5)
         self.assertEqual(challenge.total_completions, 10)
-        self.assertEqual(str(challenge), "Challenge 1: Test (Act)")
+        # Build expected string around challenge rather than hard coded id
+        expected_str = f"Challenge {challenge.id}: {challenge.name} ({challenge.challenge_type.capitalize()})"
+        self.assertEqual(str(challenge), expected_str)
 
     def test_invalid_challenge_type(self):
         challenge = Challenge(
@@ -176,7 +178,7 @@ class ChallengeInteractionTest(TestCase):
         self.assertIsNotNone(interaction.date_started)
         self.assertIsNone(interaction.date_completed)
         # For now test that image is "empty"
-        self.assertEqual(interaction.image.name, "")
+        self.assertIsNone(interaction.image)
 
     def test_complete_challenge(self):
         # Test updating the 'completed' status and setting 'date_completed'.
