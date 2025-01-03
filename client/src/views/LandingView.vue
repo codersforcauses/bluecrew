@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useModalStore } from '@/stores/modal'
-import RegisterModal from '@/components/RegisterModal.vue'
 import { useDisplay } from 'vuetify'
 
 const modalStore = useModalStore()
