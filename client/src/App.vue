@@ -20,7 +20,7 @@ onMounted(() => {
     <!-- Navigation Bar -->
     <NavBarWrapper ref="navBarWrapperInstance" />
 
-    <v-main :style="{ paddingTop: navBarHeight + 'px' }">
+    <v-main class="main-content">
       <RouterView />
     </v-main>
 
@@ -29,4 +29,8 @@ onMounted(() => {
   </v-app>
 </template>
 
-<style scoped></style>
+<style scoped>
+.main-content{
+  margin-top: 56px;
+}
+</style>
