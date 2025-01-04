@@ -154,6 +154,7 @@ class FriendshipTest(TestCase):
             Friendship.objects.create(
                 requester=self.user1, receiver=self.user1).full_clean()
 
+
 class CurrentUserViewTest(TestCase):
     def setUp(self):
         # Create a test user
@@ -213,6 +214,7 @@ class CurrentUserViewTest(TestCase):
         # Test DELETE request
         response = self.client.delete(reverse("current-user"))
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
 
 class ChallengeInteractionTest(TestCase):
     def setUp(self):
