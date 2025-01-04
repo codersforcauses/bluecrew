@@ -18,13 +18,26 @@ function openRegisterButton() {
     <v-row
     height="100%">
       <v-col 
-      :cols="xs ? 12 : 4" 
+      :cols="xs ? 12 : 6" 
       class="d-flex justify-center align-center">
-        <img src="/bc-logo.png" alt="Blue Crew Logo" />
+        <img 
+        src="/bc-logo.png" 
+        alt="Blue Crew Logo" 
+        :class="{
+        'logo-mobile': xs,
+        'logo-desktop': !xs
+        }"/>
+        <img 
+        src="/oy-logo.png" 
+        alt="Ocean Youth Logo" 
+        :class="{
+        'logo-mobile': xs,
+        'logo-desktop': !xs
+        }"/>
       </v-col>
 
       <v-col 
-      :cols="xs ? 12 : 8" 
+      :cols="xs ? 12 : 6" 
       class="d-flex flex-column justify-center align-center">
         <div class="text-center">
           <h2 class="tagline">
@@ -72,6 +85,16 @@ function openRegisterButton() {
   height: 100%;
   object-fit: cover;
   display: boxed;
+}
+
+.logo-mobile {
+  width: 150px;
+  margin: 40px 20px;
+}
+
+.logo-desktop {
+  width: 250px;
+  margin: 0 20px;
 }
 
 .buttons {
