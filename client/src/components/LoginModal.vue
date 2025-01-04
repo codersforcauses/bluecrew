@@ -1,10 +1,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue"
-//import { defineEmits } from "vue"
-import { useDisplay } from 'vuetify'
-
-const  { xs } = useDisplay()
+import { defineEmits } from "vue"
 
 export default defineComponent({
     name: "LoginModal",
@@ -49,13 +46,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <v-dialog
-      v-model="dialog"
-      :max-width="xs ? '100%' : '400px'"
-      :fullscreen="xs"
-      scrollable
-      persistent
-      >
+    <v-dialog v-model="dialog" max-width="400px">
       <template v-slot:activator="{props: activatorProps }">
         <v-btn
             v-bind="activatorProps"
