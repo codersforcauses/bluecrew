@@ -9,6 +9,21 @@ from .models import Friendship
 from django.db.models import Q  
 
 
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_friendship(request, friendship_id):
+    friendship = get_object_or_404(Friendship, id=friendship_id)
+
+    # Check if the requesting user is either the requester or receiver of the friendship
+    if request.user not in {friendship.requester, friendship.receiver}:
+        return Response(
+            {"error": "You do not have permission to delete this friendship."},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    friendship.delete()
+    return Response({"message": "Friendship deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['POST'])
 def register_user(request):
