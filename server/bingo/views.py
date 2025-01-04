@@ -1,10 +1,13 @@
-from rest_framework import status
-from rest_framework.response import Response
 from .serializers import UserRegisterSerializer, UserProfileSerializer
+from django.shortcuts import render  # noqa
+from django.shortcuts import get_object_or_404
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from .models import Friendship  
+from rest_framework.response import Response
+from .models import Friendship
 from django.db.models import Q  
+
 
 
 @api_view(['POST'])

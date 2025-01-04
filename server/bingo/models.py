@@ -62,6 +62,27 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=0
     )
 
+    class Gender(models.IntegerChoices):
+        MALE = (0, "Male")
+        FEMALE = (1, "Female")
+        NB = (2, "Non-Binary")
+        OTHER = (3, "Other")
+        NA = (4, "Prefer not to say")
+    gender_identity = models.IntegerField(
+        choices=Gender,
+        blank=False,
+        default=Gender.NA
+    )
+
+    class IndigenousIdentity(models.IntegerChoices):
+        NA = (0, "Prefer not to say")
+        Y = (1, "Yes")
+        N = (2, "No")
+    indigenous_identity = models.BooleanField(
+        choices=IndigenousIdentity,
+        default=IndigenousIdentity.NA
+    )
+
     avatar = models.IntegerField(default=0, choices=map(
         lambda i: (i, f"Avatar {i}"), range(6)))
 
