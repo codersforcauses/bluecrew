@@ -5,4 +5,4 @@ from .models import User, Challenge, Friendship, ChallengeInteraction
 admin.site.register(User)
 admin.site.register(Challenge)
 admin.site.register(Friendship)
-admin.set.register(ChallengeInteraction)
+admin.site.register(ChallengeInteraction)
