@@ -41,9 +41,16 @@ function openRegisterButton() {
       class="d-flex flex-column justify-center align-center">
         <div class="text-center">
           <h2 class="tagline">
-            The inspiring way 
-            <br>to become an ocean champion and 
-            <br>protect our blue planet
+            The inspiring way
+            <template v-if="!xs">
+              <br>to become an ocean champion and
+              <br>protect our blue planet
+            </template>
+            <template v-else>
+              <br>to become an ocean
+              <br>champion and protect our
+              <br>blue planet
+            </template>
           </h2>
           <div class="buttons">
             <v-btn
