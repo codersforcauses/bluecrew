@@ -28,6 +28,6 @@ urlpatterns = [
     path("api/healthcheck/", include(("api.healthcheck.urls"))),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('delete-friendship/<int:friendship_id>/',
+    path('api/delete-friendship/<int:friendship_id>/',
          delete_friendship, name='delete_friendship'),
 ]
