@@ -2,8 +2,8 @@
 import { useModalStore } from '@/stores/modal'
 import { useDisplay } from 'vuetify'
 
-const modalStore = useModalStore()
 const { xs } = useDisplay()
+const modalStore = useModalStore()
 
 function openRegisterButton() {
   modalStore.openRegister()
@@ -51,42 +51,35 @@ function openRegisterButton() {
 
     <!-- Mobile Version -->
     <template v-else>
-      <div class="mobile-overlay">
-        <div class="mobile-content">
-          <div class="mobile-close">
-            <v-icon>mdi-close</v-icon>
-          </div>
-          <div class="mobile-logo">
-            <img src="/bc-logo.png" alt="Blue Crew Logo" />
-          </div>
-          <h2 class="mobile-tagline text-center">
-            The inspiring way to become an ocean champion and protect our blue planet
-          </h2>
-          <div class="mobile-buttons">
-            <v-btn
-              block
-              class="bg-primaryPink text-creamyWhite mb-4"
-              rounded="xl"
-              size="x-large"
-              @click="openRegisterButton"
-            >
-              Get Started
-            </v-btn>
-            <v-btn
-              block
-              class="bg-primaryBlue text-creamyWhite"
-              rounded="xl"
-              size="x-large"
-              @click="openRegisterButton"
-            >
-              I already have an account
-            </v-btn>
-          </div>
+      <div class="mobile-content">
+        <div class="mobile-logo">
+          <img src="/bc-logo.png" alt="Blue Crew Logo" />
+        </div>
+        <h2 class="mobile-tagline text-center">
+          The inspiring way to become an ocean champion and protect our blue planet
+        </h2>
+        <div class="mobile-buttons">
+          <v-btn
+            block
+            class="bg-primaryPink text-creamyWhite mb-4"
+            rounded="xl"
+            size="x-large"
+            @click="openRegisterButton"
+          >
+            Get Started
+          </v-btn>
+          <v-btn
+            block
+            class="bg-primaryBlue text-creamyWhite"
+            rounded="xl"
+            size="x-large"
+            @click="openRegisterButton"
+          >
+            I already have an account
+          </v-btn>
         </div>
       </div>
     </template>
-
-    <RegisterModal v-if="modalStore.currentModal === 'register'" @close="modalStore.closeModal" />
   </div>
 </template>
 
