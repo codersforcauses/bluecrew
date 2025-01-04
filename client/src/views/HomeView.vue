@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import server from '@/utils/server'
 import RegisterModal from '@/components/RegisterModal.vue'
+import BingoTile from '@/components/BingoTile.vue'
 
 const modalStore = useModalStore()
 
@@ -38,6 +39,7 @@ const handlePing = async () => {
   </v-btn>
 
   <RegisterModal v-if="modalStore.currentModal === 'register'" @close="modalStore.closeModal" />
+  <BingoTile type="" text="" status="" selected=false />
 
   <div id="healthcheck">
     <h1>Healthcheck <v-icon icon="mdi-heart-pulse" /></h1>
