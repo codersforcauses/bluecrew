@@ -1,11 +1,7 @@
 
-<script lang="ts">
+<script setup lang="ts">
 import { defineComponent, ref } from "vue"
 import { defineEmits } from "vue"
-
-export default defineComponent({
-    name: "LoginModal",
-    setup() {
     
     const dialog = ref(false)
     const emit = defineEmits(['close'])
@@ -32,17 +28,6 @@ export default defineComponent({
         // Implement forgot password functionality
         console.log("Forgot password clicked");
     };
-
-    return {
-        dialog,
-        username,
-        password,
-        valid,
-        login,
-        forgotPassword,
-    };
-    },
-});
 </script>
 
 <template>
