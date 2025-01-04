@@ -10,6 +10,10 @@ function openRegisterButton() {
   modalStore.openRegister()
 }
 
+function openLoginButton() {
+  modalStore.openLogin()
+}
+
 const isLoading = ref(false)
 const healthcheckMessage = ref('')
 
@@ -29,6 +33,14 @@ const handlePing = async () => {
 </script>
 
 <template>
+  <v-btn
+    id="login-button"
+    class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center"
+    @click="openLoginButton"
+  >
+    Login
+  </v-btn>
+
   <v-btn
     id="register-button"
     class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center"
