@@ -20,6 +20,10 @@
     modalStore.closeModal()
   }
 
+  const openRegisterModal = () => {
+    modalStore.openRegister()
+  }
+
   const username = ref("");
   const password = ref("");
   const valid = ref(false);
@@ -34,11 +38,6 @@
       scrollable
       persistent
     >
-      <!-- <template v-slot:activator="{props: activatorProps }">
-        <v-btn
-            v-bind="activatorProps"
-            text = "Login"></v-btn>
-      </template> -->
 
       <v-card>
         <v-container>
@@ -107,7 +106,7 @@
         </v-card-text>
 
         <v-card-actions class="d-flex justify-center text-primaryPink">
-          <p><b>Don't have an account?</b> <a href="/signup" class="text-primaryPink">Sign up</a></p>
+          <p><b>Don't have an account?</b> <a href="#" class="text-primaryPink" @click.prevent="openRegisterModal">Sign up</a></p>
         </v-card-actions>
       </v-card>
     </v-dialog>
