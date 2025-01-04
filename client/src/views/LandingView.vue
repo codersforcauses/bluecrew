@@ -11,57 +11,23 @@ function openRegisterButton() {
 </script>
 
 <template>
-  <div class="landing-page">
-    <!-- Desktop Version -->
-    <template v-if="!xs">
-      <div class="header">
-        <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
-      </div>
-      <div class="content-section">
-        <div class="logo">
-          <img src="/bc-logo.png" alt="Blue Crew Logo" />
-        </div>
-        <div class="info-box">
-          <h2 class="tagline">
-            The inspiring way to become an ocean champion and protect our blue planet
-          </h2>
-          <div class="buttons">
-            <v-btn
-              id="register-button"
-              class="bg-primaryPink text-creamyWhite"
-              rounded="xl"
-              size="x-large"
-              @click="openRegisterButton"
-            >
-              Get Started
-            </v-btn>
-            <v-btn
-              id="login-button"
-              class="bg-primaryBlue text-creamyWhite"
-              rounded="xl"
-              size="x-large"
-              @click="openRegisterButton"
-            >
-              I already have an account
-            </v-btn>
-          </div>
-        </div>
-      </div>
-    </template>
+  <div v-if="!xs" class="header">
+    <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
+  </div>
+  <v-row>
+    <v-col :cols="xs ? 12 : 6" class="d-flex justify-center align-center">
+      <img src="/bc-logo.png" alt="Blue Crew Logo" />
+    </v-col>
 
-    <!-- Mobile Version -->
-    <template v-else>
-      <div class="mobile-content">
-        <div class="mobile-logo">
-          <img src="/bc-logo.png" alt="Blue Crew Logo" />
-        </div>
-        <h2 class="mobile-tagline text-center">
+    <v-col :cols="xs ? 12 : 6" class="d-flex flex-column justify-center align-center">
+      <div class="text-center">
+        <h2 class="tagline">
           The inspiring way to become an ocean champion and protect our blue planet
         </h2>
-        <div class="mobile-buttons">
+        <div class="buttons">
           <v-btn
-            block
-            class="bg-primaryPink text-creamyWhite mb-4"
+            id="register-button"
+            class="bg-primaryPink text-creamyWhite"
             rounded="xl"
             size="x-large"
             @click="openRegisterButton"
@@ -69,7 +35,7 @@ function openRegisterButton() {
             Get Started
           </v-btn>
           <v-btn
-            block
+            id="login-button"
             class="bg-primaryBlue text-creamyWhite"
             rounded="xl"
             size="x-large"
@@ -79,8 +45,8 @@ function openRegisterButton() {
           </v-btn>
         </div>
       </div>
-    </template>
-  </div>
+    </v-col>
+  </v-row>
 </template>
 
 <style scoped>
@@ -111,53 +77,5 @@ function openRegisterButton() {
   gap: 20px;
   max-width: 400px;
   margin: 20px auto;
-}
-
-/* Mobile Styles */
-.mobile-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: white;
-  z-index: 1000;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.mobile-content {
-  width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.mobile-close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  cursor: pointer;
-}
-
-.mobile-logo {
-  width: 150px;
-  margin: 2rem auto;
-}
-
-.mobile-logo img {
-  width: 100%;
-  height: auto;
-}
-
-.mobile-tagline {
-  text-align: center;
-  margin: 2rem 0;
-}
-
-.mobile-buttons {
-  margin-top: 2rem;
 }
 </style>
