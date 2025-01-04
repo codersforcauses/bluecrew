@@ -51,8 +51,7 @@ def get_friends(request):
     )
     friend_users = []
     for friendship in friendships:
-        friend = (friendship.receiver if friendship.requester == request.user
-                else friendship.requester)
+        friend = (friendship.receiver if friendship.requester == request.user else friendship.requester)
         friend_users.append(friend)
     serializer = UserProfileSerializer(friend_users, many=True)
     return Response(serializer.data)
@@ -84,3 +83,4 @@ def get_incoming_requests(request):
     friend_users = [friendship.requester for friendship in friendships]
     serializer = UserProfileSerializer(friend_users, many=True)
     return Response(serializer.data)
+
