@@ -1,7 +1,7 @@
 from rest_framework import status, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from .serializers import UserRegisterSerializer, LeaderboardUserSerializer
+from .serializers import UserRegisterSerializer, LeaderboardUserSerializer, UserProfileSerializer
 from .models import User
 from django.db.models import F, Window
 from django.db.models.functions import DenseRank
@@ -61,3 +61,14 @@ def get_leaderboard(request):
     # Append current user to end of leaderboard.
     leaderboard.append(serializer.data[current_user_index])
     return Response(leaderboard, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes((permissions.IsAuthenticated, ))
+def get_current_user(request):
+    """
+    Get details of currently logged in user.
+    Requires authentication.
+    """
+    serializer = UserProfileSerializer(request.user)
+    return Response(serializer.data)
