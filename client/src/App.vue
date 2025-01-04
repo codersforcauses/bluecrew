@@ -30,7 +30,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.main-content{
+.main-content {
   margin-top: 56px;
 }
 </style>
