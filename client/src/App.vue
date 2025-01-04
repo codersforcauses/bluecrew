@@ -10,7 +10,6 @@ const modalStore = useModalStore()
 <template>
   <RouterView />
   <BluecrewFooter />
-  <RegisterModal />
   <RegisterModal v-if="modalStore.currentModal === 'register'" @close="modalStore.closeModal" />
 </template>
 
