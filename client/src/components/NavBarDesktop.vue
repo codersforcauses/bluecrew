@@ -4,16 +4,10 @@
     <v-toolbar-items class="nav-bar-items">
       <v-btn @click="$emit('navigate', 'home')">Home</v-btn>
       <v-btn @click="$emit('navigate', 'leaderboard')">Leaderboard</v-btn>
-      <v-btn
-        :style="{ opacity: isLoggedIn ? 1 : 0.5 }"
-        @click="$emit('navigate', 'friends')"
-      >
+      <v-btn :style="{ opacity: isLoggedIn ? 1 : 0.5 }" @click="$emit('navigate', 'friends')">
         Friends
       </v-btn>
-      <v-btn
-        :style="{ opacity: isLoggedIn ? 1 : 0.5 }"
-        @click="$emit('navigate', 'preferences')"
-      >
+      <v-btn :style="{ opacity: isLoggedIn ? 1 : 0.5 }" @click="$emit('navigate', 'preferences')">
         Preferences
       </v-btn>
       <v-menu open-on-hover>
@@ -23,8 +17,12 @@
           </v-btn>
         </template>
         <v-list v-if="!isLoggedIn" class="menu-item">
-          <v-list-item class="menu-button" @click="$emit('sign-in-click', 'login')">Log In</v-list-item>
-          <v-list-item class="menu-button" @click="$emit('sign-in-click', 'register')">Register</v-list-item>
+          <v-list-item class="menu-button" @click="$emit('sign-in-click', 'login')"
+            >Log In</v-list-item
+          >
+          <v-list-item class="menu-button" @click="$emit('sign-in-click', 'register')"
+            >Register</v-list-item
+          >
         </v-list>
         <v-list v-else>
           <v-list-item @click="$emit('auth')">Log Out</v-list-item>
@@ -35,23 +33,21 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits } from 'vue'
 
 defineProps({
   isLoggedIn: Boolean,
   userName: String,
-});
+})
 
-defineEmits(['navigate', 'auth', 'sign-in-click']);
+defineEmits(['navigate', 'auth', 'sign-in-click'])
 </script>
 
 <style scoped>
-
 .nav-bar {
   display: flex;
   background-color: white;
-} 
-
+}
 
 .nav-bar-items {
   display: flex;
@@ -94,6 +90,6 @@ defineEmits(['navigate', 'auth', 'sign-in-click']);
 }
 
 .menu-list .menu-item {
-  width: 100%; 
+  width: 100%;
 }
 </style>

@@ -1,19 +1,18 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import BluecrewFooter from '@/components/BluecrewFooter.vue';
-import NavBarWrapper from '@/components/NavBarWrapper.vue';
-import type { NavBarWrapperExpose } from '@/components/NavBarWrapper.vue';
+import { ref, onMounted } from 'vue'
+import BluecrewFooter from '@/components/BluecrewFooter.vue'
+import NavBarWrapper from '@/components/NavBarWrapper.vue'
+import type { NavBarWrapperExpose } from '@/components/NavBarWrapper.vue'
 
-const navBarHeight = ref(0); 
+const navBarHeight = ref(0)
 // Introduce instance from NavBarWrapper
-const navBarWrapperInstance = ref<NavBarWrapperExpose | null>(null);
-
+const navBarWrapperInstance = ref<NavBarWrapperExpose | null>(null)
 
 onMounted(() => {
   if (navBarWrapperInstance.value) {
-    navBarHeight.value = navBarWrapperInstance.value.navBarHeight;
+    navBarHeight.value = navBarWrapperInstance.value.navBarHeight
   }
-});
+})
 </script>
 
 <template>
