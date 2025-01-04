@@ -101,10 +101,11 @@ export default defineComponent({
               variant="outlined"
             ></v-text-field>
 
-            <a href="/forgot-password" class="text-lightBlue">
-            <b>Forgot Password?</b>
-            </a>
-
+            <div class="mt-3">
+              <a href="/forgot-password" class="text-lightBlue" >
+              <b>Forgot Password?</b>
+              </a>
+            </div>
             <v-btn
               class="d-flex justify-center mt-4 w-50 mx-auto"
               color="primaryBlue"
@@ -132,13 +133,7 @@ export default defineComponent({
     font-weight: bold;
     opacity: 1;
   }
-
-  a {
-    color: #ff4081;
-    text-decoration: none;
-  }
   
-
   a:hover {
     text-decoration: underline;
   }
