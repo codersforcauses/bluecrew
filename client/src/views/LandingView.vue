@@ -14,39 +14,48 @@ function openRegisterButton() {
   <div v-if="!xs" class="header">
     <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
   </div>
-  <v-row>
-    <v-col :cols="xs ? 12 : 6" class="d-flex justify-center align-center">
-      <img src="/bc-logo.png" alt="Blue Crew Logo" />
-    </v-col>
+  <v-container>
+    <v-row
+    height="100%">
+      <v-col 
+      :cols="xs ? 12 : 4" 
+      class="d-flex justify-center align-center">
+        <img src="/bc-logo.png" alt="Blue Crew Logo" />
+      </v-col>
 
-    <v-col :cols="xs ? 12 : 6" class="d-flex flex-column justify-center align-center">
-      <div class="text-center">
-        <h2 class="tagline">
-          The inspiring way to become an ocean champion and protect our blue planet
-        </h2>
-        <div class="buttons">
-          <v-btn
-            id="register-button"
-            class="bg-primaryPink text-creamyWhite"
-            rounded="xl"
-            size="x-large"
-            @click="openRegisterButton"
-          >
-            Get Started
-          </v-btn>
-          <v-btn
-            id="login-button"
-            class="bg-primaryBlue text-creamyWhite"
-            rounded="xl"
-            size="x-large"
-            @click="openRegisterButton"
-          >
-            I already have an account
-          </v-btn>
+      <v-col 
+      :cols="xs ? 12 : 8" 
+      class="d-flex flex-column justify-center align-center">
+        <div class="text-center">
+          <h2 class="tagline">
+            The inspiring way 
+            <br>to become an ocean champion and 
+            <br>protect our blue planet
+          </h2>
+          <div class="buttons">
+            <v-btn
+              id="register-button"
+              class="bg-primaryPink text-creamyWhite"
+              rounded="xl"
+              size="x-large"
+              @click="openRegisterButton"
+            >
+              Get Started
+            </v-btn>
+            <v-btn
+              id="login-button"
+              class="bg-primaryBlue text-creamyWhite"
+              rounded="xl"
+              size="x-large"
+              @click="openRegisterButton"
+            >
+              I already have an account
+            </v-btn>
+          </div>
         </div>
-      </div>
-    </v-col>
-  </v-row>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <style scoped>
@@ -65,17 +74,11 @@ function openRegisterButton() {
   display: boxed;
 }
 
-.content-section {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-
 .buttons {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 60px;
   max-width: 400px;
-  margin: 20px auto;
+  margin: 50px auto;
 }
 </style>
