@@ -51,8 +51,28 @@ def get_friends(request):
     )
     friend_users = []
     for friendship in friendships:
-        friend = (friendship.receiver if friendship.requester == request.user else friendship.requester)
+        friend = (friendship.receiver if friendship.requester == request.user 
+                 else friendship.requester)
         friend_users.append(friend)
+    serializer = UserProfileSerializer(friend_users, many=True)
+    return Response(serializer.data)
+
+
+def get_friend_requests(request, is_outgoing=True):
+    """Helper function to get friend requests.
+    Args:
+        request: The HTTP request
+        is_outgoing: If True, get outgoing requests; if False, get incoming
+    """
+    filter_kwargs = {
+        'status': 'pending',
+        'requester' if is_outgoing else 'receiver': request.user
+    }
+    friendships = Friendship.objects.filter(**filter_kwargs)
+    friend_users = [
+        getattr(friendship, 'receiver' if is_outgoing else 'requester')
+        for friendship in friendships
+    ]
     serializer = UserProfileSerializer(friend_users, many=True)
     return Response(serializer.data)
 
@@ -62,13 +82,7 @@ def get_friends(request):
 def get_outgoing_requests(request):
     """Get all outgoing friend requests of the logged-in user.
     Requires authentication."""
-    friendships = Friendship.objects.filter(
-        status='pending',
-        requester=request.user
-    )
-    friend_users = [friendship.receiver for friendship in friendships]
-    serializer = UserProfileSerializer(friend_users, many=True)
-    return Response(serializer.data)
+    return get_friend_requests(request, is_outgoing=True)
 
 
 @api_view(['GET'])
@@ -76,11 +90,4 @@ def get_outgoing_requests(request):
 def get_incoming_requests(request):
     """Get all incoming friend requests to the logged-in user.
     Requires authentication."""
-    friendships = Friendship.objects.filter(
-        status='pending',
-        receiver=request.user
-    )
-    friend_users = [friendship.requester for friendship in friendships]
-    serializer = UserProfileSerializer(friend_users, many=True)
-    return Response(serializer.data)
-
+    return get_friend_requests(request, is_outgoing=False)
