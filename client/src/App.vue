@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import { useModalStore } from '@/stores/modal'
 import { RouterView } from 'vue-router'
 import BluecrewFooter from '@/components/BluecrewFooter.vue'
@@ -10,12 +9,13 @@ const modalStore = useModalStore()
 </script>
 
 <template>
- <v-app>
-  <NavBarWrapper />
+  <v-app>
+    <NavBarWrapper />
     <v-main class="main-content">
       <RouterView />
     </v-main>
-  <BluecrewFooter />
+    <BluecrewFooter />
+  </v-app>
   <RegisterModal v-if="modalStore.currentModal === 'register'" @close="modalStore.closeModal" />
 </template>
 

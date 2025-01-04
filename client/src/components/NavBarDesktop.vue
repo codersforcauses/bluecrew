@@ -25,17 +25,19 @@
           </v-btn>
         </template>
         <v-list v-if="!isLoggedIn" class="menu-item">
-          <v-list-item class="menu-button text-primaryPink" @click="$emit('sign-in-click', 'login')"
+          <v-list-item
+            class="menu-button text-primaryPink bg-primaryWhite"
+            @click="$emit('sign-in-click', 'login')"
             >Log In</v-list-item
           >
           <v-list-item
-            class="menu-button text-primaryPink"
+            class="menu-button text-primaryPink bg-primaryWhite"
             @click="$emit('sign-in-click', 'register')"
             >Register</v-list-item
           >
         </v-list>
         <v-list v-else class="menu-item">
-          <v-list-item class="menu-button text-primaryPink" @click="$emit('auth')"
+          <v-list-item class="menu-button text-primaryPink bg-primaryWhite" @click="$emit('auth')"
             >Log Out</v-list-item
           >
         </v-list>
@@ -77,6 +79,7 @@ defineEmits(['navigate', 'auth', 'sign-in-click'])
 
 .menu-item {
   display: flex;
+  width: 100%;
   align-items: center;
   flex-direction: column;
   justify-content: center;
@@ -84,7 +87,6 @@ defineEmits(['navigate', 'auth', 'sign-in-click'])
   font-family: 'Lilita One', cursive;
   font-size: 20px !important;
   font-weight: 500 !important;
-  background-color: transparent !important;
   border-radius: 12px;
   transition:
     background-color 0.3s ease,
