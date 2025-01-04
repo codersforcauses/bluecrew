@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from datetime import date
 from django.utils import timezone
-from .models import User, Challenge, Friendship, ChallengeInteraction
+from ..models import User, Challenge, Friendship, ChallengeInteraction
 from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
