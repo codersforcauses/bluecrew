@@ -4,15 +4,25 @@ import { RouterView } from 'vue-router'
 import LoginModal from './components/LoginModal.vue'
 import BluecrewFooter from '@/components/BluecrewFooter.vue'
 import RegisterModal from '@/components/RegisterModal.vue'
+import NavBarWrapper from '@/components/NavBarWrapper.vue'
 
 const modalStore = useModalStore()
 </script>
 
 <template>
-  <RouterView />
-  <BluecrewFooter />
+  <v-app>
+    <NavBarWrapper />
+    <v-main class="main-content">
+      <RouterView />
+    </v-main>
+    <BluecrewFooter />
+  </v-app>
   <RegisterModal v-if="modalStore.currentModal === 'register'" @close="modalStore.closeModal" />
   <LoginModal v-if="modalStore.currentModal === 'login'" @close="modalStore.closeModal" />
 </template>
 
-<style scoped></style>
+<style scoped>
+.main-content {
+  margin-top: 56px;
+}
+</style>

@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
+import PlaceholderView from '../views/PlaceHolderview.vue'
 import LandingView from '@/views/LandingView.vue'
 
 const router = createRouter({
@@ -9,6 +11,10 @@ const router = createRouter({
       name: 'landing',
       component: LandingView,
     },
+
+    { path: '/leaderboard', name: 'leaderboard', component: PlaceholderView },
+    { path: '/friends', name: 'friends', component: PlaceholderView },
+    { path: '/preferences', name: 'preferences', component: PlaceholderView },
   ],
 })
 
