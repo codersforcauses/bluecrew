@@ -80,7 +80,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         N = (2, "No")
     indigenous_identity = models.BooleanField(
         choices=IndigenousIdentity,
-        default=IndigenousIdentity.N
+        default=IndigenousIdentity.NA
     )
 
     avatar = models.IntegerField(default=0, choices=map(
