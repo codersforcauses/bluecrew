@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from .serializers import UserRegisterSerializer, UserProfileSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from .models import ChallengeInteraction
 
 
 @api_view(['POST'])
@@ -23,3 +24,15 @@ def get_current_user(request):
     """
     serializer = UserProfileSerializer(request.user)
     return Response(serializer.data)
+
+
+@api_view(['UPDATE'])
+@permission_classes([IsAuthenticated])
+def start_challenge(request):
+    interactions = ChallengeInteraction.objects.filter(user=request.user, challenge=request.challenge)
+    if len(interactions) != 0:
+        return Response(status=status.HTTP_409_CONFLICT)
+
+    interaction = ChallengeInteraction(user=request.user, challenge=request.challenge)
+    interaction.save()
+    return Response(status=status.HTTP_200_OK)
