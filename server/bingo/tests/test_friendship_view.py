@@ -7,7 +7,6 @@ from rest_framework.test import APIClient
 
 class FriendViewsTest(TestCase):
     def setUp(self):
-        # Create test users
         self.user1 = User.objects.create_user(
             username="user1",
             password="testpass123",
@@ -36,11 +35,7 @@ class FriendViewsTest(TestCase):
             first_name="Test",
             last_name="Four"
         )
-        
-        # Initialize the API client
         self.client = APIClient()
-        
-        # Create some friendships
         self.accepted_friendship = Friendship.objects.create(
             requester=self.user1,
             receiver=self.user2,
@@ -61,9 +56,8 @@ class FriendViewsTest(TestCase):
         """Test getting friends list when authenticated"""
         self.client.force_authenticate(user=self.user1)
         response = self.client.get(reverse('friend-list'))
-        
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)  # Should only have user2 as friend
+        self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['userName'], 'user2')
 
     def test_get_friends_unauthenticated(self):
@@ -75,9 +69,8 @@ class FriendViewsTest(TestCase):
         """Test getting outgoing friend requests when authenticated"""
         self.client.force_authenticate(user=self.user1)
         response = self.client.get(reverse('outgoing-requests'))
-        
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)  # Should only have one outgoing request
+        self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['userName'], 'user3')
 
     def test_get_outgoing_requests_unauthenticated(self):
@@ -89,10 +82,9 @@ class FriendViewsTest(TestCase):
         """Test getting incoming friend requests when authenticated"""
         self.client.force_authenticate(user=self.user1)
         response = self.client.get(reverse('incoming-requests'))
-        
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)  # Should only have one incoming request
-        self.assertEqual(response.data[0]['userName'], 'user4')  # Now from user4 instead of user3
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['userName'], 'user4')
 
     def test_get_incoming_requests_unauthenticated(self):
         """Test getting incoming requests when not authenticated"""
@@ -101,31 +93,22 @@ class FriendViewsTest(TestCase):
 
     def test_no_friends(self):
         """Test getting friends list when user has no friends"""
-        # Create a new user with no friends
         lonely_user = User.objects.create_user(
             username="lonely",
             password="testpass123",
             email="lonely@example.com"
         )
-        
         self.client.force_authenticate(user=lonely_user)
         response = self.client.get(reverse('friend-list'))
-        
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 0)  # Should have empty list
+        self.assertEqual(len(response.data), 0)
 
     def test_friend_list_method_not_allowed(self):
         """Test that only GET method is allowed for friends list"""
         self.client.force_authenticate(user=self.user1)
-        
-        # Test POST request
         response = self.client.post(reverse('friend-list'), {})
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-        
-        # Test PUT request
         response = self.client.put(reverse('friend-list'), {})
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-        
-        # Test DELETE request
         response = self.client.delete(reverse('friend-list'))
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
