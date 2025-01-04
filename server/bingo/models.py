@@ -146,8 +146,7 @@ class ChallengeInteraction(models.Model):
 
     image = models.ImageField(
         upload_to="challenge_images/",  # idk where we want to put this atm
-        blank=True,
-        null=True
+        blank=True
     )
 
     completed = models.BooleanField(default=False)
