@@ -28,13 +28,13 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to) => {
+router.beforeEach((to, from) => {
   const userStore = useUserStore()
   const modalStore = useModalStore()
 
   if (to.meta.requiresAuth && !userStore.isLoggedIn) {
-    modalStore.openRegister()
-    return false
+    modalStore.openLogin()
+    return { name: from.name }
   }
 
   return true
