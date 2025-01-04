@@ -2,8 +2,13 @@
 import { ref } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import server from '@/utils/server'
+import RegisterModal from '@/components/RegisterModal.vue'
 
 const modalStore = useModalStore()
+
+function openRegisterButton() {
+  modalStore.openRegister()
+}
 
 function openLoginButton() {
   modalStore.openLogin()
@@ -35,6 +40,16 @@ const handlePing = async () => {
   >
     Login
   </v-btn>
+
+  <v-btn
+    id="register-button"
+    class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center"
+    @click="openRegisterButton"
+  >
+    Registration
+  </v-btn>
+
+  <RegisterModal v-if="modalStore.currentModal === 'register'" @close="modalStore.closeModal" />
 
   <div id="healthcheck">
     <h1>Healthcheck <v-icon icon="mdi-heart-pulse" /></h1>
