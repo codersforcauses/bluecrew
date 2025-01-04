@@ -103,7 +103,7 @@ export default defineComponent({
 
             <div class="mt-3">
               <a href="/forgot-password" class="text-lightBlue" >
-              <b>Forgot Password?</b>
+              <b class="text-subtitle-2">Forgot Password?</b>
               </a>
             </div>
             <v-btn
