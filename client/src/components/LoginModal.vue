@@ -86,7 +86,7 @@ export default defineComponent({
               variant="outlined"
             ></v-text-field>
 
-            <v-card-subtitle class="text-left subtitle  mb-3 pa-0 text-primaryPink">
+            <v-card-subtitle class="text-left subtitle mt-3 mb-3 pa-0 text-primaryPink">
               Password
             </v-card-subtitle>
             <v-text-field
