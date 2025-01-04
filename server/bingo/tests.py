@@ -27,7 +27,8 @@ class ChallengeTest(TestCase):
         self.assertEqual(challenge.points, 5)
         self.assertEqual(challenge.total_completions, 10)
         # Build expected string around challenge rather than hard coded id
-        expected_str = f"Challenge {challenge.id}: {challenge.name} ({challenge.challenge_type.capitalize()})"
+        expected_str = f"Challenge {challenge.id}: {
+            challenge.name} ({challenge.challenge_type.capitalize()})"
         self.assertEqual(str(challenge), expected_str)
 
     def test_invalid_challenge_type(self):
@@ -68,7 +69,8 @@ class UsersTest(TestCase):
             self.fail("User was not properly created")
 
     def test_random_queries_fail(self):
-        self.assertRaises(User.DoesNotExist, User.objects.get, username="Barry")
+        self.assertRaises(User.DoesNotExist,
+                          User.objects.get, username="Barry")
 
     def test_base_users_not_staff(self):
         self.assertFalse(self.user.is_staff)
@@ -251,7 +253,8 @@ class CurrentUserViewTest(TestCase):
         self.assertEqual(response.data["bio"], self.user.bio)
         self.assertEqual(response.data["totalPoints"], self.user.total_points)
         self.assertEqual(response.data["email"], self.user.email)
-        self.assertEqual(response.data["visibility"], self.user.visibility)  # Using PUBLIC (2)
+        # Using PUBLIC (2)
+        self.assertEqual(response.data["visibility"], self.user.visibility)
         self.assertEqual(response.data["avatar"], self.user.avatar)
 
     def test_get_current_user_unauthenticated(self):
@@ -265,15 +268,18 @@ class CurrentUserViewTest(TestCase):
 
         # Test POST request
         response = self.client.post(reverse("current-user"), {})
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(response.status_code,
+                         status.HTTP_405_METHOD_NOT_ALLOWED)
 
         # Test PUT request
         response = self.client.put(reverse("current-user"), {})
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(response.status_code,
+                         status.HTTP_405_METHOD_NOT_ALLOWED)
 
         # Test DELETE request
         response = self.client.delete(reverse("current-user"))
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(response.status_code,
+                         status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class ChallengeInteractionTest(TestCase):
@@ -316,7 +322,8 @@ class ChallengeInteractionTest(TestCase):
         interaction.date_completed = timezone.now()
         interaction.save()
 
-        updated_interaction = ChallengeInteraction.objects.get(pk=interaction.pk)
+        updated_interaction = ChallengeInteraction.objects.get(
+            pk=interaction.pk)
         self.assertTrue(updated_interaction.completed)
         self.assertIsNotNone(updated_interaction.date_completed)
 
@@ -332,7 +339,8 @@ class ChallengeInteractionTest(TestCase):
         interaction.consent = True
         interaction.save()
 
-        updated_interaction = ChallengeInteraction.objects.get(pk=interaction.pk)
+        updated_interaction = ChallengeInteraction.objects.get(
+            pk=interaction.pk)
         self.assertTrue(updated_interaction.consent)
 
 
@@ -351,13 +359,17 @@ class LeaderboardTest(TestCase):
         self.client.login(username="user1", password="password")
 
         # get auth token
-        token_response = self.client.post("/api/token/", {"username": "user1", "password": "password"}, content_type="application/json")
-        token_response_content = json.loads(token_response.content.decode('utf-8'))
+        token_response = self.client.post(
+            "/api/token/", {"username": "user1", "password": "password"}, content_type="application/json")
+        token_response_content = json.loads(
+            token_response.content.decode('utf-8'))
 
         # GET leaderboard api
         user_token = token_response_content["access"]
-        leaderboard_response = self.client.get("/api/leaderboard", headers={"Authorization": "Bearer " + user_token}, follow=True)
-        leaderboard_response_content = json.loads(leaderboard_response.content.decode("utf8"))
+        leaderboard_response = self.client.get(
+            "/api/leaderboard", headers={"Authorization": "Bearer " + user_token}, follow=True)
+        leaderboard_response_content = json.loads(
+            leaderboard_response.content.decode("utf8"))
 
         self.assertEqual(leaderboard_response_content[0]["username"], "user3")
         self.assertEqual(leaderboard_response_content[0]["total_points"], 3)
