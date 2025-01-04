@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.db.utils import IntegrityError
-from .models import User, Challenge, Friendship
+from .models import User, Challenge, Friendship, BingoGrid
 
 from django.core.exceptions import ValidationError
 
@@ -21,7 +21,9 @@ class ChallengeTest(TestCase):
         self.assertEqual(challenge.challenge_type, "act")
         self.assertEqual(challenge.points, 5)
         self.assertEqual(challenge.total_completions, 10)
-        self.assertEqual(str(challenge), "Challenge 1: Test (Act)")
+        # Build expected string around challenge rather than hard coded id
+        expected_str = f"Challenge {challenge.id}: {challenge.name} ({challenge.challenge_type.capitalize()})"
+        self.assertEqual(str(challenge), expected_str)
 
     def test_invalid_challenge_type(self):
         challenge = Challenge(
@@ -147,3 +149,66 @@ class FriendshipTest(TestCase):
         with self.assertRaises(ValidationError):
             Friendship.objects.create(
                 requester=self.user1, receiver=self.user1).full_clean()
+
+
+class BingoGridTest(TestCase):
+    def setUp(self):
+        # Create 2 real challenges and 14 dummy ids to test with
+        self.challenge1 = Challenge.objects.create(
+            name="Real Challenge 1",
+            description="Real test challenge #1",
+            challenge_type="act",
+            points=5,
+        )
+        self.challenge2 = Challenge.objects.create(
+            name="Real Challenge 2",
+            description="Real test challenge #2",
+            challenge_type="connect",
+            points=10,
+        )
+
+    def test_create_bingo_grid_with_part_dummy_ids(self):
+        # Use 2 real challenge IDs + 14 placeholders
+        real_ids = [self.challenge1.id, self.challenge2.id]
+        placeholder_ids = [0] * 14
+
+        all_challenge_ids = real_ids + placeholder_ids
+
+        grid = BingoGrid.objects.create(challenges=all_challenge_ids)
+        self.assertEqual(len(grid.challenges), 16)
+        self.assertEqual(grid.challenges[0], self.challenge1.id)
+        self.assertEqual(grid.challenges[1], self.challenge2.id)
+        self.assertTrue(all(x == 0 for x in grid.challenges[2:]))
+
+    def test_only_one_active_grid(self):
+        # Validate that only one BingoGrid can be active at a time.
+
+        # Create an active grid but with no name so flake doesn't complain
+        _ = BingoGrid.objects.create(
+            challenges=[self.challenge1.id] + [0]*15,
+            is_active=True
+        )
+        grid2 = BingoGrid(
+            challenges=[self.challenge2.id] + [0]*15,
+            is_active=True
+        )
+
+        with self.assertRaises(ValidationError):
+            grid2.full_clean()  # calls .clean(), which should fail
+
+        # If we switch the second grid to inactive, it should pass
+        grid2.is_active = False
+        grid2.full_clean()
+        grid2.save()
+        self.assertFalse(grid2.is_active)
+
+    def test_str_representation(self):
+        """
+        Test the __str__ output, e.g. "BingoGrid #1 (Active: True/False)"
+        """
+        grid = BingoGrid.objects.create(
+            challenges=[self.challenge1.id] + [0]*15,
+            is_active=True
+        )
+        self.assertIn("BingoGrid #", str(grid))
+        self.assertIn("(Active: True)", str(grid))

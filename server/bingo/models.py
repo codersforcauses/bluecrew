@@ -3,6 +3,7 @@ from django.contrib.auth.models import PermissionsMixin, AbstractBaseUser, BaseU
 from datetime import date
 from django.db.models import Q
 from django.core.exceptions import ValidationError
+from django.contrib.postgres.fields import ArrayField
 
 
 class UserManager(BaseUserManager):
@@ -137,3 +138,28 @@ class Friendship(models.Model):
 
     def __str__(self):
         return f"Friend request from {self.requester} to {self.receiver} ({self.status.capitalize()})"
+
+
+class BingoGrid(models.Model):
+    #  A Bingo grid that holds an array of 16 challenge IDs.
+    grid_id = models.AutoField(primary_key=True)
+    # We store an array of integers (challenge IDs).
+    challenges = ArrayField(
+        base_field=models.IntegerField(),
+        size=16,
+        blank=True,
+        default=list,
+    )
+
+    is_active = models.BooleanField(default=False)
+
+    def clean(self):
+        # Custom validation to ensure that at most one BingoGrid is active at a time.
+        if self.is_active:
+            active_count = BingoGrid.objects.filter(is_active=True).exclude(pk=self.pk).count()
+            if active_count > 0:
+                raise ValidationError("Another BingoGrid is already active.")
+        super().clean()
+
+    def __str__(self):
+        return f"BingoGrid #{self.grid_id} (Active: {self.is_active})"
