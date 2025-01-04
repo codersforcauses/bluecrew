@@ -77,7 +77,7 @@ defineEmits(['navigate', 'auth', 'sign-in-click'])
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  height: 48px;
+  height: 56px;
   font-family: 'Lilita One', cursive;
   font-size: 20px !important;
   font-weight: 500 !important;
