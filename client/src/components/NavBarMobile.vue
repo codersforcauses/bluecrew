@@ -36,17 +36,17 @@
             <span class="button-text">User Preferences</span>
           </v-btn>
 
+          <v-btn block class="menu-button" variant="text" height="64" @click="navigate('friends')">
+            <span class="button-text">Friends</span>
+          </v-btn>
+
           <v-btn
             block
             class="menu-button"
             variant="text"
             height="64"
-            @click="navigate('friends')"
+            @click="navigate('leaderboard')"
           >
-            <span class="button-text">Friends</span>
-          </v-btn>
-
-          <v-btn block class="menu-button" variant="text" height="64" @click="navigate('leaderboard')">
             <span class="button-text">Leaderboard</span>
           </v-btn>
         </div>
@@ -62,29 +62,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
+import { ref, defineProps, defineEmits } from 'vue'
 
 defineProps({
   isLoggedIn: Boolean,
   userName: String,
-});
+})
 
-const emit = defineEmits(['navigate', 'auth']);
+const emit = defineEmits(['navigate', 'auth'])
 
-const isMenuOpen = ref(false);
+const isMenuOpen = ref(false)
 const toggleMenu = () => {
-  isMenuOpen.value = !isMenuOpen.value;
-};
+  isMenuOpen.value = !isMenuOpen.value
+}
 
 const navigate = (route: string) => {
-  emit('navigate', route);
-  isMenuOpen.value = false;
-};
+  emit('navigate', route)
+  isMenuOpen.value = false
+}
 
 const auth = () => {
-  emit('auth');
-  isMenuOpen.value = false;
-};
+  emit('auth')
+  isMenuOpen.value = false
+}
 </script>
 
 <style scoped>
