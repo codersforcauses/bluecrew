@@ -98,7 +98,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.username
 
     class Meta:
-        ordering = ["-total_points"]
+        ordering = ["-total_points", "username"]
         indexes = [models.Index(fields=["-total_points"])]
 
 
