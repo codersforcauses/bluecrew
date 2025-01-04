@@ -151,3 +151,24 @@ class Friendship(models.Model):
 
     def __str__(self):
         return f"Friend request from {self.requester} to {self.receiver} ({self.status.capitalize()})"
+
+
+class ChallengeInteraction(models.Model):
+    # Model to track an interaction between a user and a challenge.
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
+
+    image = models.ImageField(
+        upload_to="challenge_images/",  # idk where we want to put this atm
+        blank=True
+    )
+
+    completed = models.BooleanField(default=False)
+    consent = models.BooleanField(default=False)
+
+    date_started = models.DateTimeField(auto_now_add=True)
+    date_completed = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return (f"Interaction of {self.user.username} with challenge "
+                f"'{self.challenge.name}' - Completed: {self.completed}")
