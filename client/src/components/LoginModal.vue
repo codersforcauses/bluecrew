@@ -96,7 +96,6 @@ export default defineComponent({
               type="password"
               required
               outlined
-              hide-detials
               class="bg-primaryBrown"
               variant="outlined"
             ></v-text-field>
