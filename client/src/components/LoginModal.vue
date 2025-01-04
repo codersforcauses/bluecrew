@@ -1,39 +1,44 @@
 
 <script setup lang="ts">
-  import { defineComponent, ref } from "vue"
-  import { defineEmits } from "vue"
+  import { ref, computed } from 'vue'
+  import { useModalStore } from '@/stores/modal'
+  import { useDisplay } from 'vuetify'
 
-  const openDialog = () => {
-    dialog.value = true
-  }
+  const { xs } = useDisplay()
+  const modalStore = useModalStore()
+
+  const isDialogVisible = computed({
+    get: () => modalStore.currentModal === 'login',
+    set: (value: boolean) => {
+      if (!value) {
+        modalStore.closeModal()
+      }
+    },
+  })
 
   const closeDialog = () => {
-    dialog.value = false
-    emit('close')
+    modalStore.closeModal()
   }
 
   const username = ref("");
   const password = ref("");
   const valid = ref(false);
 
-  const login = () => {
-      // Implement login logic here
-      console.log("Logging in with:", { username: username.value, password: password.value });
-  };
-
-  const forgotPassword = () => {
-      // Implement forgot password functionality
-      console.log("Forgot password clicked");
-  };
 </script>
 
 <template>
-    <v-dialog v-model="dialog" max-width="400px">
-      <template v-slot:activator="{props: activatorProps }">
+    <v-dialog
+      v-model="isDialogVisible"
+      :max-width="xs ? '100%' : '400px'"
+      :fullscreen="xs"
+      scrollable
+      persistent
+    >
+      <!-- <template v-slot:activator="{props: activatorProps }">
         <v-btn
             v-bind="activatorProps"
             text = "Login"></v-btn>
-      </template>
+      </template> -->
 
       <v-card>
         <v-container>
@@ -93,7 +98,6 @@
               color="primaryBlue"
               :style="{ height: '50px' }"
               :disabled="!valid"
-              @click="login"
               rounded
               elevation="12"
               >

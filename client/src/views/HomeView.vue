@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useModalStore } from '@/stores/modal'
 import server from '@/utils/server'
+
+const modalStore = useModalStore()
+
+function openLoginButton() {
+  modalStore.openLogin()
+}
 
 const isLoading = ref(false)
 const healthcheckMessage = ref('')
@@ -21,6 +28,14 @@ const handlePing = async () => {
 </script>
 
 <template>
+  <v-btn
+    id="login-button"
+    class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center"
+    @click="openLoginButton"
+  >
+    Login
+  </v-btn>
+
   <div id="healthcheck">
     <h1>Healthcheck <v-icon icon="mdi-heart-pulse" /></h1>
     <v-btn id="ping" @click="handlePing" :loading="isLoading">
