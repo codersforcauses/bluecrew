@@ -26,7 +26,7 @@ def get_current_user(request):
     return Response(serializer.data)
 
 
-@api_view(['UPDATE'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def start_challenge(request):
     interactions = ChallengeInteraction.objects.filter(user=request.user, challenge=request.challenge)
