@@ -12,6 +12,6 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('register/', views.register_user, name='register_user'),
     path('user/me/', views.get_current_user, name='current-user'),
-    path('api/delete-friendship/<int:friendship_id>/',
+    path('delete-friendship/<int:friendship_id>/',
          delete_friendship, name='delete_friendship'),
 ]
