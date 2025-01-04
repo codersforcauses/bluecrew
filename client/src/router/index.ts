@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import FriendView from '../views/FriendView.vue'
 import PreferencesView from '../views/PreferencesView.vue'
+import { useUserStore } from '@/stores/user'
 import { useModalStore } from '@/stores/modal'
 
 const router = createRouter({
@@ -28,9 +29,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
+  const userStore = useUserStore()
   const modalStore = useModalStore()
 
-  if (modalStore.currentModal === 'none') {
+  if (to.meta.requiresAuth && !userStore.isLoggedIn) {
     modalStore.openRegister()
     return false
   }
