@@ -335,7 +335,7 @@ class ChallengeInteractionTest(TestCase):
         updated_interaction = ChallengeInteraction.objects.get(pk=interaction.pk)
         self.assertTrue(updated_interaction.consent)
 
-        
+
 class LeaderboardTest(TestCase):
     def setUp(self):
         self.user1 = User.objects.create_user(
@@ -359,7 +359,6 @@ class LeaderboardTest(TestCase):
         leaderboard_response = self.client.get("/api/leaderboard", headers={"Authorization": "Bearer " + user_token}, follow=True)
         leaderboard_response_content = json.loads(leaderboard_response.content.decode("utf8"))
 
-        print(leaderboard_response_content)
         self.assertEqual(leaderboard_response_content[0]["username"], "user3")
         self.assertEqual(leaderboard_response_content[0]["total_points"], 3)
         self.assertEqual(leaderboard_response_content[0]["rank"], 1)
