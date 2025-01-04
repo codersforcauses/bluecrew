@@ -15,41 +15,35 @@ function openRegisterButton() {
     <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
   </div>
   <v-container>
-    <v-row
-    height="100%">
-      <v-col 
-      :cols="xs ? 12 : 6" 
-      class="d-flex justify-center align-center">
-        <img 
-        src="/bc-logo.png" 
-        alt="Blue Crew Logo" 
-        :class="{
-        'logo-mobile': xs,
-        'logo-desktop': !xs
-        }"/>
-        <img 
-        src="/oy-logo.png" 
-        alt="Ocean Youth Logo" 
-        :class="{
-        'logo-mobile': xs,
-        'logo-desktop': !xs
-        }"/>
+    <v-row height="100%">
+      <v-col :cols="xs ? 12 : 5" class="d-flex justify-center align-center">
+        <img
+          src="/bc-logo.png"
+          alt="Blue Crew Logo"
+          :class="{
+            'logo-mobile': xs,
+            'logo-desktop': !xs,
+          }"
+        />
+        <img
+          src="/oy-logo.png"
+          alt="Ocean Youth Logo"
+          :class="{
+            'logo-mobile': xs,
+            'logo-desktop': !xs,
+          }"
+        />
       </v-col>
 
-      <v-col 
-      :cols="xs ? 12 : 6" 
-      class="d-flex flex-column justify-center align-center">
+      <v-col :cols="xs ? 12 : 7" class="d-flex flex-column justify-center align-center">
         <div class="text-center">
           <h2 class="tagline">
             The inspiring way
             <template v-if="!xs">
-              <br>to become an ocean champion and
-              <br>protect our blue planet
+              <br />to become an ocean champion and <br />protect our blue planet
             </template>
             <template v-else>
-              <br>to become an ocean
-              <br>champion and protect our
-              <br>blue planet
+              <br />to become an ocean <br />champion and protect our <br />blue planet
             </template>
           </h2>
           <div class="buttons">
