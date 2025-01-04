@@ -7,7 +7,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // 这里可以写组件逻辑
 </script>
 
