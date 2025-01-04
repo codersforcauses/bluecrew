@@ -33,6 +33,6 @@ def start_challenge(request):
     if len(interactions) != 0:
         return Response(status=status.HTTP_409_CONFLICT)
 
-    interaction = ChallengeInteraction(user=request.user, challenge=request.challenge)
+    interaction = ChallengeInteraction.objects.create(user=request.user, challenge=request.challenge)
     interaction.save()
     return Response(status=status.HTTP_200_OK)
