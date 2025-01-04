@@ -39,7 +39,7 @@ const handlePing = async () => {
   </v-btn>
 
   <RegisterModal v-if="modalStore.currentModal === 'register'" @close="modalStore.closeModal" />
-  <BingoTile type="" text="" status="" selected=false />
+  <BingoTile type="" text="Sustainable Seafood" status="" selected=false />
 
   <div id="healthcheck">
     <h1>Healthcheck <v-icon icon="mdi-heart-pulse" /></h1>
