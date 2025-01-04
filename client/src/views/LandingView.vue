@@ -16,7 +16,7 @@ function openRegisterButton() {
   </div>
   <v-container>
     <v-row height="100%">
-      <v-col :cols="xs ? 12 : 5" class="d-flex justify-center align-center">
+      <v-col :cols="xs ? 12 : 6" class="d-flex justify-center align-center">
         <img
           src="/bc-logo.png"
           alt="Blue Crew Logo"
@@ -35,7 +35,7 @@ function openRegisterButton() {
         />
       </v-col>
 
-      <v-col :cols="xs ? 12 : 7" class="d-flex flex-column justify-center align-center">
+      <v-col :cols="xs ? 12 : 6" class="d-flex flex-column justify-center align-center">
         <div class="text-center">
           <h2 class="tagline">
             The inspiring way
