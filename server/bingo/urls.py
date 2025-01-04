@@ -1,5 +1,4 @@
 from django.urls import path
-from bingo.views import delete_friendship
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -12,6 +11,8 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('register/', views.register_user, name='register_user'),
     path('user/me/', views.get_current_user, name='current-user'),
-    path('delete-friendship/<int:friendship_id>/',
-         delete_friendship, name='delete_friendship'),
+    path('delete-friendship/<int:friendship_id>/', views.delete_friendship, name='delete_friendship'),
+    path('friends/', views.get_friends, name='friend-list'),
+    path('friends/requests/outgoing/', views.get_outgoing_requests, name='outgoing-requests'),
+    path('friends/requests/incoming/', views.get_incoming_requests, name='incoming-requests'),
 ]
