@@ -28,7 +28,7 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to, _from) => {
+router.beforeEach((to) => {
   const userStore = useUserStore()
   const modalStore = useModalStore()
 
