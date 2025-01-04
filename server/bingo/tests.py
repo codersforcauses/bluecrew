@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.db.utils import IntegrityError
-from .models import User, Challenge, Friendship
+from django.utils import timezone
+from .models import User, Challenge, Friendship, ChallengeInteraction
 
 from django.core.exceptions import ValidationError
 from django.urls import reverse
@@ -24,7 +25,9 @@ class ChallengeTest(TestCase):
         self.assertEqual(challenge.challenge_type, "act")
         self.assertEqual(challenge.points, 5)
         self.assertEqual(challenge.total_completions, 10)
-        self.assertEqual(str(challenge), "Challenge 1: Test (Act)")
+        # Build expected string around challenge rather than hard coded id
+        expected_str = f"Challenge {challenge.id}: {challenge.name} ({challenge.challenge_type.capitalize()})"
+        self.assertEqual(str(challenge), expected_str)
 
     def test_invalid_challenge_type(self):
         challenge = Challenge(
@@ -151,7 +154,6 @@ class FriendshipTest(TestCase):
             Friendship.objects.create(
                 requester=self.user1, receiver=self.user1).full_clean()
 
-
 class CurrentUserViewTest(TestCase):
     def setUp(self):
         # Create a test user
@@ -211,3 +213,62 @@ class CurrentUserViewTest(TestCase):
         # Test DELETE request
         response = self.client.delete(reverse("current-user"))
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+class ChallengeInteractionTest(TestCase):
+    def setUp(self):
+        # Create a user and a challenge to be used by the tests.
+        self.user = User.objects.create_user(
+            username="testuser",
+            email="test@example.com",
+            password="password123",
+        )
+        self.challenge = Challenge.objects.create(
+            name="Testing Challenge",
+            description="Challenge for testing interactions",
+            challenge_type="act",
+            points=5,
+        )
+
+    def test_create_challenge_interaction(self):
+        # Test that a ChallengeInteraction can be created successfully.
+        interaction = ChallengeInteraction.objects.create(
+            user=self.user,
+            challenge=self.challenge
+        )
+        self.assertFalse(interaction.completed)
+        self.assertFalse(interaction.consent)
+        self.assertIsNotNone(interaction.date_started)
+        self.assertIsNone(interaction.date_completed)
+        # For now test that image is "empty"
+        self.assertFalse(interaction.image)
+
+    def test_complete_challenge(self):
+        # Test updating the 'completed' status and setting 'date_completed'.
+        interaction = ChallengeInteraction.objects.create(
+            user=self.user,
+            challenge=self.challenge
+        )
+
+        # simulate completion
+        interaction.completed = True
+        interaction.date_completed = timezone.now()
+        interaction.save()
+
+        updated_interaction = ChallengeInteraction.objects.get(pk=interaction.pk)
+        self.assertTrue(updated_interaction.completed)
+        self.assertIsNotNone(updated_interaction.date_completed)
+
+    def test_consent(self):
+        # Test that 'consent' can be updated appropriately.
+        interaction = ChallengeInteraction.objects.create(
+            user=self.user,
+            challenge=self.challenge
+        )
+        # Initially false
+        self.assertFalse(interaction.consent)
+        # Update
+        interaction.consent = True
+        interaction.save()
+
+        updated_interaction = ChallengeInteraction.objects.get(pk=interaction.pk)
+        self.assertTrue(updated_interaction.consent)
