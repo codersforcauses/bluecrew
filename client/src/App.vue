@@ -1,23 +1,22 @@
 <script setup lang="ts">
+
+import { useModalStore } from '@/stores/modal'
+import { RouterView } from 'vue-router'
 import BluecrewFooter from '@/components/BluecrewFooter.vue'
+import RegisterModal from '@/components/RegisterModal.vue'
 import NavBarWrapper from '@/components/NavBarWrapper.vue'
+
+const modalStore = useModalStore()
 </script>
 
 <template>
-  <v-theme-provider theme="colourTheme">
-    <v-app>
-      <!-- Navigation Bar -->
-      <NavBarWrapper />
-
-      <!-- Main Content -->
-      <v-main class="main-content">
-        <RouterView />
-      </v-main>
-
-      <!-- Footer -->
-      <BluecrewFooter />
-    </v-app>
-  </v-theme-provider>
+ <v-app>
+  <NavBarWrapper />
+    <v-main class="main-content">
+      <RouterView />
+    </v-main>
+  <BluecrewFooter />
+  <RegisterModal v-if="modalStore.currentModal === 'register'" @close="modalStore.closeModal" />
 </template>
 
 <style scoped>
