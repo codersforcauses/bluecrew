@@ -1,33 +1,30 @@
 
 <script setup lang="ts">
-import { defineComponent, ref } from "vue"
-import { defineEmits } from "vue"
-    
-    const dialog = ref(false)
-    const emit = defineEmits(['close'])
+  import { defineComponent, ref } from "vue"
+  import { defineEmits } from "vue"
 
-    const openDialog = () => {
-      dialog.value = true
-    }
+  const openDialog = () => {
+    dialog.value = true
+  }
 
-    const closeDialog = () => {
-      dialog.value = false
-      emit('close')
-    }
+  const closeDialog = () => {
+    dialog.value = false
+    emit('close')
+  }
 
-    const username = ref("");
-    const password = ref("");
-    const valid = ref(false);
+  const username = ref("");
+  const password = ref("");
+  const valid = ref(false);
 
-    const login = () => {
-        // Implement login logic here
-        console.log("Logging in with:", { username: username.value, password: password.value });
-    };
+  const login = () => {
+      // Implement login logic here
+      console.log("Logging in with:", { username: username.value, password: password.value });
+  };
 
-    const forgotPassword = () => {
-        // Implement forgot password functionality
-        console.log("Forgot password clicked");
-    };
+  const forgotPassword = () => {
+      // Implement forgot password functionality
+      console.log("Forgot password clicked");
+  };
 </script>
 
 <template>
