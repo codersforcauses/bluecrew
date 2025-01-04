@@ -4,18 +4,20 @@ import NavBarWrapper from '@/components/NavBarWrapper.vue'
 </script>
 
 <template>
-  <v-app>
-    <!-- Navigation Bar -->
-    <NavBarWrapper />
+  <v-theme-provider theme="colourTheme">
+    <v-app>
+      <!-- Navigation Bar -->
+      <NavBarWrapper />
 
-    <!-- Main Content -->
-    <v-main class="main-content">
-      <RouterView />
-    </v-main>
+      <!-- Main Content -->
+      <v-main class="main-content">
+        <RouterView />
+      </v-main>
 
-    <!-- Footer -->
-    <BluecrewFooter />
-  </v-app>
+      <!-- Footer -->
+      <BluecrewFooter />
+    </v-app>
+  </v-theme-provider>
 </template>
 
 <style scoped>

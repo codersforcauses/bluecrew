@@ -1,31 +1,43 @@
 <template>
-  <v-toolbar class="nav-bar" density="comfortable">
+  <v-toolbar class="nav-bar bg-primaryWhite" density="comfortable">
     <v-spacer></v-spacer>
     <v-toolbar-items class="nav-bar-items">
-      <v-btn @click="$emit('navigate', 'home')">Home</v-btn>
-      <v-btn @click="$emit('navigate', 'leaderboard')">Leaderboard</v-btn>
-      <v-btn :style="{ opacity: isLoggedIn ? 1 : 0.5 }" @click="$emit('navigate', 'friends')">
+      <v-btn class="text-primaryPink" @click="$emit('navigate', 'home')">Home</v-btn>
+      <v-btn class="text-primaryPink" @click="$emit('navigate', 'leaderboard')">Leaderboard</v-btn>
+      <v-btn
+        :style="{ opacity: isLoggedIn ? 1 : 0.5 }"
+        class="text-primaryPink"
+        @click="$emit('navigate', 'friends')"
+      >
         Friends
       </v-btn>
-      <v-btn :style="{ opacity: isLoggedIn ? 1 : 0.5 }" @click="$emit('navigate', 'preferences')">
+      <v-btn
+        :style="{ opacity: isLoggedIn ? 1 : 0.5 }"
+        class="text-primaryPink"
+        @click="$emit('navigate', 'preferences')"
+      >
         Preferences
       </v-btn>
       <v-menu open-on-hover>
         <template #activator="{ props }">
-          <v-btn v-bind="props" class="menu-list">
+          <v-btn v-bind="props" class="menu-list text-primaryPink">
             {{ isLoggedIn ? 'Log Out' : 'Sign In' }}
           </v-btn>
         </template>
         <v-list v-if="!isLoggedIn" class="menu-item">
-          <v-list-item class="menu-button" @click="$emit('sign-in-click', 'login')"
+          <v-list-item class="menu-button text-primaryPink" @click="$emit('sign-in-click', 'login')"
             >Log In</v-list-item
           >
-          <v-list-item class="menu-button" @click="$emit('sign-in-click', 'register')"
+          <v-list-item
+            class="menu-button text-primaryPink"
+            @click="$emit('sign-in-click', 'register')"
             >Register</v-list-item
           >
         </v-list>
-        <v-list v-else>
-          <v-list-item @click="$emit('auth')">Log Out</v-list-item>
+        <v-list v-else class="menu-item">
+          <v-list-item class="menu-button text-primaryPink" @click="$emit('auth')"
+            >Log Out</v-list-item
+          >
         </v-list>
       </v-menu>
     </v-toolbar-items>
@@ -33,8 +45,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
-
 defineProps({
   isLoggedIn: Boolean,
   userName: String,
@@ -46,7 +56,6 @@ defineEmits(['navigate', 'auth', 'sign-in-click'])
 <style scoped>
 .nav-bar {
   display: flex;
-  background-color: white;
 }
 
 .nav-bar-items {
@@ -54,7 +63,6 @@ defineEmits(['navigate', 'auth', 'sign-in-click'])
   gap: 15px;
   justify-content: center;
   font-size: 20px;
-  color: #d12974;
   text-transform: none;
   font-family: 'Lilita One', cursive;
 }
@@ -64,12 +72,7 @@ defineEmits(['navigate', 'auth', 'sign-in-click'])
   font-size: 20px;
   letter-spacing: -0.1px;
   font-weight: 500;
-  color: #d12974;
   background-color: transparent;
-}
-
-.nav-bar-items .v-btn.active-link {
-  color: #193855;
 }
 
 .menu-item {
@@ -81,7 +84,6 @@ defineEmits(['navigate', 'auth', 'sign-in-click'])
   font-family: 'Lilita One', cursive;
   font-size: 20px !important;
   font-weight: 500 !important;
-  color: #d12974 !important;
   background-color: transparent !important;
   border-radius: 12px;
   transition:

@@ -40,7 +40,7 @@ const handleSignInClick = (action: 'login' | 'register') => {
 </script>
 
 <template>
-  <div class="sticky-nav">
+  <div class="sticky-nav bg-primaryWhite">
     <!-- Desktop NavBar -->
     <div v-if="smAndUp" class="nav-bar-desktop">
       <NavBarDesktop
@@ -73,7 +73,6 @@ const handleSignInClick = (action: 'login' | 'register') => {
   width: 100%;
   z-index: 999;
   box-shadow: none !important;
-  background-color: white !important;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 </style>

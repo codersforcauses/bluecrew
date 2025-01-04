@@ -1,8 +1,8 @@
 <template>
   <div class="mobile-nav">
     <div v-if="!isMenuOpen" class="menu-trigger">
-      <v-btn icon @click="toggleMenu" class="menu-icon">
-        <v-icon color="#FF1493" size="28">mdi-menu</v-icon>
+      <v-btn icon @click="toggleMenu" class="menu-icon text-primaryWhite">
+        <v-icon class="text-primaryPink" size="28">mdi-menu</v-icon>
       </v-btn>
     </div>
 
@@ -10,51 +10,78 @@
       v-model="isMenuOpen"
       location="top"
       temporary
-      class="menu-drawer"
+      class="menu-drawer bg-primaryBlue"
       width="100%"
     >
       <div class="menu-header">
-        <span class="guest-mode">{{ userName || 'Guest Mode' }}</span>
+        <span class="guest-mode text-primaryWhite">{{ userName || 'Guest Mode' }}</span>
         <v-btn icon @click="toggleMenu" class="menu-icon fixed-position">
-          <v-icon color="#FF1493" size="28">mdi-menu</v-icon>
+          <v-icon class="text-primaryPink" size="28">mdi-menu</v-icon>
         </v-btn>
       </div>
 
       <div class="menu-content">
         <div class="menu-items">
-          <v-btn block class="menu-button" variant="text" height="64" @click="navigate('home')">
-            <span class="button-text">Home</span>
+          <v-btn
+            block
+            class="menu-button bg-creamWhite"
+            variant="text"
+            height="64"
+            @click="navigate('home')"
+          >
+            <span class="button-text text-primaryGrey">Home</span>
           </v-btn>
 
           <v-btn
             block
-            class="menu-button"
+            class="menu-button bg-creamWhite"
             variant="text"
             height="64"
             @click="navigate('preferences')"
           >
-            <span class="button-text">User Preferences</span>
-          </v-btn>
-
-          <v-btn block class="menu-button" variant="text" height="64" @click="navigate('friends')">
-            <span class="button-text">Friends</span>
+            <span class="button-text text-primaryGrey">User Preferences</span>
           </v-btn>
 
           <v-btn
             block
-            class="menu-button"
+            class="menu-button bg-creamWhite"
+            variant="text"
+            height="64"
+            @click="navigate('friends')"
+          >
+            <span class="button-text text-primaryGrey">Friends</span>
+          </v-btn>
+
+          <v-btn
+            block
+            class="menu-button bg-creamWhite"
             variant="text"
             height="64"
             @click="navigate('leaderboard')"
           >
-            <span class="button-text">Leaderboard</span>
+            <span class="button-text text-primaryGrey">Leaderboard</span>
           </v-btn>
         </div>
 
         <div class="auth-section">
-          <v-btn class="sign-in-button" rounded @click="auth">
-            {{ isLoggedIn ? 'Log Out' : 'Sign In' }}
-          </v-btn>
+          <div v-if="!isLoggedIn" class="sign-in-buttons">
+            <v-btn
+              class="sign-in-button text-primaryWhite"
+              rounded
+              @click="$emit('sign-in-click', 'login')"
+            >
+              Sign In
+            </v-btn>
+
+            <p class="signup-hint text-primaryWhite" @click="$emit('sign-in-click', 'register')">
+              Don't have an account?
+              <span class="signup-link text-primaryWhite">Please register</span>
+            </p>
+          </div>
+
+          <div v-else>
+            <v-btn class="sign-in-button text-primaryWhite" rounded @click="auth"> Sign Out </v-btn>
+          </div>
         </div>
       </div>
     </v-navigation-drawer>
@@ -62,14 +89,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue'
+import { ref } from 'vue'
 
 defineProps({
   isLoggedIn: Boolean,
   userName: String,
 })
 
-const emit = defineEmits(['navigate', 'auth'])
+const emit = defineEmits(['navigate', 'auth', 'sign-in-click'])
 
 const isMenuOpen = ref(false)
 const toggleMenu = () => {
@@ -100,7 +127,6 @@ const auth = () => {
 }
 
 .menu-icon {
-  background-color: white;
   border-radius: 8px;
 }
 
@@ -112,7 +138,6 @@ const auth = () => {
 }
 
 .menu-drawer {
-  background-color: #193855;
   padding-top: 16px;
   min-height: 490px;
 }
@@ -127,7 +152,6 @@ const auth = () => {
 }
 
 .guest-mode {
-  color: white;
   font-family: 'Lilita One', Arial, sans-serif;
   font-size: 24px;
   font-weight: 400;
@@ -148,7 +172,6 @@ const auth = () => {
 }
 
 .menu-button {
-  background-color: #e9dac4;
   border-radius: 16px;
   font-family: 'Poppins', Arial, sans-serif;
   font-size: 20px;
@@ -160,37 +183,31 @@ const auth = () => {
   height: 56px;
 }
 
-.menu-button.disabled {
-  background-color: #a9a9a9;
-  opacity: 0.8;
-}
-
 .button-text {
   width: 100%;
   text-align: center;
   font-weight: 900 !important;
 }
 
-.lock-icon {
-  position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
 .auth-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  margin-top: 16px;
-  padding-bottom: 4px;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding-bottom: 8px;
+}
+
+.sign-in-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .sign-in-button {
   width: 160px;
   background-color: transparent;
-  color: white;
   border: 2px solid white;
   border-radius: 30px;
   height: 48px;
@@ -202,14 +219,14 @@ const auth = () => {
 }
 
 .signup-hint {
-  color: white;
   font-size: 16px;
   font-weight: 500;
   text-align: center;
+  margin-top: 8px;
+  cursor: pointer;
 }
 
 .signup-link {
-  color: white;
   text-decoration: underline;
   font-weight: 500;
 }
