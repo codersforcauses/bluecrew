@@ -1,3 +1,4 @@
+from .serializers import UserRegisterSerializer, UserProfileSerializer
 from django.shortcuts import render  # noqa
 from django.shortcuts import get_object_or_404
 from rest_framework import status
@@ -21,3 +22,23 @@ def delete_friendship(request, friendship_id):
 
     friendship.delete()
     return Response({"message": "Friendship deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+def register_user(request):
+    serializer = UserRegisterSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'User created successfully.'}, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_current_user(request):
+    """
+    Get details of currently logged in user.
+    Requires authentication.
+    """
+    serializer = UserProfileSerializer(request.user)
+    return Response(serializer.data)
