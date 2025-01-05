@@ -1,29 +1,39 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import FriendView from '../views/FriendView.vue'
-import PreferencesView from '../views/PreferencesView.vue'
 import { useUserStore } from '@/stores/user'
 import { useModalStore } from '@/stores/modal'
+
+import PlaceholderView from '../views/PlaceHolderview.vue'
+import LandingView from '@/views/LandingView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      name: 'landing',
+      component: LandingView,
     },
     {
       path: '/friends',
       name: 'friends',
-      component: FriendView,
+      component: PlaceholderView,
       meta: { requiresAuth: true },
     },
     {
       path: '/preferences',
       name: 'preferences',
-      component: PreferencesView,
+      component: PlaceholderView,
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/leaderboard',
+      name: 'leaderboard',
+      component: PlaceholderView,
+    },
+    {
+      path: '/blingo',
+      name: 'blingo',
+      component: PlaceholderView,
     },
   ],
 })
