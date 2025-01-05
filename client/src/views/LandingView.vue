@@ -11,31 +11,21 @@ function openRegisterButton() {
 </script>
 
 <template>
-  <div v-if="!xs" class="header">
-    <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
-  </div>
-  <v-container>
-    <v-row height="100%">
-      <v-col :cols="xs ? 12 : 6" class="d-flex justify-center align-center">
-        <img
-          src="/bc-logo.png"
-          alt="Blue Crew Logo"
-          :class="{
-            'logo-mobile': xs,
-            'logo-desktop': !xs,
-          }"
-        />
-        <img
-          src="/oy-logo.png"
-          alt="Ocean Youth Logo"
-          :class="{
-            'logo-mobile': xs,
-            'logo-desktop': !xs,
-          }"
-        />
+  <v-container fluid class="fill-height pa-0 flex-column">
+    <v-row v-if="!xs" class="header">
+      <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
+    </v-row>
+    <v-row class="flex-grow-1 w-100" align="center">
+      <v-col cols="12" sm="6" align-self="center">
+        <v-row align="center">
+          <v-col align="right"><img src="/bc-logo.png" alt="Blue Crew Logo" class="logo" /> </v-col>
+          <v-col align="left">
+            <img src="/oy-logo.png" alt="Ocean Youth Logo" class="logo"
+          /></v-col>
+        </v-row>
       </v-col>
 
-      <v-col :cols="xs ? 12 : 6" class="d-flex flex-column justify-center align-center">
+      <v-col cols="12" sm="6" class="d-flex flex-column justify-center align-center">
         <div class="text-center">
           <h2 class="tagline">
             The inspiring way
@@ -78,7 +68,8 @@ function openRegisterButton() {
   height: 200px;
   position: relative;
   overflow: hidden;
-  margin-bottom: 50px;
+  flex-grow: 0;
+  flex-shrink: 1;
 }
 
 .header-image {
@@ -88,21 +79,15 @@ function openRegisterButton() {
   display: boxed;
 }
 
-.logo-mobile {
-  width: 150px;
-  margin: 40px 20px;
-}
-
-.logo-desktop {
-  width: 250px;
-  margin: 0 20px;
+.logo {
+  width: 100%;
+  max-width: 250px;
 }
 
 .buttons {
   display: flex;
   flex-direction: column;
   gap: 60px;
-  max-width: 400px;
   margin: 50px auto;
 }
 </style>
