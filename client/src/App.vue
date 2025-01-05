@@ -4,7 +4,7 @@ import { RouterView } from 'vue-router'
 import LoginModal from './components/LoginModal.vue'
 import BluecrewFooter from '@/components/BluecrewFooter.vue'
 import RegisterModal from '@/components/RegisterModal.vue'
-import NavBarWrapper from '@/components/NavBarWrapper.vue'
+import NavBarWrapper from './components/NavBarWrapper.vue'
 
 const modalStore = useModalStore()
 </script>

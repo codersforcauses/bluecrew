@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+import { useModalStore } from '@/stores/modal'
 
 import PlaceholderView from '../views/PlaceHolderview.vue'
 import LandingView from '@/views/LandingView.vue'
@@ -11,11 +13,41 @@ const router = createRouter({
       name: 'landing',
       component: LandingView,
     },
-
-    { path: '/leaderboard', name: 'leaderboard', component: PlaceholderView },
-    { path: '/friends', name: 'friends', component: PlaceholderView },
-    { path: '/preferences', name: 'preferences', component: PlaceholderView },
+    {
+      path: '/friends',
+      name: 'friends',
+      component: PlaceholderView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/preferences',
+      name: 'preferences',
+      component: PlaceholderView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/leaderboard',
+      name: 'leaderboard',
+      component: PlaceholderView,
+    },
+    {
+      path: '/blingo',
+      name: 'blingo',
+      component: PlaceholderView,
+    },
   ],
+})
+
+router.beforeEach((to, from) => {
+  const userStore = useUserStore()
+  const modalStore = useModalStore()
+
+  if (to.meta.requiresAuth && !userStore.isLoggedIn) {
+    modalStore.openLogin()
+    return { name: from.name }
+  }
+
+  return true
 })
 
 export default router
