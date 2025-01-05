@@ -4,6 +4,7 @@ import { useModalStore } from '@/stores/modal'
 
 import PlaceholderView from '../views/PlaceHolderview.vue'
 import LandingView from '@/views/LandingView.vue'
+import LeaderboardView from '@/views/LeaderboardView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,7 +29,7 @@ const router = createRouter({
     {
       path: '/leaderboard',
       name: 'leaderboard',
-      component: PlaceholderView,
+      component: LeaderboardView,
     },
     {
       path: '/blingo',
