@@ -23,43 +23,16 @@
       <div class="menu-content">
         <div class="menu-items">
           <v-btn
+            v-for="(page, index) in pages"
+            :key="index"
             block
             class="menu-button bg-creamWhite"
             variant="text"
             height="64"
-            @click="navigate('home')"
+            @click="navigate(page.routerName)"
+            :style="{ opacity: !page.requireAuth || isLoggedIn ? 1 : 0.5 }"
           >
-            <span class="button-text text-primaryGrey">Home</span>
-          </v-btn>
-
-          <v-btn
-            block
-            class="menu-button bg-creamWhite"
-            variant="text"
-            height="64"
-            @click="navigate('preferences')"
-          >
-            <span class="button-text text-primaryGrey">User Preferences</span>
-          </v-btn>
-
-          <v-btn
-            block
-            class="menu-button bg-creamWhite"
-            variant="text"
-            height="64"
-            @click="navigate('friends')"
-          >
-            <span class="button-text text-primaryGrey">Friends</span>
-          </v-btn>
-
-          <v-btn
-            block
-            class="menu-button bg-creamWhite"
-            variant="text"
-            height="64"
-            @click="navigate('leaderboard')"
-          >
-            <span class="button-text text-primaryGrey">Leaderboard</span>
+            <span class="button-text text-primaryGrey">{{ page.name }}</span>
           </v-btn>
         </div>
 
@@ -89,12 +62,14 @@
 </template>
 
 <script setup lang="ts">
+import type { NavigationInfo } from '@/types/navigation'
 import { ref } from 'vue'
 
-defineProps({
-  isLoggedIn: Boolean,
-  userName: String,
-})
+defineProps<{
+  isLoggedIn: boolean
+  userName: string
+  pages: NavigationInfo[]
+}>()
 
 const emit = defineEmits(['navigate', 'auth', 'sign-in-click'])
 

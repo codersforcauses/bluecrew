@@ -2,21 +2,14 @@
   <v-toolbar class="nav-bar bg-primaryWhite" density="comfortable">
     <v-spacer></v-spacer>
     <v-toolbar-items class="nav-bar-items">
-      <v-btn class="text-primaryPink" @click="$emit('navigate', 'home')">Home</v-btn>
-      <v-btn class="text-primaryPink" @click="$emit('navigate', 'leaderboard')">Leaderboard</v-btn>
       <v-btn
-        :style="{ opacity: isLoggedIn ? 1 : 0.5 }"
+        v-for="(page, index) in pages"
+        :key="index"
+        :style="{ opacity: !page.requireAuth || isLoggedIn ? 1 : 0.5 }"
         class="text-primaryPink"
-        @click="$emit('navigate', 'friends')"
+        @click="$emit('navigate', page.routerName)"
       >
-        Friends
-      </v-btn>
-      <v-btn
-        :style="{ opacity: isLoggedIn ? 1 : 0.5 }"
-        class="text-primaryPink"
-        @click="$emit('navigate', 'preferences')"
-      >
-        Preferences
+        {{ page.name }}
       </v-btn>
       <v-menu open-on-hover>
         <template #activator="{ props }">
@@ -47,10 +40,13 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
-  isLoggedIn: Boolean,
-  userName: String,
-})
+import type { NavigationInfo } from '@/types/navigation'
+
+defineProps<{
+  isLoggedIn: boolean
+  userName: string
+  pages: NavigationInfo[]
+}>()
 
 defineEmits(['navigate', 'auth', 'sign-in-click'])
 </script>
