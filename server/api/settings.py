@@ -44,7 +44,6 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     # this needs to match the id field for the user model specified in models.py
     "USER_ID_FIELD": "user_id",
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
 
     "SIGNING_KEY": SECRET_KEY,
 }
