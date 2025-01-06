@@ -1,15 +1,15 @@
-from .serializers import UserRegisterSerializer, UserProfileSerializer
+from rest_framework import status, permissions
+from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer
 from django.shortcuts import get_object_or_404
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .models import Friendship
-from django.db.models import Q
+from .models import Friendship, User
+from django.db.models import Q, F, Window
+from django.db.models.functions import DenseRank
 
 
 @api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
+@permission_classes((permissions.IsAuthenticated, ))
 def delete_friendship(request, friendship_id):
     friendship = get_object_or_404(Friendship, id=friendship_id)
     if request.user not in {friendship.requester, friendship.receiver}:
@@ -31,16 +31,18 @@ def register_user(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes((permissions.IsAuthenticated, ))
 def get_current_user(request):
-    """Get details of currently logged in user.
-    Requires authentication."""
+    """
+    Get details of currently logged in user.
+    Requires authentication.
+    """
     serializer = UserProfileSerializer(request.user)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes((permissions.IsAuthenticated, ))
 def get_friends(request):
     """Get all accepted friends of the logged-in user.
     Requires authentication."""
@@ -51,10 +53,11 @@ def get_friends(request):
     )
     friend_users = []
     for friendship in friendships:
-        friend = (friendship.receiver if friendship.requester == request.user else friendship.requester)
+        friend = (friendship.receiver if friendship.requester ==
+                  request.user else friendship.requester)
         friend_users.append(friend)
     serializer = UserProfileSerializer(friend_users, many=True)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 def get_friend_requests(request, is_outgoing=True):
@@ -72,11 +75,11 @@ def get_friend_requests(request, is_outgoing=True):
         getattr(friendship, 'receiver' if is_outgoing else 'requester') for friendship in friendships
     ]
     serializer = UserProfileSerializer(friend_users, many=True)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes((permissions.IsAuthenticated, ))
 def get_outgoing_requests(request):
     """Get all outgoing friend requests of the logged-in user.
     Requires authentication."""
@@ -84,8 +87,54 @@ def get_outgoing_requests(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes((permissions.IsAuthenticated, ))
 def get_incoming_requests(request):
     """Get all incoming friend requests to the logged-in user.
     Requires authentication."""
     return get_friend_requests(request, is_outgoing=False)
+
+
+@api_view(['GET'])
+def get_leaderboard(request):
+    """
+    Returns a leaderboard of size 'leaderboard_size'.
+    The current user's rank is also added to the end of the leaderboard, regardless of rank.
+    If the current user has a place in the leaderboard, they will appear twice - in the leaderboard and at the end.
+    """
+    # Size of the leaderboard returned, excluding the current user.
+    logged_in = request.user.is_authenticated
+    leaderboard_size = 20
+    user_set = User.objects.all()
+    if not user_set:
+        return Response({'No users found in database.'}, status=status.HTTP_200_OK)
+    # Annotate the user query set with each user's respective rank.
+    user_set = user_set.annotate(
+        rank=Window(
+            expression=DenseRank(),
+            order_by=F('total_points').desc(),
+        )
+    )
+    serializer = LeaderboardUserSerializer(
+        user_set, many=True)
+    leaderboard = []
+    current_user_index = -1
+    user_found = False
+    for i in range(len(serializer.data)):
+        # Check for current user.
+        if logged_in:
+            if user_set[i].username == str(request.user):
+                current_user_index = i
+                user_found = True
+            # If checking indices over the leaderboard_size, skip any users that are not the current user.
+        if i >= leaderboard_size:
+            # End search if leaderboard is populated, and the current user's rank is found.
+            if user_found or not logged_in:
+                break
+        else:
+            # Add annotated rank field to serializer.
+            serializer.data[i]['rank'] = user_set[i].rank
+            leaderboard.append(serializer.data[i])
+    # Append current user to end of leaderboard.
+    if logged_in:
+        leaderboard.append(serializer.data[current_user_index])
+    return Response(leaderboard, status=status.HTTP_200_OK)

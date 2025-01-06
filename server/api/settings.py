@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 from datetime import timedelta
-
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -57,7 +56,6 @@ REST_FRAMEWORK = {
 
 # Change this to point to custom user model
 AUTH_USER_MODEL = "bingo.User"
-
 # Application definition
 
 INSTALLED_APPS = [

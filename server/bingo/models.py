@@ -97,6 +97,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.username
 
+    class Meta:
+        ordering = ["-total_points", "username"]
+        indexes = [models.Index(fields=["-total_points"])]
+
 
 class Challenge(models.Model):
     CHALLENGE_TYPES = [
