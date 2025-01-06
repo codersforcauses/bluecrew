@@ -6,6 +6,7 @@ import NavBarMobile from '@/components/NavBarMobile.vue'
 import NavBarDesktop from '@/components/NavBarDesktop.vue'
 import { useUserStore } from '@/stores/user'
 import { useModalStore } from '@/stores/modal'
+import type { NavigationInfo } from '@/types/navigation'
 
 const userStore = useUserStore()
 const modalStore = useModalStore()
@@ -17,6 +18,14 @@ const userName = computed(() => userStore.userData?.userName || '')
 const truncatedUserName = computed(() => {
   return userName.value.length > 10 ? `${userName.value.slice(0, 10)}...` : userName.value
 })
+
+const pages: NavigationInfo[] = [
+  { name: 'Home', routerName: 'landing', requireAuth: false },
+  { name: 'Blingo', routerName: 'blingo', requireAuth: false },
+  { name: 'Leaderboard', routerName: 'leaderboard', requireAuth: false },
+  { name: 'Friends', routerName: 'friends', requireAuth: true },
+  { name: 'Preferences', routerName: 'preferences', requireAuth: true },
+]
 
 const handleAuth = async () => {
   if (isLoggedIn.value) {
@@ -46,6 +55,7 @@ const handleSignInClick = (action: 'login' | 'register') => {
       <NavBarDesktop
         :is-logged-in="isLoggedIn"
         :user-name="truncatedUserName"
+        :pages="pages"
         @navigate="handleNavigation"
         @auth="handleAuth"
         @sign-in-click="handleSignInClick"
@@ -57,6 +67,7 @@ const handleSignInClick = (action: 'login' | 'register') => {
       <NavBarMobile
         :is-logged-in="isLoggedIn"
         :user-name="truncatedUserName"
+        :pages="pages"
         @navigate="handleNavigation"
         @auth="handleAuth"
         @sign-in-click="handleSignInClick"
