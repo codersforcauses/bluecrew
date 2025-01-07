@@ -32,6 +32,10 @@ const closeDialog = () => {
   modalStore.closeModal()
 }
 
+const openLoginModal = () => {
+  modalStore.openLogin()
+}
+
 const submitForm = () => {
   closeDialog()
 }
@@ -168,7 +172,7 @@ const submitForm = () => {
           </form>
 
           <footer class="text-primaryPink">
-            Already have an account? <a href="#" class="text-primaryPink">Sign In</a>
+            Already have an account? <a href="#" class="text-primaryPink" @click.prevent="openLoginModal">Sign In</a>
           </footer>
         </v-card-text>
       </v-card>
