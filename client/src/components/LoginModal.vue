@@ -107,7 +107,7 @@ const valid = ref(false)
 
       <v-card-actions class="d-flex justify-center text-primaryPink">
         <p>
-          <b>Don't have an account?</b>
+          <b>Don't have an account? </b>
           <a href="#" class="text-primaryPink" @click.prevent="openRegisterModal">Sign up</a>
         </p>
       </v-card-actions>
