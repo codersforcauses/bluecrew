@@ -214,3 +214,29 @@ class ChallengeInteraction(models.Model):
     def __str__(self):
         return (f"Interaction of {self.user.username} with challenge "
                 f"'{self.challenge.name}' - Completed: {self.completed}")
+
+
+class GridInteraction(models.Model):
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    grid = models.ForeignKey("BingoGrid", on_delete=models.CASCADE)
+
+    # Sorted M2M to ChallengeInteraction
+    challenge_interactions = SortedManyToManyField("ChallengeInteraction", blank=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["user", "grid"], name="unique_user_grid")
+        ]
+
+    def clean(self):
+        super().clean()
+        # Enforce that there are exactly 16 ChallengeInteraction references
+        if self.pk:  # if the object is saved, i.e. has an ID
+            count_ci = self.challenge_interactions.count()
+            if count_ci != 16:
+                raise ValidationError(
+                    f"GridInteraction must have exactly 16 ChallengeInteraction objects (found {count_ci})."
+                )
+
+    def __str__(self):
+        return f"GridInteraction (user={self.user}, grid={self.grid})"
