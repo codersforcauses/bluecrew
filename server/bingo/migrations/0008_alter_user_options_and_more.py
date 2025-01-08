@@ -7,6 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("bingo", "0007_user_gender_identity_user_indigenous_identity_and_more"),
+        ("bingo", "0007_user_gender_identity_user_indigenous_identity_and_more"),
     ]
 
     operations = [
