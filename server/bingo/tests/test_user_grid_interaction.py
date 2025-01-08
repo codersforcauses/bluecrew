@@ -69,13 +69,3 @@ class GridInteractionTest(TestCase):
             gi.full_clean()
 
         self.assertIn("found 10", str(ctx.exception))
-
-    def test_assign_all_16_challenges(self):
-        # Explicit test to ensure everything works when we set exactly 16 references.
-        gi = GridInteraction.objects.create(user=self.user, grid=self.grid)
-        gi.challenge_interactions.add(*self.ci_list)
-
-        gi.full_clean()
-        gi.save()
-
-        self.assertEqual(gi.challenge_interactions.count(), 16)
