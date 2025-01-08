@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     # For localisations/translations
     "rest_framework_simplejwt",
     "bingo",
+    "sortedm2m",
 ]
 
 MIDDLEWARE = [

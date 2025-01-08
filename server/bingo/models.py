@@ -3,6 +3,7 @@ from django.contrib.auth.models import PermissionsMixin, AbstractBaseUser, BaseU
 from datetime import date
 from django.db.models import Q
 from django.core.exceptions import ValidationError
+from sortedm2m.fields import SortedManyToManyField
 
 
 class UserManager(BaseUserManager):
@@ -162,6 +163,36 @@ class Friendship(models.Model):
 
     def __str__(self):
         return f"Friend request from {self.requester} to {self.receiver} ({self.status.capitalize()})"
+
+
+class BingoGrid(models.Model):
+    # A Bingo grid that references exactly 16 Challenge objects
+
+    grid_id = models.AutoField(primary_key=True)
+
+    # The sorted M2M field preserves order of challenges
+    challenges = SortedManyToManyField(Challenge)
+
+    is_active = models.BooleanField(default=False)
+
+    def clean(self):
+        # Ensure exactly 16 challenges
+        # This only makes sense if the object is saved at least once (has a PK).
+        # If it's brand new, you won't have the M2M relationships set until after save.
+        if self.pk:
+            if self.challenges.count() != 16:
+                raise ValidationError(
+                    f"BingoGrid must have exactly 16 challenges (found {self.challenges.count()})."
+                )
+
+        # Ensure only one active BingoGrid
+        if self.is_active:
+            active_count = BingoGrid.objects.filter(is_active=True).exclude(pk=self.pk).count()
+            if active_count > 0:
+                raise ValidationError("Another BingoGrid is already active.")
+
+    def __str__(self):
+        return f"BingoGrid #{self.grid_id} (Active: {self.is_active})"
 
 
 class ChallengeInteraction(models.Model):
