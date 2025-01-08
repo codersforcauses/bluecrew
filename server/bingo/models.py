@@ -63,6 +63,27 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=0
     )
 
+    class Gender(models.IntegerChoices):
+        MALE = (0, "Male")
+        FEMALE = (1, "Female")
+        NB = (2, "Non-Binary")
+        OTHER = (3, "Other")
+        NA = (4, "Prefer not to say")
+    gender_identity = models.IntegerField(
+        choices=Gender,
+        blank=False,
+        default=Gender.NA
+    )
+
+    class IndigenousIdentity(models.IntegerChoices):
+        NA = (0, "Prefer not to say")
+        Y = (1, "Yes")
+        N = (2, "No")
+    indigenous_identity = models.BooleanField(
+        choices=IndigenousIdentity,
+        default=IndigenousIdentity.NA
+    )
+
     avatar = models.IntegerField(default=0, choices=map(
         lambda i: (i, f"Avatar {i}"), range(6)))
 
@@ -76,6 +97,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+    class Meta:
+        ordering = ["-total_points", "username"]
+        indexes = [models.Index(fields=["-total_points"])]
 
 
 class Challenge(models.Model):
@@ -168,3 +193,24 @@ class BingoGrid(models.Model):
 
     def __str__(self):
         return f"BingoGrid #{self.grid_id} (Active: {self.is_active})"
+
+
+class ChallengeInteraction(models.Model):
+    # Model to track an interaction between a user and a challenge.
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
+
+    image = models.ImageField(
+        upload_to="challenge_images/",  # idk where we want to put this atm
+        blank=True
+    )
+
+    completed = models.BooleanField(default=False)
+    consent = models.BooleanField(default=False)
+
+    date_started = models.DateTimeField(auto_now_add=True)
+    date_completed = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return (f"Interaction of {self.user.username} with challenge "
+                f"'{self.challenge.name}' - Completed: {self.completed}")

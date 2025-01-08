@@ -28,3 +28,40 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     def validate_password(self, value):
         validate_password(value)
         return value
+
+
+class LeaderboardUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'total_points']
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'user_id',       # maps to userId
+            'username',      # maps to userName
+            'first_name',    # maps to firstName
+            'last_name',     # maps to lastName
+            'bio',
+            'total_points',  # maps to totalPoints
+            'email',
+            'visibility',
+            'avatar'
+        ]
+
+    def to_representation(self, instance):
+        # This ensures the field names match the TypeScript interface
+        data = super().to_representation(instance)
+        return {
+            'userId': data['user_id'],
+            'userName': data['username'],
+            'firstName': data['first_name'],
+            'lastName': data['last_name'],
+            'bio': data['bio'],
+            'totalPoints': data['total_points'],
+            'email': data['email'],
+            'visibility': data['visibility'],
+            'avatar': data['avatar']
+        }
