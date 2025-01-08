@@ -153,62 +153,66 @@ class FriendshipTest(TestCase):
 
 class BingoGridTest(TestCase):
     def setUp(self):
-        # Create 2 real challenges and 14 dummy ids to test with
-        self.challenge1 = Challenge.objects.create(
-            name="Real Challenge 1",
-            description="Real test challenge #1",
-            challenge_type="act",
-            points=5,
-        )
-        self.challenge2 = Challenge.objects.create(
-            name="Real Challenge 2",
-            description="Real test challenge #2",
-            challenge_type="connect",
-            points=10,
-        )
+        self.challenges = []
+        for i in range(16):
+            c = Challenge.objects.create(
+                name=f"Challenge {i}",
+                description="A sample challenge",
+                challenge_type="act",
+                points=5
+            )
+            self.challenges.append(c)
 
-    def test_create_bingo_grid_with_part_dummy_ids(self):
-        # Use 2 real challenge IDs + 14 placeholders
-        real_ids = [self.challenge1.id, self.challenge2.id]
-        placeholder_ids = [0] * 14
+    def test_exactly_16_challenges(self):
+        # Verify a BingoGrid with exactly 16 challenges passes validation, but 15 or 17 fails.
+        grid = BingoGrid.objects.create(is_active=False)
 
-        all_challenge_ids = real_ids + placeholder_ids
-
-        grid = BingoGrid.objects.create(challenges=all_challenge_ids)
-        self.assertEqual(len(grid.challenges), 16)
-        self.assertEqual(grid.challenges[0], self.challenge1.id)
-        self.assertEqual(grid.challenges[1], self.challenge2.id)
-        self.assertTrue(all(x == 0 for x in grid.challenges[2:]))
-
-    def test_only_one_active_grid(self):
-        # Validate that only one BingoGrid can be active at a time.
-
-        # Create an active grid but with no name so flake doesn't complain
-        _ = BingoGrid.objects.create(
-            challenges=[self.challenge1.id] + [0]*15,
-            is_active=True
-        )
-        grid2 = BingoGrid(
-            challenges=[self.challenge2.id] + [0]*15,
-            is_active=True
-        )
-
+        grid.challenges.add(*self.challenges)
+        grid.full_clean()
+        grid.save()
+        # 15 challenge scenario
+        grid_15 = BingoGrid.objects.create(is_active=False)
+        grid_15.challenges.add(*self.challenges[:15])
         with self.assertRaises(ValidationError):
-            grid2.full_clean()  # calls .clean(), which should fail
+            grid_15.full_clean()
 
-        # If we switch the second grid to inactive, it should pass
+        # 17 challenge scenario
+        extra_challenge = Challenge.objects.create(
+            name="Extra Challenge",
+            description="Extra sample challenge",
+            challenge_type="act",
+            points=10
+        )
+        grid_17 = BingoGrid.objects.create(is_active=False)
+        grid_17.challenges.add(*self.challenges)
+        grid_17.challenges.add(extra_challenge)
+        with self.assertRaises(ValidationError):
+            grid_17.full_clean()
+
+    def test_preserve_challenge_order(self):
+        # With SortedManyToManyField, the order we add them is retained.
+        grid = BingoGrid.objects.create(is_active=False)
+        for c in reversed(self.challenges):
+            grid.challenges.add(c)
+        sorted_list = list(grid.challenges.all())
+        self.assertEqual(sorted_list[0], self.challenges[15])
+        self.assertEqual(sorted_list[-1], self.challenges[0])
+        grid.full_clean()
+
+    def test_single_active_grid(self):
+        # Ensure that only one BingoGrid can be active at once.
+        grid1 = BingoGrid.objects.create(is_active=True)
+        grid1.challenges.add(*self.challenges)
+        grid1.full_clean()
+        grid1.save()
+
+        # Second grid tries to be active
+        grid2 = BingoGrid.objects.create(is_active=True)
+        grid2.challenges.add(*self.challenges)
+        with self.assertRaises(ValidationError):
+            grid2.full_clean()
+
+        # Make grid2 inactive, now it should be valid
         grid2.is_active = False
         grid2.full_clean()
         grid2.save()
-        self.assertFalse(grid2.is_active)
-
-    def test_str_representation(self):
-        """
-        Test the __str__ output, e.g. "BingoGrid #1 (Active: True/False)"
-        """
-        grid = BingoGrid.objects.create(
-            challenges=[self.challenge1.id] + [0]*15,
-            is_active=True
-        )
-        self.assertIn("BingoGrid #", str(grid))
-        self.assertIn("(Active: True)", str(grid))

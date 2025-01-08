@@ -3,7 +3,7 @@ from django.contrib.auth.models import PermissionsMixin, AbstractBaseUser, BaseU
 from datetime import date
 from django.db.models import Q
 from django.core.exceptions import ValidationError
-from django.contrib.postgres.fields import ArrayField
+from sortedm2m.fields import SortedManyToManyField
 
 
 class UserManager(BaseUserManager):
@@ -141,25 +141,30 @@ class Friendship(models.Model):
 
 
 class BingoGrid(models.Model):
-    #  A Bingo grid that holds an array of 16 challenge IDs.
+    # A Bingo grid that references exactly 16 Challenge objects
+
     grid_id = models.AutoField(primary_key=True)
-    # We store an array of integers (challenge IDs).
-    challenges = ArrayField(
-        base_field=models.IntegerField(),
-        size=16,
-        blank=True,
-        default=list,
-    )
+
+    # The sorted M2M field preserves order of challenges
+    challenges = SortedManyToManyField(Challenge)
 
     is_active = models.BooleanField(default=False)
 
     def clean(self):
-        # Custom validation to ensure that at most one BingoGrid is active at a time.
+        # Ensure exactly 16 challenges
+        # This only makes sense if the object is saved at least once (has a PK).
+        # If it's brand new, you won't have the M2M relationships set until after save.
+        if self.pk:
+            if self.challenges.count() != 16:
+                raise ValidationError(
+                    f"BingoGrid must have exactly 16 challenges (found {self.challenges.count()})."
+                )
+
+        # Ensure only one active BingoGrid
         if self.is_active:
             active_count = BingoGrid.objects.filter(is_active=True).exclude(pk=self.pk).count()
             if active_count > 0:
                 raise ValidationError("Another BingoGrid is already active.")
-        super().clean()
 
     def __str__(self):
         return f"BingoGrid #{self.grid_id} (Active: {self.is_active})"

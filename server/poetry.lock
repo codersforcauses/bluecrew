@@ -90,6 +90,16 @@ files = [
 Django = ">=3.2"
 
 [[package]]
+name = "django-sortedm2m"
+version = "4.0.0"
+description = "Drop-in replacement for Django's many to many field with sorted relations."
+optional = false
+python-versions = "*"
+files = [
+    {file = "django_sortedm2m-4.0.0-py2.py3-none-any.whl", hash = "sha256:7e76f3f3ea3184b4ca1d4043ec75316c606d00f5534fc71e69981d8b2198ff33"},
+]
+
+[[package]]
 name = "djangorestframework"
 version = "3.15.2"
 description = "Web APIs for Django, made easy."
@@ -610,4 +620,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "0ff6f0782062af60d3454fcf2479fc524808ebf035f41101d06b39542b781f02"
+content-hash = "06c80d38ef705dfd058e952779caba27dedda45f0c3c9528f4d5a56211124e7a"
