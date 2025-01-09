@@ -6,7 +6,6 @@ from ..models import (
     User,
     Challenge,
     ChallengeInteraction,
-    NullableChallengeInteraction,
     BingoGrid,
     GridInteraction
 )
@@ -20,7 +19,7 @@ class GridInteractionTest(TestCase):
         )
         self.grid = BingoGrid.objects.create(is_active=False)
         self.challenges = []
-        for i in range(8):
+        for i in range(16):
             c = Challenge.objects.create(
                 name=f"Challenge {i}",
                 description=f"Description {i}",
@@ -29,19 +28,14 @@ class GridInteractionTest(TestCase):
             )
             self.challenges.append(c)
         self.grid.challenges.add(*self.challenges)
-        self.nci_list = []
-        for i in range(16):
-            if i < 8:
-                ci = ChallengeInteraction.objects.create(
-                    user=self.user,
-                    challenge=self.challenges[i],
-                    completed=(i < 4),
-                )
-                nci = NullableChallengeInteraction.objects.create(
-                    optional_challenge_interaction=ci)
-            else:
-                nci = NullableChallengeInteraction.objects.create()
-            self.nci_list.append(nci)
+        self.ci_list = []
+        for ch in self.challenges:
+            ci = ChallengeInteraction.objects.create(
+                user=self.user,
+                challenge=ch,
+                completed=False,
+            )
+            self.ci_list.append(ci)
 
     def test_unique_user_grid_constraint(self):
         # Verifies that we cannot create two GridInteraction objects with the same (user, grid).
@@ -56,7 +50,7 @@ class GridInteractionTest(TestCase):
             grid=self.grid
         )
 
-        gi.challenge_interactions.add(*self.nci_list)
+        gi.challenge_interactions.add(*self.ci_list)
         gi.full_clean()
         gi.save()
 
@@ -69,23 +63,9 @@ class GridInteractionTest(TestCase):
             user=self.user,
             grid=self.grid
         )
-        gi.challenge_interactions.add(*self.nci_list[:10])
+        gi.challenge_interactions.add(*self.ci_list[:10])
 
         with self.assertRaises(ValidationError) as ctx:
             gi.full_clean()
 
         self.assertIn("found 10", str(ctx.exception))
-
-    def test_completion_status_correctly_determined(self):
-        # Test that the get_completition_status correctly finds the completition status at each index
-        gi = GridInteraction.objects.create(
-            user=self.user,
-            grid=self.grid
-        )
-        gi.challenge_interactions.add(*self.nci_list)
-        self.assertTrue(all(gi.get_completition_status(i)
-                        == "completed" for i in range(4)))
-        self.assertTrue(all(gi.get_completition_status(i)
-                        == "started" for i in range(4, 8)))
-        self.assertTrue(all(gi.get_completition_status(i)
-                        == "not started" for i in range(8, 16)))
