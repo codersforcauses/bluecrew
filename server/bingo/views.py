@@ -145,7 +145,7 @@ def get_leaderboard(request):
 def accept_friendship(request, friendship_id):
     friendship = get_object_or_404(Friendship, id=friendship_id)
 
-    if request.user != friendship.requester:
+    if request.user != friendship.receiver:
         return Response(
             {"error": "You do not have permission to accept this friend request."}, status=status.HTTP_403_FORBIDDEN)
 
