@@ -182,12 +182,14 @@ class BingoGrid(models.Model):
         if self.pk:
             if self.challenges.count() != 16:
                 raise ValidationError(
-                    f"BingoGrid must have exactly 16 challenges (found {self.challenges.count()})."
+                    f"BingoGrid must have exactly 16 challenges (found {
+                        self.challenges.count()})."
                 )
 
         # Ensure only one active BingoGrid
         if self.is_active:
-            active_count = BingoGrid.objects.filter(is_active=True).exclude(pk=self.pk).count()
+            active_count = BingoGrid.objects.filter(
+                is_active=True).exclude(pk=self.pk).count()
             if active_count > 0:
                 raise ValidationError("Another BingoGrid is already active.")
 
@@ -205,10 +207,18 @@ class ChallengeInteraction(models.Model):
         blank=True
     )
 
-    completed = models.BooleanField(default=False)
+    class CompletionStatuses(models.IntegerChoices):
+        NOT_STARTED = (2, "Not Started")
+        STARTED = (1, "Started")
+        COMPLETED = (0, "Completed")
+    completed = models.IntegerField(
+        choices=CompletionStatuses,
+        blank=False,
+        default=0
+    )
     consent = models.BooleanField(default=False)
 
-    date_started = models.DateTimeField(auto_now_add=True)
+    date_started = models.DateTimeField(blank=True, null=True)
     date_completed = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
@@ -221,11 +231,13 @@ class GridInteraction(models.Model):
     grid = models.ForeignKey("BingoGrid", on_delete=models.CASCADE)
 
     # Sorted M2M to ChallengeInteraction
-    challenge_interactions = SortedManyToManyField("ChallengeInteraction", blank=True)
+    challenge_interactions = SortedManyToManyField(
+        "ChallengeInteraction", blank=True)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["user", "grid"], name="unique_user_grid")
+            models.UniqueConstraint(
+                fields=["user", "grid"], name="unique_user_grid")
         ]
 
     def clean(self):
@@ -235,7 +247,8 @@ class GridInteraction(models.Model):
             count_ci = self.challenge_interactions.count()
             if count_ci != 16:
                 raise ValidationError(
-                    f"GridInteraction must have exactly 16 ChallengeInteraction objects (found {count_ci})."
+                    f"GridInteraction must have exactly 16 ChallengeInteraction objects (found {
+                        count_ci})."
                 )
 
     def __str__(self):

@@ -24,12 +24,29 @@ class ChallengeInteractionTest(TestCase):
             user=self.user,
             challenge=self.challenge
         )
-        self.assertFalse(interaction.completed)
+        self.assertEqual(interaction.completed, 0)
         self.assertFalse(interaction.consent)
-        self.assertIsNotNone(interaction.date_started)
+        self.assertIsNone(interaction.date_started)
         self.assertIsNone(interaction.date_completed)
         # For now test that image is "empty"
         self.assertFalse(interaction.image)
+
+    def test_start_challenge(self):
+        # Test updating the 'completed' status and setting 'date_completed'.
+        interaction = ChallengeInteraction.objects.create(
+            user=self.user,
+            challenge=self.challenge
+        )
+
+        # simulate completion
+        interaction.completed = 1
+        interaction.date_started = timezone.now()
+        interaction.save()
+
+        updated_interaction = ChallengeInteraction.objects.get(
+            pk=interaction.pk)
+        self.assertEqual(updated_interaction.completed, 1)
+        self.assertIsNotNone(updated_interaction.date_started)
 
     def test_complete_challenge(self):
         # Test updating the 'completed' status and setting 'date_completed'.
@@ -39,13 +56,13 @@ class ChallengeInteractionTest(TestCase):
         )
 
         # simulate completion
-        interaction.completed = True
+        interaction.completed = 2
         interaction.date_completed = timezone.now()
         interaction.save()
 
         updated_interaction = ChallengeInteraction.objects.get(
             pk=interaction.pk)
-        self.assertTrue(updated_interaction.completed)
+        self.assertEqual(updated_interaction.completed, 2)
         self.assertIsNotNone(updated_interaction.date_completed)
 
     def test_consent(self):
