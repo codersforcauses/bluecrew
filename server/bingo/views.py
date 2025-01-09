@@ -147,7 +147,7 @@ def accept_friendship(request, friendship_id):
 
     if request.user != friendship.receiver:
         return Response(
-            {"error": "You do not have permission to accept this friend request."},
+            {"error": "You do not have permission to accept this friendship."},
             status=status.HTTP_403_FORBIDDEN
         )
 
@@ -161,6 +161,6 @@ def accept_friendship(request, friendship_id):
         friendship.status = Friendship.ACCEPTED
         friendship.save()
         return Response(
-            {"message": "Friend request accepted."},
+            {"message": "Friendship accepted successfully."},
             status=status.HTTP_200_OK
         )
