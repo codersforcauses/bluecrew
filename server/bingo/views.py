@@ -1,9 +1,9 @@
 from rest_framework import status, permissions
-from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer
+from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from .models import Friendship, User
+from .models import Friendship, User, BingoGrid
 from django.db.models import Q, F, Window
 from django.db.models.functions import DenseRank
 
@@ -138,3 +138,11 @@ def get_leaderboard(request):
     if logged_in:
         leaderboard.append(serializer.data[current_user_index])
     return Response(leaderboard, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def get_bingo_grid(request):
+    # Fetch the currently active bingo grid.
+    active_grid = get_object_or_404(BingoGrid, is_active=True)
+    active_grid = BingoGridSerializer(active_grid)
+    return Response(active_grid.data)
