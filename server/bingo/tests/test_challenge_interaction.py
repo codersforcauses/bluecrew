@@ -32,7 +32,7 @@ class ChallengeInteractionTest(TestCase):
         self.assertFalse(interaction.image)
 
     def test_start_challenge(self):
-        # Test updating the 'completed' status and setting 'date_completed'.
+        # Test updating the 'completed' status to 'started' and setting 'date_started'.
         interaction = ChallengeInteraction.objects.create(
             user=self.user,
             challenge=self.challenge
@@ -49,7 +49,7 @@ class ChallengeInteractionTest(TestCase):
         self.assertIsNotNone(updated_interaction.date_started)
 
     def test_complete_challenge(self):
-        # Test updating the 'completed' status and setting 'date_completed'.
+        # Test updating the 'completed' status to 'completed' and setting 'date_completed'.
         interaction = ChallengeInteraction.objects.create(
             user=self.user,
             challenge=self.challenge
