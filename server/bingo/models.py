@@ -182,12 +182,14 @@ class BingoGrid(models.Model):
         if self.pk:
             if self.challenges.count() != 16:
                 raise ValidationError(
-                    f"BingoGrid must have exactly 16 challenges (found {self.challenges.count()})."
+                    f"BingoGrid must have exactly 16 challenges (found {
+                        self.challenges.count()})."
                 )
 
         # Ensure only one active BingoGrid
         if self.is_active:
-            active_count = BingoGrid.objects.filter(is_active=True).exclude(pk=self.pk).count()
+            active_count = BingoGrid.objects.filter(
+                is_active=True).exclude(pk=self.pk).count()
             if active_count > 0:
                 raise ValidationError("Another BingoGrid is already active.")
 
@@ -216,27 +218,51 @@ class ChallengeInteraction(models.Model):
                 f"'{self.challenge.name}' - Completed: {self.completed}")
 
 
+class NullableChallengeInteraction(models.Model):
+    # Wrapper for the ChallengeInteraction model which allows null values
+    optional_challenge_interaction = models.ForeignKey(
+        ChallengeInteraction, on_delete=models.CASCADE, null=True)
+
+
 class GridInteraction(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     grid = models.ForeignKey("BingoGrid", on_delete=models.CASCADE)
 
     # Sorted M2M to ChallengeInteraction
-    challenge_interactions = SortedManyToManyField("ChallengeInteraction", blank=True)
+    challenge_interactions = SortedManyToManyField(
+        "NullableChallengeInteraction", blank=True)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["user", "grid"], name="unique_user_grid")
+            models.UniqueConstraint(
+                fields=["user", "grid"], name="unique_user_grid")
         ]
 
     def clean(self):
         super().clean()
-        # Enforce that there are exactly 16 ChallengeInteraction references
+        # Enforce that there are exactly 16 NullableChallengeInteraction references
         if self.pk:  # if the object is saved, i.e. has an ID
             count_ci = self.challenge_interactions.count()
             if count_ci != 16:
                 raise ValidationError(
-                    f"GridInteraction must have exactly 16 ChallengeInteraction objects (found {count_ci})."
+                    f"GridInteraction must have exactly 16 NullableChallengeInteraction objects (found {
+                        count_ci})."
                 )
+
+    def get_challenge_interaction(self, index):
+        # Returns the challenge interaction associated with the given index
+        # If there is no associated challenge interaction (because the user has not started
+        # the corresponding challenge yet), this method instead returns None
+        return self.challenge_interactions.all()[index].optional_challenge_interaction
+
+    def get_completition_status(self, index):
+        optional_challenge_interaction = self.get_challenge_interaction(index)
+        if optional_challenge_interaction is None:
+            return "not started"
+        elif not optional_challenge_interaction.completed:
+            return "started"
+        else:
+            return "completed"
 
     def __str__(self):
         return f"GridInteraction (user={self.user}, grid={self.grid})"
