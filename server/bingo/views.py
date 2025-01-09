@@ -30,6 +30,8 @@ def get_current_user(request):
 @permission_classes([IsAuthenticated])
 def start_challenge(request):
     interactions = ChallengeInteraction.objects.filter(user=request.user, challenge=request.challenge)
+
+    # Throw an error if there is already an interaction between that user and that challenge
     if len(interactions) != 0:
         return Response(status=status.HTTP_409_CONFLICT)
 
