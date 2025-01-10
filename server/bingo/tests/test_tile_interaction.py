@@ -80,3 +80,9 @@ class TileInteractionTest(TestCase):
         with self.assertRaises(IntegrityError):
             TileInteraction.objects.create(
                 user=self.user, grid=self.grid, position=2)
+
+    def test_position_constraint(self):
+        # Verifies that we cannot create a TileInteraction object with position greater than 15.
+        with self.assertRaises(IntegrityError):
+            TileInteraction.objects.create(
+                user=self.user, grid=self.grid, position=16)
