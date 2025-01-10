@@ -49,27 +49,28 @@ const finish = () => {
 <template>
   <v-card
   color="primaryBlue"
-  rounded
+  rounded="xl"
+  width="500px"
   >
     <div class="header">
       <button class="close-button">x</button>
-      <v-card-title>Watch an Ocean Documentary</v-card-title>
+      <v-card-title style="font-weight: bold;">Watch an Ocean Documentary</v-card-title>
     </div>
-    <v-card-subtitle class="points"> 200 Points</v-card-subtitle>
+    <v-card-subtitle class="points" style="font-weight: bold;"> 200 Points</v-card-subtitle>
 
     <div class="description">
-      <v-card-text>
-        Here are some of our top picks! You can choose one of them or watch one of your own.Tell us
+      <v-card-text style="font-weight: bold;">
+        Here are some of our top picks! You can choose one of them or watch one of your own. Tell us
         what you thought and submit a picture.
+        <br> David Attenborough, Our Planet Coastal Seas
+        <br> Cleaning up the Ocean
       </v-card-text>
-      <ul>
-        <li>David Attenborough, Our Planet Coastal Seas</li>
-        <li>Cleaning up the Ocean</li>
-      </ul>
     </div>
     <v-action>
       <v-btn>Start</v-btn>
     </v-action>
   </v-card>
 </template>
-<style scoped></style>
+
+<style scoped>
+</style>
