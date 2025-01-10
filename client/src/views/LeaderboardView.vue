@@ -1,56 +1,52 @@
 <template>
-    <v-container>
-      <h2 class="leaderboard-text text-primaryPink">Leaderboard</h2>
+  <v-container>
+    <h2 class="leaderboard-text text-primaryPink">Leaderboard</h2>
 
-      <!-- Your Rank -->         
-      <h3 class="section-title text-primaryBlue">Your Rank</h3>
-      <v-row>
-        <v-col cols="12">
-          <LeaderboardRow
-            :rank="currentUser.rank"
-            :avatar-index="currentUser.avatarIndex"
-            :name="currentUser.name"
-            :points="currentUser.points"
-            :is-highlighted="true"
-          />
-        </v-col>
-      </v-row>
-  
-      <!-- Other Users -->
-      <h3 class="section-title2 text-primaryBlue">Overall Rankings</h3>
-      <v-row class="leaderboard-scroll">
-        <v-col
-          v-for="(row, index) in leaderboardData"
-          :key="index"
-          cols="12"
-        >
-          <LeaderboardRow
-            :rank="row.rank"
-            :avatar-index="row.avatarIndex"
-            :name="row.name"
-            :points="row.points"
-            :is-highlighted="row.isHighlighted"
-          />
-        </v-col>
-      </v-row>
-    </v-container>
-  </template>
-  
-  <script setup lang="ts">
-  import LeaderboardRow from '@/components/LeaderboardRow.vue'
-  import { ref } from 'vue'
-  
-  const leaderboardData = ref([
-    { rank: 1, avatarIndex: 2, name: 'Marsha Fisher', points: 36, isHighlighted: false },
-    { rank: 2, avatarIndex: 3, name: 'Juanita Cormier', points: 35, isHighlighted: false },
-    { rank: 3, avatarIndex: 3, name: 'You', points: 34, isHighlighted: true },
-    { rank: 4, avatarIndex: 1, name: 'Tamara Schmidt', points: 33, isHighlighted: false },
-    { rank: 5, avatarIndex: 4, name: 'Ricardo Veum', points: 32, isHighlighted: false },
-  ])
-  
-  const currentUser = ref({ rank: 3, avatarIndex: 3, name: 'You', points: 34 })
-  </script>
-  
+    <!-- Your Rank -->
+    <h3 class="section-title text-primaryBlue">Your Rank</h3>
+    <v-row>
+      <v-col cols="12">
+        <LeaderboardRow
+          :rank="currentUser.rank"
+          :avatar-index="currentUser.avatarIndex"
+          :name="currentUser.name"
+          :points="currentUser.points"
+          :is-highlighted="true"
+        />
+      </v-col>
+    </v-row>
+
+    <!-- Other Users -->
+    <h3 class="section-title2 text-primaryBlue">Overall Rankings</h3>
+    <v-row class="leaderboard-scroll">
+      <v-col v-for="(row, index) in leaderboardData" :key="index" cols="12">
+        <LeaderboardRow
+          :rank="row.rank"
+          :avatar-index="row.avatarIndex"
+          :name="row.name"
+          :points="row.points"
+          :is-highlighted="row.isHighlighted"
+        />
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script setup lang="ts">
+import LeaderboardRow from '@/components/LeaderboardRow.vue'
+import { ref } from 'vue'
+
+const leaderboardData = ref([
+  { rank: 1, avatarIndex: 2, name: 'Marsha Fisher', points: 36, isHighlighted: false },
+  { rank: 2, avatarIndex: 3, name: 'Juanita Cormier', points: 35, isHighlighted: false },
+  { rank: 3, avatarIndex: 3, name: 'You', points: 34, isHighlighted: true },
+  { rank: 4, avatarIndex: 1, name: 'Tamara Schmidt', points: 33, isHighlighted: false },
+  { rank: 5, avatarIndex: 4, name: 'Ricardo Veum', points: 32, isHighlighted: false },
+])
+
+const currentUser = ref({ rank: 3, avatarIndex: 3, name: 'You', points: 34 })
+</script>
+
 <style scoped>
 .leaderboard-text {
   text-align: center;
@@ -102,4 +98,3 @@
   }
 }
 </style>
-  
