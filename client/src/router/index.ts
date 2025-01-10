@@ -7,6 +7,7 @@ import LandingView from '@/views/LandingView.vue'
 import BlingoView from '../views/BlingoView.vue'
 import LeaderboardView from '@/views/LeaderboardView.vue'
 import FriendView from '@/views/FriendView.vue'
+import BlingoView from '../views/BlingoView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
