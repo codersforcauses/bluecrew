@@ -182,12 +182,14 @@ class BingoGrid(models.Model):
         if self.pk:
             if self.challenges.count() != 16:
                 raise ValidationError(
-                    f"BingoGrid must have exactly 16 challenges (found {self.challenges.count()})."
+                    f"BingoGrid must have exactly 16 challenges (found {
+                        self.challenges.count()})."
                 )
 
         # Ensure only one active BingoGrid
         if self.is_active:
-            active_count = BingoGrid.objects.filter(is_active=True).exclude(pk=self.pk).count()
+            active_count = BingoGrid.objects.filter(
+                is_active=True).exclude(pk=self.pk).count()
             if active_count > 0:
                 raise ValidationError("Another BingoGrid is already active.")
 
@@ -195,10 +197,10 @@ class BingoGrid(models.Model):
         return f"BingoGrid #{self.grid_id} (Active: {self.is_active})"
 
 
-class ChallengeInteraction(models.Model):
-    # Model to track an interaction between a user and a challenge.
+class TileInteraction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
+    position = models.PositiveSmallIntegerField()
+    grid = models.ForeignKey(BingoGrid, on_delete=models.CASCADE)
 
     image = models.ImageField(
         upload_to="challenge_images/",  # idk where we want to put this atm
@@ -211,32 +213,18 @@ class ChallengeInteraction(models.Model):
     date_started = models.DateTimeField(auto_now_add=True)
     date_completed = models.DateTimeField(blank=True, null=True)
 
-    def __str__(self):
-        return (f"Interaction of {self.user.username} with challenge "
-                f"'{self.challenge.name}' - Completed: {self.completed}")
-
-
-class GridInteraction(models.Model):
-    user = models.ForeignKey("User", on_delete=models.CASCADE)
-    grid = models.ForeignKey("BingoGrid", on_delete=models.CASCADE)
-
-    # Sorted M2M to ChallengeInteraction
-    challenge_interactions = SortedManyToManyField("ChallengeInteraction", blank=True)
-
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["user", "grid"], name="unique_user_grid")
+            # Position must be between 0-15
+            models.CheckConstraint(
+                condition=Q(position__lte=15),
+                name='position_lte_15'
+            ),
+            # A user may not have more than 1 interaction with the same challenege in the same grid.
+            models.UniqueConstraint(
+                fields=['user', 'grid', 'position'], name='unique_user_grid_challenge')
         ]
 
-    def clean(self):
-        super().clean()
-        # Enforce that there are exactly 16 ChallengeInteraction references
-        if self.pk:  # if the object is saved, i.e. has an ID
-            count_ci = self.challenge_interactions.count()
-            if count_ci != 16:
-                raise ValidationError(
-                    f"GridInteraction must have exactly 16 ChallengeInteraction objects (found {count_ci})."
-                )
-
     def __str__(self):
-        return f"GridInteraction (user={self.user}, grid={self.grid})"
+        return (f'Interaction of {self.user.username} with bingo grid '
+                f'{self.grid.grid_id} - Challenge in position {self.position} - Completed: {self.completed}')
