@@ -138,3 +138,29 @@ def get_leaderboard(request):
     if logged_in:
         leaderboard.append(serializer.data[current_user_index])
     return Response(leaderboard, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes((permissions.IsAuthenticated, ))
+def accept_friendship(request, friendship_id):
+    friendship = get_object_or_404(Friendship, id=friendship_id)
+
+    if request.user != friendship.receiver:
+        return Response(
+            {"error": "You do not have permission to accept this friendship."},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    if friendship.status == Friendship.ACCEPTED:
+        return Response(
+            {"message": "Friendship is already accepted."},
+            status=status.HTTP_200_OK
+        )
+
+    if friendship.status != Friendship.ACCEPTED:
+        friendship.status = Friendship.ACCEPTED
+        friendship.save()
+        return Response(
+            {"message": "Friendship accepted successfully."},
+            status=status.HTTP_200_OK
+        )
