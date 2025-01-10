@@ -215,12 +215,14 @@ class TileInteraction(models.Model):
 
     class Meta:
         constraints = [
+            # Position must be between 0-15
             models.CheckConstraint(
                 condition=Q(position__lte=15),
                 name='position_lte_15'
             ),
+            # A user may not have more than 1 interaction with the same challenege in the same grid.
             models.UniqueConstraint(
-                fields=['user', 'grid', 'position'], name='unique_user_grid_challenege')
+                fields=['user', 'grid', 'position'], name='unique_user_grid_challenge')
         ]
 
     def __str__(self):
