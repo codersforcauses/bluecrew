@@ -20,4 +20,7 @@ urlpatterns = [
     path('friends/requests/incoming/',
          views.get_incoming_requests, name='incoming_requests'),
     path('bingo-grid/', views.get_bingo_grid, name='get_bingo_grid'),
+    path('accept-friendship/<int:friendship_id>/',
+         views.accept_friendship, name='accept_friendship'),
+
 ]
