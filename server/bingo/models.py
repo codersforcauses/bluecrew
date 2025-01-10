@@ -182,12 +182,14 @@ class BingoGrid(models.Model):
         if self.pk:
             if self.challenges.count() != 16:
                 raise ValidationError(
-                    f"BingoGrid must have exactly 16 challenges (found {self.challenges.count()})."
+                    f"BingoGrid must have exactly 16 challenges (found {
+                        self.challenges.count()})."
                 )
 
         # Ensure only one active BingoGrid
         if self.is_active:
-            active_count = BingoGrid.objects.filter(is_active=True).exclude(pk=self.pk).count()
+            active_count = BingoGrid.objects.filter(
+                is_active=True).exclude(pk=self.pk).count()
             if active_count > 0:
                 raise ValidationError("Another BingoGrid is already active.")
 
@@ -221,11 +223,13 @@ class GridInteraction(models.Model):
     grid = models.ForeignKey("BingoGrid", on_delete=models.CASCADE)
 
     # Sorted M2M to ChallengeInteraction
-    challenge_interactions = SortedManyToManyField("ChallengeInteraction", blank=True)
+    challenge_interactions = SortedManyToManyField(
+        "ChallengeInteraction", blank=True)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["user", "grid"], name="unique_user_grid")
+            models.UniqueConstraint(
+                fields=["user", "grid"], name="unique_user_grid")
         ]
 
     def clean(self):
@@ -235,8 +239,40 @@ class GridInteraction(models.Model):
             count_ci = self.challenge_interactions.count()
             if count_ci != 16:
                 raise ValidationError(
-                    f"GridInteraction must have exactly 16 ChallengeInteraction objects (found {count_ci})."
+                    f"GridInteraction must have exactly 16 ChallengeInteraction objects (found {
+                        count_ci})."
                 )
 
     def __str__(self):
         return f"GridInteraction (user={self.user}, grid={self.grid})"
+
+
+class TileInteraction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    position = models.PositiveSmallIntegerField()
+    grid = models.ForeignKey(BingoGrid, on_delete=models.CASCADE)
+
+    image = models.ImageField(
+        upload_to="challenge_images/",  # idk where we want to put this atm
+        blank=True
+    )
+
+    completed = models.BooleanField(default=False)
+    consent = models.BooleanField(default=False)
+
+    date_started = models.DateTimeField(auto_now_add=True)
+    date_completed = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(position__lte=15),
+                name='position_lte_15'
+            ),
+            models.UniqueConstraint(
+                fields=['user', 'grid', 'position'], name='unique_user_grid_challenege')
+        ]
+
+    def __str__(self):
+        return (f'Interaction of {self.user.username} with bingo grid '
+                f'{self.grid.grid_id} - Challenge in position {self.position} - Completed: {self.completed}')
