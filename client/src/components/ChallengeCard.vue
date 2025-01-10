@@ -47,7 +47,10 @@ const finish = () => {
 }
 </script>
 <template>
-  <v-card>
+  <v-card
+  color="primaryBlue"
+  rounded
+  >
     <div class="header">
       <button class="close-button">x</button>
       <v-card-title>Watch an Ocean Documentary</v-card-title>
@@ -55,10 +58,10 @@ const finish = () => {
     <v-card-subtitle class="points"> 200 Points</v-card-subtitle>
 
     <div class="description">
-      <v-card-text
-        >Here are some of our top picks! You can choose one of them or watch one of your own.Tell us
-        what you thought and submit a picture.</v-card-text
-      >
+      <v-card-text>
+        Here are some of our top picks! You can choose one of them or watch one of your own.Tell us
+        what you thought and submit a picture.
+      </v-card-text>
       <ul>
         <li>David Attenborough, Our Planet Coastal Seas</li>
         <li>Cleaning up the Ocean</li>
