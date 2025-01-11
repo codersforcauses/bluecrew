@@ -212,8 +212,12 @@ def complete_challenge(request, position, consent, image):
     tile.date_completed = datetime.now()
     tile.save()
 
+    challenge = active_grid.challenges[position]
+    challenge.total_completions += 1
+    challenge.save()
+
     user = get_object_or_404(User, is_active=True, user_id=tile.user)
-    user.total_points += active_grid.challenges[position].points
+    user.total_points += challenge.points
     user.save()
 
     return Response(str(tile))
