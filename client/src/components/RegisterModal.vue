@@ -207,6 +207,7 @@ strong {
   font-family: poppins;
   margin-bottom: 10px;
   align-items: center;
+  font-weight: bold;
 }
 
 label {
