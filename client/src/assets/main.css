@@ -144,6 +144,15 @@
   src: url('/fonts/poppins-v22-latin-900italic.woff2') format('woff2');
 }
 
+/* lilita-one-regular - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Lilita One';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/lilita-one-v15-latin-regular.woff2') format('woff2');
+}
+
 #app {
   width: 100%;
   padding: 0px;

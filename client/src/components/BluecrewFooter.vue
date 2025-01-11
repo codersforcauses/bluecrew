@@ -8,17 +8,11 @@
 
 <style scoped>
 .footer {
-  background-color: #193855;
-  width: 100%;
-  height: 100px;
+  background-color: rgb(var(--v-theme-primaryBlue));
   text-align: center;
-  position: fixed;
   display: flex;
   align-items: center;
   justify-content: center;
-  bottom: 0;
-  left: 0;
-  z-index: 1000;
   color: white;
   font-size: 20px;
 }
@@ -35,6 +29,7 @@
     height: 50px;
     font-size: 12px;
   }
+
   .footerText {
     font-weight: 100;
     line-height: 50px;

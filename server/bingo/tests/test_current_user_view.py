@@ -28,7 +28,7 @@ class CurrentUserViewTest(TestCase):
         self.client.force_authenticate(user=self.user)
 
         # Make request to the endpoint
-        response = self.client.get(reverse("current-user"))
+        response = self.client.get(reverse("current_user"))
 
         # Check response status code
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -47,7 +47,7 @@ class CurrentUserViewTest(TestCase):
 
     def test_get_current_user_unauthenticated(self):
         """Test getting current user details when not authenticated"""
-        response = self.client.get(reverse("current-user"))
+        response = self.client.get(reverse("current_user"))
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_current_user_method_not_allowed(self):
@@ -55,16 +55,16 @@ class CurrentUserViewTest(TestCase):
         self.client.force_authenticate(user=self.user)
 
         # Test POST request
-        response = self.client.post(reverse("current-user"), {})
+        response = self.client.post(reverse("current_user"), {})
         self.assertEqual(response.status_code,
                          status.HTTP_405_METHOD_NOT_ALLOWED)
 
         # Test PUT request
-        response = self.client.put(reverse("current-user"), {})
+        response = self.client.put(reverse("current_user"), {})
         self.assertEqual(response.status_code,
                          status.HTTP_405_METHOD_NOT_ALLOWED)
 
         # Test DELETE request
-        response = self.client.delete(reverse("current-user"))
+        response = self.client.delete(reverse("current_user"))
         self.assertEqual(response.status_code,
                          status.HTTP_405_METHOD_NOT_ALLOWED)
