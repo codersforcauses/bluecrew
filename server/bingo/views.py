@@ -1,9 +1,9 @@
 from rest_framework import status, permissions
-from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer
+from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from .models import Friendship, User
+from .models import Friendship, User, BingoGrid, TileInteraction
 from django.db.models import Q, F, Window
 from django.db.models.functions import DenseRank
 
@@ -164,3 +164,33 @@ def accept_friendship(request, friendship_id):
             {"message": "Friendship accepted successfully."},
             status=status.HTTP_200_OK
         )
+
+
+@api_view(['GET'])
+def get_bingo_grid(request):
+    """
+    This view returns a dictionary with two keys.
+    'grid_id' contains the pk of the active bingo grid.
+    'challenges' contains a list of 16 dictionaries, 1 for each challenge.
+    Each challenge dictionary contains the 'name', 'description', 'challenge_type', and 'points' of the challenge.
+    If the user is authenticated, then each challenge dictionary will also contain the 'status' of completion
+    for that user.
+    """
+    # Fetch the currently active bingo grid.
+    active_grid = get_object_or_404(BingoGrid, is_active=True)
+    # Serialized form of object
+    grid = BingoGridSerializer(active_grid).data
+
+    logged_in = request.user.is_authenticated
+    if logged_in:
+        # Find all tiles of the active bingo grid that the user has interacted with.
+        user_interaction = TileInteraction.objects.filter(
+            user=request.user, grid=active_grid)
+        # By default, a tile will not have been started.
+        for chal in grid['challenges']:
+            chal['status'] = "Not Started"
+        # If a user interaction exists with a tile, change its completion status accordingly
+        if user_interaction:
+            for tile in user_interaction:
+                grid['challenges'][tile.position]['status'] = 'Completed' if tile.completed else 'Started'
+    return Response(grid, status=status.HTTP_200_OK)
