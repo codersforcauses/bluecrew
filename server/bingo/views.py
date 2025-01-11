@@ -1,9 +1,12 @@
 from rest_framework import status, permissions
 from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Friendship, User, BingoGrid, TileInteraction
+from django.db import IntegrityError
 from django.db.models import Q, F, Window
 from django.db.models.functions import DenseRank
 
@@ -55,6 +58,32 @@ def update_user_preferences(request):
 
     request.user.avatar = avatar
     request.user.visibility = visibility
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def start_challenge(request):
+    try:
+        challenge_index = int(request.data["position"])
+    except ValueError:
+        return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+    if challenge_index not in range(16):
+        return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+    try:
+        grid = BingoGrid.objects.get(is_active=True)
+    except ObjectDoesNotExist:
+        # Throw an error if no grid is currently active
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    try:
+        TileInteraction.objects.create(user=request.user, position=challenge_index, grid=grid)
+    except IntegrityError:
+        # Throw an error if there is already an interaction between that user and that challenge
+        return Response(status=status.HTTP_409_CONFLICT)
+
+    return Response(status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
