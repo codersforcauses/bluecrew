@@ -14,7 +14,7 @@ urlpatterns = [
     path('user/me/', views.get_current_user, name='current_user'),
     path('delete-friendship/<int:friendship_id>/',
          views.delete_friendship, name='delete_friendship'),
-    path('challenge', views.start_challenge, name="start-challenge"),
+    path('start-challenge/', views.start_challenge, name="start_challenge"),
     path('friends/', views.get_friends, name='friend_list'),
     path('friends/requests/outgoing/',
          views.get_outgoing_requests, name='outgoing_requests'),

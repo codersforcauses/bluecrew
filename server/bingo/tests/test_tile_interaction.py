@@ -118,7 +118,7 @@ class StartChallengeTest(TestCase):
 
     def request(self, position):
         return self.client.post(
-            reverse("start-challenge"),
+            reverse("start_challenge"),
             {"position": position}
         )
 
@@ -148,5 +148,5 @@ class StartChallengeTest(TestCase):
 
     def test_unauthorised(self):
         unauthorized = APIClient()
-        response = unauthorized.post(reverse("start-challenge"), {"position": 15})
+        response = unauthorized.post(reverse("start_challenge"), {"position": 15})
         self.assertEqual(response.status_code, 401)
