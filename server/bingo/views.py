@@ -1,9 +1,9 @@
 from rest_framework import status, permissions
 from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from .models import ChallengeInteraction, Challenge, Friendship
 from rest_framework.response import Response
 from .models import Friendship, User, BingoGrid, TileInteraction
 from django.db.models import Q, F, Window
@@ -46,21 +46,25 @@ def get_current_user(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def start_challenge(request):
-    challenge = Challenge.objects.filter(id=request.data["challenge"])
+    challenge_index = request.data["challenge"]
 
-    # Complain if the specified challenge doesn't exist (or if there's somehow more than one)
-    if len(challenge) != 1:
+    if challenge_index not in range(16):
+        return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+    try:
+        grid = BingoGrid.objects.get(is_active=True)
+    except ObjectDoesNotExist:
+        # Throw an error if no grid is currently active
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    try:
+        interaction = TileInteraction.objects.create(user=request.user, position=challenge_index, grid=grid)
+        interaction.full_clean()
+        interaction.save()
+    except ValidationError:
+        # Throw an error if there is already an interaction between that user and that challenge
         return Response(status=status.HTTP_409_CONFLICT)
 
-    challenge = challenge[0]
-
-    interactions = ChallengeInteraction.objects.filter(user=request.user, challenge=challenge)
-    # Throw an error if there is already an interaction between that user and that challenge
-    if len(interactions) != 0:
-        return Response(status=status.HTTP_409_CONFLICT)
-
-    interaction = ChallengeInteraction.objects.create(user=request.user, challenge=challenge)
-    interaction.save()
     return Response(status=status.HTTP_200_OK)
 
 
