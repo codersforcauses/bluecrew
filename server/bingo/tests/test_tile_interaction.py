@@ -132,6 +132,7 @@ class StartChallengeTest(TestCase):
         self.assertEqual(interaction.grid, self.grid)
         self.assertEqual(interaction.position, 5)
 
-    def test_outside_range(self):
+    def test_invalid_data(self):
         self.assertEqual(self.request(16).status_code, 422)
         self.assertEqual(self.request(-1).status_code, 422)
+        self.assertEqual(self.request('a').status_code, 422)
