@@ -48,7 +48,7 @@ def get_current_user(request):
 @permission_classes([IsAuthenticated])
 def start_challenge(request):
     try:
-        challenge_index = int(request.data["challenge"])
+        challenge_index = int(request.data["position"])
     except ValueError:
         return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
