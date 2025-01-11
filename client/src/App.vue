@@ -5,6 +5,7 @@ import LoginModal from './components/LoginModal.vue'
 import BluecrewFooter from '@/components/BluecrewFooter.vue'
 import RegisterModal from '@/components/RegisterModal.vue'
 import NavBarWrapper from './components/NavBarWrapper.vue'
+import ChallengeCard from './components/ChallengeCard.vue'
 
 const modalStore = useModalStore()
 </script>
@@ -14,6 +15,7 @@ const modalStore = useModalStore()
     <NavBarWrapper />
     <v-main class="main-content">
       <RouterView />
+      <ChallengeCard />
     </v-main>
     <BluecrewFooter />
   </v-app>
