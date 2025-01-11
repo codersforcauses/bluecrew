@@ -6,22 +6,29 @@ defineProps<{
 </script>
 
 <template>
-  <v-col
-    class="rounded-lg d-flex ga-3 px-5 outline align-center bg-creamWhite text-primaryGrey"
-  >
-    <v-img
-      class="rounded-circle"
-      max-height="32"
-      max-width="32"
-      min-width="32"
-      cover
-      src="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
-    ></v-img>
-    <v-text class="me-auto font-weight-bold truncate-name">{{ name }}</v-text>
-    <slot name="default"></slot>
-    
-  </v-col>
-</template>
+    <v-col class="rounded-lg d-flex ga-3 px-5 outline align-center bg-creamWhite text-primaryGrey">
+      <v-img
+        class="rounded-circle"
+        max-height="32"
+        max-width="32"
+        min-width="32"
+        cover
+        src="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
+      ></v-img>
+      <v-text class="me-auto font-weight-bold truncate-name">{{ name }}</v-text>
+      <slot name="default"></slot>
+      <div class="acceptreject d-flex align-center">
+        <slot name="acceptreject"></slot>
+        <v-icon icon="mdi-check" class="mr-6"></v-icon>
+        <v-icon icon="mdi-close"></v-icon>
+      </div>
+      <div class="dissmiss d-flex align-center">
+        <slot name="dismiss"></slot>
+        <v-icon icon="mdi-check" class="mr-6"></v-icon>
+        <v-icon icon="mdi-close"></v-icon>
+      </div>
+    </v-col>
+  </template>
 
 <style scoped>
 .truncate-name {
