@@ -333,3 +333,31 @@ class ChallengeInteractionTest(TestCase):
 
         updated_interaction = ChallengeInteraction.objects.get(pk=interaction.pk)
         self.assertTrue(updated_interaction.consent)
+
+
+class ChallengeAPITest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create_user(
+            username="testuser",
+            email="test@example.com",
+            password="password123",
+        )
+        self.challenge = Challenge.objects.create(
+            name="Testing Challenge",
+            description="Challenge for testing interactions",
+            challenge_type="act",
+            points=5,
+        )
+        self.client.force_authenticate(user=self.user)
+
+    def test_start(self):
+        response = self.client.post(
+            reverse("start-challenge"),
+            {"challenge": self.challenge.id}
+        )
+        self.assertEqual(response.status_code, 200)
+        interaction = ChallengeInteraction.objects.filter(user=self.user, challenge=self.challenge)
+        self.assertEqual(len(interaction), 1, "Interaction creation failed or was duplicated.")
+        interaction = interaction[0]
+        self.assertEqual(interaction.date_started)
