@@ -1,8 +1,10 @@
 from django.db.utils import IntegrityError
 from django.test import TestCase
+from django.urls import reverse
 from ..models import User
 from django.core.exceptions import ValidationError
 from datetime import date
+from rest_framework.test import APIClient
 
 
 class UsersTest(TestCase):
@@ -63,3 +65,41 @@ class UsersTest(TestCase):
             password="A string of random characters",
             email="test@example.com"
         )
+
+
+class UpdatePreferencesTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            username="Test",
+            password="A generic, valid password",
+            email="test@example.com",
+            first_name="Jane",
+            last_name="Doe",
+            birthdate=date(1, 1, 1),
+            avatar=0,
+            visibility=User.Visibility.BLUECREW
+        )
+        self.client = APIClient()
+        self.client.force_authenticate(self.user)
+
+    def request(self, avatar, visibility):
+        return self.client.put(
+            reverse("update_preferences"),
+            {"avatar": avatar, "visibility": visibility}
+        )
+
+    def test_updates(self):
+        self.assertEqual(self.request(1, User.Visibility.FRIENDS).status_code, 200)
+        self.assertEqual(self.user.avatar, 1)
+        self.assertEqual(self.user.visibility, User.Visibility.FRIENDS)
+
+    def test_invalid(self):
+        self.assertEqual(self.request(-1, User.Visibility.BLUECREW).status_code, 422)
+        self.assertEqual(self.request('a', User.Visibility.PUBLIC).status_code, 422)
+        self.assertEqual(self.request(5, 3).status_code, 422)
+
+    def test_subsequent(self):
+        self.assertEqual(self.request(5, 2).status_code, 200)
+        self.assertEqual(self.request(3, 1).status_code, 200)
+        self.assertEqual(self.user.visibility, 1)
+        self.assertEqual(self.user.avatar, 3)
