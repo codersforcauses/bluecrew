@@ -3,8 +3,17 @@ import BlingoTile from '@/components/BingoTile.vue'
 </script>
 
 <template>
-    <div>
-        <BlingoTile type="" text="placeholder text" status="" selected="true" />
+    <div class="d-flex ga-1">
+        <BlingoTile type="connect" text="placeholder text" status="not started" selected="true" />
+        <BlingoTile type="connect" text="placeholder text" status="not started" selected="true" />
+        <BlingoTile type="connect" text="placeholder text" status="not started" selected="true" />
+        <BlingoTile type="connect" text="placeholder text" status="not started" selected="true" />
+    </div>
+    <div class="d-flex ga-1 mt-1">
+        <BlingoTile type="connect" text="placeholder text" status="not started" selected="true" />
+        <BlingoTile type="connect" text="placeholder text" status="not started" selected="true" />
+        <BlingoTile type="connect" text="placeholder text" status="not started" selected="true" />
+        <BlingoTile type="connect" text="placeholder text" status="not started" selected="true" />
     </div>
 </template>
 

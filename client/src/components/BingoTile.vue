@@ -1,9 +1,9 @@
 <script setup lang="ts">
 
 defineProps<{
-    type: string
+    type: "connect" |"understand" | "act"
     text: string
-    status: string
+    status: "not started" | "started" | "completed"
     selected: boolean
 }>()
 
@@ -22,7 +22,6 @@ function getIconSrc(type: string): string {
 
 </script>
 
-<!-- Added flex and text styling, call function for name of icon src, add image width -->
 <template>
     <div class="bg-creamWhite outer-tile rounded-lg d-flex flex-column align-center ">
 
