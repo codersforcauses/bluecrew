@@ -136,3 +136,17 @@ class StartChallengeTest(TestCase):
         self.assertEqual(self.request(16).status_code, 422)
         self.assertEqual(self.request(-1).status_code, 422)
         self.assertEqual(self.request('a').status_code, 422)
+
+    def test_no_active_grid(self):
+        self.grid.is_active = False
+        self.grid.save()
+        self.assertEqual(self.request(5).status_code, 500)
+
+    def test_double_send(self):
+        self.assertEqual(self.request(0).status_code, 200)
+        self.assertEqual(self.request(0).status_code, 409)
+
+    def test_unauthorised(self):
+        unauthorized = APIClient()
+        response = unauthorized.post(reverse("start-challenge"), {"challenge": 15})
+        self.assertEqual(response.status_code, 401)

@@ -1,11 +1,12 @@
 from rest_framework import status, permissions
 from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer
 from django.shortcuts import get_object_or_404
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Friendship, User, BingoGrid, TileInteraction
+from django.db import IntegrityError
 from django.db.models import Q, F, Window
 from django.db.models.functions import DenseRank
 
@@ -61,10 +62,8 @@ def start_challenge(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
-        interaction = TileInteraction.objects.create(user=request.user, position=challenge_index, grid=grid)
-        interaction.full_clean()
-        interaction.save()
-    except ValidationError:
+        TileInteraction.objects.create(user=request.user, position=challenge_index, grid=grid)
+    except IntegrityError:
         # Throw an error if there is already an interaction between that user and that challenge
         return Response(status=status.HTTP_409_CONFLICT)
 
