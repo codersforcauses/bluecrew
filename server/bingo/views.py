@@ -1,7 +1,7 @@
 from rest_framework import status, permissions
 from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer
 from django.shortcuts import get_object_or_404
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -45,7 +45,7 @@ def get_current_user(request):
 
 
 @api_view(['PUT'])
-@permission_classes([permissions.IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def update_user_preferences(request):
     try:
         avatar = int(request.data["avatar"])
@@ -56,8 +56,15 @@ def update_user_preferences(request):
     if avatar not in range(6) or visibility not in User.Visibility:
         return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    request.user.avatar = avatar
-    request.user.visibility = visibility
+    try:
+        request.user.avatar = avatar
+        request.user.visibility = visibility
+        request.user.full_clean()
+        request.user.save()
+    except ValidationError:
+        return Response(status=status.HTTP_409_CONFLICT)
+
+    return Response(status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
