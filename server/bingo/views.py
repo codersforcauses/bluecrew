@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from .models import Friendship, User, BingoGrid, TileInteraction
 from django.db.models import Q, F, Window
 from django.db.models.functions import DenseRank
+import datetime
 
 
 @api_view(['DELETE'])
@@ -198,9 +199,21 @@ def get_bingo_grid(request):
 
 @api_view(['PATCH'])
 @permission_classes((permissions.IsAuthenticated, ))
-def complete_challenge(request):
+def complete_challenge(request, position, consent, image):
     active_grid = get_object_or_404(BingoGrid, is_active=True)
     serializer = ChallengeCompleteSerializer(request.data)
     tile = get_object_or_404(TileInteraction, user=request.user,
                              grid=active_grid, position=serializer.data['position'])
+
+    tile.consent = consent
+    if image and consent:
+        tile.image = image
+    tile.completed = True
+    tile.date_completed = datetime.now()
+    tile.save()
+
+    user = get_object_or_404(User, is_active=True, user_id=tile.user)
+    user.total_points += active_grid.challenges[position].points
+    user.save()
+
     return Response(str(tile))
