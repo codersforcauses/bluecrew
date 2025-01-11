@@ -88,3 +88,7 @@ class ChallengeCompleteSerializer(serializers.ModelSerializer):
     class Meta:
         model = TileInteraction
         fields = ['position', 'consent', 'image']
+        extra_kwargs = {
+            'position': {'required': True},
+            'consent': {'required': True},
+        }

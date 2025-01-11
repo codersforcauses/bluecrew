@@ -6,7 +6,8 @@ from rest_framework.response import Response
 from .models import Friendship, User, BingoGrid, TileInteraction
 from django.db.models import Q, F, Window
 from django.db.models.functions import DenseRank
-import datetime
+from datetime import datetime
+from .utils import check_bingo
 
 
 @api_view(['DELETE'])
@@ -199,25 +200,30 @@ def get_bingo_grid(request):
 
 @api_view(['PATCH'])
 @permission_classes((permissions.IsAuthenticated, ))
-def complete_challenge(request, position, consent, image):
+def complete_challenge(request):
     active_grid = get_object_or_404(BingoGrid, is_active=True)
     serializer = ChallengeCompleteSerializer(request.data)
     tile = get_object_or_404(TileInteraction, user=request.user,
                              grid=active_grid, position=serializer.data['position'])
 
-    tile.consent = consent
-    if image and consent:
+    tile.consent = serializer.data['consent']
+    image = serializer.data.get('image', None)
+    if image and tile.consent:
         tile.image = image
-    tile.completed = True
-    tile.date_completed = datetime.now()
-    tile.save()
+    if not tile.completed:
+        tile.completed = True
+        tile.date_completed = datetime.now()
+        tile.save()
 
-    challenge = active_grid.challenges[position]
-    challenge.total_completions += 1
-    challenge.save()
+        challenge = active_grid.challenges.all()[tile.position]
+        challenge.total_completions += 1
+        challenge.save()
 
-    user = get_object_or_404(User, is_active=True, user_id=tile.user)
-    user.total_points += challenge.points
-    user.save()
+        user = get_object_or_404(User, is_active=True,
+                                 user_id=tile.user.user_id)
+        user.total_points += challenge.points
+        user.save()
 
-    return Response(str(tile))
+    bingos = check_bingo(tile)
+
+    return Response(bingos)
