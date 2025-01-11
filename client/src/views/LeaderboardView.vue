@@ -35,26 +35,28 @@ const fetchLeaderboard = async () => {
     // Only set current user if user is logged in
     if (userStore.isLoggedIn && data.length > 0) {
       const currentUserData = data[data.length - 1]
-      currentUser.value = {
-        rank: currentUserData.rank,
-        avatarIndex: 0,
-        name: currentUserData.username,
-        points: currentUserData.total_points,
-        isHighlighted: true,
+      if (currentUserData) {
+        currentUser.value = {
+          rank: currentUserData.rank,
+          avatarIndex: 0,
+          name: currentUserData.username, // map from username
+          points: currentUserData.total_points, // map from total_points
+          isHighlighted: true,
+        }
       }
-      // Only exclude last entry if it's the current user
+      // Remove current user from the list
       leaderboardData.value = data.slice(0, -1)
     } else {
       // If not logged in, show all users
       leaderboardData.value = data
     }
 
-    // Transform the data
+    // Transform API data to frontend format
     leaderboardData.value = leaderboardData.value.map((entry: LeaderboardApiEntry) => ({
       rank: entry.rank,
       avatarIndex: 0,
-      name: entry.username,
-      points: entry.total_points,
+      name: entry.username, // map from username
+      points: entry.total_points, // map from total_points
       isHighlighted: false,
     }))
   } catch (err) {
