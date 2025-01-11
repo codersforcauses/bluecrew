@@ -34,7 +34,6 @@ const closeDialog = () => {
   modalStore.closeModal()
 }
 
-<<<<<<< HEAD
 const submitForm = async () => {
   // Copies formData but creates first_name and last_name in snake case for variable compatability
   const body = {
@@ -59,14 +58,9 @@ const submitForm = async () => {
       alert('Network error. Please try again.')
     }
   }
-=======
+}
 const openLoginModal = () => {
   modalStore.openLogin()
-}
-
-const submitForm = () => {
-  closeDialog()
->>>>>>> main
 }
 </script>
 
@@ -196,18 +190,12 @@ const submitForm = () => {
               ></v-text-field>
             </div>
             <v-btn
-<<<<<<< HEAD
-              id="register-button"
-              class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center"
-              @click="submitForm"
-              >Sign Up</v-btn
-=======
               class="d-flex justify-center mt-4 w-50 mx-auto"
               color="primaryBlue"
               :style="{ height: '50px' }"
               rounded
               elevation="12"
->>>>>>> main
+              @click="submitForm"
             >
               Sign Up
             </v-btn>
