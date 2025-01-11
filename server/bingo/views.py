@@ -46,7 +46,7 @@ def get_current_user(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def start_challenge(request):
-    challenge_index = request.data["challenge"]
+    challenge_index = int(request.data["challenge"])
 
     if challenge_index not in range(16):
         return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)

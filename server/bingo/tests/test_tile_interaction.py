@@ -2,6 +2,8 @@ from django.test import TestCase
 from ..models import User, Challenge, TileInteraction, BingoGrid
 from django.utils import timezone
 from django.db.utils import IntegrityError
+from django.urls import reverse
+from rest_framework.test import APIClient
 
 
 class TileInteractionTest(TestCase):
@@ -86,3 +88,50 @@ class TileInteractionTest(TestCase):
         with self.assertRaises(IntegrityError):
             TileInteraction.objects.create(
                 user=self.user, grid=self.grid, position=16)
+
+
+class StartChallengeTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create_user(
+            username="testuser",
+            email="test@example.com",
+            password="password123",
+        )
+        self.client.force_authenticate(self.user)
+        self.grid = BingoGrid.objects.create()
+        self.challenges = list(
+            map(
+                lambda x:
+                    Challenge.objects.create(
+                        name=f"Challenge {x}",
+                        description=f"Description {x}",
+                        challenge_type="act",
+                        points=5
+                    ),
+                range(16)
+            )
+        )
+        self.grid.challenges.add(*self.challenges)
+        self.grid.is_active = True
+        self.grid.save()
+
+    def request(self, position):
+        return self.client.post(
+            reverse("start-challenge"),
+            {"challenge": position}
+        )
+
+    def test_normal_start(self):
+        response = self.request(5)
+        self.assertEqual(response.status_code, 200)
+        interactions = TileInteraction.objects.all()
+        self.assertEqual(len(interactions), 1)
+        interaction = interactions[0]
+        self.assertEqual(interaction.user, self.user)
+        self.assertEqual(interaction.grid, self.grid)
+        self.assertEqual(interaction.position, 5)
+
+    def test_outside_range(self):
+        self.assertEqual(self.request(16).status_code, 422)
+        self.assertEqual(self.request(-1).status_code, 422)
