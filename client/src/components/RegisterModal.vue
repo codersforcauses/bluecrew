@@ -3,6 +3,8 @@ import { ref, computed } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import type { UserRegistrationForm } from '@/types/user'
 import { useDisplay } from 'vuetify'
+import server from '@/utils/server'
+import axios from 'axios'
 
 const { xs } = useDisplay()
 const modalStore = useModalStore()
@@ -39,29 +41,22 @@ const submitForm = async () => {
     first_name: formData.value.firstName,
     last_name: formData.value.lastName,
   }
-  try {
-    // API call to register
-    const response = await fetch('http://localhost:8000/api/register/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    })
 
-    if (response.ok) {
-      const data = await response.json()
-      console.log('Registration successful:', data)
-      alert('Registration successful!')
-      closeDialog()
-    } else {
-      const errorData = await response.json()
-      console.error('Registration failed:', errorData)
-      alert(`Error: ${errorData.message || 'Registration failed.'}`)
-    }
+  try {
+    // API call to register using axios server instance
+    const response = await server.post('/register/', body)
+
+    console.log('Registration successful:', response.data)
+    alert('Registration successful!')
+    closeDialog()
   } catch (error) {
-    console.error('Network error:', error)
-    alert('Network error. Please try again.')
+    if (axios.isAxiosError(error)) {
+      console.error('Registration failed:', error.response?.data || error)
+      alert(`Error: ${error.response?.data?.message || 'Registration failed.'}`)
+    } else {
+      console.error('Network error:', error)
+      alert('Network error. Please try again.')
+    }
   }
 }
 </script>
