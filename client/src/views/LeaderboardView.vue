@@ -36,7 +36,7 @@ const fetchLeaderboard = async () => {
       const currentUserData = apiData[apiData.length - 1]
       currentUser.value = {
         rank: currentUserData.rank,
-        avatarIndex: 0,
+        avatarIndex: currentUserData.avatar,
         name: currentUserData.username,
         points: currentUserData.total_points,
         isHighlighted: true,
@@ -46,7 +46,7 @@ const fetchLeaderboard = async () => {
       const otherUsers = apiData.slice(0, -1)
       leaderboardData.value = otherUsers.map((entry) => ({
         rank: entry.rank,
-        avatarIndex: 0,
+        avatarIndex: entry.avatar,
         name: entry.username,
         points: entry.total_points,
         isHighlighted: false,
@@ -55,7 +55,7 @@ const fetchLeaderboard = async () => {
       // If not logged in, show all users
       leaderboardData.value = apiData.map((entry) => ({
         rank: entry.rank,
-        avatarIndex: 0,
+        avatarIndex: entry.avatar,
         name: entry.username,
         points: entry.total_points,
         isHighlighted: false,
