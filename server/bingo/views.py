@@ -1,5 +1,5 @@
 from rest_framework import status, permissions
-from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer
+from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer, ChallengeCompleteSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -194,3 +194,13 @@ def get_bingo_grid(request):
             for tile in user_interaction:
                 grid['challenges'][tile.position]['status'] = 'Completed' if tile.completed else 'Started'
     return Response(grid, status=status.HTTP_200_OK)
+
+
+@api_view(['PATCH'])
+@permission_classes((permissions.IsAuthenticated, ))
+def complete_challenge(request):
+    active_grid = get_object_or_404(BingoGrid, is_active=True)
+    serializer = ChallengeCompleteSerializer(request.data)
+    tile = get_object_or_404(TileInteraction, user=request.user,
+                             grid=active_grid, position=serializer.data['position'])
+    return Response(str(tile))
