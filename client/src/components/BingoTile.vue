@@ -10,12 +10,12 @@ defineProps<{
 // need to download svgs and change out srcs and names
 function getIconSrc(type: string): string {
     switch (type) {
-        case "thing1":
-            return "man.svg"
-        case "thing2":
-            return "thing2.svg"
+        case "act":
+            return "walking.svg"
+        case "understand":
+            return "brain.svg"
         default:
-            return "man.svg"
+            return "link.svg"
     }
 }
 
@@ -25,7 +25,7 @@ function getIconSrc(type: string): string {
 <template>
     <div class="bg-creamWhite outer-tile rounded-lg d-flex flex-column align-center ">
 
-        <v-img :src="getIconSrc(type)" :style="{ width: '30%' }" />
+        <v-img :src="getIconSrc(type)" :style="{ width: '40%', height:'70%' }" />
     <p class=" tile-text text-center font-weight-bold text-primaryGrey">
             {{ text }}
         </p>

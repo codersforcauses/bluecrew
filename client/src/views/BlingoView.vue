@@ -5,14 +5,14 @@ import BlingoTile from '@/components/BingoTile.vue'
 <template>
     <div class="d-flex ga-1">
         <BlingoTile type="connect" text="placeholder text" status="not started" selected="true" />
-        <BlingoTile type="connect" text="placeholder text" status="not started" selected="true" />
-        <BlingoTile type="connect" text="placeholder text" status="not started" selected="true" />
+        <BlingoTile type="act" text="placeholder text" status="not started" selected="true" />
+        <BlingoTile type="understand" text="placeholder text" status="not started" selected="true" />
         <BlingoTile type="connect" text="placeholder text" status="not started" selected="true" />
     </div>
     <div class="d-flex ga-1 mt-1">
-        <BlingoTile type="connect" text="placeholder text" status="not started" selected="true" />
-        <BlingoTile type="connect" text="placeholder text" status="not started" selected="true" />
-        <BlingoTile type="connect" text="placeholder text" status="not started" selected="true" />
+        <BlingoTile type="act" text="placeholder text" status="not started" selected="true" />
+        <BlingoTile type="understand" text="placeholder text" status="not started" selected="true" />
+        <BlingoTile type="act" text="placeholder text" status="not started" selected="true" />
         <BlingoTile type="connect" text="placeholder text" status="not started" selected="true" />
     </div>
 </template>
