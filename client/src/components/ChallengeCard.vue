@@ -7,6 +7,8 @@ interface TaskSubmission {
   canShareOnSocialMedia: boolean
 }
 
+const showCard = ref(false)
+
 const taskSubmission = ref<TaskSubmission>({
   feedback: '',
   image: null,
@@ -43,6 +45,7 @@ const finish = () => {
     alert('Please provide feedback or upload an image')
     return
   }
+  completeTask()
   emit('task-completed', taskSubmission.value)
 }
 </script>
@@ -99,7 +102,7 @@ const finish = () => {
       </div>
 
       <v-card-actions>
-        <v-btn @click="completeTask">Finish</v-btn>
+        <v-btn @click="finish">Finish</v-btn>
       </v-card-actions>
     </div>
   </v-card>
