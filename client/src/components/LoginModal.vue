@@ -31,7 +31,7 @@ const valid = ref(false)
 <template>
   <v-dialog
     v-model="isDialogVisible"
-    :max-width="xs ? '100%' : '400px'"
+    :max-width="xs ? '100%' : '500px'"
     :fullscreen="xs"
     scrollable
     persistent
