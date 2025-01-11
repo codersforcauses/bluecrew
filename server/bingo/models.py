@@ -3,6 +3,7 @@ from django.contrib.auth.models import PermissionsMixin, AbstractBaseUser, BaseU
 from datetime import date
 from django.db.models import Q
 from django.core.exceptions import ValidationError
+from sortedm2m.fields import SortedManyToManyField
 
 
 class UserManager(BaseUserManager):
@@ -62,6 +63,27 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=0
     )
 
+    class Gender(models.IntegerChoices):
+        MALE = (0, "Male")
+        FEMALE = (1, "Female")
+        NB = (2, "Non-Binary")
+        OTHER = (3, "Other")
+        NA = (4, "Prefer not to say")
+    gender_identity = models.IntegerField(
+        choices=Gender,
+        blank=False,
+        default=Gender.NA
+    )
+
+    class IndigenousIdentity(models.IntegerChoices):
+        NA = (0, "Prefer not to say")
+        Y = (1, "Yes")
+        N = (2, "No")
+    indigenous_identity = models.BooleanField(
+        choices=IndigenousIdentity,
+        default=IndigenousIdentity.NA
+    )
+
     avatar = models.IntegerField(default=0, choices=map(
         lambda i: (i, f"Avatar {i}"), range(6)))
 
@@ -75,6 +97,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+    class Meta:
+        ordering = ["-total_points", "username"]
+        indexes = [models.Index(fields=["-total_points"])]
 
 
 class Challenge(models.Model):
@@ -139,10 +165,46 @@ class Friendship(models.Model):
         return f"Friend request from {self.requester} to {self.receiver} ({self.status.capitalize()})"
 
 
-class ChallengeInteraction(models.Model):
-    # Model to track an interaction between a user and a challenge.
+class BingoGrid(models.Model):
+    # A Bingo grid that references exactly 16 Challenge objects
+
+    grid_id = models.AutoField(primary_key=True)
+
+    # The sorted M2M field preserves order of challenges
+    challenges = SortedManyToManyField(Challenge)
+
+    is_active = models.BooleanField(default=False)
+
+    def clean(self):
+        # Ensure exactly 16 challenges
+        # This only makes sense if the object is saved at least once (has a PK).
+        # If it's brand new, you won't have the M2M relationships set until after save.
+        if self.pk:
+            if self.challenges.count() != 16:
+                raise ValidationError(
+                    f"BingoGrid must have exactly 16 challenges (found {
+                        self.challenges.count()})."
+                )
+
+        # Ensure only one active BingoGrid
+        if self.is_active:
+            active_count = BingoGrid.objects.filter(
+                is_active=True).exclude(pk=self.pk).count()
+            if active_count > 0:
+                raise ValidationError("Another BingoGrid is already active.")
+
+    def __str__(self):
+        return f"BingoGrid #{self.grid_id} (Active: {self.is_active})"
+
+
+class TileInteraction(models.Model):
+    # A model to represent a user's interaction with a challenge in a specific bingo grid.
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
+    # The position of the tile/challenge in the bingo grid
+    position = models.PositiveSmallIntegerField()
+    # The bingo grid that this interaction concerns
+    grid = models.ForeignKey(BingoGrid, on_delete=models.CASCADE)
 
     image = models.ImageField(
         upload_to="challenge_images/",  # idk where we want to put this atm
@@ -155,6 +217,18 @@ class ChallengeInteraction(models.Model):
     date_started = models.DateTimeField(auto_now_add=True)
     date_completed = models.DateTimeField(blank=True, null=True)
 
+    class Meta:
+        constraints = [
+            # Position must be between 0-15
+            models.CheckConstraint(
+                condition=Q(position__lte=15),
+                name='position_lte_15'
+            ),
+            # A user may not have more than 1 interaction with the same challenge in the same grid.
+            models.UniqueConstraint(
+                fields=['user', 'grid', 'position'], name='unique_user_grid_challenge')
+        ]
+
     def __str__(self):
-        return (f"Interaction of {self.user.username} with challenge "
-                f"'{self.challenge.name}' - Completed: {self.completed}")
+        return (f'Interaction of {self.user.username} with bingo grid '
+                f'{self.grid.grid_id} - Challenge in position {self.position} - Completed: {self.completed}')
