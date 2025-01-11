@@ -56,6 +56,7 @@ const submitForm = () => {
             <button class="close-button" @click="closeDialog">
             <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
           </button>
+          <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
           </div>
           <strong class="text-primaryPink">Create an account</strong>
           <form class="register-form" @submit.prevent="submitForm">
@@ -208,6 +209,14 @@ strong {
   margin-bottom: 10px;
   align-items: center;
   font-weight: bold;
+}
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 10px;
+  width: 100px;
 }
 
 label {

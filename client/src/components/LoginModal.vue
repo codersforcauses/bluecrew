@@ -57,7 +57,7 @@ const valid = ref(false)
         <p class="text-center subtitle mb-4 text-primaryPink">
           <b>Login to your existing account</b>
         </p>
-
+        
         <v-form v-model="valid" lazy-validation>
           <v-card-subtitle class="text-left subtitle mb-3 pa-0 text-primaryPink" style="font-family: 'poppins'; font-size: 16px; font-weight: bold;" >
             Username
