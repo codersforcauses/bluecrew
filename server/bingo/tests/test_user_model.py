@@ -101,8 +101,15 @@ class UpdatePreferencesTest(TestCase):
         self.assertEqual(self.request(bio="!"*301).status_code, 409)
 
     def test_subsequent(self):
-        self.assertEqual(self.request(5, 2).status_code, 200)
+        self.assertEqual(self.request(5, 2, "").status_code, 200)
         self.assertEqual(self.request(3, 1, "other words").status_code, 200)
         self.assertEqual(self.user.visibility, 1)
         self.assertEqual(self.user.avatar, 3)
         self.assertEqual(self.user.bio, "other words")
+
+    def test_unauthenitcated(self):
+        response = APIClient().put(
+            reverse("update_preferences"),
+            {"avatar": 1, "visibility": User.Visibility.FRIENDS, "bio": "Stuff and things"}
+        )
+        self.assertEqual(response.status_code, 401)
