@@ -34,6 +34,7 @@ const closeDialog = () => {
   modalStore.closeModal()
 }
 
+<<<<<<< HEAD
 const submitForm = async () => {
   // Copies formData but creates first_name and last_name in snake case for variable compatability
   const body = {
@@ -58,6 +59,14 @@ const submitForm = async () => {
       alert('Network error. Please try again.')
     }
   }
+=======
+const openLoginModal = () => {
+  modalStore.openLogin()
+}
+
+const submitForm = () => {
+  closeDialog()
+>>>>>>> main
 }
 </script>
 
@@ -65,7 +74,7 @@ const submitForm = async () => {
   <div>
     <v-dialog
       v-model="isDialogVisible"
-      :max-width="xs ? '100%' : '400px'"
+      :max-width="xs ? '100%' : '500px'"
       :fullscreen="xs"
       scrollable
       persistent
@@ -73,7 +82,9 @@ const submitForm = async () => {
       <v-card>
         <v-card-text style="height: auto; overflow-y: auto">
           <div class="header">
-            <button class="close-button" @click="closeDialog">x</button>
+            <button class="close-button" @click="closeDialog">
+              <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
+            </button>
             <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
           </div>
           <strong class="text-primaryPink">Create an account</strong>
@@ -185,15 +196,26 @@ const submitForm = async () => {
               ></v-text-field>
             </div>
             <v-btn
+<<<<<<< HEAD
               id="register-button"
               class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center"
               @click="submitForm"
               >Sign Up</v-btn
+=======
+              class="d-flex justify-center mt-4 w-50 mx-auto"
+              color="primaryBlue"
+              :style="{ height: '50px' }"
+              rounded
+              elevation="12"
+>>>>>>> main
             >
+              Sign Up
+            </v-btn>
           </form>
 
           <footer class="text-primaryPink">
-            Already have an account? <a href="#" class="text-primaryPink">Sign In</a>
+            Already have an account?
+            <a href="#" class="text-primaryPink" @click.prevent="openLoginModal">Sign In</a>
           </footer>
         </v-card-text>
       </v-card>
@@ -249,7 +271,7 @@ button {
   font-family: poppins;
   font-size: 16px;
   margin-top: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16);
+  margin-right: 10px;
 }
 
 .header {
@@ -259,17 +281,14 @@ button {
 }
 
 .close-button {
-  width: 30px;
-  height: 30px;
+  width: 0px;
+  height: 0px;
+  margin-right: 0px;
   display: flex;
   align-self: flex-end;
   justify-content: center;
   align-items: center;
-  font-size: 20px;
-  background: none;
-  color: black;
-  border: 3px;
-  border-color: black;
+  font-size: 21px;
   cursor: pointer;
   padding: 0;
 }

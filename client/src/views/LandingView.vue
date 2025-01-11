@@ -5,8 +5,12 @@ import { useDisplay } from 'vuetify'
 const { xs } = useDisplay()
 const modalStore = useModalStore()
 
-function openRegisterButton() {
+const openRegisterModal = () => {
   modalStore.openRegister()
+}
+
+const openLoginModal = () => {
+  modalStore.openLogin()
 }
 </script>
 
@@ -42,7 +46,7 @@ function openRegisterButton() {
               class="bg-primaryPink text-creamyWhite"
               rounded="xl"
               size="x-large"
-              @click="openRegisterButton"
+              @click="openRegisterModal"
             >
               Get Started
             </v-btn>
@@ -51,7 +55,7 @@ function openRegisterButton() {
               class="bg-primaryBlue text-creamyWhite"
               rounded="xl"
               size="x-large"
-              @click="openRegisterButton"
+              @click="openLoginModal"
             >
               I already have an account
             </v-btn>
