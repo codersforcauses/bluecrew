@@ -157,7 +157,6 @@ const handleDelete = (index: number) => {
             <v-btn
               color="primaryPink"
               variant="flat"
-              density="comfortable"
             >
               Accept
             </v-btn>
