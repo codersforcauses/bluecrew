@@ -198,8 +198,12 @@ class BingoGrid(models.Model):
 
 
 class TileInteraction(models.Model):
+    # A model to represent a user's interaction with a challenge in a specific bingo grid.
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # The position of the tile/challenge in the bingo grid
     position = models.PositiveSmallIntegerField()
+    # The bingo grid that this interaction concerns
     grid = models.ForeignKey(BingoGrid, on_delete=models.CASCADE)
 
     image = models.ImageField(
@@ -220,7 +224,7 @@ class TileInteraction(models.Model):
                 condition=Q(position__lte=15),
                 name='position_lte_15'
             ),
-            # A user may not have more than 1 interaction with the same challenege in the same grid.
+            # A user may not have more than 1 interaction with the same challenge in the same grid.
             models.UniqueConstraint(
                 fields=['user', 'grid', 'position'], name='unique_user_grid_challenge')
         ]
