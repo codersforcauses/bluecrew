@@ -2,9 +2,16 @@
 import { ref, computed } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import { useDisplay } from 'vuetify'
+import { isAxiosError } from 'axios'
+import server from '@/utils/server'
+import { useUserStore } from '@/stores/user'
 
 const { xs } = useDisplay()
 const modalStore = useModalStore()
+
+const username = ref('')
+const password = ref('')
+const valid = ref(false)
 
 const isDialogVisible = computed({
   get: () => modalStore.currentModal === 'login',
@@ -23,9 +30,37 @@ const openRegisterModal = () => {
   modalStore.openRegister()
 }
 
-const username = ref('')
-const password = ref('')
-const valid = ref(false)
+const submitForm = async () => {
+  const userStore = useUserStore() // Access the store
+
+  const body = {
+    username: username.value,
+    password: password.value,
+  }
+
+  try {
+    const tokenResponse = await server.post('/token/', body)
+
+    // Assume the response contains these fields: user, accessToken, refreshToken
+    const { access, refresh } = tokenResponse.data
+    userStore.accessToken = access
+    userStore.refreshToken = refresh
+
+    const userResponse = await server.get('/user/me/')
+    userStore.userData = userResponse.data
+    console.log('Login successful:', tokenResponse.data)
+    alert('Login successful!')
+    closeDialog()
+  } catch (error) {
+    if (isAxiosError(error)) {
+      console.error('Login failed:', error.response?.data || error)
+      alert(`Error: ${error.response?.data?.message || 'Login failed.'}`)
+    } else {
+      console.error('Network error:', error)
+      alert('Network error. Please try again.')
+    }
+  }
+}
 </script>
 
 <template>
@@ -99,6 +134,7 @@ const valid = ref(false)
             :disabled="!valid"
             rounded
             elevation="12"
+            @click="submitForm"
           >
             Sign In
           </v-btn>

@@ -3,8 +3,8 @@ import { ref, computed } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import type { UserRegistrationForm } from '@/types/user'
 import { useDisplay } from 'vuetify'
+import { isAxiosError } from 'axios'
 import server from '@/utils/server'
-import axios from 'axios'
 
 const { xs } = useDisplay()
 const modalStore = useModalStore()
@@ -50,7 +50,7 @@ const submitForm = async () => {
     alert('Registration successful!')
     closeDialog()
   } catch (error) {
-    if (axios.isAxiosError(error)) {
+    if (isAxiosError(error)) {
       console.error('Registration failed:', error.response?.data || error)
       alert(`Error: ${error.response?.data?.message || 'Registration failed.'}`)
     } else {
