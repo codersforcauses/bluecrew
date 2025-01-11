@@ -17,27 +17,36 @@ defineProps<{
       ></v-img>
       <v-text class="me-auto font-weight-bold truncate-name">{{ name }}</v-text>
       <slot name="default"></slot>
-      <div class="acceptreject d-flex align-center">
-        <slot name="acceptreject"></slot>
-        <v-icon icon="mdi-check" class="mr-6"></v-icon>
-        <v-icon icon="mdi-close"></v-icon>
-      </div>
-      <div class="dissmiss d-flex align-center">
-        <slot name="dismiss"></slot>
-        <v-icon icon="mdi-check" class="mr-6"></v-icon>
-        <v-icon icon="mdi-close"></v-icon>
-      </div>
+      <slot name="acceptreject"></slot>
+      <slot name="dismiss"></slot>
+      <slot name="delete"></slot>
+      <slot name="addfriend"></slot>
+      <slot name="accept"></slot>
     </v-col>
   </template>
-
-<style scoped>
-.truncate-name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.points {
-  white-space: nowrap;
-}
-</style>
+  
+  <style scoped>
+  .truncate-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .acceptreject {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 8px;
+  }
+  
+  .dismiss-action {
+    margin-left: 8px;
+  }
+  
+  .dismiss-btn {
+    background-color: #1B2B4B !important; /* Dark blue color from the image */
+    color: white !important;
+    text-transform: none;
+    border-radius: 8px;
+  }
+  </style>
