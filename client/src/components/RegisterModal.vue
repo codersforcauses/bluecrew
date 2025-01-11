@@ -53,8 +53,9 @@ const submitForm = () => {
       <v-card>
         <v-card-text style="height: auto; overflow-y: auto">
           <div class="header">
-            <button class="close-button" @click="closeDialog">x</button>
-            <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
+            <button class="close-button" @click="closeDialog">
+            <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
+          </button>
           </div>
           <strong class="text-primaryPink">Create an account</strong>
           <form class="register-form" @submit.prevent="submitForm">
@@ -165,10 +166,14 @@ const submitForm = () => {
               ></v-text-field>
             </div>
             <v-btn
-              id="register-button"
-              class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center"
-              >Sign Up</v-btn
-            >
+            class="d-flex justify-center mt-4 w-50 mx-auto"
+            color="primaryBlue"
+            :style="{ height: '50px' }"
+            rounded
+            elevation="12"
+          >
+            Sign Up
+          </v-btn>
           </form>
 
           <footer class="text-primaryPink">
@@ -202,15 +207,6 @@ strong {
   font-family: poppins;
   margin-bottom: 10px;
   align-items: center;
-  font-weight: bold;
-}
-
-img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 10px;
-  width: 100px;
 }
 
 label {
@@ -228,7 +224,7 @@ button {
   font-family: poppins;
   font-size: 16px;
   margin-top: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16);
+  margin-right: 10px;
 }
 
 .header {
