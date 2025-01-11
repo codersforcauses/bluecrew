@@ -97,7 +97,7 @@ const valid = ref(false)
 
           <div class="mt-3">
             <a href="/forgot-password" class="text-lightBlue">
-              <b class="text-subtitle-2"><forgotpass>Forgot Password?</forgotpass></b>
+              <p class="text-subtitle-2 margin-left-adjust">Forgot Password?</p>
             </a>
           </div>
           <v-btn
@@ -166,12 +166,6 @@ p {
   font-size: 18px;
   font-family: poppins;
   margin-bottom: 10px;
-  align-items: center;
-  font-weight: bold;
-}
-
-forgotpass {
-  font-family: poppins;
   font-weight: bold;
 }
 

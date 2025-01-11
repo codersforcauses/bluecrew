@@ -245,17 +245,14 @@ button {
 }
 
 .close-button {
-  width: 30px;
-  height: 30px;
+  width: 0px;
+  height: 0px;
+  margin-right: 0px;
   display: flex;
   align-self: flex-end;
   justify-content: center;
   align-items: center;
-  font-size: 20px;
-  background: none;
-  color: black;
-  border: 3px;
-  border-color: black;
+  font-size: 21px;
   cursor: pointer;
   padding: 0;
 }
