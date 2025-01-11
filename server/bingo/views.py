@@ -50,6 +50,7 @@ def update_user_preferences(request):
     try:
         avatar = int(request.data["avatar"])
         visibility = int(request.data["visibility"])
+        bio = request.data['bio']
     except ValueError:
         return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
@@ -59,9 +60,10 @@ def update_user_preferences(request):
     try:
         request.user.avatar = avatar
         request.user.visibility = visibility
+        request.user.bio = bio
         request.user.full_clean()
         request.user.save()
-    except ValidationError:
+    except (ValidationError, IntegrityError):
         return Response(status=status.HTTP_409_CONFLICT)
 
     return Response(status=status.HTTP_200_OK)

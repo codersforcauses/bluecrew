@@ -82,24 +82,27 @@ class UpdatePreferencesTest(TestCase):
         self.client = APIClient()
         self.client.force_authenticate(self.user)
 
-    def request(self, avatar, visibility):
+    def request(self, avatar=1, visibility=User.Visibility.FRIENDS, bio="words"):
         return self.client.put(
             reverse("update_preferences"),
-            {"avatar": avatar, "visibility": visibility}
+            {"avatar": avatar, "visibility": visibility, "bio": bio}
         )
 
     def test_updates(self):
-        self.assertEqual(self.request(1, User.Visibility.FRIENDS).status_code, 200)
+        self.assertEqual(self.request().status_code, 200)
         self.assertEqual(self.user.avatar, 1)
         self.assertEqual(self.user.visibility, User.Visibility.FRIENDS)
+        self.assertEqual(self.user.bio, "words")
 
     def test_invalid(self):
         self.assertEqual(self.request(-1, User.Visibility.BLUECREW).status_code, 422)
         self.assertEqual(self.request('a', User.Visibility.PUBLIC).status_code, 422)
         self.assertEqual(self.request(5, 3).status_code, 422)
+        self.assertEqual(self.request(bio="!"*301).status_code, 409)
 
     def test_subsequent(self):
         self.assertEqual(self.request(5, 2).status_code, 200)
-        self.assertEqual(self.request(3, 1).status_code, 200)
+        self.assertEqual(self.request(3, 1, "other words").status_code, 200)
         self.assertEqual(self.user.visibility, 1)
         self.assertEqual(self.user.avatar, 3)
+        self.assertEqual(self.user.bio, "other words")
