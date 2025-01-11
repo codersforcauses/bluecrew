@@ -41,6 +41,22 @@ def get_current_user(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@api_view(['PUT'])
+@permission_classes([permissions.IsAuthenticated])
+def update_user_preferences(request):
+    try:
+        avatar = int(request.data["avatar"])
+        visibility = int(request.data["visibility"])
+    except ValueError:
+        return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+    if avatar not in range(6) or visibility not in User.Visibility:
+        return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+    request.user.avatar = avatar
+    request.user.visibility = visibility
+
+
 @api_view(['GET'])
 @permission_classes((permissions.IsAuthenticated, ))
 def get_friends(request):
