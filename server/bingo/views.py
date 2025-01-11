@@ -201,29 +201,47 @@ def get_bingo_grid(request):
 @api_view(['PATCH'])
 @permission_classes((permissions.IsAuthenticated, ))
 def complete_challenge(request):
+    """
+    This view returns a dictionary the following information.
+    'challenge_points' contains the points earned from completing the challenge.
+    'bingo_points' contains the points earned from bingos completed
+    'bingo_rows' contains the row in which a bingo was just achieved, if any, from 0-3, -1 if no bingo
+    'bingo_cols' contains the column in which a bingo was just achieved, if any, from 0-3, -1 if no bingo
+    'bingo_diag' contains the diagonal in which a bingo was just achieved, if any, denoted by the first row
+    tile the diagonal contains, either 0 or 3, -1 if no bingo.
+    'full_bingo' contains a boolean, representing whether the full grid has been completed.
+    """
     active_grid = get_object_or_404(BingoGrid, is_active=True)
     serializer = ChallengeCompleteSerializer(request.data)
     tile = get_object_or_404(TileInteraction, user=request.user,
                              grid=active_grid, position=serializer.data['position'])
 
+    # Update consent field.
     tile.consent = serializer.data['consent']
+    # Image is not a required field.
     image = serializer.data.get('image', None)
     if image and tile.consent:
         tile.image = image
-    if not tile.completed:
-        tile.completed = True
-        tile.date_completed = datetime.now()
-        tile.save()
 
-        challenge = active_grid.challenges.all()[tile.position]
-        challenge.total_completions += 1
-        challenge.save()
+    # Points should only be awarded once.
+    if tile.completed:
+        return Response({'error': 'Challenge has already been completed for this user.'}, status=status.HTTP_409_CONFLICT)
 
-        user = get_object_or_404(User, is_active=True,
-                                 user_id=tile.user.user_id)
-        user.total_points += challenge.points
-        user.save()
+    tile.completed = True
+    tile.date_completed = datetime.now()
+    tile.save()
+
+    challenge = active_grid.challenges.all()[tile.position]
+    challenge.total_completions += 1
+    challenge.save()
+
+    user = get_object_or_404(User, is_active=True,
+                             user_id=tile.user.user_id)
+    user.total_points += challenge.points
+    user.save()
 
     bingos = check_bingo(tile)
+    response = {'challenge_points': challenge.points}
+    response.update(bingos)
 
-    return Response(bingos)
+    return Response(response, status.HTTP_200_OK)
