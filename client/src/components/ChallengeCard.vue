@@ -53,7 +53,7 @@ const finish = () => {
   width="500px"
   >
     <div class="header">
-      <button class="close-button">x</button>
+      <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
       <v-card-title style="font-weight: bold;">Watch an Ocean Documentary</v-card-title>
     </div>
     <v-card-subtitle class="points" style="font-weight: bold;"> 200 Points</v-card-subtitle>
