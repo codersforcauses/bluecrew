@@ -54,9 +54,9 @@ const submitForm = () => {
         <v-card-text style="height: auto; overflow-y: auto">
           <div class="header">
             <button class="close-button" @click="closeDialog">
-            <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
-          </button>
-          <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
+              <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
+            </button>
+            <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
           </div>
           <strong class="text-primaryPink">Create an account</strong>
           <form class="register-form" @submit.prevent="submitForm">
@@ -167,18 +167,19 @@ const submitForm = () => {
               ></v-text-field>
             </div>
             <v-btn
-            class="d-flex justify-center mt-4 w-50 mx-auto"
-            color="primaryBlue"
-            :style="{ height: '50px' }"
-            rounded
-            elevation="12"
-          >
-            Sign Up
-          </v-btn>
+              class="d-flex justify-center mt-4 w-50 mx-auto"
+              color="primaryBlue"
+              :style="{ height: '50px' }"
+              rounded
+              elevation="12"
+            >
+              Sign Up
+            </v-btn>
           </form>
 
           <footer class="text-primaryPink">
-            Already have an account? <a href="#" class="text-primaryPink" @click.prevent="openLoginModal">Sign In</a>
+            Already have an account?
+            <a href="#" class="text-primaryPink" @click.prevent="openLoginModal">Sign In</a>
           </footer>
         </v-card-text>
       </v-card>

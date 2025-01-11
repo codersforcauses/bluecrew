@@ -51,15 +51,20 @@ const valid = ref(false)
       </v-card-title>
 
       <v-card-subtitle class="text-center subtitle mt-2 text-primaryPink">
-      <strong><h3><b>Welcome Back</b></h3></strong>
+        <strong
+          ><h3><b>Welcome Back</b></h3></strong
+        >
       </v-card-subtitle>
       <v-card-text>
         <p class="text-center subtitle mb-4 text-primaryPink">
           <b>Login to your existing account</b>
         </p>
-        
+
         <v-form v-model="valid" lazy-validation>
-          <v-card-subtitle class="text-left subtitle mb-3 pa-0 text-primaryPink" style="font-family: 'poppins'; font-size: 16px; font-weight: bold;" >
+          <v-card-subtitle
+            class="text-left subtitle mb-3 pa-0 text-primaryPink"
+            style="font-family: 'poppins'; font-size: 16px; font-weight: bold"
+          >
             Username
           </v-card-subtitle>
           <v-text-field
@@ -72,7 +77,10 @@ const valid = ref(false)
             variant="outlined"
           ></v-text-field>
 
-          <v-card-subtitle class="text-left subtitle mt-3 mb-3 pa-0 text-primaryPink" style="font-family: 'poppins'; font-size: 16px; font-weight: bold;" >
+          <v-card-subtitle
+            class="text-left subtitle mt-3 mb-3 pa-0 text-primaryPink"
+            style="font-family: 'poppins'; font-size: 16px; font-weight: bold"
+          >
             Password
           </v-card-subtitle>
           <v-text-field
@@ -107,7 +115,8 @@ const valid = ref(false)
 
       <v-card-actions class="d-flex justify-center text-primaryPink">
         <footer>
-          Don't have an account? <a href="#" class="text-primaryPink" @click.prevent="openRegisterModal">Sign up</a>
+          Don't have an account?
+          <a href="#" class="text-primaryPink" @click.prevent="openRegisterModal">Sign up</a>
         </footer>
       </v-card-actions>
     </v-card>
@@ -171,5 +180,4 @@ footer {
   font-family: poppins;
   font-weight: bold;
 }
-
 </style>
