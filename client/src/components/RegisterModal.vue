@@ -32,8 +32,37 @@ const closeDialog = () => {
   modalStore.closeModal()
 }
 
-const submitForm = () => {
-  closeDialog()
+const submitForm = async () => {
+  // Copies formData but creates first_name and last_name in snake case for variable compatability
+  const body = {
+    ...formData.value,
+    first_name: formData.value.firstName,
+    last_name: formData.value.lastName,
+  }
+  try {
+    // API call to register
+    const response = await fetch('http://localhost:8000/api/register/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+      console.log('Registration successful:', data)
+      alert('Registration successful!')
+      closeDialog()
+    } else {
+      const errorData = await response.json()
+      console.error('Registration failed:', errorData)
+      alert(`Error: ${errorData.message || 'Registration failed.'}`)
+    }
+  } catch (error) {
+    console.error('Network error:', error)
+    alert('Network error. Please try again.')
+  }
 }
 </script>
 
@@ -163,6 +192,7 @@ const submitForm = () => {
             <v-btn
               id="register-button"
               class="bg-primaryBlue text-creamyWhite d-flex justify-center align-center"
+              @click="submitForm"
               >Sign Up</v-btn
             >
           </form>
