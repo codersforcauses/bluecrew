@@ -18,9 +18,9 @@ interface LeaderboardEntry {
   isHighlighted: boolean
 }
 
-const userStore = useUserStore()  
+const userStore = useUserStore()
 const leaderboardData = ref<LeaderboardEntry[]>([])
-const currentUser = ref<LeaderboardEntry | null>(null)  
+const currentUser = ref<LeaderboardEntry | null>(null)
 const isLoading = ref(true)
 const error = ref<string | null>(null)
 
@@ -31,16 +31,16 @@ const fetchLeaderboard = async () => {
       throw new Error('Failed to fetch leaderboard data')
     }
     const data: LeaderboardApiEntry[] = await response.json()
-    
+
     // Only set current user if user is logged in
     if (userStore.isLoggedIn && data.length > 0) {
       const currentUserData = data[data.length - 1]
       currentUser.value = {
         rank: currentUserData.rank,
-        avatarIndex: 0, 
+        avatarIndex: 0,
         name: currentUserData.username,
         points: currentUserData.total_points,
-        isHighlighted: true
+        isHighlighted: true,
       }
       // Only exclude last entry if it's the current user
       leaderboardData.value = data.slice(0, -1)
@@ -55,7 +55,7 @@ const fetchLeaderboard = async () => {
       avatarIndex: 0,
       name: entry.username,
       points: entry.total_points,
-      isHighlighted: false
+      isHighlighted: false,
     }))
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'An error occurred'
@@ -67,7 +67,6 @@ const fetchLeaderboard = async () => {
 onMounted(() => {
   fetchLeaderboard()
 })
-
 </script>
 
 <template>
