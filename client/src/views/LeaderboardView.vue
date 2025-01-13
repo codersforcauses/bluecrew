@@ -5,6 +5,7 @@ import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import server from '@/utils/server'
 
+// These interfaces should match exactly what we're working with
 interface LeaderboardApiEntry {
   username: string
   total_points: number
@@ -17,6 +18,7 @@ interface LeaderboardEntry {
   avatarIndex: number
   name: string
   points: number
+  isHighlighted: boolean
 }
 
 const userStore = useUserStore()
@@ -28,7 +30,7 @@ const error = ref<string | null>(null)
 const fetchLeaderboard = async () => {
   try {
     isLoading.value = true
-    const response = await server.get('/leaderboard/', {
+    const response = await server.get<LeaderboardApiEntry[]>('/leaderboard/', {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -37,7 +39,10 @@ const fetchLeaderboard = async () => {
 
     const data: LeaderboardApiEntry[] = response.data
 
-    const transformEntry = (entry: LeaderboardApiEntry, highlight: boolean = false) => ({
+    const transformEntry = (
+      entry: LeaderboardApiEntry,
+      highlight: boolean = false,
+    ): LeaderboardEntry => ({
       rank: entry.rank,
       avatarIndex: entry.avatar,
       name: entry.username,
