@@ -89,6 +89,14 @@ const handleAddFriend = (index: number) => {
           @addFriend="handleAddFriend(index)"
         />
       </v-col>
+      <v-col v-for="(friend, index) in currentFriends" :key="index" cols="12">
+        <FriendComponent
+          :avatar-index="friend.avatarIndex"
+          :name="friend.name"
+          variant="accept"
+          @addFriend="handleAccept(index)"
+        />
+      </v-col>
     </v-row>
   </v-container>
 </template>

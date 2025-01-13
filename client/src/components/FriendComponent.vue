@@ -24,7 +24,7 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
     ></v-img>
     <v-text class="me-auto font-weight-bold truncate-name">{{ name }}</v-text>
     
-    <!-- Default slot for custom content -->
+    <!-- Default slot-->
     <slot name="default"></slot>
 
     <!-- Accept/Reject variant -->
@@ -32,13 +32,11 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
       <slot name="acceptreject">
         <v-icon 
           icon="mdi-check" 
-          color="success" 
           @click="emit('accept')"
           class="cursor-pointer"
         />
         <v-icon 
           icon="mdi-close" 
-          color="error" 
           @click="emit('reject')"
           class="cursor-pointer"
         />
@@ -51,7 +49,6 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
         <v-btn
           color="primaryBlue"
           variant="flat"
-          density="comfortable"
           @click="emit('dismiss')"
           class="dismiss-btn"
         >
@@ -66,7 +63,6 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
         <v-btn
           color="primaryPink"
           variant="flat"
-          density="comfortable"
           @click="showDialog = true"
         >
           Delete
@@ -80,10 +76,10 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
           <v-card-text>Are you sure you want to delete this friend?</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="grey-darken-1" variant="text" @click="showDialog = false">
+            <v-btn color="primaryBlue" variant="flat" @click="showDialog = false">
               Cancel
             </v-btn>
-            <v-btn color="error" variant="text" @click="emit('delete'); showDialog = false">
+            <v-btn color="primaryPink" variant="flat"  @click="emit('delete'); showDialog = false">
               Confirm
             </v-btn>
           </v-card-actions>
@@ -97,7 +93,6 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
         <v-btn
           color="primaryPink"
           variant="flat"
-          density="comfortable"
           @click="emit('addFriend')"
         >
           Add Friend
@@ -139,13 +134,6 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
 .add-friend-action,
 .accept-action {
   margin-left: 8px;
-}
-
-.dismiss-btn {
-  background-color: #1B2B4B !important;
-  color: white !important;
-  text-transform: none;
-  border-radius: 8px;
 }
 
 .cursor-pointer {
