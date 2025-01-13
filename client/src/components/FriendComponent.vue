@@ -13,7 +13,7 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
 </script>
 
 <template>
-  <v-col class="rounded-lg d-flex ga-3 px-5 outline align-center bg-creamWhite text-primaryGrey">
+  <div class="rounded-lg d-flex ga-3 px-5 outline align-center bg-creamWhite text-primaryGrey">
     <v-img
       class="rounded-circle"
       max-height="32"
@@ -44,7 +44,7 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
       <!-- Delete confirmation dialog -->
       <v-dialog v-model="showDialog" max-width="400">
         <v-card>
-          <v-card-title>Confirm Deletion</v-card-title>
+          <v-card-title font-family="poppins">Confirm Deletion</v-card-title>
           <v-card-text>Are you sure you want to delete this friend?</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -66,7 +66,7 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
     <div v-if="variant === 'accept'" class="accept-action">
       <v-btn color="primaryPink" variant="flat" @click="emit('accept')"> Accept </v-btn>
     </div>
-  </v-col>
+  </div>
 </template>
 
 <style scoped>

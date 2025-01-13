@@ -9,7 +9,7 @@ defineProps<{
 </script>
 
 <template>
-  <v-col
+  <div
     :class="[isHighlighted ? 'bg-primaryPink' : 'bg-creamWhite text-primaryGrey']"
     class="rounded-lg d-flex ga-3 px-5 align-center"
   >
@@ -26,7 +26,7 @@ defineProps<{
     <v-text :class="[isHighlighted ? 'font-weight-bold' : '']" class="text-right points"
       >{{ points }} pts</v-text
     >
-  </v-col>
+  </div>
 </template>
 
 <style scoped>

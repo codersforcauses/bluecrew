@@ -19,7 +19,6 @@ const router = createRouter({
       path: '/friends',
       name: 'friends',
       component: FriendView,
-      meta: { requiresAuth: true },
     },
     {
       path: '/preferences',
