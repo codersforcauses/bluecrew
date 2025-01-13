@@ -16,26 +16,6 @@ const currentFriends = ref<FriendEntry[]>([
   { avatarIndex: 3, name: 'John Smith' },
   { avatarIndex: 4, name: 'Sarah Johnson' },
 ])
-
-const handleAccept = (index: number) => {
-  // Handle accept logic
-}
-
-const handleReject = (index: number) => {
-  // Handle reject logic
-}
-
-const handleDismiss = (index: number) => {
-  // Handle dismiss logic
-}
-
-const handleDelete = (index: number) => {
-  // Handle delete logic
-}
-
-const handleAddFriend = (index: number) => {
-  // Handle add friend logic
-}
 </script>
 
 <template>
@@ -49,8 +29,6 @@ const handleAddFriend = (index: number) => {
           :avatar-index="friend.avatarIndex"
           :name="friend.name"
           variant="acceptReject"
-          @accept="handleAccept(index)"
-          @reject="handleReject(index)"
         />
       </v-col>
     </v-row>
@@ -58,44 +36,23 @@ const handleAddFriend = (index: number) => {
     <h3 class="section-title2 text-primaryBlue mt-6">Friends List</h3>
     <v-row class="friend-scroll">
       <v-col v-for="(friend, index) in currentFriends" :key="index" cols="12">
-        <FriendComponent
-          :avatar-index="friend.avatarIndex"
-          :name="friend.name"
-          variant="default"
-          @dismiss="handleDismiss(index)"
-        />
+        <FriendComponent :avatar-index="friend.avatarIndex" :name="friend.name" variant="default" />
       </v-col>
       <v-col v-for="(friend, index) in currentFriends" :key="index" cols="12">
-        <FriendComponent
-          :avatar-index="friend.avatarIndex"
-          :name="friend.name"
-          variant="dismiss"
-          @dismiss="handleDismiss(index)"
-        />
+        <FriendComponent :avatar-index="friend.avatarIndex" :name="friend.name" variant="dismiss" />
       </v-col>
       <v-col v-for="(friend, index) in currentFriends" :key="index" cols="12">
-        <FriendComponent
-          :avatar-index="friend.avatarIndex"
-          :name="friend.name"
-          variant="delete"
-          @delete="handleDelete(index)"
-        />
+        <FriendComponent :avatar-index="friend.avatarIndex" :name="friend.name" variant="delete" />
       </v-col>
       <v-col v-for="(friend, index) in currentFriends" :key="index" cols="12">
         <FriendComponent
           :avatar-index="friend.avatarIndex"
           :name="friend.name"
           variant="addFriend"
-          @addFriend="handleAddFriend(index)"
         />
       </v-col>
       <v-col v-for="(friend, index) in currentFriends" :key="index" cols="12">
-        <FriendComponent
-          :avatar-index="friend.avatarIndex"
-          :name="friend.name"
-          variant="accept"
-          @addFriend="handleAccept(index)"
-        />
+        <FriendComponent :avatar-index="friend.avatarIndex" :name="friend.name" variant="accept" />
       </v-col>
     </v-row>
   </v-container>
