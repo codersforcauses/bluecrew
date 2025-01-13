@@ -18,7 +18,7 @@ const router = createRouter({
     {
       path: '/friends',
       name: 'friends',
-      component: PlaceholderView,
+      component: FriendView,
       meta: { requiresAuth: true },
     },
     {
@@ -35,7 +35,7 @@ const router = createRouter({
     {
       path: '/blingo',
       name: 'blingo',
-      component: FriendView,
+      component: PlaceholderView,
     },
   ],
 })
