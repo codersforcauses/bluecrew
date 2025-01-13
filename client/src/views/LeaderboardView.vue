@@ -1,12 +1,15 @@
+# LeaderboardView.vue
 <script setup lang="ts">
 import LeaderboardRow from '@/components/LeaderboardRow.vue'
 import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
+import server from '@/utils/server'
 
 interface LeaderboardApiEntry {
   username: string
   total_points: number
   rank: number
+  avatar: number
 }
 
 interface LeaderboardEntry {
@@ -14,7 +17,6 @@ interface LeaderboardEntry {
   avatarIndex: number
   name: string
   points: number
-  isHighlighted: boolean
 }
 
 const userStore = useUserStore()
@@ -25,44 +27,37 @@ const error = ref<string | null>(null)
 
 const fetchLeaderboard = async () => {
   try {
-    const response = await fetch('http://localhost:8000/api/leaderboard/')
-    if (!response.ok) {
-      throw new Error('Failed to fetch leaderboard data')
-    }
-    const apiData: LeaderboardApiEntry[] = await response.json()
+    isLoading.value = true
+    const response = await server.get('/leaderboard/', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
 
-    if (userStore.isLoggedIn && apiData.length > 0) {
-      // Get current user data from the last entry
-      const currentUserData = apiData[apiData.length - 1]
-      currentUser.value = {
-        rank: currentUserData.rank,
-        avatarIndex: currentUserData.avatar,
-        name: currentUserData.username,
-        points: currentUserData.total_points,
-        isHighlighted: true,
-      }
+    const data: LeaderboardApiEntry[] = response.data
 
-      // Get other users excluding the current user
-      const otherUsers = apiData.slice(0, -1)
-      leaderboardData.value = otherUsers.map((entry) => ({
-        rank: entry.rank,
-        avatarIndex: entry.avatar,
-        name: entry.username,
-        points: entry.total_points,
-        isHighlighted: false,
-      }))
+    const transformEntry = (entry: LeaderboardApiEntry, highlight: boolean = false) => ({
+      rank: entry.rank,
+      avatarIndex: entry.avatar,
+      name: entry.username,
+      points: entry.total_points,
+      isHighlighted: highlight,
+    })
+
+    // Only set current user if user is logged in
+    if (userStore.isLoggedIn && data.length > 0) {
+      const currentUserData = data[data.length - 1]
+      currentUser.value = transformEntry(currentUserData, true)
+      leaderboardData.value = data.slice(0, -1)
     } else {
-      // If not logged in, show all users
-      leaderboardData.value = apiData.map((entry) => ({
-        rank: entry.rank,
-        avatarIndex: entry.avatar,
-        name: entry.username,
-        points: entry.total_points,
-        isHighlighted: false,
-      }))
+      leaderboardData.value = data
     }
+
+    // Transform the data
+    leaderboardData.value = leaderboardData.value.map((entry) => transformEntry(entry))
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'An error occurred'
+    error.value = err instanceof Error ? err.message : 'Failed to fetch leaderboard data'
   } finally {
     isLoading.value = false
   }
