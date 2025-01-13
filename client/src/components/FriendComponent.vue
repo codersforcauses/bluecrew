@@ -24,31 +24,22 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
     ></v-img>
     <v-text class="me-auto font-weight-bold truncate-name">{{ name }}</v-text>
 
-    <!-- Default slot-->
-    <slot name="default"></slot>
-
     <!-- Accept/Reject variant -->
     <div v-if="variant === 'acceptReject'" class="acceptreject">
-      <slot name="acceptreject">
-        <v-icon icon="mdi-check" @click="emit('accept')" class="cursor-pointer" />
-        <v-icon icon="mdi-close" @click="emit('reject')" class="cursor-pointer" />
-      </slot>
+      <v-icon icon="mdi-check" @click="emit('accept')" class="cursor-pointer" />
+      <v-icon icon="mdi-close" @click="emit('reject')" class="cursor-pointer" />
     </div>
 
     <!-- Dismiss variant -->
     <div v-if="variant === 'dismiss'" class="dismiss-action">
-      <slot name="dismiss">
-        <v-btn color="primaryBlue" variant="flat" @click="emit('dismiss')" class="dismiss-btn">
-          Dismiss
-        </v-btn>
-      </slot>
+      <v-btn color="primaryBlue" variant="flat" @click="emit('dismiss')" class="dismiss-btn">
+        Dismiss
+      </v-btn>
     </div>
 
     <!-- Delete variant -->
     <div v-if="variant === 'delete'" class="delete-action">
-      <slot name="delete">
-        <v-btn color="primaryPink" variant="flat" @click="showDialog = true"> Delete </v-btn>
-      </slot>
+      <v-btn color="primaryPink" variant="flat" @click="showDialog = true"> Delete </v-btn>
 
       <!-- Delete confirmation dialog -->
       <v-dialog v-model="showDialog" max-width="400">
@@ -68,16 +59,12 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
 
     <!-- Add Friend variant -->
     <div v-if="variant === 'addFriend'" class="add-friend-action">
-      <slot name="addfriend">
-        <v-btn color="primaryPink" variant="flat" @click="emit('addFriend')"> Add Friend </v-btn>
-      </slot>
+      <v-btn color="primaryPink" variant="flat" @click="emit('addFriend')"> Add Friend </v-btn>
     </div>
 
     <!-- Accept variant -->
     <div v-if="variant === 'accept'" class="accept-action">
-      <slot name="accept">
-        <v-btn color="primaryPink" variant="flat" @click="emit('accept')"> Accept </v-btn>
-      </slot>
+      <v-btn color="primaryPink" variant="flat" @click="emit('accept')"> Accept </v-btn>
     </div>
   </v-col>
 </template>
