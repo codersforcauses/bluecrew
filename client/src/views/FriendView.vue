@@ -8,13 +8,13 @@ interface FriendEntry {
 }
 
 const pendingFriends = ref<FriendEntry[]>([
-  { avatarIndex: 1, name: 'Marsha Fisher'},
-  { avatarIndex: 2, name: 'Juanita Cormier'},
+  { avatarIndex: 1, name: 'Marsha Fisher' },
+  { avatarIndex: 2, name: 'Juanita Cormier' },
 ])
 
 const currentFriends = ref<FriendEntry[]>([
-  { avatarIndex: 3, name: 'John Smith'},
-  { avatarIndex: 4, name: 'Sarah Johnson'},
+  { avatarIndex: 3, name: 'John Smith' },
+  { avatarIndex: 4, name: 'Sarah Johnson' },
 ])
 
 const handleAccept = (index: number) => {
@@ -41,7 +41,7 @@ const handleAddFriend = (index: number) => {
 <template>
   <v-container>
     <h2 class="friend-text text-primaryPink mb-4 mb-sm-3 mb-md-4">Friends</h2>
-    
+
     <h3 class="section-title2 text-primaryBlue">Friend Requests</h3>
     <v-row class="friend-scroll">
       <v-col v-for="(friend, index) in pendingFriends" :key="index" cols="12">
@@ -101,5 +101,4 @@ const handleAddFriend = (index: number) => {
   </v-container>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
