@@ -5,7 +5,7 @@ import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import server from '@/utils/server'
 
-// These interfaces should match exactly what we're working with
+// What we receive from the API
 interface LeaderboardApiEntry {
   username: string
   total_points: number
@@ -13,6 +13,7 @@ interface LeaderboardApiEntry {
   avatar: number
 }
 
+// What we use in our component
 interface LeaderboardEntry {
   rank: number
   avatarIndex: number
@@ -27,6 +28,17 @@ const currentUser = ref<LeaderboardEntry | null>(null)
 const isLoading = ref(true)
 const error = ref<string | null>(null)
 
+const transformEntry = (
+  entry: LeaderboardApiEntry,
+  highlight: boolean = false,
+): LeaderboardEntry => ({
+  rank: entry.rank,
+  avatarIndex: entry.avatar,
+  name: entry.username,
+  points: entry.total_points,
+  isHighlighted: highlight,
+})
+
 const fetchLeaderboard = async () => {
   try {
     isLoading.value = true
@@ -37,30 +49,17 @@ const fetchLeaderboard = async () => {
       },
     })
 
-    const data: LeaderboardApiEntry[] = response.data
+    const data = response.data
 
-    const transformEntry = (
-      entry: LeaderboardApiEntry,
-      highlight: boolean = false,
-    ): LeaderboardEntry => ({
-      rank: entry.rank,
-      avatarIndex: entry.avatar,
-      name: entry.username,
-      points: entry.total_points,
-      isHighlighted: highlight,
-    })
-
-    // Only set current user if user is logged in
     if (userStore.isLoggedIn && data.length > 0) {
       const currentUserData = data[data.length - 1]
       currentUser.value = transformEntry(currentUserData, true)
-      leaderboardData.value = data.slice(0, -1)
+      // Transform the data immediately when assigning
+      leaderboardData.value = data.slice(0, -1).map((entry) => transformEntry(entry))
     } else {
-      leaderboardData.value = data
+      // Transform the data immediately when assigning
+      leaderboardData.value = data.map((entry) => transformEntry(entry))
     }
-
-    // Transform the data
-    leaderboardData.value = leaderboardData.value.map((entry) => transformEntry(entry))
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'Failed to fetch leaderboard data'
   } finally {
