@@ -72,15 +72,16 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
 <style scoped>
 .friend-row {
   display: flex;
-  gap: 1rem;  
+  gap: 1rem;
+  min-height: 50px; 
   padding-left: 1.25rem;  
   padding-right: 1.25rem;
   border: 1px solid;  
   align-items: center;
   border-radius: 0.5rem;  
-  background-color: primaryBlue;  
-  border-color: primaryBrown;
-  color: primaryGrey;  
+  background-color: rgb(var(--v-theme-creamWhite)); 
+  border-color: rgb(var(--v-theme-primaryBlue));
+  color: rgb(var(--v-theme-primaryGrey));  
 }
 
 .truncate-name {
