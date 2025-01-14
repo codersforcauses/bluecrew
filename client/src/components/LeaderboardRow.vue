@@ -11,7 +11,7 @@ defineProps<{
 <template>
   <div
     :class="[isHighlighted ? 'bg-primaryPink' : 'bg-creamWhite text-primaryGrey']"
-    class="rounded-lg d-flex ga-3 px-5 align-center"
+    class="leaderboard-row"
   >
     <v-text class="font-weight-bold">{{ rank }}</v-text>
     <v-img
@@ -30,6 +30,17 @@ defineProps<{
 </template>
 
 <style scoped>
+.leaderboard-row {
+  display: flex;
+  gap: 16px; 
+  min-height: 50px;
+  padding-left: 20px; 
+  padding-right: 20px; 
+  align-items: center;
+  border-radius: 8px; 
+  color: rgb(var(--v-theme-primaryGrey));
+}
+
 .truncate-name {
   white-space: nowrap;
   overflow: hidden;

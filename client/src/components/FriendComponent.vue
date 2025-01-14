@@ -44,8 +44,8 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
       <!-- Delete confirmation dialog -->
       <v-dialog v-model="showDialog" max-width="400">
         <v-card>
-          <v-card-title font-family="poppins">Confirm Deletion</v-card-title>
-          <v-card-text>Are you sure you want to delete this friend?</v-card-text>
+          <strong>Confirm Deletion</strong>
+          <p>Are you sure you want to delete this friend?</p>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primaryBlue" variant="flat" @click="showDialog = false"> Cancel </v-btn>
@@ -70,18 +70,33 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
 </template>
 
 <style scoped>
+strong {
+  font-weight: bold;
+  font-family: poppins;
+  font-size: 24px;
+  color: rgb(var(--v-theme-primaryGrey));
+  padding: 10px;
+}
+
+p {
+  font-weight: bold;
+  font-family: poppins;
+  color: rgb(var(--v-theme-primaryGrey));
+  padding: 10px;
+}
+
 .friend-row {
   display: flex;
-  gap: 1rem;
-  min-height: 50px; 
-  padding-left: 1.25rem;  
-  padding-right: 1.25rem;
-  border: 1px solid;  
+  gap: 16px; 
+  min-height: 50px;
+  padding-left: 20px; 
+  padding-right: 20px; 
+  border: 1px solid;
   align-items: center;
-  border-radius: 0.5rem;  
-  background-color: rgb(var(--v-theme-creamWhite)); 
+  border-radius: 8px; 
+  background-color: rgb(var(--v-theme-creamWhite));
   border-color: rgb(var(--v-theme-primaryBlue));
-  color: rgb(var(--v-theme-primaryGrey));  
+  color: rgb(var(--v-theme-primaryGrey));
 }
 
 .truncate-name {
