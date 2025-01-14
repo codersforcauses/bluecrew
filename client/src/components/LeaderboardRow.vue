@@ -9,9 +9,9 @@ defineProps<{
 </script>
 
 <template>
-  <v-col
+  <div
     :class="[isHighlighted ? 'bg-primaryPink' : 'bg-creamWhite text-primaryGrey']"
-    class="rounded-lg d-flex ga-3 px-5 align-center"
+    class="leaderboard-row"
   >
     <p class="font-weight-bold">{{ rank }}</p>
     <v-img
@@ -26,10 +26,21 @@ defineProps<{
     <p :class="[isHighlighted ? 'font-weight-bold' : '']" class="text-right points">
       {{ points }} pts
     </p>
-  </v-col>
+  </div>
 </template>
 
 <style scoped>
+.leaderboard-row {
+  display: flex;
+  gap: 16px;
+  min-height: 50px;
+  padding-left: 20px;
+  padding-right: 20px;
+  align-items: center;
+  border-radius: 8px;
+  color: rgb(var(--v-theme-primaryGrey));
+}
+
 .truncate-name {
   white-space: nowrap;
   overflow: hidden;
