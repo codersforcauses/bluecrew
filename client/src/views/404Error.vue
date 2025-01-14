@@ -20,7 +20,7 @@ const goHome = () => {
             <template v-if="!xs">
               <br />Looks like you've ventured <br />into uncharted waters
             </template>
-            <template v-else">
+            <template v-else>
               <br />Looks like you've <br />ventured into <br />uncharted waters
             </template>
           </h2>
@@ -43,7 +43,7 @@ const goHome = () => {
 
 <style scoped>
 .error-container {
-  height: calc(100vh - 144px); 
+  height: calc(100vh - 144px);
   display: flex;
   align-items: center;
   justify-content: center;
