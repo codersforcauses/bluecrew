@@ -13,7 +13,7 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
 </script>
 
 <template>
-  <div class="rounded-lg d-flex ga-3 px-5 outline align-center bg-creamWhite text-primaryGrey">
+  <div class="friend-row">
     <v-img
       class="rounded-circle"
       max-height="32"
@@ -70,6 +70,19 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
 </template>
 
 <style scoped>
+.friend-row {
+  display: flex;
+  gap: 1rem;  
+  padding-left: 1.25rem;  
+  padding-right: 1.25rem;
+  border: 1px solid;  
+  align-items: center;
+  border-radius: 0.5rem;  
+  background-color: primaryBlue;  
+  border-color: primaryBrown;
+  color: primaryGrey;  
+}
+
 .truncate-name {
   white-space: nowrap;
   overflow: hidden;
