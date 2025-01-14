@@ -87,13 +87,13 @@ p {
 
 .friend-row {
   display: flex;
-  gap: 16px; 
+  gap: 16px;
   min-height: 50px;
-  padding-left: 20px; 
-  padding-right: 20px; 
+  padding-left: 20px;
+  padding-right: 20px;
   border: 1px solid;
   align-items: center;
-  border-radius: 8px; 
+  border-radius: 8px;
   background-color: rgb(var(--v-theme-creamWhite));
   border-color: rgb(var(--v-theme-primaryBlue));
   color: rgb(var(--v-theme-primaryGrey));
