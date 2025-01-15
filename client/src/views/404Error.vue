@@ -11,59 +11,71 @@ const goHome = () => {
 </script>
 
 <template>
-  <v-container fluid class="error-container pa-0">
-    <v-row class="ma-0">
-      <v-col cols="12" class="d-flex justify-center align-center">
-        <div class="text-center">
-          <h2 class="tagline">
-            Uh oh! Page not found
-            <template v-if="!xs">
-              <br />Looks like you've ventured <br />into uncharted waters
-            </template>
-            <template v-else>
-              <br />Looks like you've <br />ventured into <br />uncharted waters
-            </template>
-          </h2>
-          <div class="buttons">
-            <v-btn
-              id="home-button"
-              class="bg-primaryPink text-creamyWhite"
-              rounded="xl"
-              size="x-large"
-              @click="goHome"
-            >
-              Go Home
-            </v-btn>
+    <v-container fluid class="fill-height pa-0">
+      <v-row class="ma-0 align-center justify-center">
+        <v-col cols="12" class="d-flex justify-center"> 
+          <div class="text-center">
+            <div class="d-flex align-center justify-center mb-4">
+              <h1 class="error-code text-primaryBlue">
+                404
+              </h1>
+              <v-img
+                src="/submarine.png"
+                :max-width="xs ? '60' : '100'"
+                class="submarine-image ml-4"
+                contain
+              />
+            </div>
+            <h2 class="tagline">
+              Uh oh! Page not found
+              <template v-if="!xs">
+                <br />Looks like you've ventured <br />into uncharted waters
+              </template>
+            </h2>
+            <div class="buttons">
+              <v-btn
+                id="home-button"
+                class="bg-primaryPink text-creamyWhite"
+                rounded="xl"
+                size="x-large"
+                @click="goHome"
+              >
+                Go Home
+              </v-btn>
+            </div>
           </div>
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
-</template>
-
-<style scoped>
-.error-container {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.buttons {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 50px auto;
-}
-
-.tagline {
-  font-size: 2rem;
-  line-height: 1.5;
-}
-
-@media (max-width: 600px) {
-  .tagline {
-    font-size: 1.5rem;
+        </v-col>
+      </v-row>
+    </v-container>
+  </template>
+   
+  <style scoped>
+  
+  .error-code {
+    font-size: 5rem;
+    font-weight: bold;
+    line-height: 1.2;
   }
-}
-</style>
+  
+  .tagline {
+    font-size: 2rem;
+    line-height: 1.5;
+  }
+  
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    margin: 50px 0; 
+    width: 100%
+  }
+  
+  @media (max-width: 600px) {
+    .error-code {
+      font-size: 3rem;
+    }
+    .tagline {
+      font-size: 1.5rem;
+    }
+  }
+  </style>
