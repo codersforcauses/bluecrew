@@ -43,7 +43,7 @@ const goHome = () => {
 
 <style scoped>
 .error-container {
-  height: calc(100vh - 144px);
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
