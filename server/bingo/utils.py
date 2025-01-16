@@ -24,46 +24,35 @@ def check_bingo(tile):
               'full_bingo': False,
               'bingo_points': 0}
 
-    bingo_count = 0
+    # Helper function for checking a bingo in a line/diagonal
+    def check_line(indices):
+        return all(completion_grid[i] for i in indices)
+
     # Check the row for bingo.
-    for i in range(tile_row*grid_width, tile_row*grid_width+grid_width):
-        if completion_grid[i] == 1:
-            bingo_count += 1
-    if bingo_count == 4:
+    row_indices = range(tile_row*grid_width, tile_row*grid_width+grid_width)
+    if check_line(row_indices):
         bingos['bingo_row'] = tile_row
         bingos['bingo_points'] += settings.BINGO_COMPLETE
-    bingo_count = 0
 
     # Check the column for bingo.
-    for i in range(tile_col, grid_size, grid_width):
-        if completion_grid[i] == 1:
-            bingo_count += 1
-    if bingo_count == 4:
+    col_indices = range(tile_col, grid_size, grid_width)
+    if check_line(col_indices):
         bingos['bingo_col'] = tile_col
         bingos['bingo_points'] += settings.BINGO_COMPLETE
-    bingo_count = 0
 
     # If the tile exists in a diagonal, check the diagonal for bingos.
     if tile_row == tile_col:
         # This diagonal goes top left to bottom right.
-        for i in range(0, grid_size, grid_width+1):
-            if completion_grid[i] == 1:
-                bingo_count += 1
-        if bingo_count == 4:
-            bingos[2] = True
+        diag1_indices = range(0, grid_size, grid_width+1)
+        if check_line(diag1_indices):
             bingos['bingo_diag'] = 0
             bingos['bingo_points'] += settings.BINGO_COMPLETE
-        bingo_count = 0
-    elif tile_row + tile_col == grid_width - 1:
+    if tile_row + tile_col == grid_width - 1:
         # This diagonal goes bottom left to top right.
-        for i in range(0, grid_size, grid_width - 1):
-            if completion_grid[i] == 1:
-                bingo_count += 1
-        if bingo_count == 4:
-            bingos[2] = True
+        diag2_ranges = range(grid_width - 1, grid_size - 1, grid_width - 1)
+        if check_line(diag2_ranges):
             bingos['bingo_diag'] = 3
             bingos['bingo_points'] += settings.BINGO_COMPLETE
-        bingo_count = 0
 
     if len(all_tiles) == grid_size:
         # Check for full bingo
