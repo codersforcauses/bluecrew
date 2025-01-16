@@ -32,6 +32,7 @@ const startTask = () => {
 const completeTask = () => {
   isCompleted.value = true
 }
+
 const handleImageUpload = (event: Event) => {
   const target = event.target as HTMLInputElement
   const file = target.files?.[0]
@@ -49,8 +50,9 @@ const finish = () => {
   emit('task-completed', taskSubmission.value)
 }
 </script>
+
 <template>
-  <v-card color="primaryBlue" rounded>
+  <v-card v-if="!isStarted && !isCompleted" color="primaryBlue" rounded>
     <div class="header">
       <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3" @click="closeCard"></v-icon>
       <v-card-title style="font-weight: bold">Watch an Ocean Documentary</v-card-title>
@@ -69,19 +71,51 @@ const finish = () => {
         <li>Cleaning up the Ocean</li>
       </ul>
     </div>
+    <v-card-actions>
+      <v-btn color="pink" @click="startTask">Start</v-btn>
+    </v-card-actions>
+  </v-card>
 
+  <v-card v-else-if="isStarted && !isCompleted" color="primaryBlue" rounded>
+    <div class="header">
+      <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3" @click="closeCard"></v-icon>
+      <v-card-title style="font-weight: bold">Watch an Ocean Documentary</v-card-title>
+    </div>
     <v-card-subtitle style="font-weight: bold">
       <div class="points">200 Points</div>
     </v-card-subtitle>
-    <v-card-text style="font-weight: bold">
-      Here are some of our top picks! You can choose one of them or watch one of your own. Tell us
-      what you thought and submit a picture.
-      <br />
-      David Attenborough, Our Planet Coastal Seas <br />
-      Cleaning up the Ocean
+    <v-checkbox
+      v-model="taskSubmission.canShareOnSocialMedia"
+      label="Can Blue Crew use this image on Social Media?"
+    ></v-checkbox>
+    <v-card-text>
+      <input type="file" @change="handleImageUpload" />
+      <textarea v-model="taskSubmission.feedback" placeholder="Your feedback here..."></textarea>
     </v-card-text>
     <v-card-actions>
-      <v-btn @click="closeCard">Completed</v-btn>
+      <v-btn color="pink" @click="finish">Finish</v-btn>
+    </v-card-actions>
+  </v-card>
+
+  <v-card v-else color="primaryBlue" rounded>
+    <div class="header">
+      <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3" @click="closeCard"></v-icon>
+      <v-card-title style="font-weight: bold">Watch an Ocean Documentary</v-card-title>
+    </div>
+    <v-card-subtitle style="font-weight: bold">
+      <div class="points">200 Points</div>
+    </v-card-subtitle>
+
+    <v-card-text>
+      Here are some of our top picks! You can choose one of them or watch one of your own. Tell us
+      what you thought and submit a picture.
+      <ul>
+        <li>David Attenborough, Our Planet Coastal Seas</li>
+        <li>Cleaning up the Ocean</li>
+      </ul>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn color="blue" disabled>Completed</v-btn>
     </v-card-actions>
   </v-card>
 </template>
