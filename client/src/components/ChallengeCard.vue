@@ -7,8 +7,6 @@ interface TaskSubmission {
   canShareOnSocialMedia: boolean
 }
 
-const showCard = ref(false)
-
 const taskSubmission = ref<TaskSubmission>({
   feedback: '',
   image: null,
@@ -54,6 +52,7 @@ const finish = () => {
 <template>
   <v-card v-if="!isStarted && !isCompleted" color="primaryBlue" rounded>
     <div class="header">
+      <img src="../assets/BrainIcon.svg" alt="Brain icon" />
       <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3" @click="closeCard"></v-icon>
       <v-card-title style="font-weight: bold">Watch an Ocean Documentary</v-card-title>
     </div>
@@ -78,6 +77,7 @@ const finish = () => {
 
   <v-card v-else-if="isStarted && !isCompleted" color="primaryBlue" rounded>
     <div class="header">
+      <img src="../assets/BrainIcon.svg" alt="Brain icon" />
       <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3" @click="closeCard"></v-icon>
       <v-card-title style="font-weight: bold">Watch an Ocean Documentary</v-card-title>
     </div>
@@ -88,17 +88,30 @@ const finish = () => {
       v-model="taskSubmission.canShareOnSocialMedia"
       label="Can Blue Crew use this image on Social Media?"
     ></v-checkbox>
-    <v-card-text>
-      <input type="file" @change="handleImageUpload" />
-      <textarea v-model="taskSubmission.feedback" placeholder="Your feedback here..."></textarea>
-    </v-card-text>
-    <v-card-actions>
-      <v-btn color="pink" @click="finish">Finish</v-btn>
-    </v-card-actions>
+    <div class="content">
+      <v-textarea v-model="taskSubmission.feedback" label="Feedback" rows="5"></v-textarea>
+
+      <input
+        type="file"
+        ref="fileInput"
+        @change="handleImageUpload"
+        accept="image/*"
+        style="display: none"
+      />
+      <div class="upload-icon" @click="$refs.fileInput.click()">
+        <v-icon icon="mdi-file-document-outline"></v-icon>
+        <span class="file-text">{{ taskSubmission.image?.name || 'my_imag...' }}</span>
+      </div>
+
+      <v-card-actions>
+        <v-btn @click="finish">Finish</v-btn>
+      </v-card-actions>
+    </div>
   </v-card>
 
   <v-card v-else color="primaryBlue" rounded>
     <div class="header">
+      <img src="../assets/BrainIcon.svg" alt="Brain icon" />
       <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3" @click="closeCard"></v-icon>
       <v-card-title style="font-weight: bold">Watch an Ocean Documentary</v-card-title>
     </div>

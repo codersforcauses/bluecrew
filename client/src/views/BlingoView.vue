@@ -2,20 +2,32 @@
 import ChallengeCard from '@/components/ChallengeCard.vue'
 import { ref } from 'vue'
 
-const showChallenge = ref(true)
+const dialog = ref(false)
 
 const handleClose = () => {
-  showChallenge.value = false
+  dialog.value = false
 }
 
 const handleTaskCompleted = () => {
-  // Show completed state for 2 seconds then close
   setTimeout(() => {
-    showChallenge.value = false
+    dialog.value = false
   }, 2000)
+}
+
+const handleIconClick = () => {
+  dialog.value = true
 }
 </script>
 
 <template>
-  <ChallengeCard v-if="showChallenge" @close="handleClose" @task-completed="handleTaskCompleted" />
+  <img
+    src="../assets/BrainIcon.svg"
+    alt="Brain icon"
+    @click="handleIconClick"
+    class="cursor-pointer"
+  />
+
+  <v-dialog v-model="dialog" width="500">
+    <ChallengeCard @close="handleClose" @task-completed="handleTaskCompleted" />
+  </v-dialog>
 </template>

@@ -15,7 +15,6 @@ const modalStore = useModalStore()
     <NavBarWrapper />
     <v-main class="main-content">
       <RouterView />
-      <ChallengeCard />
     </v-main>
     <BluecrewFooter />
   </v-app>
