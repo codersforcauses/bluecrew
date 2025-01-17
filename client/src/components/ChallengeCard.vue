@@ -53,8 +53,10 @@ const finish = () => {
   <v-card v-if="!isStarted && !isCompleted" color="primaryBlue" rounded>
     <div class="header">
       <img src="../assets/BrainIcon.svg" alt="Brain icon" />
-      <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3" @click="closeCard"></v-icon>
-      <v-card-title style="font-weight: bold">Watch an Ocean Documentary</v-card-title>
+      <div class="header-content">
+        <v-card-title>Watch an Ocean Documentary</v-card-title>
+      </div>
+      <v-icon icon="mdi-close-circle-outline" @click="closeCard"></v-icon>
     </div>
     <v-card-subtitle style="font-weight: bold">
       <div class="points">200 Points</div></v-card-subtitle
@@ -78,8 +80,10 @@ const finish = () => {
   <v-card v-else-if="isStarted && !isCompleted" color="primaryBlue" rounded>
     <div class="header">
       <img src="../assets/BrainIcon.svg" alt="Brain icon" />
-      <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3" @click="closeCard"></v-icon>
-      <v-card-title style="font-weight: bold">Watch an Ocean Documentary</v-card-title>
+      <div class="header-content">
+        <v-card-title>Watch an Ocean Documentary</v-card-title>
+      </div>
+      <v-icon icon="mdi-close-circle-outline" @click="closeCard"></v-icon>
     </div>
     <v-card-subtitle style="font-weight: bold">
       <div class="points">200 Points</div>
@@ -112,8 +116,10 @@ const finish = () => {
   <v-card v-else color="primaryBlue" rounded>
     <div class="header">
       <img src="../assets/BrainIcon.svg" alt="Brain icon" />
-      <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3" @click="closeCard"></v-icon>
-      <v-card-title style="font-weight: bold">Watch an Ocean Documentary</v-card-title>
+      <div class="header-content">
+        <v-card-title>Watch an Ocean Documentary</v-card-title>
+      </div>
+      <v-icon icon="mdi-close-circle-outline" @click="closeCard"></v-icon>
     </div>
     <v-card-subtitle style="font-weight: bold">
       <div class="points">200 Points</div>
@@ -133,4 +139,147 @@ const finish = () => {
   </v-card>
 </template>
 
-<style scoped></style>
+<style scoped>
+.v-card {
+  background-color: #1b3b5a !important;
+  color: white !important;
+  padding: 24px;
+  max-width: 400px;
+  margin: 0 auto;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  position: relative;
+  width: 100%;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.v-card-title {
+  color: white !important;
+  font-size: 24px !important;
+  line-height: 1.3;
+  text-align: center;
+  margin: 0 !important;
+  padding: 0 !important;
+  white-space: normal !important; /* 允许换行 */
+  overflow: visible !important; /* 允许内容溢出 */
+  text-overflow: clip !important; /* 不使用省略号 */
+  font-weight: bold;
+}
+
+.header img {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.points {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  margin: 4px 0 20px;
+}
+
+.v-card-text {
+  color: white !important;
+  text-align: center !important;
+  padding: 0 !important;
+  margin-bottom: 16px;
+  font-size: 16px !important;
+  line-height: 1.5;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 16px 0;
+  text-align: center;
+}
+
+li {
+  margin: 8px 0;
+  color: white;
+  font-size: 16px;
+}
+
+.v-card-actions {
+  justify-content: center;
+  padding: 16px 0 8px;
+  margin-top: 24px;
+}
+
+.v-btn {
+  min-width: 140px !important;
+  height: 48px !important;
+  font-size: 18px !important;
+  text-transform: none !important;
+  border-radius: 24px !important;
+  letter-spacing: normal !important;
+}
+
+.v-btn.v-btn--color-pink {
+  background-color: #e91e63 !important;
+  color: white !important;
+  box-shadow: 0 4px 8px rgba(233, 30, 99, 0.3) !important;
+}
+
+.v-btn:disabled {
+  background-color: #4dd0e1 !important;
+  color: white !important;
+  opacity: 1 !important;
+}
+
+.description {
+  text-align: center;
+  margin: 0;
+  padding: 0 16px;
+}
+
+.v-icon.mdi-close-circle-outline {
+  flex-shrink: 0;
+  font-size: 24px;
+  opacity: 0.8;
+}
+
+/* 文本区域样式 */
+.v-textarea :deep(.v-field__input) {
+  background-color: white;
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 120px;
+}
+
+/* 上传区域样式 */
+.upload-icon {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upload-icon:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* 复选框样式 */
+.v-checkbox :deep(.v-label) {
+  color: white !important;
+  opacity: 0.9;
+}
+</style>
