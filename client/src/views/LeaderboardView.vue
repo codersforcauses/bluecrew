@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <WaveHeader imageSrc="/teambuilding-background.jpg" />
     <h2 class="leaderboard-text text-primaryPink mb-4 mb-sm-3 mb-md-4">Leaderboard</h2>
 
     <!-- Your Rank -->
@@ -34,6 +35,7 @@
 
 <script setup lang="ts">
 import LeaderboardRow from '@/components/LeaderboardRow.vue'
+import WaveHeader from '@/components/WaveHeader.vue'
 import { ref } from 'vue'
 
 // Define TypeScript interface for leaderboard data
