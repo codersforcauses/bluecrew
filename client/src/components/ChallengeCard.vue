@@ -277,7 +277,7 @@ li {
 }
 
 .v-checkbox :deep(.v-label) {
-  color: white !important;
+  color: rgb(var(--v-theme-primaryWhite));
   opacity: 0.9;
 }
 </style>
