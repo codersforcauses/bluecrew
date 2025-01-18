@@ -2,7 +2,7 @@
   <footer class="footer">
     <div class="footer-content">
       <!-- Desktop Layout -->
-      <div class="desktop-layout">
+      <div v-if="!mdAndDown" class="desktop-layout">
         <div class="company-section">
           <img src="/oy-logo.png" alt="Ocean Youth Logo" class="company-logo" />
           <div class="link-group">
@@ -14,7 +14,9 @@
                 <v-icon icon="mdi-instagram" color="white" size="large" />
               </a>
             </div>
-            <a href="https://www.oceanyouth.org/" target="_blank" class="website-link">https://www.oceanyouth.org/</a>
+            <a href="https://www.oceanyouth.org/" target="_blank" class="website-link">
+              https://www.oceanyouth.org/
+            </a>
           </div>
         </div>
 
@@ -24,20 +26,30 @@
           <img src="/bc-logo.png" alt="Blue Crew Logo" class="company-logo" />
           <div class="link-group">
             <div class="social-icons">
-              <a href="https://www.facebook.com/people/Blue-Crew/61565854920450/" target="_blank" class="social-link">
+              <a
+                href="https://www.facebook.com/people/Blue-Crew/61565854920450/"
+                target="_blank"
+                class="social-link"
+              >
                 <v-icon icon="mdi-facebook" color="white" size="large" />
               </a>
-              <a href="https://www.instagram.com/bluecrewaustralia" target="_blank" class="social-link">
+              <a
+                href="https://www.instagram.com/bluecrewaustralia"
+                target="_blank"
+                class="social-link"
+              >
                 <v-icon icon="mdi-instagram" color="white" size="large" />
               </a>
             </div>
-            <a href="https://bluecrew.com.au/" target="_blank" class="website-link">https://bluecrew.com.au/</a>
+            <a href="https://bluecrew.com.au/" target="_blank" class="website-link">
+              https://bluecrew.com.au/
+            </a>
           </div>
         </div>
       </div>
 
       <!-- Mobile Layout -->
-      <div class="mobile-layout">
+      <div v-else class="mobile-layout">
         <div v-if="!isExpanded" class="mobile-footer-collapsed" @click="toggleFooter">
           <div class="learn-more">
             <v-icon icon="mdi-chevron-up" color="white" size="small" />
@@ -59,14 +71,19 @@
                 <img src="/bc-logo.png" alt="Blue Crew Logo" class="mobile-logo" />
                 <div class="mobile-links">
                   <div class="mobile-social">
-                    <a href="https://www.facebook.com/people/Blue-Crew/61565854920450/" target="_blank">
+                    <a
+                      href="https://www.facebook.com/people/Blue-Crew/61565854920450/"
+                      target="_blank"
+                    >
                       <v-icon icon="mdi-facebook" color="white" size="28" />
                     </a>
                     <a href="https://www.instagram.com/bluecrewaustralia" target="_blank">
                       <v-icon icon="mdi-instagram" color="white" size="28" />
                     </a>
                   </div>
-                  <a href="https://bluecrew.com.au/" target="_blank" class="mobile-url">https://bluecrew.com.au/</a>
+                  <a href="https://bluecrew.com.au/" target="_blank" class="mobile-url">
+                    https://bluecrew.com.au/
+                  </a>
                 </div>
               </div>
             </div>
@@ -84,8 +101,9 @@
                       <v-icon icon="mdi-instagram" color="white" size="28" />
                     </a>
                   </div>
-                  <a href="https://www.oceanyouth.org/" target="_blank"
-                    class="mobile-url">https://www.oceanyouth.org/</a>
+                  <a href="https://www.oceanyouth.org/" target="_blank" class="mobile-url">
+                    https://www.oceanyouth.org/
+                  </a>
                 </div>
               </div>
             </div>
@@ -97,8 +115,10 @@
 </template>
 
 <script setup lang="ts">
+import { useDisplay } from 'vuetify'
 import { ref } from 'vue'
 
+const { mdAndDown } = useDisplay()
 const isExpanded = ref(false)
 const toggleFooter = () => {
   isExpanded.value = !isExpanded.value
@@ -170,100 +190,63 @@ const toggleFooter = () => {
   text-align: center;
 }
 
-/* Mobile Styles */
+/* Mobile Layout */
 .mobile-layout {
-  display: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-@media screen and (max-width: 600px) {
-  .desktop-layout {
-    display: none;
-  }
+.mobile-footer-collapsed {
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+}
 
-  .mobile-layout {
-    display: block;
-  }
+.mobile-footer-expanded {
+  padding: 1rem;
+  text-align: center;
+}
 
-  .footer-content {
-    padding: 0;
-  }
+.mobile-companies {
+  margin: 3rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+}
 
-  .mobile-footer-collapsed {
-    padding: 1rem;
-    text-align: center;
-    cursor: pointer;
-  }
+.company-content {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
 
-  .learn-more {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.25rem;
-    margin-bottom: 0;
-  }
+.mobile-logo {
+  height: 75px;
+  width: auto;
+}
 
-  .mobile-footer-expanded {
-    padding: 1rem;
-    text-align: center;
-    position: relative;
-  }
+.mobile-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
 
-  .close-icon {
-    position: absolute;
-    top: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    cursor: pointer;
-    margin-bottom: 0.5rem;
-  }
+.mobile-social {
+  display: flex;
+  gap: 1.5rem;
+}
 
-  .mobile-companies {
-    margin: 3rem auto;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    align-items: center;
-    width: 100%;
-  }
+.mobile-url {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+}
 
-  .mobile-company {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-  }
-
-  .company-content {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-  }
-
-  .mobile-logo {
-    height: 75px;
-    width: auto;
-  }
-
-  .mobile-links {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .mobile-social {
-    display: flex;
-    gap: 1.5rem;
-  }
-
-  .mobile-url {
-    color: white;
-    text-decoration: none;
-    font-size: 14px;
-  }
-
-  .mobile-text {
-    font-size: 12px;
-    margin-top: 2rem;
-  }
+.mobile-text {
+  font-size: 12px;
+  margin-top: 2rem;
 }
 </style>
