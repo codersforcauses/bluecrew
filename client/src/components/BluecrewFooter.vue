@@ -14,7 +14,9 @@
                 <v-icon icon="mdi-instagram" color="white" size="large" />
               </a>
             </div>
-            <a href="https://www.oceanyouth.org/" target="_blank" class="website-link">https://www.oceanyouth.org/</a>
+            <a href="https://www.oceanyouth.org/" target="_blank" class="website-link"
+              >https://www.oceanyouth.org/</a
+            >
           </div>
         </div>
 
@@ -24,14 +26,24 @@
           <img src="/bc-logo.png" alt="Blue Crew Logo" class="company-logo" />
           <div class="link-group">
             <div class="social-icons">
-              <a href="https://www.facebook.com/people/Blue-Crew/61565854920450/" target="_blank" class="social-link">
+              <a
+                href="https://www.facebook.com/people/Blue-Crew/61565854920450/"
+                target="_blank"
+                class="social-link"
+              >
                 <v-icon icon="mdi-facebook" color="white" size="large" />
               </a>
-              <a href="https://www.instagram.com/bluecrewaustralia" target="_blank" class="social-link">
+              <a
+                href="https://www.instagram.com/bluecrewaustralia"
+                target="_blank"
+                class="social-link"
+              >
                 <v-icon icon="mdi-instagram" color="white" size="large" />
               </a>
             </div>
-            <a href="https://bluecrew.com.au/" target="_blank" class="website-link">https://bluecrew.com.au/</a>
+            <a href="https://bluecrew.com.au/" target="_blank" class="website-link"
+              >https://bluecrew.com.au/</a
+            >
           </div>
         </div>
       </div>
@@ -58,14 +70,19 @@
               <img src="/bc-logo.png" alt="Blue Crew Logo" class="mobile-logo" />
               <div class="mobile-links">
                 <div class="mobile-social">
-                  <a href="https://www.facebook.com/people/Blue-Crew/61565854920450/" target="_blank">
+                  <a
+                    href="https://www.facebook.com/people/Blue-Crew/61565854920450/"
+                    target="_blank"
+                  >
                     <v-icon icon="mdi-facebook" color="white" size="28" />
                   </a>
                   <a href="https://www.instagram.com/bluecrewaustralia" target="_blank">
                     <v-icon icon="mdi-instagram" color="white" size="28" />
                   </a>
                 </div>
-                <a href="https://bluecrew.com.au/" target="_blank" class="mobile-url">https://bluecrew.com.au/</a>
+                <a href="https://bluecrew.com.au/" target="_blank" class="mobile-url"
+                  >https://bluecrew.com.au/</a
+                >
               </div>
             </div>
 
@@ -81,7 +98,9 @@
                     <v-icon icon="mdi-instagram" color="white" size="28" />
                   </a>
                 </div>
-                <a href="https://www.oceanyouth.org/" target="_blank" class="mobile-url">https://www.oceanyouth.org/</a>
+                <a href="https://www.oceanyouth.org/" target="_blank" class="mobile-url"
+                  >https://www.oceanyouth.org/</a
+                >
               </div>
             </div>
           </div>
