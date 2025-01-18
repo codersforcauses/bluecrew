@@ -137,16 +137,20 @@ def get_incoming_requests(request):
 @api_view(['GET'])
 def get_leaderboard(request):
     """
-    Returns a leaderboard of size 'leaderboard_size'.
+    Returns a leaderboard of size 'leaderboard_size', excluding superusers.
     The current user's rank is also added to the end of the leaderboard, regardless of rank.
     If the current user has a place in the leaderboard, they will appear twice - in the leaderboard and at the end.
     """
     # Size of the leaderboard returned, excluding the current user.
     logged_in = request.user.is_authenticated
     leaderboard_size = 20
-    user_set = User.objects.all()
+    
+    # Filter out superusers
+    user_set = User.objects.filter(is_superuser=False)
+    
     if not user_set:
         return Response({'No users found in database.'}, status=status.HTTP_200_OK)
+        
     # Annotate the user query set with each user's respective rank.
     user_set = user_set.annotate(
         rank=Window(
@@ -154,14 +158,15 @@ def get_leaderboard(request):
             order_by=F('total_points').desc(),
         )
     )
-    serializer = LeaderboardUserSerializer(
-        user_set, many=True)
+    
+    serializer = LeaderboardUserSerializer(user_set, many=True)
     leaderboard = []
     current_user_index = -1
     user_found = False
+    
     for i in range(len(serializer.data)):
-        # Check for current user.
-        if logged_in:
+        # Check for current user, only if they're not a superuser
+        if logged_in and not request.user.is_superuser:
             if user_set[i].username == str(request.user):
                 current_user_index = i
                 user_found = True
@@ -174,11 +179,12 @@ def get_leaderboard(request):
             # Add annotated rank field to serializer.
             serializer.data[i]['rank'] = user_set[i].rank
             leaderboard.append(serializer.data[i])
-    # Append current user to end of leaderboard.
-    if logged_in:
+            
+    # Append current user to end of leaderboard only if they're not a superuser
+    if logged_in and not request.user.is_superuser and current_user_index != -1:
         leaderboard.append(serializer.data[current_user_index])
+        
     return Response(leaderboard, status=status.HTTP_200_OK)
-
 
 @api_view(['POST'])
 @permission_classes((permissions.IsAuthenticated, ))
