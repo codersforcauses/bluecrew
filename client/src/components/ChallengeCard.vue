@@ -220,8 +220,8 @@ li {
 }
 
 .v-btn {
-  background-color: #ff4081;
-  color: white;
+  background-color: primaryPink;
+  color: primaryWhite;
   border: none;
   padding: 10px 20px;
   border-radius: 4px;
@@ -230,13 +230,13 @@ li {
 }
 
 .v-btn.v-btn--color-pink {
-  background-color: #e91e63 !important;
+  background-color: primaryPink;
   color: white !important;
-  box-shadow: 0 4px 8px rgba(233, 30, 99, 0.3) !important;
+  box-shadow: 0 4px 8px rgba(233, 30, 99, 0.3);
 }
 
 .v-btn:disabled {
-  background-color: #4dd0e1 !important;
+  background-color: lightBlue !important;
   color: white !important;
   opacity: 1 !important;
 }
@@ -254,14 +254,14 @@ li {
 }
 
 /* 文本区域样式 */
-.v-textarea :deep(.v-field__input) {
-  background-color: white;
+.v-textarea {
+  background-color: primaryBrown;
   border-radius: 8px;
   padding: 12px;
   min-height: 120px;
+  color: primaryBrown;
 }
 
-/* 上传区域样式 */
 .upload-icon {
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px dashed rgba(255, 255, 255, 0.3);
@@ -276,7 +276,6 @@ li {
   background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* 复选框样式 */
 .v-checkbox :deep(.v-label) {
   color: white !important;
   opacity: 0.9;
