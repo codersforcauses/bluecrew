@@ -5,7 +5,6 @@ import LoginModal from './components/LoginModal.vue'
 import BluecrewFooter from '@/components/BluecrewFooter.vue'
 import RegisterModal from '@/components/RegisterModal.vue'
 import NavBarWrapper from './components/NavBarWrapper.vue'
-import ChallengeCard from './components/ChallengeCard.vue'
 
 const modalStore = useModalStore()
 </script>

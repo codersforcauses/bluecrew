@@ -2,9 +2,9 @@
 import ChallengeCard from '@/components/ChallengeCard.vue'
 import { ref } from 'vue'
 import { useUserStore } from '@/stores/user'
-import LoginModal from '@/components/LoginModal.vue'
+import { useModalStore } from '@/stores/modal'
 const dialog = ref(false)
-
+const modalStore = useModalStore()
 const handleClose = () => {
   dialog.value = false
 }
@@ -20,7 +20,7 @@ const handleIconClick = () => {
     dialog.value = true
   } else {
     dialog.value = true
-    // LoginModal
+    // modalStore.openLogin()
   }
 }
 </script>
