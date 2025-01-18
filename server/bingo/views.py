@@ -170,6 +170,34 @@ def get_leaderboard(request):
 
 
 @api_view(['POST'])
+@permission_classes((permissions.isAuthenticated, ))
+def request_friendship(request, user_id):
+    receiver = get_object_or_404(User, id=user_id)
+
+    if request.user == receiver:
+        return Response(
+            {"error": "You cannot send a friendship request to yourself."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        Friendship.objects.create(
+            requester=request.user,
+            receiver=receiver,
+            status=Friendship.PENDING
+        )
+        return Response(
+            {"message": "Friendship request sent successfully."},
+            status=status.HTTP_201_CREATED
+        )
+    except IntegrityError:
+        return Response(
+            {"error": "A friendship request already exists or is pending"},
+            status=status.HTTP_409_CONFLICT
+        )
+
+
+@api_view(['POST'])
 @permission_classes((permissions.IsAuthenticated, ))
 def accept_friendship(request, friendship_id):
     friendship = get_object_or_404(Friendship, id=friendship_id)
