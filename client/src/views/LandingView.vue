@@ -1,18 +1,24 @@
 <script setup lang="ts">
+import WaveBanner from '@/components/WaveBanner.vue'
 import { useModalStore } from '@/stores/modal'
 import { useDisplay } from 'vuetify'
 
 const { xs } = useDisplay()
 const modalStore = useModalStore()
 
-function openRegisterButton() {
+const openRegisterModal = () => {
   modalStore.openRegister()
+}
+
+const openLoginModal = () => {
+  modalStore.openLogin()
 }
 </script>
 
 <template>
   <v-container fluid class="fill-height pa-0 flex-column">
     <v-row v-if="!xs" class="header">
+      <WaveBanner imageSrc="/beach-header.jpg" />
       <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
     </v-row>
     <v-row class="flex-grow-1 w-100" align="center">
@@ -42,7 +48,7 @@ function openRegisterButton() {
               class="bg-primaryPink text-creamyWhite"
               rounded="xl"
               size="x-large"
-              @click="openRegisterButton"
+              @click="openRegisterModal"
             >
               Get Started
             </v-btn>
@@ -51,7 +57,7 @@ function openRegisterButton() {
               class="bg-primaryBlue text-creamyWhite"
               rounded="xl"
               size="x-large"
-              @click="openRegisterButton"
+              @click="openLoginModal"
             >
               I already have an account
             </v-btn>

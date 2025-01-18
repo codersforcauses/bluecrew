@@ -2,9 +2,15 @@
 import { ref, computed } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import { useDisplay } from 'vuetify'
+import { useUserStore } from '@/stores/user'
 
 const { xs } = useDisplay()
 const modalStore = useModalStore()
+const userStore = useUserStore()
+
+const username = ref('')
+const password = ref('')
+const valid = ref(false)
 
 const isDialogVisible = computed({
   get: () => modalStore.currentModal === 'login',
@@ -23,15 +29,22 @@ const openRegisterModal = () => {
   modalStore.openRegister()
 }
 
-const username = ref('')
-const password = ref('')
-const valid = ref(false)
+const submitForm = async () => {
+  const body = {
+    username: username.value,
+    password: password.value,
+  }
+  const loginResult = await userStore.login(body)
+  if (loginResult === true) {
+    closeDialog()
+  }
+}
 </script>
 
 <template>
   <v-dialog
     v-model="isDialogVisible"
-    :max-width="xs ? '100%' : '400px'"
+    :max-width="xs ? '100%' : '500px'"
     :fullscreen="xs"
     scrollable
     persistent
@@ -51,7 +64,9 @@ const valid = ref(false)
       </v-card-title>
 
       <v-card-subtitle class="text-center subtitle mt-2 text-primaryPink">
-        <h3><b>Welcome Back</b></h3>
+        <strong
+          ><h3><b>Welcome Back</b></h3></strong
+        >
       </v-card-subtitle>
       <v-card-text>
         <p class="text-center subtitle mb-4 text-primaryPink">
@@ -59,7 +74,10 @@ const valid = ref(false)
         </p>
 
         <v-form v-model="valid" lazy-validation>
-          <v-card-subtitle class="text-left subtitle mb-3 pa-0 text-primaryPink">
+          <v-card-subtitle
+            class="text-left subtitle mb-3 pa-0 text-primaryPink"
+            style="font-family: 'poppins'; font-size: 16px; font-weight: bold"
+          >
             Username
           </v-card-subtitle>
           <v-text-field
@@ -72,7 +90,10 @@ const valid = ref(false)
             variant="outlined"
           ></v-text-field>
 
-          <v-card-subtitle class="text-left subtitle mt-3 mb-3 pa-0 text-primaryPink">
+          <v-card-subtitle
+            class="text-left subtitle mt-3 mb-3 pa-0 text-primaryPink"
+            style="font-family: 'poppins'; font-size: 16px; font-weight: bold"
+          >
             Password
           </v-card-subtitle>
           <v-text-field
@@ -89,7 +110,7 @@ const valid = ref(false)
 
           <div class="mt-3">
             <a href="/forgot-password" class="text-lightBlue">
-              <b class="text-subtitle-2">Forgot Password?</b>
+              <p class="text-subtitle-2 margin-left-adjust">Forgot Password?</p>
             </a>
           </div>
           <v-btn
@@ -99,6 +120,7 @@ const valid = ref(false)
             :disabled="!valid"
             rounded
             elevation="12"
+            @click="submitForm"
           >
             Sign In
           </v-btn>
@@ -106,10 +128,10 @@ const valid = ref(false)
       </v-card-text>
 
       <v-card-actions class="d-flex justify-center text-primaryPink">
-        <p>
-          <b>Don't have an account?</b>
+        <footer>
+          Don't have an account?
           <a href="#" class="text-primaryPink" @click.prevent="openRegisterModal">Sign up</a>
-        </p>
+        </footer>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -123,5 +145,47 @@ const valid = ref(false)
 
 a:hover {
   text-decoration: underline;
+}
+
+.close-button {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-self: flex-end;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  background: none;
+  color: black;
+  border: 3px;
+  border-color: black;
+  cursor: pointer;
+  padding: 0;
+}
+
+strong {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  font-size: 19px;
+  font-family: poppins;
+  margin-bottom: 0px;
+  align-items: center;
+}
+
+p {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  font-size: 18px;
+  font-family: poppins;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+footer {
+  text-align: center;
+  font-family: poppins;
+  font-weight: bold;
 }
 </style>
