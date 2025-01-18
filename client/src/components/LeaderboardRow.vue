@@ -9,11 +9,11 @@ defineProps<{
 </script>
 
 <template>
-  <v-col
+  <div
     :class="[isHighlighted ? 'bg-primaryPink' : 'bg-creamWhite text-primaryGrey']"
-    class="rounded-lg d-flex ga-3 px-5 align-center"
+    class="leaderboard-row"
   >
-    <v-text class="font-weight-bold">{{ rank }}</v-text>
+    <p class="font-weight-bold">{{ rank }}</p>
     <v-img
       class="rounded-circle"
       max-height="32"
@@ -22,14 +22,25 @@ defineProps<{
       cover
       src="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
     ></v-img>
-    <v-text class="me-auto font-weight-bold truncate-name">{{ name }}</v-text>
-    <v-text :class="[isHighlighted ? 'font-weight-bold' : '']" class="text-right points"
-      >{{ points }} pts</v-text
-    >
-  </v-col>
+    <p class="me-auto font-weight-bold truncate-name">{{ name }}</p>
+    <p :class="[isHighlighted ? 'font-weight-bold' : '']" class="text-right points">
+      {{ points }} pts
+    </p>
+  </div>
 </template>
 
 <style scoped>
+.leaderboard-row {
+  display: flex;
+  gap: 16px;
+  min-height: 50px;
+  padding-left: 20px;
+  padding-right: 20px;
+  align-items: center;
+  border-radius: 8px;
+  color: rgb(var(--v-theme-primaryGrey));
+}
+
 .truncate-name {
   white-space: nowrap;
   overflow: hidden;
