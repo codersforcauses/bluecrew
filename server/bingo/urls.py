@@ -1,8 +1,8 @@
 from django.urls import path
 
 from rest_framework_simplejwt.views import (
-     TokenObtainPairView,
-     TokenRefreshView,
+    TokenObtainPairView,
+    TokenRefreshView,
 )
 from bingo import views
 
