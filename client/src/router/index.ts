@@ -37,6 +37,15 @@ const router = createRouter({
       name: 'blingo',
       component: PlaceholderView,
     },
+    {
+      path: '/404',
+      name: '404',
+      component: () => import('@/views/404Error.vue'),
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/404',
+    },
   ],
 })
 
