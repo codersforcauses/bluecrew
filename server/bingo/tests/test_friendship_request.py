@@ -15,16 +15,16 @@ class RequestFrienshipTest(TestCase):
         self.user3 = User.objects.create_user(
             username="user3", email="user3@example.com", password="password")
         self.client = APIClient()
-        
 
     def test_create_friendship_success(self):
         self.client.force_authenticate(user=self.user1)
-        self.request_friendship_url = reverse('request_friendship', args=[self.user2.user_id])
-        response = self.client.post(self.request_friendship_url)
+        request_friendship_url = reverse('request_friendship', args=[self.user2.user_id])
+        response = self.client.post(request_friendship_url)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["message"], "Friendship request sent successfully.")
         try:
-            Friendship.objects.get(requester=self.user1, receiver=self.user2)
+            friendship = Friendship.objects.get(requester=self.user1, receiver=self.user2)
+            self.assertEqual(friendship.status, Friendship.PENDING)
         except ObjectDoesNotExist:
-            self.fail("Failed to find friendship")
-
+            self.fail("Friendship object was not created as expected.")
+    
