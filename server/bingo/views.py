@@ -239,29 +239,20 @@ def get_bingo_grid(request):
     return Response(grid, status=status.HTTP_200_OK)
 
 
-# The view should take the username of a user as input and do the following things:
-
-# Return the users first name, last name, avatar, bio, and number of points
-# Calculate whether the logged in user (call them X) has permission to view the completed challenges of this user (call them Y)
-# If Y has their visibility set to "BlueCrew Only", then Y can view X's completed challenges if and only if Y is staff
-# If Y has their visibility set to "Friends Only", then Y can view X's completed challenges if and only if Y is staff or X is friends with Y
-# If Y has their visibility set to "Public", then Y can always view X's completed challenge
-# If X does indeed have permission to view Y's completed challenges, then for each challenge completed by Y (i.e. each instance of the TileInteraction model which is linked to Y), the following information should be returned:
-# The name of the challenge
-# The description of the challenge
-# The type of the challenge (connect/understand/act)
-# How many points the challenge was worth
-# The image Y uploaded for the challenge
-# The date Y started the challenge
-# The date Y finished the challenge
-
 @api_view(['GET'])
 def get_challenge_page_info(request, username):
     try:
         target_user = User.objects.get(username=username)
+        target_user_info = [target_user.first_name, target_user.last_name,
+                            target_user.bio, target_user.total_points, target_user.avatar]
     except User.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
     if not check_access(request.user, target_user):
-        response_data = [target_user.first_name, target_user.last_name,
-                         target_user.bio, target_user.total_points, target_user.avatar]
-        return Response(response_data, status=status.HTTP_200_OK)
+        return Response(target_user_info, status=status.HTTP_200_OK)
+
+    target_tiles = TileInteraction.objects.filter(user=target_user)
+    target_challenges = [tile.grid.challenges[tile.position]
+                         for tile in target_tiles]
+    challenges_info = [[challenge.name, challenge.description, challenge.type, challenge.points, tile.image, tile.date_started, tile.date_completed]
+                       for tile, challenge in zip(target_tiles, target_challenges)]
+    return Response((target_user_info, challenges_info), status=status.HTTP_200_OK)
