@@ -95,10 +95,10 @@ class UpdatePreferencesTest(TestCase):
         self.assertEqual(self.user.bio, "words")
 
     def test_invalid(self):
-        self.assertEqual(self.request(-1, User.Visibility.BLUECREW).status_code, 422)
-        self.assertEqual(self.request('a', User.Visibility.PUBLIC).status_code, 422)
-        self.assertEqual(self.request(5, 3).status_code, 422)
-        self.assertEqual(self.request(bio="!"*301).status_code, 409)
+        self.assertEqual(self.request(-1, User.Visibility.BLUECREW).status_code, 400)
+        self.assertEqual(self.request('a', User.Visibility.PUBLIC).status_code, 400)
+        self.assertEqual(self.request(5, 3).status_code, 400)
+        self.assertEqual(self.request(bio="!"*301).status_code, 400)
 
     def test_subsequent(self):
         self.assertEqual(self.request(5, 2, "").status_code, 200)

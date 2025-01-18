@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from .models import BingoGrid, Challenge
@@ -80,3 +81,9 @@ class BingoGridSerializer(serializers.ModelSerializer):
     class Meta:
         model = BingoGrid
         fields = ['grid_id', 'challenges']
+
+
+class UpdatePreferencesSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["avatar", "bio", "visibility"]

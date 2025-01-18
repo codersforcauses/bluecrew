@@ -1,7 +1,7 @@
 from rest_framework import status, permissions
-from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer
+from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer, UpdatePreferencesSerializer
 from django.shortcuts import get_object_or_404
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -47,26 +47,12 @@ def get_current_user(request):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_user_preferences(request):
-    try:
-        avatar = int(request.data["avatar"])
-        visibility = int(request.data["visibility"])
-        bio = request.data['bio']
-    except ValueError:
-        return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
-
-    if avatar not in range(6) or visibility not in User.Visibility:
-        return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
-
-    try:
-        request.user.avatar = avatar
-        request.user.visibility = visibility
-        request.user.bio = bio
-        request.user.full_clean()
-        request.user.save()
-    except (ValidationError, IntegrityError):
-        return Response(status=status.HTTP_409_CONFLICT)
-
-    return Response(status=status.HTTP_200_OK)
+    serializer = UpdatePreferencesSerializer(instance=request.user, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(status=status.HTTP_200_OK)
+    else:
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
