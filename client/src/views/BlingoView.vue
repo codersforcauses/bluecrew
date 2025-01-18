@@ -3,7 +3,7 @@ import BlingoTile from '@/components/BingoTile.vue'
 </script>
 
 <template>
-  <div class="d-flex flex-column align-center mt-5 mx-5 ">
+  <div class="d-flex flex-column align-center mt-5 mx-5">
     <div class="d-flex ga-1 w-100">
       <BlingoTile type="connect" text="placeholder text" status="not started" :selected="false" />
       <BlingoTile type="act" text="placeholder text" status="started" :selected="false" />
