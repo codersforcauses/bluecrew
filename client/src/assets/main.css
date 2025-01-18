@@ -160,7 +160,9 @@
   min-height: 100%;
 }
 
-html { overflow-y: auto; }
+html {
+  overflow-y: auto;
+}
 
 body {
   min-height: 100vh;
