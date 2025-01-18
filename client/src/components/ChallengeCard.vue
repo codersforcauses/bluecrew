@@ -73,7 +73,7 @@ const finish = () => {
       </ul>
     </div>
     <v-card-actions>
-      <v-btn color="pink" @click="startTask">Start</v-btn>
+      <v-btn color="white" @click="startTask">Start</v-btn>
     </v-card-actions>
   </v-card>
 
@@ -136,7 +136,7 @@ const finish = () => {
 
 <style scoped>
 .v-card {
-  background-color: #1b3b5a !important;
+  background-color: primaryBlue !important;
   color: white !important;
   padding: 24px;
   max-width: 400px;
@@ -189,8 +189,8 @@ const finish = () => {
 }
 
 .v-card-text {
-  color: white !important;
-  text-align: center !important;
+  color: white;
+  text-align: center;
   padding: 0 !important;
   margin-bottom: 16px;
   font-size: 16px !important;
@@ -220,8 +220,8 @@ li {
 }
 
 .v-btn {
-  background-color: primaryPink;
-  color: primaryWhite;
+  background-color: rgb(var(--v-theme-primaryPink));
+  color: rgb(var(--v-theme-primaryWhite));
   border: none;
   padding: 10px 20px;
   border-radius: 4px;
@@ -230,13 +230,13 @@ li {
 }
 
 .v-btn.v-btn--color-pink {
-  background-color: primaryPink;
+  background-color: rgb(var(--v-theme-primaryPink));
   color: white !important;
   box-shadow: 0 4px 8px rgba(233, 30, 99, 0.3);
 }
 
 .v-btn:disabled {
-  background-color: lightBlue !important;
+  background-color: rgb(var(--v-theme-lightBlue)) !important;
   color: white !important;
   opacity: 1 !important;
 }
@@ -255,11 +255,11 @@ li {
 
 /* 文本区域样式 */
 .v-textarea {
-  background-color: primaryBrown;
+  background-color: rgb(var(--v-theme-primaryBrown));
   border-radius: 8px;
   padding: 12px;
   min-height: 120px;
-  color: primaryBrown;
+  color: rgb(var(--v-theme-primaryBlue));
 }
 
 .upload-icon {
