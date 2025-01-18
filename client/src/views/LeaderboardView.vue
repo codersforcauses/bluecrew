@@ -1,46 +1,20 @@
-<template>
-  <v-container class="custom-container">
-    <WaveBanner imageSrc="/teambuilding-background.jpg" />
-  </v-container>
-  <v-container>
-    <h2 class="leaderboard-text text-primaryPink mb-4 mb-sm-3 mb-md-4">Leaderboard</h2>
-
-    <!-- Your Rank -->
-    <h3 class="section-title text-primaryBlue">Your Rank</h3>
-    <v-row>
-      <v-col cols="12">
-        <LeaderboardRow
-          :rank="currentUser.rank"
-          :avatar-index="currentUser.avatarIndex"
-          :name="currentUser.name"
-          :points="currentUser.points"
-          :is-highlighted="true"
-        />
-      </v-col>
-    </v-row>
-
-    <!-- Other Users -->
-    <h3 class="section-title2 text-primaryBlue">Overall Rankings</h3>
-    <v-row class="leaderboard-scroll">
-      <v-col v-for="(row, index) in leaderboardData" :key="index" cols="12">
-        <LeaderboardRow
-          :rank="row.rank"
-          :avatar-index="row.avatarIndex"
-          :name="row.name"
-          :points="row.points"
-          :is-highlighted="row.isHighlighted"
-        />
-      </v-col>
-    </v-row>
-  </v-container>
-</template>
-
+# LeaderboardView.vue
 <script setup lang="ts">
 import LeaderboardRow from '@/components/LeaderboardRow.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useUserStore } from '@/stores/user'
+import server from '@/utils/server'
 
-// Define TypeScript interface for leaderboard data
+// What we receive from the API
+interface LeaderboardApiEntry {
+  username: string
+  total_points: number
+  rank: number
+  avatar: number
+}
+
+// What we use in our component
 interface LeaderboardEntry {
   rank: number
   avatarIndex: number
@@ -49,22 +23,104 @@ interface LeaderboardEntry {
   isHighlighted: boolean
 }
 
-const leaderboardData = ref<LeaderboardEntry[]>([
-  { rank: 1, avatarIndex: 2, name: 'Marsha Fisher', points: 36, isHighlighted: false },
-  { rank: 2, avatarIndex: 3, name: 'Juanita Cormier', points: 35, isHighlighted: false },
-  { rank: 3, avatarIndex: 3, name: 'You', points: 34, isHighlighted: true },
-  { rank: 4, avatarIndex: 1, name: 'Tamara Schmidt', points: 33, isHighlighted: false },
-  { rank: 5, avatarIndex: 4, name: 'Ricardo Veum', points: 32, isHighlighted: false },
-])
+const userStore = useUserStore()
+const leaderboardData = ref<LeaderboardEntry[]>([])
+const currentUser = ref<LeaderboardEntry | null>(null)
+const isLoading = ref(true)
+const error = ref<string | null>(null)
 
-const currentUser = ref<LeaderboardEntry>({
-  rank: 3,
-  avatarIndex: 3,
-  name: 'You',
-  points: 34,
-  isHighlighted: true,
+const transformEntry = (
+  entry: LeaderboardApiEntry,
+  highlight: boolean = false,
+): LeaderboardEntry => ({
+  rank: entry.rank,
+  avatarIndex: entry.avatar,
+  name: entry.username,
+  points: entry.total_points,
+  isHighlighted: highlight,
+})
+
+const fetchLeaderboard = async () => {
+  try {
+    isLoading.value = true
+    const response = await server.get<LeaderboardApiEntry[]>('/leaderboard/', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+
+    const data = response.data
+
+    if (userStore.isLoggedIn && data.length > 0) {
+      const currentUserData = data[data.length - 1]
+      currentUser.value = transformEntry(currentUserData, true)
+      // Transform the data immediately when assigning
+      leaderboardData.value = data.slice(0, -1).map((entry) => transformEntry(entry))
+    } else {
+      // Transform the data immediately when assigning
+      leaderboardData.value = data.map((entry) => transformEntry(entry))
+    }
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : 'Failed to fetch leaderboard data'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(() => {
+  fetchLeaderboard()
 })
 </script>
+
+<template>
+  <v-container class="custom-container">
+    <WaveBanner imageSrc="/teambuilding-background.jpg" />
+  </v-container>
+  <v-container>
+    <h2 class="leaderboard-text text-primaryPink mb-4 mb-sm-3 mb-md-4">Leaderboard</h2>
+
+    <div v-if="isLoading" class="text-center pa-4">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </div>
+
+    <div v-else-if="error" class="text-center error--text pa-4">
+      {{ error }}
+    </div>
+
+    <template v-else>
+      <!-- Your Rank - Only show if logged in and current user exists -->
+      <template v-if="userStore.isLoggedIn && currentUser">
+        <h3 class="section-title text-primaryBlue">Your Rank</h3>
+        <v-row>
+          <v-col cols="12">
+            <LeaderboardRow
+              :rank="currentUser.rank"
+              :avatar-index="currentUser.avatarIndex"
+              :name="currentUser.name"
+              :points="currentUser.points"
+              :is-highlighted="true"
+            />
+          </v-col>
+        </v-row>
+      </template>
+
+      <!-- Other Users -->
+      <h3 class="section-title2 text-primaryBlue">Overall Rankings</h3>
+      <v-row class="leaderboard-scroll">
+        <v-col v-for="(row, index) in leaderboardData" :key="index" cols="12">
+          <LeaderboardRow
+            :rank="row.rank"
+            :avatar-index="row.avatarIndex"
+            :name="row.name"
+            :points="row.points"
+            :is-highlighted="row.isHighlighted"
+          />
+        </v-col>
+      </v-row>
+    </template>
+  </v-container>
+</template>
 
 <style scoped>
 .custom-container {
