@@ -3,7 +3,7 @@ from ..models import User, Friendship
 from rest_framework import status
 from rest_framework.test import APIClient
 from django.urls import reverse
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
 
 class RequestFrienshipTest(TestCase):
@@ -27,4 +27,13 @@ class RequestFrienshipTest(TestCase):
             self.assertEqual(friendship.status, Friendship.PENDING)
         except ObjectDoesNotExist:
             self.fail("Friendship object was not created as expected.")
-    
+
+    def test_request_friendship_to_self(self):
+        self.client.force_authenticate(user=self.user1)
+        request_friendship_url = reverse('request_friendship', args=[self.user1.user_id])
+        response = self.client.post(request_friendship_url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["error"], "You cannot send a friendship request to yourself.")
+        with self.assertRaises(ValidationError):
+            Friendship.objects.create(
+                requester=self.user1, receiver=self.user1).full_clean()
