@@ -37,3 +37,8 @@ class RequestFrienshipTest(TestCase):
         with self.assertRaises(ValidationError):
             Friendship.objects.create(
                 requester=self.user1, receiver=self.user1).full_clean()
+
+    def test_request_friendship_as_unauthenticated(self):
+        request_friendship_url = reverse('request_friendship', args=[self.user2.user_id])
+        response = self.client.post(request_friendship_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
