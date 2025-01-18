@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import WaveHeader from '@/components/WaveHeader.vue'
 import { useModalStore } from '@/stores/modal'
 import { useDisplay } from 'vuetify'
 
@@ -13,6 +14,7 @@ function openRegisterButton() {
 <template>
   <v-container fluid class="fill-height pa-0 flex-column">
     <v-row v-if="!xs" class="header">
+      <WaveHeader imageSrc="/beach-header.jpg" />
       <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
     </v-row>
     <v-row class="flex-grow-1 w-100" align="center">

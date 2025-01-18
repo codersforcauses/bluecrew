@@ -1,6 +1,8 @@
 <template>
-  <v-container>
+  <v-container class="custom-container">
     <WaveHeader imageSrc="/teambuilding-background.jpg" />
+  </v-container>
+  <v-container>
     <h2 class="leaderboard-text text-primaryPink mb-4 mb-sm-3 mb-md-4">Leaderboard</h2>
 
     <!-- Your Rank -->
@@ -65,6 +67,11 @@ const currentUser = ref<LeaderboardEntry>({
 </script>
 
 <style scoped>
+.custom-container {
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
 .leaderboard-text {
   text-align: center;
   font-family: 'Lilita One', cursive;
