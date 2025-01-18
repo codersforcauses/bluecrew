@@ -93,18 +93,13 @@ const finish = () => {
       label="Can Blue Crew use this image on Social Media?"
     ></v-checkbox>
     <div class="content">
-      <v-textarea v-model="taskSubmission.feedback" label="Feedback" rows="5"></v-textarea>
+      <v-textarea v-model="taskSubmission.feedback" placeholder="Feedback"></v-textarea>
 
-      <input
-        type="file"
-        ref="fileInput"
-        @change="handleImageUpload"
-        accept="image/*"
-        style="display: none"
-      />
-      <div class="upload-icon" @click="$refs.fileInput.click()">
-        <v-icon icon="mdi-file-document-outline"></v-icon>
-        <span class="file-text">{{ taskSubmission.image?.name || 'my_imag...' }}</span>
+      <div class="file-upload">
+        <input type="file" id="file" @change="handleImageUpload" />
+        <label for="file">{{
+          taskSubmission.image ? taskSubmission.image.name : 'Upload an image'
+        }}</label>
       </div>
 
       <v-card-actions>
@@ -216,18 +211,22 @@ li {
 }
 
 .v-card-actions {
+  display: flex;
   justify-content: center;
-  padding: 16px 0 8px;
-  margin-top: 24px;
+  align-items: center;
+  padding: 10px 20px;
+  margin: 0 auto;
+  width: 100%; /* 确保容器占满宽度 */
 }
 
 .v-btn {
-  min-width: 140px !important;
-  height: 48px !important;
-  font-size: 18px !important;
-  text-transform: none !important;
-  border-radius: 24px !important;
-  letter-spacing: normal !important;
+  background-color: #ff4081;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  align-self: flex-start;
 }
 
 .v-btn.v-btn--color-pink {

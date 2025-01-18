@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import ChallengeCard from '@/components/ChallengeCard.vue'
 import { ref } from 'vue'
-
+import { useUserStore } from '@/stores/user'
+import LoginModal from '@/components/LoginModal.vue'
 const dialog = ref(false)
 
 const handleClose = () => {
@@ -13,12 +14,16 @@ const handleTaskCompleted = () => {
     dialog.value = false
   }, 2000)
 }
-
+const userStore = useUserStore()
 const handleIconClick = () => {
-  dialog.value = true
+  if (userStore.isLoggedIn) {
+    dialog.value = true
+  } else {
+    dialog.value = true
+    // LoginModal
+  }
 }
 </script>
-
 <template>
   <img
     src="../assets/BrainIcon.svg"
