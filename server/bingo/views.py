@@ -36,7 +36,7 @@ def register_user(request):
 
 
 @api_view(['POST'])
-def request_email_validation(request):
+def request_email_verification(request):
     email = request.data['email']
     try:
         user = User.objects.get(email=email)
