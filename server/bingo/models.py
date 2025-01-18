@@ -56,7 +56,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Visibility(models.IntegerChoices):
         PUBLIC = (2, "Public")
         FRIENDS = (1, "Friends Only")
-        BLUECREW = (0, "BlueCrew Only")
+        STAFF = (0, "Staff Only")
     visibility = models.IntegerField(
         choices=Visibility,
         blank=False,

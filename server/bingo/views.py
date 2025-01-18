@@ -9,6 +9,7 @@ from .models import Friendship, User, BingoGrid, TileInteraction
 from django.db import IntegrityError
 from django.db.models import Q, F, Window
 from django.db.models.functions import DenseRank
+from .utils import check_access
 
 
 @api_view(['DELETE'])
@@ -47,7 +48,8 @@ def get_current_user(request):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_user_preferences(request):
-    serializer = UpdatePreferencesSerializer(instance=request.user, data=request.data)
+    serializer = UpdatePreferencesSerializer(
+        instance=request.user, data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(status=status.HTTP_200_OK)
@@ -73,7 +75,8 @@ def start_challenge(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
-        TileInteraction.objects.create(user=request.user, position=challenge_index, grid=grid)
+        TileInteraction.objects.create(
+            user=request.user, position=challenge_index, grid=grid)
     except IntegrityError:
         # Throw an error if there is already an interaction between that user and that challenge
         return Response(status=status.HTTP_409_CONFLICT)
@@ -234,3 +237,31 @@ def get_bingo_grid(request):
             for tile in user_interaction:
                 grid['challenges'][tile.position]['status'] = 'Completed' if tile.completed else 'Started'
     return Response(grid, status=status.HTTP_200_OK)
+
+
+# The view should take the username of a user as input and do the following things:
+
+# Return the users first name, last name, avatar, bio, and number of points
+# Calculate whether the logged in user (call them X) has permission to view the completed challenges of this user (call them Y)
+# If Y has their visibility set to "BlueCrew Only", then Y can view X's completed challenges if and only if Y is staff
+# If Y has their visibility set to "Friends Only", then Y can view X's completed challenges if and only if Y is staff or X is friends with Y
+# If Y has their visibility set to "Public", then Y can always view X's completed challenge
+# If X does indeed have permission to view Y's completed challenges, then for each challenge completed by Y (i.e. each instance of the TileInteraction model which is linked to Y), the following information should be returned:
+# The name of the challenge
+# The description of the challenge
+# The type of the challenge (connect/understand/act)
+# How many points the challenge was worth
+# The image Y uploaded for the challenge
+# The date Y started the challenge
+# The date Y finished the challenge
+
+@api_view(['GET'])
+def get_challenge_page_info(request, username):
+    try:
+        target_user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    if not check_access(request.user, target_user):
+        response_data = [target_user.first_name, target_user.last_name,
+                         target_user.bio, target_user.total_points, target_user.avatar]
+        return Response(response_data, status=status.HTTP_200_OK)
