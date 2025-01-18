@@ -3,11 +3,11 @@ import { ref, computed } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import type { UserRegistrationForm } from '@/types/user'
 import { useDisplay } from 'vuetify'
-import { isAxiosError } from 'axios'
-import server from '@/utils/server'
+import { useUserStore } from '@/stores/user'
 
 const { xs } = useDisplay()
 const modalStore = useModalStore()
+const userStore = useUserStore()
 
 const formData = ref<UserRegistrationForm>({
   username: '',
@@ -15,8 +15,8 @@ const formData = ref<UserRegistrationForm>({
   firstName: '',
   lastName: '',
   dateOfBirth: '',
-  genderId: null,
-  indigenousTIS: null,
+  genderId: '',
+  indigenousTIS: '',
   password: '',
   confirmPassword: '',
 })
@@ -35,28 +35,19 @@ const closeDialog = () => {
 }
 
 const submitForm = async () => {
-  // Copies formData but creates first_name and last_name in snake case for variable compatability
   const body = {
-    ...formData.value,
+    username: formData.value.username,
+    email: formData.value.email,
     first_name: formData.value.firstName,
     last_name: formData.value.lastName,
+    birthdate: formData.value.dateOfBirth,
+    gender_identity: formData.value.genderId,
+    indigenous_identity: formData.value.indigenousTIS,
+    password: formData.value.password,
   }
-
-  try {
-    // API call to register using axios server instance
-    const response = await server.post('/register/', body)
-
-    console.log('Registration successful:', response.data)
-    alert('Registration successful!')
+  const registrationResult = await userStore.registerUser(body)
+  if (registrationResult === true) {
     closeDialog()
-  } catch (error) {
-    if (isAxiosError(error)) {
-      console.error('Registration failed:', error.response?.data || error)
-      alert(`Error: ${error.response?.data?.message || 'Registration failed.'}`)
-    } else {
-      console.error('Network error:', error)
-      alert('Network error. Please try again.')
-    }
   }
 }
 const openLoginModal = () => {
