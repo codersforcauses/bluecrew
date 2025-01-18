@@ -129,7 +129,7 @@ const finish = () => {
       </ul>
     </v-card-text>
     <v-card-actions>
-      <v-btn color="blue" disabled>Completed</v-btn>
+      <v-btn @click="closeCard" color="primary-white" class="completed-btn">Completed</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -212,33 +212,16 @@ li {
 
 .v-card-actions {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
   padding: 10px 20px;
   margin: 0 auto;
-  width: 100%; /* 确保容器占满宽度 */
 }
 
 .v-btn {
   background-color: rgb(var(--v-theme-primaryPink));
   color: rgb(var(--v-theme-primaryWhite));
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  align-self: flex-start;
-}
-
-.v-btn.v-btn--color-pink {
-  background-color: rgb(var(--v-theme-primaryPink));
-  color: white !important;
-  box-shadow: 0 4px 8px rgba(233, 30, 99, 0.3);
-}
-
-.v-btn:disabled {
-  background-color: rgb(var(--v-theme-lightBlue)) !important;
-  color: white !important;
-  opacity: 1 !important;
+  justify-content: center;
 }
 
 .description {
@@ -247,13 +230,6 @@ li {
   padding: 0 16px;
 }
 
-.v-icon.mdi-close-circle-outline {
-  flex-shrink: 0;
-  font-size: 24px;
-  opacity: 0.8;
-}
-
-/* 文本区域样式 */
 .v-textarea {
   background-color: rgb(var(--v-theme-primaryBrown));
   border-radius: 8px;
@@ -279,5 +255,8 @@ li {
 .v-checkbox :deep(.v-label) {
   color: rgb(var(--v-theme-primaryWhite));
   opacity: 0.9;
+}
+.completed-btn {
+  background-color: rgb(var(--v-theme-lightBlue));
 }
 </style>

@@ -9,11 +9,6 @@ const handleClose = () => {
   dialog.value = false
 }
 
-const handleTaskCompleted = () => {
-  setTimeout(() => {
-    dialog.value = false
-  }, 2000)
-}
 const userStore = useUserStore()
 const handleIconClick = () => {
   if (userStore.isLoggedIn) {
@@ -33,6 +28,6 @@ const handleIconClick = () => {
   />
 
   <v-dialog v-model="dialog" width="500">
-    <ChallengeCard @close="handleClose" @task-completed="handleTaskCompleted" />
+    <ChallengeCard @close="handleClose" />
   </v-dialog>
 </template>
