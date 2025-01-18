@@ -52,7 +52,7 @@ const iconBackground = computed(() => {
 <template>
   <div
     :class="[backgroundColour, textColour, selected ? 'border-selected' : 'border-subtle']"
-    class="outer-tile rounded-lg d-flex flex-column align-center cursor-pointer"
+    class="outer-tile rounded-lg d-flex flex-column align-center cursor-pointer w-100"
   >
     <v-img class="icon" :class="iconBackground" :src="icon" />
     <p class="w-100 tile-text text-center font-weight-bold overflow-x-hidden overflow-hidden">
@@ -63,9 +63,9 @@ const iconBackground = computed(() => {
 
 <style scoped>
 .outer-tile {
-  height: 5rem;
-  width: 5rem;
   padding-bottom: 0.2rem;
+  aspect-ratio: 1 / 1;
+  padding: 0.5rem;
 }
 
 .border-subtle {
