@@ -192,7 +192,7 @@ def request_friendship(request, user_id):
         )
     except IntegrityError:
         return Response(
-            {"error": "A friendship request already exists or is pending"},
+            {"error": "A friendship request already exists or is pending."},
             status=status.HTTP_409_CONFLICT
         )
 
