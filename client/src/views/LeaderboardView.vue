@@ -1,6 +1,6 @@
 <template>
   <v-container class="custom-container">
-    <WaveHeader imageSrc="/teambuilding-background.jpg" />
+    <WaveBanner imageSrc="/teambuilding-background.jpg" />
   </v-container>
   <v-container>
     <h2 class="leaderboard-text text-primaryPink mb-4 mb-sm-3 mb-md-4">Leaderboard</h2>
@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import LeaderboardRow from '@/components/LeaderboardRow.vue'
-import WaveHeader from '@/components/WaveHeader.vue'
+import WaveBanner from '@/components/WaveBanner.vue'
 import { ref } from 'vue'
 
 // Define TypeScript interface for leaderboard data

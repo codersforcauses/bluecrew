@@ -1,5 +1,5 @@
 <template>
-  <div class="wave-header">
+  <div class="wave-banner">
     <!-- Header Image -->
     <v-img :src="imageSrc" class="header-image" cover></v-img>
 
@@ -30,7 +30,7 @@ defineProps({
 </script>
 
 <style scoped>
-.wave-header {
+.wave-banner {
   position: relative;
   width: 100%;
   height: 200px;
