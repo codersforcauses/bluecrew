@@ -16,7 +16,7 @@ class RequestFrienshipTest(TestCase):
             username="user3", email="user3@example.com", password="password")
         self.client = APIClient()
 
-    def test_create_friendship_success(self):
+    def test_request_friendship_success(self):
         self.client.force_authenticate(user=self.user1)
         request_friendship_url = reverse('request_friendship', args=[self.user2.user_id])
         response = self.client.post(request_friendship_url)
