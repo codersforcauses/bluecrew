@@ -145,6 +145,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Email address to send verification emails
+VERIFICATION_EMAIL = os.environ.get("VERIFICATION_EMAIL")
+
+# TODO: Replace with actual backend
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/

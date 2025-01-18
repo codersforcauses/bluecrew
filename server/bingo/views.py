@@ -9,6 +9,8 @@ from .models import Friendship, User, BingoGrid, TileInteraction
 from django.db import IntegrityError
 from django.db.models import Q, F, Window
 from django.db.models.functions import DenseRank
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 @api_view(['DELETE'])
@@ -31,6 +33,28 @@ def register_user(request):
         serializer.save()
         return Response({'User created successfully.'}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def request_email_validation(request):
+    email = request.data['email']
+    try:
+        user = User.objects.get(email=email)
+    except ObjectDoesNotExist:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    if user.is_active:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    # Send email here
+    send_mail(
+        "Bingo Email Verification",
+        "VALIDATION LINK GOES HERE",
+        settings.VERIFICATION_EMAIL,
+        list(email),
+        fail_silently=False
+    )
+    return Response(status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
