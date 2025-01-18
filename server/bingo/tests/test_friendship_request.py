@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
 
-class RequestFrienshipTest(TestCase):
+class RequestFriendshipTest(TestCase):
     def setUp(self):
         self.user1 = User.objects.create_user(
             username="user1", email="user1@example.com", password="password")
@@ -50,3 +50,10 @@ class RequestFrienshipTest(TestCase):
         response = self.client.post(request_friendship_url)
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
         self.assertEqual(response.data["error"], "A friendship request already exists or is pending.")
+
+    def test_request_friendship_to_nonexistent(self):
+        self.client.force_authenticate(user=self.user1)
+        nonexistent_user_id = 9999
+        request_friendship_url = reverse('request_friendship', args=[nonexistent_user_id])
+        response = self.client.post(request_friendship_url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
