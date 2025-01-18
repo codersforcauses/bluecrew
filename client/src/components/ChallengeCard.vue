@@ -87,19 +87,31 @@ const finish = () => {
     </div>
     <v-card-subtitle style="font-weight: bold">
       <div class="points">200 Points</div>
+      <v-checkbox
+        v-model="taskSubmission.canShareOnSocialMedia"
+        label="Can Blue Crew use this image on Social Media?"
+      ></v-checkbox>
     </v-card-subtitle>
-    <v-checkbox
-      v-model="taskSubmission.canShareOnSocialMedia"
-      label="Can Blue Crew use this image on Social Media?"
-    ></v-checkbox>
-    <div class="content">
+
+    <div class="description">
       <v-textarea v-model="taskSubmission.feedback" placeholder="Feedback"></v-textarea>
 
-      <div class="file-upload">
-        <input type="file" id="file" @change="handleImageUpload" />
-        <label for="file">{{
-          taskSubmission.image ? taskSubmission.image.name : 'Upload an image'
-        }}</label>
+      <div class="file-upload-container">
+        <!-- 上传的文件预览和文件名 -->
+        <div class="file-preview">
+          <div v-if="taskSubmission.image" class="file-info">
+            <img src="../assets/FileIcon.svg" alt="File icon" class="file-icon" />
+            <span class="file-name">{{ taskSubmission.image.name }}</span>
+          </div>
+        </div>
+
+        <!-- 上传按钮 -->
+        <div class="upload-button-wrapper">
+          <input type="file" id="file" @change="handleImageUpload" class="hidden-input" />
+          <label for="file" class="upload-button">
+            <img src="../assets/Upload.svg" alt="Upload icon" class="upload-icon" />
+          </label>
+        </div>
       </div>
 
       <v-card-actions>
@@ -119,18 +131,19 @@ const finish = () => {
     <v-card-subtitle style="font-weight: bold">
       <div class="points">200 Points</div>
     </v-card-subtitle>
-
-    <v-card-text>
-      Here are some of our top picks! You can choose one of them or watch one of your own. Tell us
-      what you thought and submit a picture.
-      <ul>
-        <li>David Attenborough, Our Planet Coastal Seas</li>
-        <li>Cleaning up the Ocean</li>
-      </ul>
-    </v-card-text>
-    <v-card-actions>
-      <v-btn @click="closeCard" color="primary-white" class="completed-btn">Completed</v-btn>
-    </v-card-actions>
+    <div class="description">
+      <v-card-text>
+        Here are some of our top picks! You can choose one of them or watch one of your own. Tell us
+        what you thought and submit a picture.
+        <ul>
+          <li>David Attenborough, Our Planet Coastal Seas</li>
+          <li>Cleaning up the Ocean</li>
+        </ul>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn @click="closeCard" color="primary-white" class="completed-btn">Completed</v-btn>
+      </v-card-actions>
+    </div>
   </v-card>
 </template>
 
@@ -139,7 +152,7 @@ const finish = () => {
   background-color: primaryBlue !important;
   color: white !important;
   padding: 24px;
-  max-width: 400px;
+  max-width: 800px;
   margin: 0 auto;
   border-radius: 16px !important;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
@@ -169,7 +182,7 @@ const finish = () => {
   text-align: center;
   margin: 0 !important;
   padding: 0 !important;
-  white-space: normal !important; /* 允许换行 */
+  white-space: normal !important;
   overflow: visible !important; /* 允许内容溢出 */
   text-overflow: clip !important; /* 不使用省略号 */
   font-weight: bold;
@@ -191,16 +204,16 @@ const finish = () => {
 .v-card-text {
   color: white;
   text-align: center;
-  padding: 0 !important;
-  margin-bottom: 16px;
-  font-size: 16px !important;
+  padding: 0;
+  margin-bottom: 8px;
+  font-size: 16px;
   line-height: 1.5;
 }
 
 ul {
-  list-style-type: none;
+  list-style-type: disc;
   padding: 0;
-  margin: 16px 0;
+  margin: 0px 0;
   text-align: center;
 }
 
@@ -232,10 +245,13 @@ li {
 
 .v-textarea {
   background-color: rgb(var(--v-theme-primaryBrown));
-  border-radius: 8px;
+  border: none !important; /* 移除边框 */
+  outline: none !important; /* 移除轮廓 */
+  box-shadow: none !important;
   padding: 12px;
   min-height: 120px;
   color: rgb(var(--v-theme-primaryBlue));
+  width: 95%;
 }
 
 .upload-icon {
@@ -258,5 +274,13 @@ li {
 }
 .completed-btn {
   background-color: rgb(var(--v-theme-lightBlue));
+}
+.description {
+  width: 90%;
+  justify-content: center;
+  align-items: center;
+  display: flex; /* Add this */
+  flex-direction: column;
+  margin: 0 auto;
 }
 </style>
