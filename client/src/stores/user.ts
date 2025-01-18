@@ -19,6 +19,7 @@ export const useUserStore = defineStore('user', () => {
     userData.value = null
     accessToken.value = null
     refreshToken.value = null
+    router.push({ path: '/' })
   }
 
   const login = async (body: { username: string; password: string }) => {
