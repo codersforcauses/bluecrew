@@ -1,4 +1,4 @@
-// generated using https://gwfh.mranftl.com/fonts
+/* generated using https://gwfh.mranftl.com/fonts */
 /* poppins-100 - latin */
 @font-face {
   font-display: swap;
@@ -157,8 +157,10 @@
   width: 100%;
   padding: 0px;
   font-family: 'Poppins';
-  min-height: 100vh;
+  min-height: 100%;
 }
+
+html { overflow-y: auto; }
 
 body {
   min-height: 100vh;
