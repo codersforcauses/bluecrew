@@ -17,19 +17,14 @@ const goHome = () => {
         <div class="text-center">
           <div class="d-flex align-center justify-center mb-4">
             <h1 class="error-code text-primaryBlue">404</h1>
-            <v-img
-              src="/submarine.png"
-              :max-width="xs ? '60' : '100'"
-              class="submarine-image ml-4"
-              contain
-            />
           </div>
-          <h2 class="tagline">
+          <h2 class="tagline mb-4">
             Uh oh! Page not found
             <template v-if="!xs">
               <br />Looks like you've ventured <br />into uncharted waters
             </template>
           </h2>
+          <v-img src="/submarine.png" :max-width="xs ? '60' : '100'" class="mb-2 mx-auto" contain />
           <div class="buttons">
             <v-btn
               id="home-button"
