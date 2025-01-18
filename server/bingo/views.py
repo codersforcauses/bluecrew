@@ -170,7 +170,7 @@ def get_leaderboard(request):
 
 
 @api_view(['POST'])
-@permission_classes((permissions.isAuthenticated, ))
+@permission_classes((permissions.IsAuthenticated, ))
 def request_friendship(request, user_id):
     receiver = get_object_or_404(User, id=user_id)
 
