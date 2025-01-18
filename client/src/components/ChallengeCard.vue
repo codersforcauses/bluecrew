@@ -94,29 +94,30 @@ const finish = () => {
     </v-card-subtitle>
 
     <div class="description">
-      <v-textarea v-model="taskSubmission.feedback" placeholder="Feedback"></v-textarea>
+      <div class="submission-area" width="95%">
+        <v-textarea
+          v-model="taskSubmission.feedback"
+          placeholder="Feedback"
+          class="custom-textarea"
+          variant="plain"
+        ></v-textarea>
 
-      <div class="file-upload-container">
-        <!-- 上传的文件预览和文件名 -->
-        <div class="file-preview">
-          <div v-if="taskSubmission.image" class="file-info">
-            <img src="../assets/FileIcon.svg" alt="File icon" class="file-icon" />
-            <span class="file-name">{{ taskSubmission.image.name }}</span>
-          </div>
+        <div class="file-preview" v-if="taskSubmission.image">
+          <img src="../assets/FileIcon.svg" alt="File icon" class="file-icon" />
+          <span class="file-name">{{ taskSubmission.image.name }}</span>
         </div>
 
-        <!-- 上传按钮 -->
         <div class="upload-button-wrapper">
           <input type="file" id="file" @change="handleImageUpload" class="hidden-input" />
-          <label for="file" class="upload-button">
+          <label for="file">
             <img src="../assets/Upload.svg" alt="Upload icon" class="upload-icon" />
           </label>
         </div>
       </div>
 
-      <v-card-actions>
-        <v-btn @click="finish">Finish</v-btn>
-      </v-card-actions>
+      <div class="finish-button-wrapper">
+        <v-btn @click="finish" class="finish-button">Finish</v-btn>
+      </div>
     </div>
   </v-card>
 
@@ -245,23 +246,18 @@ li {
 
 .v-textarea {
   background-color: rgb(var(--v-theme-primaryBrown));
-  border: none !important; /* 移除边框 */
-  outline: none !important; /* 移除轮廓 */
+  --v-field-border-width: 0 !important;
   box-shadow: none !important;
   padding: 12px;
   min-height: 120px;
   color: rgb(var(--v-theme-primaryBlue));
   width: 95%;
+  border: none;
 }
-
 .upload-icon {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px dashed rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-  padding: 16px;
-  text-align: center;
+  width: 24px;
+  height: 24px;
   cursor: pointer;
-  transition: all 0.3s ease;
 }
 
 .upload-icon:hover {
@@ -275,12 +271,74 @@ li {
 .completed-btn {
   background-color: rgb(var(--v-theme-lightBlue));
 }
-.description {
+.hidden-input {
+  display: none; /* 隐藏默认的文件输入框 */
+}
+
+.submission-area {
+  position: relative;
+  background-color: rgb(var(--v-theme-primaryBrown));
+  border-radius: 12px;
+  padding: 0px;
+  margin: 20px auto;
+  min-height: 200px;
   width: 90%;
-  justify-content: center;
+}
+
+.custom-textarea :deep(.v-field),
+.custom-textarea :deep(.v-field__field) {
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.custom-textarea {
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 12px;
+  min-height: 120px;
+  color: rgb(var(--v-theme-primaryBlue)) !important;
+  width: 100%;
+  resize: none !important; /* 禁止拖动调整大小 */
+  overflow-y: auto;
+}
+
+.file-preview {
+  display: flex;
   align-items: center;
-  display: flex; /* Add this */
-  flex-direction: column;
-  margin: 0 auto;
+  gap: 8px;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+
+.file-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.file-name {
+  color: rgb(var(--v-theme-primaryBlue));
+  font-size: 14px;
+}
+
+.upload-button-wrapper {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+.finish-button-wrapper {
+  text-align: center;
+  margin-top: -30px; /* 创建半镶嵌效果 */
+}
+
+.finish-button {
+  background-color: rgb(var(--v-theme-primaryPink)) !important;
+  color: white !important;
+  padding: 8px 24px;
+  border-radius: 20px;
 }
 </style>
