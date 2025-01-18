@@ -23,5 +23,5 @@ urlpatterns = [
      path('bingo-grid/', views.get_bingo_grid, name='get_bingo_grid'),
      path('accept-friendship/<int:friendship_id>/',
           views.accept_friendship, name='accept_friendship'),
-     path('friends/requests/send/', views.request_friendship, name='request_friendship'),
+     path('request-friendship/<int:user_id>/', views.request_friendship, name='request_friendship'),
 ]
