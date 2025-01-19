@@ -1,8 +1,8 @@
 <template>
   <footer class="footer">
-    <div class="footer-content">
+    <div :class="smAndDown ? 'footer-content-mobile' : 'footer-content'">
       <!-- Desktop Layout -->
-      <div v-if="!mdAndDown" class="desktop-layout">
+      <div v-if="!smAndDown" class="desktop-layout">
         <div class="company-section">
           <img src="/oy-logo.png" alt="Ocean Youth Logo" class="company-logo" />
           <div class="link-group">
@@ -20,7 +20,7 @@
           </div>
         </div>
 
-        <p class="footerText">Copyright © 2024 Blue Crew Australia × OCEAN YOUTH</p>
+        <p class="footerText">Copyright © 2025 Blue Crew Australia x OCEAN YOUTH</p>
 
         <div class="company-section">
           <img src="/bc-logo.png" alt="Blue Crew Logo" class="company-logo" />
@@ -118,7 +118,7 @@
 import { useDisplay } from 'vuetify'
 import { ref } from 'vue'
 
-const { mdAndDown } = useDisplay()
+const { smAndDown } = useDisplay()
 const isExpanded = ref(false)
 const toggleFooter = () => {
   isExpanded.value = !isExpanded.value
@@ -138,6 +138,10 @@ const toggleFooter = () => {
   padding: 1.5rem 2rem;
   max-width: 1400px;
   margin: 0 auto;
+}
+
+.footer-content-mobile {
+  padding: 0.1rem 1rem;
 }
 
 /* Desktop Styles */
@@ -197,14 +201,18 @@ const toggleFooter = () => {
 }
 
 .mobile-footer-collapsed {
-  padding: 1rem;
+  padding: 0.5rem;
   text-align: center;
   cursor: pointer;
 }
 
 .mobile-footer-expanded {
-  padding: 1rem;
+  padding: 0.5rem;
   text-align: center;
+}
+
+.close-icon {
+  cursor: pointer;
 }
 
 .mobile-companies {
@@ -235,7 +243,7 @@ const toggleFooter = () => {
 
 .mobile-social {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .mobile-url {
