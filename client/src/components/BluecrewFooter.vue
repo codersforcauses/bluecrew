@@ -141,7 +141,7 @@ const toggleFooter = () => {
 }
 
 .footer-content-mobile {
-  padding: 0.1rem 1rem; 
+  padding: 0.1rem 1rem;
 }
 
 /* Desktop Styles */
