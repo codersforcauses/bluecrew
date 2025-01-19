@@ -130,7 +130,6 @@ const toggleFooter = () => {
   background-color: rgb(var(--v-theme-primaryBlue));
   color: white;
   width: 100%;
-  position: fixed;
   bottom: 0;
   left: 0;
 }
