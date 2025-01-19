@@ -55,14 +55,14 @@
             <v-icon icon="mdi-chevron-up" color="white" size="small" />
             <span>Learn More</span>
           </div>
-          <p class="footerText mobile-text">Copyright © 2024 Blue Crew Australia × OCEAN YOUTH</p>
+          <p class="footerText mobile-text">Copyright © 2025 Blue Crew Australia x OCEAN YOUTH</p>
         </div>
 
         <div v-else class="mobile-footer-expanded">
           <div class="close-icon" @click="toggleFooter">
             <v-icon icon="mdi-chevron-down" color="white" />
           </div>
-          <p class="footerText mobile-text">Copyright © 2024 Blue Crew Australia × OCEAN YOUTH</p>
+          <p class="footerText mobile-text">Copyright © 2025 Blue Crew Australia x OCEAN YOUTH</p>
 
           <div class="mobile-companies">
             <!-- Blue Crew -->
@@ -141,7 +141,7 @@ const toggleFooter = () => {
 }
 
 .footer-content-mobile {
-  padding: 0.1rem 1rem;
+  padding: 0.1rem 1rem; 
 }
 
 /* Desktop Styles */
