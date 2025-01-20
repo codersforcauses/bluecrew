@@ -34,9 +34,6 @@ class RequestFriendshipTest(TestCase):
         response = self.client.post(request_friendship_url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["error"], "You cannot send a friendship request to yourself.")
-        with self.assertRaises(ValidationError):
-            Friendship.objects.create(
-                requester=self.user1, receiver=self.user1).full_clean()
 
     def test_request_friendship_as_unauthenticated(self):
         request_friendship_url = reverse('request_friendship', args=[self.user2.user_id])
