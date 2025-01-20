@@ -3,7 +3,7 @@ from ..models import User, Friendship
 from rest_framework import status
 from rest_framework.test import APIClient
 from django.urls import reverse
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class RequestFriendshipTest(TestCase):
