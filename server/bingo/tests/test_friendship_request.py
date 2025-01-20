@@ -59,7 +59,7 @@ class RequestFriendshipTest(TestCase):
         self.client.force_authenticate(user=self.user1)
         request_friendship_url = reverse('request_friendship', args=[self.user2.user_id])
 
-        #create a reverse friendship request (user2 -> user1)
+        # create a reverse friendship request (user2 -> user1)
         Friendship.objects.create(requester=self.user2, receiver=self.user1, status=Friendship.PENDING)
 
         response = self.client.post(request_friendship_url)
