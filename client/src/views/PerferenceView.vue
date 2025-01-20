@@ -21,7 +21,7 @@ const totalPoints = ref('1000pts')
     </v-row>
 
     <!-- Profile Content -->
-    <v-row class="profile-content px-16 py-8">
+    <v-row class="px-16">
       <v-col cols="12" class="d-flex flex-column">
         <!-- Avatar and Name Section -->
         <div class="d-flex align-start mb-4">
@@ -33,25 +33,30 @@ const totalPoints = ref('1000pts')
                 cover
                 src="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
                 ></v-img>
-          <div class="d-flex flex-column">
-            <h2 class="text-h4 font-weight-bold mb-1">{{ username }}</h2>
-            <h3 class="text-h6 text-teal mb-1">{{ fullName }}</h3>
-            <p class="mb-1">{{ bio }}</p>
-            <p class="text-body-1">Total Point: {{ totalPoints }}</p>
-          </div>
         </div>
-
-        <!-- Edit Profile Section -->
-        <div class="mb-4">
-          <h3 class="text-h6 font-weight-bold mb-2">Edit Profile (Avatar, Bio & Visibility)</h3>
-          <v-btn
-            color="primary"
-            class="bg-blue-darken-1 px-4"
-            prepend-icon="mdi-pencil"
-          >
-            Edit Profile
-          </v-btn>
-        </div>
+      </v-col>
+    </v-row>
+    <v-row class="px-16">
+      <v-col cols="12" class="d-flex flex-column">
+        <h2 class="text-h4 font-weight-bold mb-1">{{ username }}</h2>
+        <h3 class="text-h6 text-teal mb-1">{{ fullName }}</h3>
+        <p class="mb-1">{{ bio }}</p>
+        <p class="text-body-1">Total Point: {{ totalPoints }}</p>
+      </v-col>
+    </v-row>
+    <!-- Edit Profile Section -->
+    <v-row class="px-16">
+      <v-col cols="11">
+        <h3 class="text-h6 font-weight-bold mb-2">Edit Profile (Avatar, Bio & Visibility)</h3>
+      </v-col>
+      <v-col>
+        <v-btn
+        color="primary"
+        class="bg-blue-darken-1 px-4"
+        prepend-icon="mdi-pencil"
+      >
+        Edit Profile
+      </v-btn>
       </v-col>
     </v-row>
   </v-container>
@@ -84,10 +89,6 @@ const totalPoints = ref('1000pts')
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.profile-content {
-  background: white;
 }
 
 .text-teal {
