@@ -1,7 +1,7 @@
 from rest_framework import status, permissions
 from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer, UpdatePreferencesSerializer
 from django.shortcuts import get_object_or_404
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -192,14 +192,17 @@ def request_friendship(request, user_id):
         )
 
     try:
-        Friendship.objects.create(
-            requester=request.user,
-            receiver=receiver,
-            status=Friendship.PENDING
-        )
+        new_friendship = Friendship(requester=request.user, receiver=receiver, status=Friendship.PENDING)
+        new_friendship.full_clean()
+        new_friendship.save()
         return Response(
             {"message": "Friendship request sent successfully."},
             status=status.HTTP_201_CREATED
+        )
+    except ValidationError as e:
+        return Response(
+            {"error": e.message_dict.get('__all__', ['Validation error'])[0]},
+            status=status.HTTP_409_CONFLICT
         )
     except IntegrityError:
         return Response(

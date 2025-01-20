@@ -46,7 +46,7 @@ class RequestFriendshipTest(TestCase):
         self.friendship = Friendship.objects.create(requester=self.user1, receiver=self.user2)
         response = self.client.post(request_friendship_url)
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
-        self.assertEqual(response.data["error"], "A friendship request already exists or is pending.")
+        self.assertEqual(response.data["error"], "Friendship with this Requester and Receiver already exists.")
 
     def test_request_friendship_to_nonexistent(self):
         self.client.force_authenticate(user=self.user1)
@@ -54,3 +54,14 @@ class RequestFriendshipTest(TestCase):
         request_friendship_url = reverse('request_friendship', args=[nonexistent_user_id])
         response = self.client.post(request_friendship_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_request_reverse_friendship_exists(self):
+        self.client.force_authenticate(user=self.user1)
+        request_friendship_url = reverse('request_friendship', args=[self.user2.user_id])
+
+        #create a reverse friendship request (user2 -> user1)
+        Friendship.objects.create(requester=self.user2, receiver=self.user1, status=Friendship.PENDING)
+
+        response = self.client.post(request_friendship_url)
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        self.assertEqual(response.data["error"], "A reverse friendship already exists.")
