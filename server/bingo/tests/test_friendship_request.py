@@ -65,3 +65,4 @@ class RequestFriendshipTest(TestCase):
         response = self.client.post(request_friendship_url)
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
         self.assertEqual(response.data["error"], "A reverse friendship already exists.")
+        
