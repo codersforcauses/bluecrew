@@ -185,12 +185,6 @@ def get_leaderboard(request):
 def request_friendship(request, user_id):
     receiver = get_object_or_404(User, user_id=user_id)
 
-    if request.user == receiver:
-        return Response(
-            {"error": "You cannot send a friendship request to yourself."},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-
     try:
         new_friendship = Friendship(requester=request.user, receiver=receiver, status=Friendship.PENDING)
         new_friendship.full_clean()
@@ -202,7 +196,7 @@ def request_friendship(request, user_id):
     except ValidationError as e:
         return Response(
             {"error": e.message_dict.get('__all__', ['Validation error'])[0]},
-            status=status.HTTP_409_CONFLICT
+            status=status.HTTP_400_BAD_REQUEST
         )
     except IntegrityError:
         return Response(
