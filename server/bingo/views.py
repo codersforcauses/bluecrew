@@ -194,10 +194,10 @@ def request_friendship(request, user_id):
             status=status.HTTP_201_CREATED
         )
     except ValidationError as e:
-        return Response(
-            {"error": e.message_dict.get('__all__', ['Validation error'])[0]},
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        error_message = e.message_dict.get('__all__', ['Validation error'])[0]
+        if "already exists" in error_message or "reverse friendship" in error_message:
+            return Response({"error": error_message}, status=status.HTTP_409_CONFLICT)
+        return Response({"error": error_message}, status=status.HTTP_400_BAD_REQUEST)
     except IntegrityError:
         return Response(
             {"error": "A friendship request already exists or is pending."},
