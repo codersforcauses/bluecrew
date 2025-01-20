@@ -5,6 +5,8 @@ import WaveBanner from '@/components/WaveBanner.vue'
 import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import server from '@/utils/server'
+import MessageSnackbar from '@/components/GenericMessage.vue'
+
 
 // What we receive from the API
 interface LeaderboardApiEntry {
@@ -22,6 +24,17 @@ interface LeaderboardEntry {
   points: number
   isHighlighted: boolean
 }
+
+const snackbarVisible = ref(false)
+const snackbarTitle = ref('Success')
+const snackbarText = ref('Logging in successfully!')
+const snackbarType = ref('success')
+
+onMounted(() => {
+  fetchLeaderboard()
+  snackbarVisible.value = true
+})
+
 
 const userStore = useUserStore()
 const leaderboardData = ref<LeaderboardEntry[]>([])
@@ -78,6 +91,13 @@ onMounted(() => {
     <WaveBanner imageSrc="/teambuilding-background.jpg" />
   </v-container>
   <v-container>
+    <MessageSnackbar
+      v-model:visible="snackbarVisible"
+      :title="snackbarTitle"
+      :text="snackbarText"
+      :type="snackbarType"
+    />
+
     <h2 class="leaderboard-text text-primaryPink mb-4 mb-sm-3 mb-md-4">Leaderboard</h2>
 
     <div v-if="isLoading" class="text-center pa-4">
