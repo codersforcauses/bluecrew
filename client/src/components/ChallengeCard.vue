@@ -347,4 +347,128 @@ li {
   padding: 8px 24px;
   border-radius: 20px;
 }
+/* Mobile styles - Apply when screen width is 600px or less */
+@media (max-width: 600px) {
+  .v-card {
+    padding: 16px !important;
+    max-width: 100% !important;
+    margin: 0 8px !important;
+    border-radius: 12px !important;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    padding-top: 12px;
+    margin-bottom: 12px;
+    gap: 4px;
+  }
+
+  .header img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .v-card-title {
+    font-size: 20px !important;
+    font-weight: bold;
+  }
+
+  .header-content {
+    max-width: 160px;
+  }
+
+  .points {
+    font-size: 14px;
+    margin: 4px 0 16px;
+  }
+
+  .description {
+    padding: 0 8px;
+  }
+
+  .v-card-text {
+    font-size: 14px;
+  }
+  .v-icon {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+  li {
+    font-size: 14px;
+    margin: 6px 0;
+  }
+
+  .submission-area {
+    width: 100%;
+    margin: 12px auto;
+    min-height: 180px;
+  }
+
+  .custom-textarea {
+    padding: 8px;
+    min-height: 100px;
+    font-size: 14px;
+  }
+
+  /* Adjust the upload and file preview area for better touch targets */
+  .file-preview {
+    bottom: 16px;
+    left: 16px;
+  }
+
+  .file-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .file-name {
+    font-size: 11px;
+    max-width: 42px;
+  }
+
+  .upload-button-wrapper {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .upload-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Make the finish button more touch-friendly */
+  .finish-button-wrapper {
+    margin-top: -24px;
+  }
+
+  .finish-button {
+    width: 80%; /* Make button wider on mobile */
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+
+  /* Adjust checkbox for mobile */
+  .v-checkbox {
+    margin: 8px 0;
+  }
+
+  .v-checkbox :deep(.v-label) {
+    font-size: 14px;
+  }
+}
+
+/* Add touch-friendly hover states for mobile */
+@media (hover: none) {
+  .upload-icon:hover {
+    background-color: transparent;
+  }
+
+  .v-btn:hover {
+    opacity: 1;
+  }
+}
 </style>
