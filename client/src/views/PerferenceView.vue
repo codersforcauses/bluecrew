@@ -39,7 +39,7 @@ const totalPoints = ref('1000pts')
     <v-row class="px-16">
       <v-col cols="12" class="d-flex flex-column">
         <h2 class="text-h4 font-weight-bold mb-1">{{ username }}</h2>
-        <h3 class="text-h6 text-teal mb-1">{{ fullName }}</h3>
+        <h3 class="text-h6 mb-1">{{ fullName }}</h3>
         <p class="mb-1">{{ bio }}</p>
         <p class="text-body-1">Total Point: {{ totalPoints }}</p>
       </v-col>
@@ -47,12 +47,11 @@ const totalPoints = ref('1000pts')
     <!-- Edit Profile Section -->
     <v-row class="px-16">
       <v-col cols="11">
-        <h3 class="text-h6 font-weight-bold mb-2">Edit Profile (Avatar, Bio & Visibility)</h3>
+        <h2 class="text-h6 font-weight-bold mb-2">Edit Profile (Avatar, Bio & Visibility)</h2>
       </v-col>
       <v-col>
         <v-btn
-        color="primary"
-        class="bg-blue-darken-1 px-4"
+        class="bg-primaryBlue rounded-xl"
         prepend-icon="mdi-pencil"
       >
         Edit Profile
@@ -63,21 +62,6 @@ const totalPoints = ref('1000pts')
 </template>
 
 <style scoped>
-.nav-bar {
-  background: white;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.logo {
-  height: 40px;
-}
-
-.nav-link {
-  color: #2c3e50;
-  text-transform: none;
-  font-weight: 500;
-}
-
 .header {
   width: 100%;
   height: 200px;
@@ -91,7 +75,7 @@ const totalPoints = ref('1000pts')
   object-fit: cover;
 }
 
-.text-teal {
-  color: #26A69A;
+h3 {
+  color: rgb(var(--v-theme-lightBlue));
 }
 </style>
