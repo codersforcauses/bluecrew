@@ -307,21 +307,27 @@ li {
 
 .file-preview {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 2px;
   position: absolute;
   bottom: 20px;
   left: 20px;
 }
 
 .file-icon {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
 }
 
 .file-name {
   color: rgb(var(--v-theme-primaryBlue));
-  font-size: 14px;
+  font-size: 12px;
+  text-align: center;
+  white-space: nowrap; /* Prevent text wrapping */
+  max-width: 48px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .upload-button-wrapper {

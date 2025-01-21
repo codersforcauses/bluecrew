@@ -14,8 +14,8 @@ const handleIconClick = () => {
   if (userStore.isLoggedIn) {
     dialog.value = true
   } else {
-    // dialog.value = true
-    modalStore.openLogin()
+    dialog.value = true
+    // modalStore.openLogin()
   }
 }
 </script>
