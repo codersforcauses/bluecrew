@@ -3,9 +3,11 @@ import { ref, computed } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import type { UserRegistrationForm } from '@/types/user'
 import { useDisplay } from 'vuetify'
+import { useUserStore } from '@/stores/user'
 
 const { xs } = useDisplay()
 const modalStore = useModalStore()
+const userStore = useUserStore()
 
 const formData = ref<UserRegistrationForm>({
   username: '',
@@ -13,8 +15,8 @@ const formData = ref<UserRegistrationForm>({
   firstName: '',
   lastName: '',
   dateOfBirth: '',
-  genderId: null,
-  indigenousTIS: null,
+  genderId: '',
+  indigenousTIS: '',
   password: '',
   confirmPassword: '',
 })
@@ -32,12 +34,26 @@ const closeDialog = () => {
   modalStore.closeModal()
 }
 
+
+const submitForm = async () => {
+  const body = {
+    username: formData.value.username,
+    email: formData.value.email,
+    first_name: formData.value.firstName,
+    last_name: formData.value.lastName,
+    birthdate: formData.value.dateOfBirth,
+    gender_identity: formData.value.genderId,
+    indigenous_identity: formData.value.indigenousTIS,
+    password: formData.value.password,
+  }
+  const registrationResult = await userStore.registerUser(body)
+  if (registrationResult === true) {
+    closeDialog()
+  }
+}
 const openLoginModal = () => {
   modalStore.openLogin()
-}
 
-const submitForm = () => {
-  closeDialog()
 }
 </script>
 
@@ -172,6 +188,7 @@ const submitForm = () => {
               :style="{ height: '50px' }"
               rounded
               elevation="12"
+              @click="submitForm"
             >
               Sign Up
             </v-btn>
