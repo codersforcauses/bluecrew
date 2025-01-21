@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-
 defineProps<{
   avatarIndex: number
   name: string
   variant?: 'default' | 'acceptReject' | 'dismiss' | 'delete' | 'addFriend' | 'accept'
 }>()
-
 const showDialog = ref(false)
-
 const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
 </script>
 
