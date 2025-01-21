@@ -49,7 +49,11 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primaryBlue" variant="flat" @click="showDialog = false"> Cancel </v-btn>
-            <v-btn color="primaryPink" variant="flat" @click="emit('delete'), (showDialog = false)">
+            <v-btn
+              color="primaryPink"
+              variant="flat"
+              @click="(emit('delete'), (showDialog = false))"
+            >
               Confirm
             </v-btn>
           </v-card-actions>
