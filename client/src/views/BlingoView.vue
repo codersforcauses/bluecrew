@@ -57,4 +57,3 @@ import BlingoTile from '@/components/BingoTile.vue'
 </template>
 
 <style scoped></style>
-

@@ -34,7 +34,6 @@ const closeDialog = () => {
   modalStore.closeModal()
 }
 
-
 const submitForm = async () => {
   const body = {
     username: formData.value.username,
@@ -53,7 +52,6 @@ const submitForm = async () => {
 }
 const openLoginModal = () => {
   modalStore.openLogin()
-
 }
 </script>
 
