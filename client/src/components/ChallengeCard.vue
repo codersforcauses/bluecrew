@@ -12,11 +12,21 @@ const taskSubmission = ref<TaskSubmission>({
   image: null,
   canShareOnSocialMedia: false,
 })
-const isStarted = ref(false)
-const isCompleted = ref(false)
+
 const emit = defineEmits<{
   (evt: 'close'): void
+  (evt: 'start'): void
   (evt: 'task-completed', submission: TaskSubmission): void
+}>()
+
+// Define props
+const props = defineProps<{
+  title: string
+  points: number
+  type: 'connect' | 'understand' | 'act'
+  description: string
+  status: 'not started' | 'started' | 'completed'
+  isLoggedIn: boolean
 }>()
 
 const closeCard = () => {
@@ -24,11 +34,7 @@ const closeCard = () => {
 }
 
 const startTask = () => {
-  isStarted.value = true
-}
-
-const completeTask = () => {
-  isCompleted.value = true
+  emit('start')
 }
 
 const handleImageUpload = (event: Event) => {
@@ -44,49 +50,41 @@ const finish = () => {
     alert('Please provide feedback or upload an image')
     return
   }
-  completeTask()
   emit('task-completed', taskSubmission.value)
 }
 </script>
 
 <template>
-  <v-card v-if="!isStarted && !isCompleted" color="primaryBlue" rounded>
+  <v-card v-if="props.status === 'not started'" color="primaryBlue" rounded>
     <div class="header">
       <img src="../../public/brain.svg" alt="Brain icon" />
       <div class="header-content">
-        <v-card-title>Watch an Ocean Documentary</v-card-title>
+        <v-card-title>{{ title }}</v-card-title>
       </div>
       <v-icon icon="mdi-close-circle-outline" @click="closeCard"></v-icon>
     </div>
     <v-card-subtitle style="font-weight: bold">
-      <div class="points">200 Points</div></v-card-subtitle
+      <div class="points">{{ points }} Points</div></v-card-subtitle
     >
 
     <div class="description">
-      <v-card-text
-        >Here are some of our top picks! You can choose one of them or watch one of your own.Tell us
-        what you thought and submit a picture.</v-card-text
-      >
-      <ul>
-        <li>David Attenborough, Our Planet Coastal Seas</li>
-        <li>Cleaning up the Ocean</li>
-      </ul>
+      <v-card-text>{{ description }}</v-card-text>
     </div>
     <v-card-actions>
       <v-btn color="white" @click="startTask">Start</v-btn>
     </v-card-actions>
   </v-card>
 
-  <v-card v-else-if="isStarted && !isCompleted" color="primaryBlue" rounded>
+  <v-card v-if="props.status === 'started'" color="primaryBlue" rounded>
     <div class="header">
       <img src="../../public/brain.svg" alt="Brain icon" />
       <div class="header-content">
-        <v-card-title>Watch an Ocean Documentary</v-card-title>
+        <v-card-title>{{ title }}</v-card-title>
       </div>
       <v-icon icon="mdi-close-circle-outline" @click="closeCard"></v-icon>
     </div>
     <v-card-subtitle style="font-weight: bold">
-      <div class="points">200 Points</div>
+      <div class="points">{{ points }} Points</div>
       <v-checkbox
         v-model="taskSubmission.canShareOnSocialMedia"
         label="Can Blue Crew use this image on Social Media?"
@@ -125,26 +123,19 @@ const finish = () => {
     <div class="header">
       <img src="../../public/brain.svg" alt="Brain icon" />
       <div class="header-content">
-        <v-card-title>Watch an Ocean Documentary</v-card-title>
+        <v-card-title>{{ title }}</v-card-title>
       </div>
       <v-icon icon="mdi-close-circle-outline" @click="closeCard"></v-icon>
     </div>
     <v-card-subtitle style="font-weight: bold">
-      <div class="points">200 Points</div>
+      <div class="points">{{ points }} Points</div>
     </v-card-subtitle>
     <div class="description">
-      <v-card-text>
-        Here are some of our top picks! You can choose one of them or watch one of your own. Tell us
-        what you thought and submit a picture.
-        <ul>
-          <li>David Attenborough, Our Planet Coastal Seas</li>
-          <li>Cleaning up the Ocean</li>
-        </ul>
-      </v-card-text>
-      <v-card-actions>
-        <v-btn @click="closeCard" class="completed-btn">Completed</v-btn>
-      </v-card-actions>
+      <v-card-text>{{ description }}</v-card-text>
     </div>
+    <v-card-actions>
+      <v-btn @click="closeCard" class="completed-btn">Completed</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
