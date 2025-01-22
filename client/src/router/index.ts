@@ -8,6 +8,10 @@ import LeaderboardView from '@/views/LeaderboardView.vue'
 import FriendView from '@/views/FriendView.vue'
 import BlingoView from '@/views/BlingoView.vue'
 
+// temporary this line
+import ProfileView from '@/components/ProfileView.vue'
+
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -56,6 +60,18 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       redirect: '/404',
     },
+    // temporary from this
+    {
+      path: '/profile',
+      name: 'profile',
+      component: ProfileView,
+      //meta: { requiresAuth: true
+    },
+    {
+      path: '/:pathMatch(.)',
+      redirect: '/404',
+    },
+    // temporary to this
   ],
 })
 
@@ -72,3 +88,4 @@ router.beforeEach((to, from) => {
 })
 
 export default router
+
