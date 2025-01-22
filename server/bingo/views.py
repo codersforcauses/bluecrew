@@ -1,16 +1,18 @@
-from rest_framework import status, permissions
-from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer, UpdatePreferencesSerializer, ChallengeCompleteSerializer
-from django.shortcuts import get_object_or_404
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from .models import Friendship, User, BingoGrid, TileInteraction
-from django.db import IntegrityError
-from django.db.models import Q, F, Window
-from django.db.models.functions import DenseRank
-from django.utils import timezone
 from .utils import check_bingo
+from django.utils import timezone
+from django.db.models.functions import DenseRank
+from django.db.models import Q, F, Window
+from django.db import IntegrityError
+from .models import Friendship, User, BingoGrid, TileInteraction
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.shortcuts import get_object_or_404
+from rest_framework import status, permissions
+from .serializers import (UserRegisterSerializer, UserProfileSerializer,
+                          LeaderboardUserSerializer, BingoGridSerializer,
+                          UpdatePreferencesSerializer, ChallengeCompleteSerializer)
 
 
 @api_view(['DELETE'])
