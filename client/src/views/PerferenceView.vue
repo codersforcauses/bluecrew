@@ -4,60 +4,169 @@ import { useDisplay } from 'vuetify'
 import { ref } from 'vue'
 
 const { xs } = useDisplay()
-
 // Sample data - replace with actual data source
 const username = ref('Username')
 const fullName = ref('Firstname Lastname')
 const bio = ref('This is a bio.')
 const totalPoints = ref('1000pts')
+const isEditing = ref(false)
+const selectedAvatar = ref(0)
+const visibility = ref('Bluecrew only')
+
+// Avatar options
+const avatarOptions = [
+  { src: '/avatar1.png' },
+  { src: '/avatar2.png' },
+  { src: '/avatar3.png' },
+  { src: '/avatar4.png' },
+  { src: '/avatar5.png' },
+  { src: '/avatar6.png' },
+]
+
+const handleEditClick = () => {
+  isEditing.value = true
+}
+
+const handleCancel = () => {
+  isEditing.value = false
+}
+
+const handleApply = () => {
+  // Here you would typically save the changes to your backend
+  isEditing.value = false
+}
 </script>
 
 <template>
   <v-container fluid class="pa-0 d-flex flex-column">
-    <!-- Wave Banner -->
-    <v-row v-if="!xs" class="header">
-      <WaveBanner imageSrc="/beach-header.jpg" />
-      <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
-    </v-row>
-
-    <!-- Profile Content -->
-    <v-row class="px-16">
-      <v-col cols="12" class="d-flex flex-column">
-        <!-- Avatar and Name Section -->
-        <div class="d-flex align-start mb-4">
+    <!-- Main Profile View -->
+    <template v-if="!isEditing">
+      <!-- Wave Banner -->
+      <v-row v-if="!xs" class="header">
+        <WaveBanner imageSrc="/beach-header.jpg" />
+        <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
+      </v-row>
+      
+      <!-- Profile Content -->
+      <v-row class="px-16">
+        <v-col cols="12" class="d-flex flex-column">
+          <!-- Avatar and Name Section -->
+          <div class="d-flex align-start mb-4">
             <v-img
-                class="rounded-circle"
-                max-height="96"
-                max-width="96"
-                min-width="96"
-                cover
-                src="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
-                ></v-img>
-        </div>
-      </v-col>
-    </v-row>
-    <v-row class="px-16">
-      <v-col cols="12" class="d-flex flex-column">
-        <h2 class="text-h4 font-weight-bold mb-1">{{ username }}</h2>
-        <h3 class="text-h6 mb-1">{{ fullName }}</h3>
-        <p class="mb-1">{{ bio }}</p>
-        <p class="text-body-1">Total Point: {{ totalPoints }}</p>
-      </v-col>
-    </v-row>
-    <!-- Edit Profile Section -->
-    <v-row class="px-16">
-      <v-col cols="11">
-        <h2 class="text-h6 font-weight-bold mb-2">Edit Profile (Avatar, Bio & Visibility)</h2>
-      </v-col>
-      <v-col>
-        <v-btn
-        class="bg-primaryBlue rounded-xl"
-        prepend-icon="mdi-pencil"
-      >
-        Edit Profile
-      </v-btn>
-      </v-col>
-    </v-row>
+              class="rounded-circle"
+              max-height="96"
+              max-width="96"
+              min-width="96"
+              cover
+              src="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
+            ></v-img>
+          </div>
+        </v-col>
+      </v-row>
+
+      <v-row class="px-16">
+        <v-col cols="12" class="d-flex flex-column">
+          <h2 class="text-h4 font-weight-bold mb-1">{{ username }}</h2>
+          <h3 class="text-h6 text-teal mb-1">{{ fullName }}</h3>
+          <p class="mb-1">{{ bio }}</p>
+          <p class="text-body-1">Total Point: {{ totalPoints }}</p>
+        </v-col>
+      </v-row>
+
+      <!-- Edit Profile Section -->
+      <v-row class="px-16">
+        <v-col cols="11">
+          <h3 class="text-h6 font-weight-bold mb-2">Edit Profile (Avatar, Bio & Visibility)</h3>
+        </v-col>
+        <v-col>
+          <v-btn
+            class="bg-primaryBlue rounded-xl"
+            prepend-icon="mdi-pencil"
+            @click="handleEditClick"
+          >
+            Edit Profile
+          </v-btn>
+        </v-col>
+      </v-row>
+    </template>
+
+    <!-- Edit Profile View -->
+    <template v-else>
+      <v-container class="pa-4">
+        <v-row>
+          <v-col cols="12">
+            <div class="d-flex align-center mb-6">
+              <router-link to="/" class="text-decoration-none">Home</router-link>
+              <span class="mx-2">»</span>
+              <span>User Preference</span>
+              <span class="mx-2">»</span>
+              <span>Edit Profile</span>
+            </div>
+          </v-col>
+        </v-row>
+
+        <!-- Avatar Selection -->
+        <v-row>
+          <v-col cols="12">
+            <h3 class="mb-4">Avatar</h3>
+            <div class="d-flex flex-wrap gap-4">
+              <v-img
+                v-for="(avatar, index) in avatarOptions"
+                :key="index"
+                :src="avatar.src"
+                width="80"
+                height="80"
+                class="rounded-circle cursor-pointer"
+                :class="{ 'border-primary': selectedAvatar === index }"
+                @click="selectedAvatar = index"
+              />
+            </div>
+          </v-col>
+        </v-row>
+
+        <!-- Bio Section -->
+        <v-row>
+          <v-col cols="12">
+            <h3 class="mb-4">Bio</h3>
+            <v-textarea
+              v-model="bio"
+              variant="outlined"
+              class="bg-grey-lighten-4"
+            ></v-textarea>
+          </v-col>
+        </v-row>
+
+        <!-- Visibility Section -->
+        <v-row>
+          <v-col cols="12">
+            <h3 class="mb-4">Visibility</h3>
+            <v-radio-group v-model="visibility">
+              <v-radio label="Bluecrew only" value="Bluecrew only"></v-radio>
+              <v-radio label="Friend only" value="Friend only"></v-radio>
+              <v-radio label="Public" value="Public"></v-radio>
+            </v-radio-group>
+          </v-col>
+        </v-row>
+
+        <!-- Action Buttons -->
+        <v-row>
+          <v-col cols="12" class="d-flex justify-end gap-4">
+            <v-btn
+              variant="outlined"
+              @click="handleCancel"
+            >
+              Cancel
+            </v-btn>
+            <v-btn
+              color="primary"
+              @click="handleApply"
+            >
+              Apply
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </template>
   </v-container>
 </template>
 
@@ -75,7 +184,19 @@ const totalPoints = ref('1000pts')
   object-fit: cover;
 }
 
-h3 {
-  color: rgb(var(--v-theme-lightBlue));
+.text-teal {
+  color: rgb(var(--v-theme-primaryPink));
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.border-primary {
+  border: 2px solid rgb(var(--v-theme-primary));
+}
+
+.gap-4 {
+  gap: 1rem;
 }
 </style>
