@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import LoginModal from '@/components/LoginModal.vue'
 
 interface TaskSubmission {
   feedback: string
@@ -15,7 +16,7 @@ const taskSubmission = ref<TaskSubmission>({
 
 const emit = defineEmits<{
   (evt: 'close'): void
-  (evt: 'start'): void
+  (evt: 'status-change', status: 'not started' | 'started' | 'completed'): void
   (evt: 'task-completed', submission: TaskSubmission): void
 }>()
 
@@ -34,7 +35,10 @@ const closeCard = () => {
 }
 
 const startTask = () => {
-  emit('start')
+  if (!props.isLoggedIn) {
+    return
+  }
+  emit('status-change', 'started')
 }
 
 const handleImageUpload = (event: Event) => {
@@ -51,13 +55,21 @@ const finish = () => {
     return
   }
   emit('task-completed', taskSubmission.value)
+  emit('status-change', 'completed')
 }
 </script>
 
 <template>
-  <v-card v-if="props.status === 'not started'" color="primaryBlue" rounded>
+  <v-card v-if="!props.isLoggedIn" color="primaryBlue" rounded>
+    <LoginModal />
+  </v-card>
+
+  <v-card v-else-if="props.status === 'not started'" color="primaryBlue" rounded>
     <div class="header">
-      <img src="../../public/brain.svg" alt="Brain icon" />
+      <div class="headerIcon" style="display: flex; flex-direction: column">
+        <img src="../../public/brain.svg" alt="Brain icon" />
+        <p>{{ type }}</p>
+      </div>
       <div class="header-content">
         <v-card-title>{{ title }}</v-card-title>
       </div>
@@ -77,7 +89,10 @@ const finish = () => {
 
   <v-card v-if="props.status === 'started'" color="primaryBlue" rounded>
     <div class="header">
-      <img src="../../public/brain.svg" alt="Brain icon" />
+      <div class="headerIcon" style="display: flex; flex-direction: column">
+        <img src="../../public/brain.svg" alt="Brain icon" />
+        <p>{{ type }}</p>
+      </div>
       <div class="header-content">
         <v-card-title>{{ title }}</v-card-title>
       </div>
@@ -121,7 +136,10 @@ const finish = () => {
 
   <v-card v-else color="primaryBlue" rounded>
     <div class="header">
-      <img src="../../public/brain.svg" alt="Brain icon" />
+      <div class="headerIcon" style="display: flex; flex-direction: column">
+        <img src="../../public/brain.svg" alt="Brain icon" />
+        <p>{{ type }}</p>
+      </div>
       <div class="header-content">
         <v-card-title>{{ title }}</v-card-title>
       </div>
