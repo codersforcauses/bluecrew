@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from .models import Friendship, User, BingoGrid, TileInteraction
 from django.db.models import Q, F, Window
 from django.db.models.functions import DenseRank
-from datetime import datetime
+from django.utils import timezone
 from .utils import check_bingo
 
 
@@ -228,7 +228,7 @@ def complete_challenge(request):
         return Response({'error': 'Challenge has already been completed for this user.'}, status=status.HTTP_409_CONFLICT)
 
     tile.completed = True
-    tile.date_completed = datetime.now()
+    tile.date_completed = timezone.now()
     tile.save()
 
     challenge = active_grid.challenges.all()[tile.position]
