@@ -26,5 +26,7 @@ urlpatterns = [
     path('accept-friendship/<int:friendship_id>/',
          views.accept_friendship, name='accept_friendship'),
     path('complete-challenge/', views.complete_challenge,
-         name='complete_challenge'),    path('request-friendship/<int:user_id>/', views.request_friendship, name='request_friendship'),
+         name='complete_challenge'),
+    path('request-friendship/<int:user_id>/',
+         views.request_friendship, name='request_friendship'),
 ]
