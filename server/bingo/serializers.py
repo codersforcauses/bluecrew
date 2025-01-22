@@ -81,6 +81,8 @@ class BingoGridSerializer(serializers.ModelSerializer):
     class Meta:
         model = BingoGrid
         fields = ['grid_id', 'challenges']
+
+
 class UpdatePreferencesSerializer(ModelSerializer):
     class Meta:
         model = User

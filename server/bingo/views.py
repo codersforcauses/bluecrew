@@ -44,11 +44,11 @@ def get_current_user(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_user_preferences(request):
-    serializer = UpdatePreferencesSerializer(instance=request.user, data=request.data)
+    serializer = UpdatePreferencesSerializer(
+        instance=request.user, data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(status=status.HTTP_200_OK)
@@ -74,7 +74,8 @@ def start_challenge(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
-        TileInteraction.objects.create(user=request.user, position=challenge_index, grid=grid)
+        TileInteraction.objects.create(
+            user=request.user, position=challenge_index, grid=grid)
     except IntegrityError:
         # Throw an error if there is already an interaction between that user and that challenge
         return Response(status=status.HTTP_409_CONFLICT)
@@ -187,7 +188,8 @@ def request_friendship(request, user_id):
     receiver = get_object_or_404(User, user_id=user_id)
 
     try:
-        new_friendship = Friendship(requester=request.user, receiver=receiver, status=Friendship.PENDING)
+        new_friendship = Friendship(
+            requester=request.user, receiver=receiver, status=Friendship.PENDING)
         new_friendship.full_clean()
         new_friendship.save()
         return Response(
