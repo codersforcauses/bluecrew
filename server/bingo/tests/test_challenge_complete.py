@@ -83,12 +83,14 @@ class ChallengeCompleteTest(TestCase):
         response = self.client.patch(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["challenge_points"], self.challenges[data["position"]].points)
+        self.assertEqual(
+            response.data["challenge_points"], self.challenges[data["position"]].points)
         self.assertEqual(response.data["bingo_row"], 0)
         self.assertEqual(response.data["bingo_col"], -1)
         self.assertEqual(response.data["bingo_diag"], -1)
         self.assertFalse(response.data["full_bingo"])
-        self.assertEqual(response.data["bingo_points"], settings.BINGO_COMPLETE)
+        self.assertEqual(
+            response.data["bingo_points"], settings.BINGO_COMPLETE)
 
     def test_col_bingo(self):
         # complete all but last tile of second column
@@ -104,12 +106,14 @@ class ChallengeCompleteTest(TestCase):
         response = self.client.patch(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["challenge_points"], self.challenges[data["position"]].points)
+        self.assertEqual(
+            response.data["challenge_points"], self.challenges[data["position"]].points)
         self.assertEqual(response.data["bingo_row"], -1)
         self.assertEqual(response.data["bingo_col"], 1)
         self.assertEqual(response.data["bingo_diag"], -1)
         self.assertFalse(response.data["full_bingo"])
-        self.assertEqual(response.data["bingo_points"], settings.BINGO_COMPLETE)
+        self.assertEqual(
+            response.data["bingo_points"], settings.BINGO_COMPLETE)
 
     def test_diag_complete(self):
         # complete bottom left to top right diagonal
@@ -125,12 +129,14 @@ class ChallengeCompleteTest(TestCase):
         response = self.client.patch(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["challenge_points"], self.challenges[data["position"]].points)
+        self.assertEqual(
+            response.data["challenge_points"], self.challenges[data["position"]].points)
         self.assertEqual(response.data["bingo_row"], -1)
         self.assertEqual(response.data["bingo_col"], -1)
         self.assertEqual(response.data["bingo_diag"], 3)
         self.assertFalse(response.data["full_bingo"])
-        self.assertEqual(response.data["bingo_points"], settings.BINGO_COMPLETE)
+        self.assertEqual(
+            response.data["bingo_points"], settings.BINGO_COMPLETE)
 
     def test_grid_complete(self):
         # complete all but last tile of gird
@@ -146,9 +152,90 @@ class ChallengeCompleteTest(TestCase):
         response = self.client.patch(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["challenge_points"], self.challenges[data["position"]].points)
+        self.assertEqual(
+            response.data["challenge_points"], self.challenges[data["position"]].points)
         self.assertEqual(response.data["bingo_row"], 3)
         self.assertEqual(response.data["bingo_col"], 3)
         self.assertEqual(response.data["bingo_diag"], 0)
         self.assertTrue(response.data["full_bingo"])
-        self.assertEqual(response.data["bingo_points"], settings.BINGO_COMPLETE*3 + settings.GRID_COMPLETE)
+        self.assertEqual(
+            response.data["bingo_points"], settings.BINGO_COMPLETE*3 + settings.GRID_COMPLETE)
+
+    def test_row_col_double_bingo(self):
+        # Test a tile that completes both a row and a column
+
+        # Complete position 4, 5, 7, i.e the second row
+        for i in [4, 5, 7]:
+            self.tiles[i].completed = True
+            self.tiles[i].save()
+
+        # Complete position 2, 10, 14, i.e. the third column
+        for i in [2, 10, 14]:
+            self.tiles[i].completed = True
+            self.tiles[i].save()
+
+        # This tile will complete both the row and the column
+        data = {
+            "position": 6,
+            "consent": False,
+            "image": None
+        }
+        response = self.client.patch(self.url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.data["challenge_points"], self.challenges[data["position"]].points)
+        self.assertEqual(response.data["bingo_row"], 1)
+        self.assertEqual(response.data["bingo_col"], 2)
+        self.assertEqual(response.data["bingo_diag"], -1)
+        self.assertFalse(response.data["full_bingo"])
+        self.assertEqual(
+            response.data["bingo_points"], 2*settings.BINGO_COMPLETE)
+
+    def test_triple_bingo(self):
+        # Test a tile that completes both a row, a column, and a diagonal
+
+        # Complete position 4, 5, 7, i.e the second row
+        for i in [4, 5, 7]:
+            self.tiles[i].completed = True
+            self.tiles[i].save()
+
+        # Complete position 2, 10, 14, i.e. the third column
+        for i in [2, 10, 14]:
+            self.tiles[i].completed = True
+            self.tiles[i].save()
+
+        # Complete position 3, 9, 12, the second diagonal
+        for i in [3, 9, 12]:
+            self.tiles[i].completed = True
+            self.tiles[i].save()
+
+        # This tile will complete both the row, column, and diagonal
+        data = {
+            "position": 6,
+            "consent": False,
+            "image": None
+        }
+        response = self.client.patch(self.url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.data["challenge_points"], self.challenges[data["position"]].points)
+        self.assertEqual(response.data["bingo_row"], 1)
+        self.assertEqual(response.data["bingo_col"], 2)
+        self.assertEqual(response.data["bingo_diag"], 3)
+        self.assertFalse(response.data["full_bingo"])
+        self.assertEqual(
+            response.data["bingo_points"], 3*settings.BINGO_COMPLETE)
+
+    def test_consent_patch(self):
+        data = {
+            "position": 6,
+            "consent": True,
+            "image": None
+        }
+
+        response = self.client.patch(self.url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.tiles[6].refresh_from_db()
+        self.assertTrue(self.tiles[6].consent)

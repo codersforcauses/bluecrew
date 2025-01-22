@@ -218,6 +218,7 @@ def complete_challenge(request):
 
     # Update consent field.
     tile.consent = serializer.data['consent']
+
     # Image is not a required field.
     image = serializer.data.get('image', None)
     if image and tile.consent:
