@@ -15,12 +15,12 @@ const visibility = ref('Bluecrew only')
 
 // Avatar options
 const avatarOptions = [
-  { src: '/avatar1.png' },
-  { src: '/avatar2.png' },
-  { src: '/avatar3.png' },
-  { src: '/avatar4.png' },
-  { src: '/avatar5.png' },
-  { src: '/avatar6.png' },
+  { src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' },
+  { src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' },
+  { src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' },
+  { src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' },
+  { src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' },
+  { src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' },
 ]
 
 const handleEditClick = () => {
@@ -32,7 +32,7 @@ const handleCancel = () => {
 }
 
 const handleApply = () => {
-  // Here you would typically save the changes to your backend
+  // Add stuff here 
   isEditing.value = false
 }
 </script>
@@ -67,7 +67,7 @@ const handleApply = () => {
       <v-row class="px-16">
         <v-col cols="12" class="d-flex flex-column">
           <h2 class="text-h4 font-weight-bold mb-1">{{ username }}</h2>
-          <h3 class="text-h6 text-teal mb-1">{{ fullName }}</h3>
+          <h3 class="text-h6 mb-1">{{ fullName }}</h3>
           <p class="mb-1">{{ bio }}</p>
           <p class="text-body-1">Total Point: {{ totalPoints }}</p>
         </v-col>
@@ -114,8 +114,10 @@ const handleApply = () => {
                 v-for="(avatar, index) in avatarOptions"
                 :key="index"
                 :src="avatar.src"
-                width="80"
-                height="80"
+                max-height="96"
+                max-width="96"
+                min-width="96"
+                cover
                 class="rounded-circle cursor-pointer"
                 :class="{ 'border-primary': selectedAvatar === index }"
                 @click="selectedAvatar = index"
@@ -140,11 +142,11 @@ const handleApply = () => {
         <v-row>
           <v-col cols="12">
             <h3 class="mb-4">Visibility</h3>
-            <v-radio-group v-model="visibility">
-              <v-radio label="Bluecrew only" value="Bluecrew only"></v-radio>
-              <v-radio label="Friend only" value="Friend only"></v-radio>
-              <v-radio label="Public" value="Public"></v-radio>
-            </v-radio-group>
+            <v-btn-toggle v-model="visibility">
+              <v-btn value="Bluecrew only">Bluecrew only</v-btn>
+              <v-btn value="Friend only">Friend only</v-btn>
+              <v-btn value="bals">Public</v-btn>
+            </v-btn-toggle>
           </v-col>
         </v-row>
 
@@ -184,8 +186,8 @@ const handleApply = () => {
   object-fit: cover;
 }
 
-.text-teal {
-  color: rgb(var(--v-theme-primaryPink));
+h3 {
+  color: rgb(var(--v-theme-primaryGreen));
 }
 
 .cursor-pointer {
@@ -198,5 +200,13 @@ const handleApply = () => {
 
 .gap-4 {
   gap: 1rem;
+}
+
+.v-btn-toggle {
+  flex-direction: column;
+}
+
+:deep(.v-btn-group) {
+  flex-direction: column;
 }
 </style>
