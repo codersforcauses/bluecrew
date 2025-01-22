@@ -52,7 +52,7 @@ const finish = () => {
 <template>
   <v-card v-if="!isStarted && !isCompleted" color="primaryBlue" rounded>
     <div class="header">
-      <img src="../assets/BrainIcon.svg" alt="Brain icon" />
+      <img src="../../public/brain.svg" alt="Brain icon" />
       <div class="header-content">
         <v-card-title>Watch an Ocean Documentary</v-card-title>
       </div>
@@ -79,7 +79,7 @@ const finish = () => {
 
   <v-card v-else-if="isStarted && !isCompleted" color="primaryBlue" rounded>
     <div class="header">
-      <img src="../assets/BrainIcon.svg" alt="Brain icon" />
+      <img src="../../public/brain.svg" alt="Brain icon" />
       <div class="header-content">
         <v-card-title>Watch an Ocean Documentary</v-card-title>
       </div>
@@ -103,14 +103,14 @@ const finish = () => {
         ></v-textarea>
 
         <div class="file-preview" v-if="taskSubmission.image">
-          <img src="../assets/FileIcon.svg" alt="File icon" class="file-icon" />
+          <img src="../../public/FileIcon.svg" alt="File icon" class="file-icon" />
           <span class="file-name">{{ taskSubmission.image.name }}</span>
         </div>
 
         <div class="upload-button-wrapper">
           <input type="file" id="file" @change="handleImageUpload" class="hidden-input" />
           <label for="file">
-            <img src="../assets/Upload.svg" alt="Upload icon" class="upload-icon" />
+            <img src="../../public/Upload.svg" alt="Upload icon" class="upload-icon" />
           </label>
         </div>
       </div>
@@ -123,7 +123,7 @@ const finish = () => {
 
   <v-card v-else color="primaryBlue" rounded>
     <div class="header">
-      <img src="../assets/BrainIcon.svg" alt="Brain icon" />
+      <img src="../../public/brain.svg" alt="Brain icon" />
       <div class="header-content">
         <v-card-title>Watch an Ocean Documentary</v-card-title>
       </div>
@@ -142,7 +142,7 @@ const finish = () => {
         </ul>
       </v-card-text>
       <v-card-actions>
-        <v-btn @click="closeCard" color="primary-white" class="completed-btn">Completed</v-btn>
+        <v-btn @click="closeCard" class="completed-btn">Completed</v-btn>
       </v-card-actions>
     </div>
   </v-card>
@@ -150,13 +150,12 @@ const finish = () => {
 
 <style scoped>
 .v-card {
-  background-color: primaryBlue !important;
-  color: white !important;
+  color: white;
   padding: 24px;
   max-width: 800px;
   margin: 0 auto;
-  border-radius: 16px !important;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .header {
@@ -177,15 +176,15 @@ const finish = () => {
 }
 
 .v-card-title {
-  color: white !important;
-  font-size: 24px !important;
+  color: white;
+  font-size: 24px;
   line-height: 1.3;
   text-align: center;
-  margin: 0 !important;
-  padding: 0 !important;
-  white-space: normal !important;
-  overflow: visible !important; /* 允许内容溢出 */
-  text-overflow: clip !important; /* 不使用省略号 */
+  margin: 0;
+  padding: 0;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
   font-weight: bold;
 }
 
@@ -226,8 +225,8 @@ li {
 
 .v-card-actions {
   display: flex;
-  justify-content: center; /* 水平居中 */
-  align-items: center; /* 垂直居中 */
+  justify-content: center;
+  align-items: center;
   padding: 10px 20px;
   margin: 0 auto;
 }
@@ -246,8 +245,8 @@ li {
 
 .v-textarea {
   background-color: rgb(var(--v-theme-primaryBrown));
-  --v-field-border-width: 0 !important;
-  box-shadow: none !important;
+  --v-field-border-width: 0;
+  box-shadow: none;
   padding: 12px;
   min-height: 120px;
   color: rgb(var(--v-theme-primaryBlue));
@@ -272,7 +271,7 @@ li {
   background-color: rgb(var(--v-theme-lightBlue));
 }
 .hidden-input {
-  display: none; /* 隐藏默认的文件输入框 */
+  display: none;
 }
 
 .submission-area {
@@ -287,21 +286,21 @@ li {
 
 .custom-textarea :deep(.v-field),
 .custom-textarea :deep(.v-field__field) {
-  background-color: transparent !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
 }
 .custom-textarea {
-  background-color: transparent !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
   padding: 12px;
   min-height: 120px;
-  color: rgb(var(--v-theme-primaryBlue)) !important;
+  color: rgb(var(--v-theme-primaryBlue));
   width: 100%;
-  resize: none !important; /* 禁止拖动调整大小 */
+  resize: none;
   overflow-y: auto;
 }
 
@@ -325,7 +324,7 @@ li {
   font-size: 12px;
   text-align: center;
   white-space: nowrap; /* Prevent text wrapping */
-  max-width: 48px;
+  max-width: 84px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -338,22 +337,22 @@ li {
 
 .finish-button-wrapper {
   text-align: center;
-  margin-top: -30px; /* 创建半镶嵌效果 */
+  margin-top: -30px; /* Adjust the button position */
 }
 
 .finish-button {
-  background-color: rgb(var(--v-theme-primaryPink)) !important;
-  color: white !important;
+  background-color: rgb(var(--v-theme-primaryPink));
+  color: white;
   padding: 8px 24px;
   border-radius: 20px;
 }
 /* Mobile styles - Apply when screen width is 600px or less */
 @media (max-width: 600px) {
   .v-card {
-    padding: 16px !important;
-    max-width: 100% !important;
-    margin: 0 8px !important;
-    border-radius: 12px !important;
+    padding: 16px;
+    max-width: 100%;
+    margin: 0 8px;
+    border-radius: 12px;
   }
 
   .header {
@@ -372,7 +371,7 @@ li {
   }
 
   .v-card-title {
-    font-size: 20px !important;
+    font-size: 20px;
     font-weight: bold;
   }
 
