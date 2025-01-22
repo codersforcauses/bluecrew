@@ -11,6 +11,7 @@ from django.db.models import Q, F, Window
 from django.db.models.functions import DenseRank
 from django.core.mail import send_mail
 from django.conf import settings
+from smtplib import SMTPException, SMTPSenderRefused
 
 
 @api_view(['DELETE'])
@@ -46,14 +47,19 @@ def request_email_verification(request):
     if user.is_active:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    # Send email here
-    send_mail(
-        "Bingo Email Verification",
-        "VALIDATION LINK GOES HERE",
-        settings.VERIFICATION_EMAIL,
-        list(email),
-        fail_silently=False
-    )
+    try:
+        send_mail(
+            "Bingo Email Verification",
+            "VALIDATION LINK GOES HERE",
+            settings.VERIFICATION_EMAIL,
+            list(email),
+            fail_silently=False
+        )
+    except SMTPSenderRefused:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    except SMTPException:
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     return Response(status=status.HTTP_200_OK)
 
 
