@@ -1,9 +1,12 @@
 from rest_framework import status, permissions
-from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer, ChallengeCompleteSerializer
+from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer, UpdatePreferencesSerializer, ChallengeCompleteSerializer
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Friendship, User, BingoGrid, TileInteraction
+from django.db import IntegrityError
 from django.db.models import Q, F, Window
 from django.db.models.functions import DenseRank
 from django.utils import timezone
@@ -41,6 +44,45 @@ def get_current_user(request):
     """
     serializer = UserProfileSerializer(request.user)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_user_preferences(request):
+    serializer = UpdatePreferencesSerializer(
+        instance=request.user, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(status=status.HTTP_200_OK)
+    else:
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def start_challenge(request):
+    try:
+        challenge_index = int(request.data["position"])
+    except ValueError:
+        return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+    if challenge_index not in range(16):
+        return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+    try:
+        grid = BingoGrid.objects.get(is_active=True)
+    except ObjectDoesNotExist:
+        # Throw an error if no grid is currently active
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    try:
+        TileInteraction.objects.create(
+            user=request.user, position=challenge_index, grid=grid)
+    except IntegrityError:
+        # Throw an error if there is already an interaction between that user and that challenge
+        return Response(status=status.HTTP_409_CONFLICT)
+
+    return Response(status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -140,6 +182,32 @@ def get_leaderboard(request):
     if logged_in:
         leaderboard.append(serializer.data[current_user_index])
     return Response(leaderboard, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes((permissions.IsAuthenticated, ))
+def request_friendship(request, user_id):
+    receiver = get_object_or_404(User, user_id=user_id)
+
+    try:
+        new_friendship = Friendship(
+            requester=request.user, receiver=receiver, status=Friendship.PENDING)
+        new_friendship.full_clean()
+        new_friendship.save()
+        return Response(
+            {"message": "Friendship request sent successfully."},
+            status=status.HTTP_201_CREATED
+        )
+    except ValidationError as e:
+        error_message = e.message_dict.get('__all__', ['Validation error'])[0]
+        if "already exists" in error_message or "reverse friendship" in error_message:
+            return Response({"error": error_message}, status=status.HTTP_409_CONFLICT)
+        return Response({"error": error_message}, status=status.HTTP_400_BAD_REQUEST)
+    except IntegrityError:
+        return Response(
+            {"error": "A friendship request already exists or is pending."},
+            status=status.HTTP_409_CONFLICT
+        )
 
 
 @api_view(['POST'])

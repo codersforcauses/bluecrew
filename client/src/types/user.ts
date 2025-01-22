@@ -16,8 +16,8 @@ export interface UserRegistrationForm {
   firstName: string
   lastName: string
   dateOfBirth: string
-  genderId: string | null
-  indigenousTIS: string | null
+  genderId: string
+  indigenousTIS: string
   password: string
   confirmPassword: string
 }
