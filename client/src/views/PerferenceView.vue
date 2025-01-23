@@ -66,7 +66,7 @@ const handleApply = () => {
 
       <v-row class="px-16">
         <v-col cols="12" class="d-flex flex-column">
-          <h2 class="text-h4 font-weight-bold mb-1">{{ username }}</h2>
+          <p class="text-h4 font-weight-bold mb-1">{{ username }}</p>
           <h3 class="text-h6 mb-1">{{ fullName }}</h3>
           <p class="mb-1">{{ bio }}</p>
           <p class="text-body-1">Total Point: {{ totalPoints }}</p>
@@ -76,11 +76,11 @@ const handleApply = () => {
       <!-- Edit Profile Section -->
       <v-row class="px-16">
         <v-col cols="11">
-          <h3 class="text-h6 font-weight-bold mb-2">Edit Profile (Avatar, Bio & Visibility)</h3>
+          <p class="text-h6 font-weight-bold mb-2">Edit Profile (Avatar, Bio & Visibility)</p>
         </v-col>
         <v-col>
           <v-btn
-            class="bg-primaryBlue rounded-xl"
+            class="bg-primaryBlue"
             prepend-icon="mdi-pencil"
             @click="handleEditClick"
           >
@@ -98,7 +98,7 @@ const handleApply = () => {
             <!-- Avatar Selection -->
             <v-row>
               <v-col cols="12">
-                <h3 class="mb-4">Avatar</h3>
+                <p class="text-h6 font-weight-bold mb-4">Avatar</p>
                 <div class="d-flex flex-wrap gap-4">
                   <v-img
                     v-for="(avatar, index) in avatarOptions"
@@ -119,7 +119,7 @@ const handleApply = () => {
             <!-- Bio Section -->
             <v-row>
               <v-col cols="12">
-                <h3 class="mb-4">Bio</h3>
+                <p class="text-h6 font-weight-bold mb-4">Bio</p>
                 <v-textarea
                   v-model="bio"
                   variant="outlined"
@@ -131,12 +131,24 @@ const handleApply = () => {
             <!-- Visibility Section -->
             <v-row>
               <v-col cols="12">
-                <h3 class="mb-4">Visibility</h3>
-                <v-btn-toggle v-model="visibility">
-                  <v-btn value="Bluecrew only">Bluecrew only</v-btn>
-                  <v-btn value="Friend only">Friend only</v-btn>
-                  <v-btn value="bals">Public</v-btn>
-                </v-btn-toggle>
+                <p class="text-h6 font-weight-bold mb-4">Visibility</p>
+                <v-item-group 
+                mandatory
+                class="d-flex flex-column"
+                selected-class="bg-primaryGreen">
+                  <v-btn 
+                  class="mb-2 bg-primaryBrown"
+                  variant="outlined"
+                  value="Bluecrew only">Bluecrew only</v-btn>
+                  <v-btn 
+                  class="mb-2 bg-primaryBrown"
+                  variant="outlined"
+                  value="Friend only">Friend only</v-btn>
+                  <v-btn 
+                  class="bg-primaryBrown"
+                  variant="outlined"
+                  value="Public">Public</v-btn>
+                </v-item-group>
               </v-col>
             </v-row>
           </v-col>
@@ -144,9 +156,11 @@ const handleApply = () => {
           <v-col cols="3">
             <v-row>
               <v-col cols="12">
-                <v-btn 
+                <v-btn
+                  class="d-flex" 
                   prepend-icon="mdi-content-save"
                   color="primaryBlue"
+                  block
                   @click="handleApply"
                 >
                   Apply
@@ -154,8 +168,10 @@ const handleApply = () => {
               </v-col>
               <v-col cols="12">
                 <v-btn
+                  class="d-flex"
                   prepend-icon="mdi-close"
                   variant="outlined"
+                  block
                   @click="handleCancel"
                 >
                   Cancel
@@ -192,18 +208,10 @@ h3 {
 }
 
 .border-primary {
-  border: 2px solid rgb(var(--v-theme-primary));
+  border: 3px solid rgb(var(--v-theme-primaryGreen));
 }
 
 .gap-4 {
-  gap: 1rem;
-}
-
-.v-btn-toggle {
-  flex-direction: column;
-}
-
-:deep(.v-btn-group) {
-  flex-direction: column;
+  gap: 48px;
 }
 </style>
