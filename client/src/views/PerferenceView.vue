@@ -39,14 +39,14 @@ const handleApply = () => {
 
 <template>
   <v-container fluid class="pa-0 d-flex flex-column">
+    <!-- Wave Banner in Both States -->
+    <v-row v-if="!xs" class="header">
+      <WaveBanner imageSrc="/beach-header.jpg" />
+      <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
+    </v-row>
+
     <!-- Main Profile View -->
     <template v-if="!isEditing">
-      <!-- Wave Banner -->
-      <v-row v-if="!xs" class="header">
-        <WaveBanner imageSrc="/beach-header.jpg" />
-        <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
-      </v-row>
-      
       <!-- Profile Content -->
       <v-row class="px-16">
         <v-col cols="12" class="d-flex flex-column">
@@ -94,77 +94,74 @@ const handleApply = () => {
     <template v-else>
       <v-container class="pa-4">
         <v-row>
-          <v-col cols="12">
-            <div class="d-flex align-center mb-6">
-              <router-link to="/" class="text-decoration-none">Home</router-link>
-              <span class="mx-2">»</span>
-              <span>User Preference</span>
-              <span class="mx-2">»</span>
-              <span>Edit Profile</span>
-            </div>
-          </v-col>
-        </v-row>
+          <v-col cols="9">
+            <!-- Avatar Selection -->
+            <v-row>
+              <v-col cols="12">
+                <h3 class="mb-4">Avatar</h3>
+                <div class="d-flex flex-wrap gap-4">
+                  <v-img
+                    v-for="(avatar, index) in avatarOptions"
+                    :key="index"
+                    :src="avatar.src"
+                    max-height="96"
+                    max-width="96"
+                    min-width="96"
+                    cover
+                    class="rounded-circle cursor-pointer"
+                    :class="{ 'border-primary': selectedAvatar === index }"
+                    @click="selectedAvatar = index"
+                  />
+                </div>
+              </v-col>
+            </v-row>
 
-        <!-- Avatar Selection -->
-        <v-row>
-          <v-col cols="12">
-            <h3 class="mb-4">Avatar</h3>
-            <div class="d-flex flex-wrap gap-4">
-              <v-img
-                v-for="(avatar, index) in avatarOptions"
-                :key="index"
-                :src="avatar.src"
-                max-height="96"
-                max-width="96"
-                min-width="96"
-                cover
-                class="rounded-circle cursor-pointer"
-                :class="{ 'border-primary': selectedAvatar === index }"
-                @click="selectedAvatar = index"
-              />
-            </div>
-          </v-col>
-        </v-row>
+            <!-- Bio Section -->
+            <v-row>
+              <v-col cols="12">
+                <h3 class="mb-4">Bio</h3>
+                <v-textarea
+                  v-model="bio"
+                  variant="outlined"
+                  bg-color="rgb(var(--v-theme-primaryBrown))"
+                ></v-textarea>
+              </v-col>
+            </v-row>
 
-        <!-- Bio Section -->
-        <v-row>
-          <v-col cols="12">
-            <h3 class="mb-4">Bio</h3>
-            <v-textarea
-              v-model="bio"
-              variant="outlined"
-              class="bg-grey-lighten-4"
-            ></v-textarea>
+            <!-- Visibility Section -->
+            <v-row>
+              <v-col cols="12">
+                <h3 class="mb-4">Visibility</h3>
+                <v-btn-toggle v-model="visibility">
+                  <v-btn value="Bluecrew only">Bluecrew only</v-btn>
+                  <v-btn value="Friend only">Friend only</v-btn>
+                  <v-btn value="bals">Public</v-btn>
+                </v-btn-toggle>
+              </v-col>
+            </v-row>
           </v-col>
-        </v-row>
-
-        <!-- Visibility Section -->
-        <v-row>
-          <v-col cols="12">
-            <h3 class="mb-4">Visibility</h3>
-            <v-btn-toggle v-model="visibility">
-              <v-btn value="Bluecrew only">Bluecrew only</v-btn>
-              <v-btn value="Friend only">Friend only</v-btn>
-              <v-btn value="bals">Public</v-btn>
-            </v-btn-toggle>
-          </v-col>
-        </v-row>
-
-        <!-- Action Buttons -->
-        <v-row>
-          <v-col cols="12" class="d-flex justify-end gap-4">
-            <v-btn
-              variant="outlined"
-              @click="handleCancel"
-            >
-              Cancel
-            </v-btn>
-            <v-btn
-              color="primary"
-              @click="handleApply"
-            >
-              Apply
-            </v-btn>
+            <!-- Action Buttons -->
+          <v-col cols="3">
+            <v-row>
+              <v-col cols="12">
+                <v-btn 
+                  prepend-icon="mdi-content-save"
+                  color="primaryBlue"
+                  @click="handleApply"
+                >
+                  Apply
+                </v-btn>
+              </v-col>
+              <v-col cols="12">
+                <v-btn
+                  prepend-icon="mdi-close"
+                  variant="outlined"
+                  @click="handleCancel"
+                >
+                  Cancel
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-col>
         </v-row>
       </v-container>
