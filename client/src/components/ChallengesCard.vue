@@ -2,19 +2,19 @@
   <v-card class="pa-4" outlined>
     <v-card-title class="d-flex justify-space-between align-center">
       <div>
-        <span class="font-weight-bold text-h6">{{ title }}</span>
-        <span class="subtitle ml-2 text-subtitle-2">{{ subtitle }}</span>
+        <span class="font-weight-bold text-h6">{{ propTitle }}</span>
+        <span class="subtitle ml-2 text-subtitle-2">{{ propSubtitle }}</span>
       </div>
-      <span class="text-body-1 font-weight-bold">{{ points }}pts</span>
+      <span class="text-body-1 font-weight-bold">{{ propPoints }}pts</span>
     </v-card-title>
 
     <v-card-text class="d-flex justify-space-between align-center">
       <div class="details">
         <p class="mb-2">
-          <strong>Complete Date:</strong> {{ completeDate }}
+          <strong>Complete Date:</strong> {{ propCompleteDate }}
         </p>
         <p>
-          <strong>Time Spent on Challenge:</strong> {{ timeSpent }}
+          <strong>Time Spent on Challenge:</strong> {{ propTimeSpent }}
         </p>
       </div>
       <v-chip
@@ -23,14 +23,16 @@
         class="status-indicator"
         outlined
       >
-        ✔ {{ status }}
+        ✔ {{ propStatus }}
       </v-chip>
     </v-card-text>
   </v-card>
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent, toRefs } from "vue";
+
+export default defineComponent({
   name: "ChallengeCard",
   props: {
     title: {
@@ -58,7 +60,27 @@ export default {
       default: "Complete",
     },
   },
-};
+  setup(props) {
+    // Destructure props with new names to avoid name collisions
+    const {
+      title: propTitle,
+      subtitle: propSubtitle,
+      points: propPoints,
+      completeDate: propCompleteDate,
+      timeSpent: propTimeSpent,
+      status: propStatus,
+    } = toRefs(props);
+
+    return {
+      propTitle,
+      propSubtitle,
+      propPoints,
+      propCompleteDate,
+      propTimeSpent,
+      propStatus,
+    };
+  },
+});
 </script>
 
 <style scoped>
