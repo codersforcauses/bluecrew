@@ -73,14 +73,15 @@ const handleApply = () => {
       </v-row>
 
       <!-- Edit Profile Section -->
-      <v-row class="px-4 px-sm-16">
-        <v-col cols="9">
+      <v-row class="px-4 px-sm-16" no-gutters>
+        <v-col cols="12">
           <p class="text-h6 font-weight-bold mb-2">Edit Profile (Avatar, Bio & Visibility)</p>
         </v-col>
-        <v-col cols="3">
+        <v-col cols="12">
           <v-btn
             class="bg-primaryBlue"
             prepend-icon="mdi-pencil"
+            :block="xs"
             @click="handleEditClick"
           >
             Edit Profile
