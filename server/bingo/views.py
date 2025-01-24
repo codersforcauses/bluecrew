@@ -293,13 +293,9 @@ def complete_challenge(request):
     tile = get_object_or_404(TileInteraction, user=request.user,
                              grid=active_grid, position=serializer.data['position'])
 
-    # Update consent field.
+    # Update consent and image fields.
     tile.consent = serializer.data['consent']
-
-    # Image is not a required field.
-    image = serializer.data.get('image', None)
-    if image and tile.consent:
-        tile.image = image
+    tile.image = serializer.data['image']
 
     # Points should only be awarded once.
     if tile.completed:
