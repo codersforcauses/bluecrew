@@ -293,11 +293,11 @@ def complete_challenge(request):
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     tile = get_object_or_404(TileInteraction, user=request.user,
-                             grid=active_grid, position=serializer.data['position'])
+                             grid=active_grid, position=serializer.validated_data['position'])
 
     # Update consent and image fields.
-    tile.consent = serializer.data['consent']
-    tile.image = serializer.data['image']
+    tile.consent = serializer.validated_data['consent']
+    tile.image = serializer.validated_data['image']
 
     # Points should only be awarded once.
     if tile.completed:
