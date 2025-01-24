@@ -281,7 +281,14 @@ def complete_challenge(request):
     tile the diagonal contains, either 0 or 3, -1 if no bingo.
     'full_bingo' contains a boolean, representing whether the full grid has been completed.
     """
-    active_grid = get_object_or_404(BingoGrid, is_active=True)
+    try:
+        active_grid = BingoGrid.objects.get(is_active=True)
+    except BingoGrid.DoesNotExist:
+        return Response(
+            {"message": "No bingo grid found. Please contact support."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
     serializer = ChallengeCompleteSerializer(request.data)
     tile = get_object_or_404(TileInteraction, user=request.user,
                              grid=active_grid, position=serializer.data['position'])
