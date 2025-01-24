@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import WaveBanner from '@/components/WaveBanner.vue'
-import { useDisplay } from 'vuetify'
 import { ref } from 'vue'
+import { useDisplay } from 'vuetify'
 
 const { xs } = useDisplay()
-// Sample data - replace with actual data source
+
+// to be edited with stuff from user store
 const username = ref('Username')
 const fullName = ref('Firstname Lastname')
 const bio = ref('This is a bio.')
@@ -13,7 +14,6 @@ const isEditing = ref(false)
 const selectedAvatar = ref(0)
 const visibility = ref('Bluecrew only')
 
-// Avatar options
 const avatarOptions = [
   { src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' },
   { src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' },
@@ -32,7 +32,6 @@ const handleCancel = () => {
 }
 
 const handleApply = () => {
-  // Add stuff here 
   isEditing.value = false
 }
 </script>
@@ -48,7 +47,7 @@ const handleApply = () => {
     <!-- Main Profile View -->
     <template v-if="!isEditing">
       <!-- Profile Content -->
-      <v-row class="px-16">
+      <v-row class="px-4 px-sm-16">
         <v-col cols="12" class="d-flex flex-column">
           <!-- Avatar and Name Section -->
           <div class="d-flex align-start mb-4">
@@ -64,7 +63,7 @@ const handleApply = () => {
         </v-col>
       </v-row>
 
-      <v-row class="px-16">
+      <v-row class="px-4 px-sm-16">
         <v-col cols="12" class="d-flex flex-column">
           <p class="text-h4 font-weight-bold mb-1">{{ username }}</p>
           <h3 class="text-h6 mb-1">{{ fullName }}</h3>
@@ -74,11 +73,11 @@ const handleApply = () => {
       </v-row>
 
       <!-- Edit Profile Section -->
-      <v-row class="px-16">
-        <v-col cols="11">
+      <v-row class="px-4 px-sm-16">
+        <v-col cols="9">
           <p class="text-h6 font-weight-bold mb-2">Edit Profile (Avatar, Bio & Visibility)</p>
         </v-col>
-        <v-col>
+        <v-col cols="3">
           <v-btn
             class="bg-primaryBlue"
             prepend-icon="mdi-pencil"
@@ -94,7 +93,7 @@ const handleApply = () => {
     <template v-else>
       <v-container class="pa-4">
         <v-row>
-          <v-col cols="9">
+          <v-col cols="12" :cols-sm="9">
             <!-- Avatar Selection -->
             <v-row>
               <v-col cols="12">
@@ -135,7 +134,8 @@ const handleApply = () => {
                 <v-item-group 
                 mandatory
                 class="d-flex flex-column"
-                selected-class="bg-primaryGreen">
+                selected-class="bg-primaryGreen"
+                v-model="visibility">
                   <v-btn 
                   class="mb-2 bg-primaryBrown"
                   variant="outlined"
@@ -153,7 +153,7 @@ const handleApply = () => {
             </v-row>
           </v-col>
             <!-- Action Buttons -->
-          <v-col cols="3">
+          <v-col cols="12" :cols-sm="3">
             <v-row>
               <v-col cols="12">
                 <v-btn
