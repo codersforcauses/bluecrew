@@ -309,8 +309,7 @@ def complete_challenge(request):
     challenge.total_completions += 1
     challenge.save()
 
-    user = get_object_or_404(User, is_active=True,
-                             user_id=tile.user.user_id)
+    user = request.user
     user.total_points += challenge.points
     user.save()
 
