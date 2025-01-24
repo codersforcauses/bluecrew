@@ -5,6 +5,9 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from django.conf import settings
 from django.utils import timezone
+from PIL import Image
+from io import BytesIO
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 
 class ChallengeCompleteTest(TestCase):
@@ -39,6 +42,13 @@ class ChallengeCompleteTest(TestCase):
 
         self.url = reverse("complete_challenge")
 
+        # Create test image
+        img = Image.new("RGB", (100, 100), color="red")
+        buffer = BytesIO()
+        img.save(buffer, format="PNG")
+        buffer.seek(0)
+        self.image = SimpleUploadedFile("test_image.png", buffer.read(), content_type="image/png")
+
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
@@ -52,9 +62,9 @@ class ChallengeCompleteTest(TestCase):
         data = {
             "position": 0,
             "consent": True,
-            "image": None
+            "image": self.image
         }
-        response = self.client.patch(self.url, data, format="json")
+        response = self.client.patch(self.url, data, format="multipart")
 
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
         self.assertEqual(self.tiles[0].date_completed, completion_date)
@@ -63,9 +73,9 @@ class ChallengeCompleteTest(TestCase):
         data = {
             "position": 16,
             "consent": True,
-            "image": None
+            "image": self.image
         }
-        response = self.client.patch(self.url, data, format="json")
+        response = self.client.patch(self.url, data, format="multipart")
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -78,9 +88,9 @@ class ChallengeCompleteTest(TestCase):
         data = {
             "position": 3,
             "consent": False,
-            "image": None
+            "image": self.image
         }
-        response = self.client.patch(self.url, data, format="json")
+        response = self.client.patch(self.url, data, format="multipart")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -101,9 +111,9 @@ class ChallengeCompleteTest(TestCase):
         data = {
             "position": 13,
             "consent": False,
-            "image": None
+            "image": self.image
         }
-        response = self.client.patch(self.url, data, format="json")
+        response = self.client.patch(self.url, data, format="multipart")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -124,9 +134,9 @@ class ChallengeCompleteTest(TestCase):
         data = {
             "position": 12,
             "consent": False,
-            "image": None
+            "image": self.image
         }
-        response = self.client.patch(self.url, data, format="json")
+        response = self.client.patch(self.url, data, format="multipart")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -147,9 +157,9 @@ class ChallengeCompleteTest(TestCase):
         data = {
             "position": 15,
             "consent": False,
-            "image": None
+            "image": self.image
         }
-        response = self.client.patch(self.url, data, format="json")
+        response = self.client.patch(self.url, data, format="multipart")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -178,9 +188,9 @@ class ChallengeCompleteTest(TestCase):
         data = {
             "position": 6,
             "consent": False,
-            "image": None
+            "image": self.image
         }
-        response = self.client.patch(self.url, data, format="json")
+        response = self.client.patch(self.url, data, format="multipart")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -214,9 +224,9 @@ class ChallengeCompleteTest(TestCase):
         data = {
             "position": 6,
             "consent": False,
-            "image": None
+            "image": self.image
         }
-        response = self.client.patch(self.url, data, format="json")
+        response = self.client.patch(self.url, data, format="multipart")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -232,10 +242,10 @@ class ChallengeCompleteTest(TestCase):
         data = {
             "position": 6,
             "consent": True,
-            "image": None
+            "image": self.image
         }
 
-        response = self.client.patch(self.url, data, format="json")
+        response = self.client.patch(self.url, data, format="multipart")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.tiles[6].refresh_from_db()
         self.assertTrue(self.tiles[6].consent)

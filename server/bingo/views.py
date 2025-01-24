@@ -289,7 +289,9 @@ def complete_challenge(request):
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
-    serializer = ChallengeCompleteSerializer(request.data)
+    serializer = ChallengeCompleteSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     tile = get_object_or_404(TileInteraction, user=request.user,
                              grid=active_grid, position=serializer.data['position'])
 
