@@ -224,6 +224,10 @@ li {
   background-color: rgb(var(--v-theme-primaryPink));
   color: rgb(var(--v-theme-primaryWhite));
   justify-content: center;
+  padding: 12px 28px;
+  font-size: 18px;
+  border-radius: 12px;
+  min-width: 120px;
 }
 
 .description {
@@ -433,15 +437,13 @@ li {
     margin-top: -24px;
   }
 
-  .finish-button {
-    width: 80%; /* Make button wider on mobile */
-    padding: 12px 20px;
-    font-size: 16px;
-  }
-
   /* Adjust checkbox for mobile */
   .v-checkbox {
     margin: 8px 0;
+  }
+  .v-btn {
+    font-size: 16px;
+    padding: 14px 32px;
   }
 
   .v-checkbox :deep(.v-label) {
