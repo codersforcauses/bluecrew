@@ -37,7 +37,7 @@ const transformEntry = (
   avatarIndex: entry.avatar,
   name: entry.username,
   points: entry.total_points,
-  isHighlighted: highlight && !isSuperuser.value,
+  isHighlighted: highlight,
 })
 
 const fetchLeaderboard = async () => {
