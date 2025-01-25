@@ -7,8 +7,6 @@ import LandingView from '@/views/LandingView.vue'
 import LeaderboardView from '@/views/LeaderboardView.vue'
 import FriendView from '@/views/FriendView.vue'
 import BlingoView from '@/views/BlingoView.vue'
-
-// temporary this line
 import ProfileView from '@/components/ProfileView.vue'
 
 
@@ -60,7 +58,6 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       redirect: '/404',
     },
-    // temporary from this
     {
       path: '/profile',
       name: 'profile',
@@ -71,7 +68,6 @@ const router = createRouter({
       path: '/:pathMatch(.)',
       redirect: '/404',
     },
-    // temporary to this
   ],
 })
 
