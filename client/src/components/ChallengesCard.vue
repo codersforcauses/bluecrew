@@ -47,10 +47,12 @@
 .subtitle {
   color: #6b6b6b;
   font-size: 14px;
+  font-family: poppins;
 }
 .details p {
   margin: 4px 0;
   font-size: 14px;
   color: #4a4a4a;
+  font-family: poppins;
 }
 </style>
