@@ -27,6 +27,7 @@ const leaderboardData = ref<LeaderboardEntry[]>([])
 const currentUser = ref<LeaderboardEntry | null>(null)
 const isLoading = ref(true)
 const error = ref<string | null>(null)
+const isSuperuser = ref(false)
 
 const transformEntry = (
   entry: LeaderboardApiEntry,
@@ -36,7 +37,7 @@ const transformEntry = (
   avatarIndex: entry.avatar,
   name: entry.username,
   points: entry.total_points,
-  isHighlighted: highlight,
+  isHighlighted: highlight && !isSuperuser.value,
 })
 
 const fetchLeaderboard = async () => {
@@ -52,12 +53,18 @@ const fetchLeaderboard = async () => {
     const data = response.data
 
     if (userStore.isLoggedIn && data.length > 0) {
-      const currentUserData = data[data.length - 1]
-      currentUser.value = transformEntry(currentUserData, true)
-      // Transform the data immediately when assigning
-      leaderboardData.value = data.slice(0, -1).map((entry) => transformEntry(entry))
+      isSuperuser.value = userStore.userData?.is_superuser || false
+      
+      if (!isSuperuser.value) {
+        // For regular users, show their rank separately and in the list
+        const currentUserData = data[data.length - 1]
+        currentUser.value = transformEntry(currentUserData, true)
+        leaderboardData.value = data.map((entry) => transformEntry(entry))
+      } else {
+        // For superusers, just show the list without any highlighting
+        leaderboardData.value = data.map((entry) => transformEntry(entry, false))
+      }
     } else {
-      // Transform the data immediately when assigning
       leaderboardData.value = data.map((entry) => transformEntry(entry))
     }
   } catch (err) {
@@ -85,8 +92,8 @@ onMounted(() => {
     </div>
 
     <template v-else>
-      <!-- Your Rank - Only show if logged in and current user exists -->
-      <template v-if="userStore.isLoggedIn && currentUser">
+      <!-- Your Rank - Only show if logged in, current user exists, and not a superuser -->
+      <template v-if="userStore.isLoggedIn && currentUser && !isSuperuser">
         <h3 class="section-title text-primaryBlue">Your Rank</h3>
         <v-row>
           <v-col cols="12">
