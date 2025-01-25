@@ -7,7 +7,7 @@ import LandingView from '@/views/LandingView.vue'
 import LeaderboardView from '@/views/LeaderboardView.vue'
 import FriendView from '@/views/FriendView.vue'
 import BlingoView from '@/views/BlingoView.vue'
-import ProfileView from '@/components/ProfileView.vue'
+import ProfileView from '@/views/ProfileView.vue'
 
 
 const router = createRouter({
