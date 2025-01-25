@@ -162,7 +162,7 @@ def get_leaderboard(request):
             order_by=F('total_points').desc(),
         )
     )
-    
+
     serializer = LeaderboardUserSerializer(user_set, many=True)
     leaderboard = []
     current_user_index = -1
