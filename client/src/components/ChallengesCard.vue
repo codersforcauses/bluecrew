@@ -17,11 +17,13 @@
         <span class="font-weight-bold text-h6">{{ title }}</span>
         <span class="subtitle ml-2 text-subtitle-2">{{ type }}</span>
       </div>
-      <span class="ml-auto pr-5 text-body-1 font-weight-bold">{{ points }}pts</span>
-      <div>
-        <v-chip :class="[status === 'Complete' ? 'bg-success' : 'bg-lightBlue']" text-color="white" class="status-indicator" outlined>
-          {{ status }}
-        </v-chip>
+      <div class="d-flex flex-column">
+        <span class="ml-auto pr-5 text-body-1 font-weight-bold">{{ points }}pts</span>
+        <div>
+          <v-chip :class="[status === 'Complete' ? 'bg-success' : 'bg-lightBlue']" text-color="white" class="status-indicator" outlined>
+            {{ status }}
+          </v-chip>
+        </div>
       </div>
     </v-card-title>
 
