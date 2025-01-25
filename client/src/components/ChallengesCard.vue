@@ -25,11 +25,20 @@
       </div>
     </v-card-title>
 
+
     <v-card-text class="d-flex justify-space-between align-center">
       <div class="details">
         <p>
           {{ description }}
         </p>
+        <v-img
+          class="mb-5"
+          max-height="64"
+          max-width="64"
+          min-width="64"
+          cover
+          src=brain.svg
+        ></v-img>
         <p class="mb-2">
           <strong>Start Date:</strong> {{ startDate }}
         </p>
