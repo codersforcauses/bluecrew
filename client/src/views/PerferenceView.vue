@@ -134,6 +134,7 @@ const handleApply = () => {
                 <p class="text-h6 font-weight-bold mb-4">Bio</p>
                 <v-textarea
                   v-model="bio"
+                  :placeholder="bio"
                   variant="outlined"
                   bg-color="rgb(var(--v-theme-primaryBrown))"
                 ></v-textarea>
