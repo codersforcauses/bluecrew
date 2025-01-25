@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import LoginModal from '@/components/LoginModal.vue'
+import { useModalStore } from '@/stores/modal'
 
 interface TaskSubmission {
   feedback: string
@@ -8,6 +8,11 @@ interface TaskSubmission {
   canShareOnSocialMedia: boolean
 }
 
+const modalStore = useModalStore()
+
+const openLoginModal = () => {
+  modalStore.openLogin()
+}
 const taskSubmission = ref<TaskSubmission>({
   feedback: '',
   image: null,
@@ -20,6 +25,11 @@ const emit = defineEmits<{
   (evt: 'task-completed', submission: TaskSubmission): void
 }>()
 
+const typeIcons = {
+  connect: '/link.svg', // Maybe a network/connection brain icon
+  understand: '/brain.svg', // Perhaps a brain with a lightbulb
+  act: '/walking.svg', // A brain with a rocket or action symbol
+}
 // Define props
 const props = defineProps<{
   title: string
@@ -60,14 +70,10 @@ const finish = () => {
 </script>
 
 <template>
-  <v-card v-if="!props.isLoggedIn" color="primaryBlue" rounded>
-    <LoginModal />
-  </v-card>
-
-  <v-card v-else-if="props.status === 'not started'" color="primaryBlue" rounded>
+  <v-card color="primaryBlue" rounded>
     <div class="header">
       <div class="headerIcon" style="display: flex; flex-direction: column">
-        <img src="../../public/brain.svg" alt="Brain icon" />
+        <img :src="typeIcons[type]" :alt="`${type} icon`" />
         <p>{{ type }}</p>
       </div>
       <div class="header-content">
@@ -75,85 +81,59 @@ const finish = () => {
       </div>
       <v-icon icon="mdi-close-circle-outline" @click="closeCard"></v-icon>
     </div>
-    <v-card-subtitle style="font-weight: bold">
-      <div class="points">{{ points }} Points</div></v-card-subtitle
-    >
 
-    <div class="description">
-      <v-card-text>{{ description }}</v-card-text>
-    </div>
-    <v-card-actions>
-      <v-btn color="white" @click="startTask">Start</v-btn>
-    </v-card-actions>
-  </v-card>
-
-  <v-card v-if="props.status === 'started'" color="primaryBlue" rounded>
-    <div class="header">
-      <div class="headerIcon" style="display: flex; flex-direction: column">
-        <img src="../../public/brain.svg" alt="Brain icon" />
-        <p>{{ type }}</p>
-      </div>
-      <div class="header-content">
-        <v-card-title>{{ title }}</v-card-title>
-      </div>
-      <v-icon icon="mdi-close-circle-outline" @click="closeCard"></v-icon>
-    </div>
-    <v-card-subtitle style="font-weight: bold">
-      <div class="points">{{ points }} Points</div>
-      <v-checkbox
-        v-model="taskSubmission.canShareOnSocialMedia"
-        label="Can Blue Crew use this image on Social Media?"
-      ></v-checkbox>
-    </v-card-subtitle>
-
-    <div class="description">
-      <div class="submission-area" width="95%">
-        <v-textarea
-          v-model="taskSubmission.feedback"
-          placeholder="Feedback"
-          class="custom-textarea"
-          variant="plain"
-        ></v-textarea>
-
-        <div class="file-preview" v-if="taskSubmission.image">
-          <img src="../../public/FileIcon.svg" alt="File icon" class="file-icon" />
-          <span class="file-name">{{ taskSubmission.image.name }}</span>
-        </div>
-
-        <div class="upload-button-wrapper">
-          <input type="file" id="file" @change="handleImageUpload" class="hidden-input" />
-          <label for="file">
-            <img src="../../public/Upload.svg" alt="Upload icon" class="upload-icon" />
-          </label>
-        </div>
-      </div>
-
-      <div class="finish-button-wrapper">
-        <v-btn @click="finish" class="finish-button">Finish</v-btn>
-      </div>
-    </div>
-  </v-card>
-
-  <v-card v-else color="primaryBlue" rounded>
-    <div class="header">
-      <div class="headerIcon" style="display: flex; flex-direction: column">
-        <img src="../../public/brain.svg" alt="Brain icon" />
-        <p>{{ type }}</p>
-      </div>
-      <div class="header-content">
-        <v-card-title>{{ title }}</v-card-title>
-      </div>
-      <v-icon icon="mdi-close-circle-outline" @click="closeCard"></v-icon>
-    </div>
     <v-card-subtitle style="font-weight: bold">
       <div class="points">{{ points }} Points</div>
     </v-card-subtitle>
-    <div class="description">
-      <v-card-text>{{ description }}</v-card-text>
-    </div>
-    <v-card-actions>
-      <v-btn @click="closeCard" class="completed-btn">Completed</v-btn>
-    </v-card-actions>
+
+    <template v-if="status === 'not started'">
+      <div class="description">
+        <v-card-text>{{ description }}</v-card-text>
+      </div>
+      <v-card-actions>
+        <v-btn color="white" v-if="!isLoggedIn" @click="openLoginModal">Start</v-btn>
+        <v-btn color="white" v-else @click="startTask">Start</v-btn>
+      </v-card-actions>
+    </template>
+
+    <!-- Started Content -->
+    <template v-else-if="status === 'started'">
+      <div class="description">
+        <div class="submission-area" width="95%">
+          <v-textarea
+            v-model="taskSubmission.feedback"
+            placeholder="Feedback"
+            class="custom-textarea"
+            variant="plain"
+          ></v-textarea>
+
+          <div class="file-preview" v-if="taskSubmission.image">
+            <img src="/FileIcon.svg" alt="File icon" class="file-icon" />
+            <span class="file-name">{{ taskSubmission.image.name }}</span>
+          </div>
+
+          <div class="upload-button-wrapper">
+            <input type="file" id="file" @change="handleImageUpload" class="hidden-input" />
+            <label for="file">
+              <img src="/Upload.svg" alt="Upload icon" class="upload-icon" />
+            </label>
+          </div>
+        </div>
+
+        <div class="finish-button-wrapper">
+          <v-btn @click="finish" class="finish-button">Finish</v-btn>
+        </div>
+      </div>
+    </template>
+
+    <template v-else>
+      <div class="description">
+        <v-card-text>{{ description }}</v-card-text>
+      </div>
+      <v-card-actions>
+        <v-btn @click="closeCard" class="completed-btn">Completed</v-btn>
+      </v-card-actions>
+    </template>
   </v-card>
 </template>
 
