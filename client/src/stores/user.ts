@@ -21,6 +21,8 @@ export const useUserStore = defineStore('user', () => {
     refreshToken.value = null
     if (router.currentRoute.value.meta.requiresAuth === true) {
       router.push('/')
+    } else {
+      forceReload.value += 1
     }
   }
 
