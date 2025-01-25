@@ -7,7 +7,7 @@
     points: number
     startDate: string
     finishDate: string
-    status: boolean
+    status: 'complete' | 'uncomplete'
   }>()
 </script>
 
