@@ -1,16 +1,21 @@
 from rest_framework import status, permissions
 from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer, UpdatePreferencesSerializer
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.sites.shortcuts import get_current_site
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Friendship, User, BingoGrid, TileInteraction
+from .tokens import email_verification_token_generator
 from django.db import IntegrityError
 from django.db.models import Q, F, Window
 from django.db.models.functions import DenseRank
 from django.core.mail import send_mail
 from django.conf import settings
+from django.urls import reverse
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
 from smtplib import SMTPException, SMTPSenderRefused
 
 
@@ -46,11 +51,12 @@ def request_email_verification(request):
 
     if user.is_active:
         return Response(status=status.HTTP_400_BAD_REQUEST)
-
+    encoded_user = urlsafe_base64_encode(force_bytes(user.pk))
+    token = email_verification_token_generator.make_token(user)
     try:
         send_mail(
             "Bingo Email Verification",
-            "VALIDATION LINK GOES HERE",
+            f"https://{get_current_site(request).domain}{reverse("confirm_email")}?user={encoded_user}+token={token}",
             settings.VERIFICATION_EMAIL,
             list(email),
             fail_silently=False
@@ -61,6 +67,19 @@ def request_email_verification(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def confirm_email(request, uid64, token):
+    uid = force_str(urlsafe_base64_decode(uid64))
+    user = get_object_or_404(User, user_id=uid)
+    if user.is_active:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    if not email_verification_token_generator.check_token(user, token):
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    user.is_active = True
+    user.save()
+    return redirect("current_user")
 
 
 @api_view(['GET'])

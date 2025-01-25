@@ -6,3 +6,6 @@ class EmailVerificationTokenGenerator(PasswordResetTokenGenerator):
         email_field = user.get_email_field_name()
         email = getattr(user, email_field)
         return f"{user.pk}{timestamp}{email}"
+
+
+email_verification_token_generator = EmailVerificationTokenGenerator()
