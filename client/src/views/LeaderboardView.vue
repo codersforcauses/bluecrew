@@ -66,7 +66,6 @@ const fetchLeaderboard = async () => {
   } finally {
     isLoading.value = false
   }
-
 }
 
 onMounted(() => {
@@ -95,8 +94,13 @@ onMounted(() => {
         <h3 class="section-title text-primaryBlue">Your Rank</h3>
         <v-row>
           <v-col cols="12">
-            <LeaderboardRow :rank="currentUser.rank" :avatar-index="currentUser.avatarIndex" :name="currentUser.name"
-              :points="currentUser.points" :is-highlighted="true" />
+            <LeaderboardRow
+              :rank="currentUser.rank"
+              :avatar-index="currentUser.avatarIndex"
+              :name="currentUser.name"
+              :points="currentUser.points"
+              :is-highlighted="true"
+            />
           </v-col>
         </v-row>
       </template>
@@ -105,8 +109,13 @@ onMounted(() => {
       <h3 class="section-title2 text-primaryBlue">Overall Rankings</h3>
       <v-row class="leaderboard-scroll">
         <v-col v-for="(row, index) in leaderboardData" :key="index" cols="12">
-          <LeaderboardRow :rank="row.rank" :avatar-index="row.avatarIndex" :name="row.name" :points="row.points"
-            :is-highlighted="row.isHighlighted" />
+          <LeaderboardRow
+            :rank="row.rank"
+            :avatar-index="row.avatarIndex"
+            :name="row.name"
+            :points="row.points"
+            :is-highlighted="row.isHighlighted"
+          />
         </v-col>
       </v-row>
     </template>
