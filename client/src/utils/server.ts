@@ -35,7 +35,7 @@ server.interceptors.response.use(
         const oldAccessToken = userStore.accessToken
 
         // Try to refresh token using HTTP request
-        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/refresh`, {
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/refresh/`, {
           refreshToken: userStore.refreshToken,
         })
 

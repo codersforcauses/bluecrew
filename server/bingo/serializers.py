@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from .models import BingoGrid, Challenge
+from .models import BingoGrid, Challenge, TileInteraction
 
 User = get_user_model()
 
@@ -72,6 +72,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class ChallengeSerializer(serializers.ModelSerializer):
+    # Nested serializer for BingoGridSerializer
     class Meta:
         model = Challenge
         fields = ['name', 'description', 'challenge_type', 'points']
@@ -89,3 +90,14 @@ class UpdatePreferencesSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ["avatar", "bio", "visibility"]
+
+
+class ChallengeCompleteSerializer(serializers.ModelSerializer):
+    # Serializer for completing challenge view.
+    class Meta:
+        model = TileInteraction
+        fields = ['position', 'consent', 'image']
+        extra_kwargs = {
+            'position': {'required': True},
+            'consent': {'required': True},
+        }
