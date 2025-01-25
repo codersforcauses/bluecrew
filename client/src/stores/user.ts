@@ -1,14 +1,16 @@
 import { defineStore } from 'pinia'
 import { useStorage } from '@vueuse/core'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { User } from '@/types/user'
 import server from '@/utils/server'
 import { isAxiosError } from 'axios'
+import router from '@/router'
 
 export const useUserStore = defineStore('user', () => {
   const userData = useStorage<User | null>('userData', null)
   const accessToken = useStorage<string | null>('accessToken', null)
   const refreshToken = useStorage<string | null>('refreshToken', null)
+  const forceReload = ref<number>(0)
 
   const isLoggedIn = computed(() => userData.value !== null)
 
@@ -17,6 +19,9 @@ export const useUserStore = defineStore('user', () => {
     userData.value = null
     accessToken.value = null
     refreshToken.value = null
+    if (router.currentRoute.value.meta.requiresAuth === true) {
+      router.push('/')
+    }
   }
 
   const login = async (body: { username: string; password: string }) => {
@@ -28,6 +33,7 @@ export const useUserStore = defineStore('user', () => {
 
       const userResponse = await server.get('/user/me/')
       userData.value = userResponse.data
+      forceReload.value += 1
       return true
     } catch (error) {
       if (isAxiosError(error)) {
@@ -75,6 +81,7 @@ export const useUserStore = defineStore('user', () => {
     isLoggedIn,
     accessToken,
     refreshToken,
+    forceReload,
     logout,
     login,
     registerUser,
