@@ -35,7 +35,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 class LeaderboardUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'total_points']
+        fields = ['username', 'total_points', 'avatar']
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
