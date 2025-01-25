@@ -1,14 +1,18 @@
-from rest_framework import status, permissions
-from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer, UpdatePreferencesSerializer
-from django.shortcuts import get_object_or_404
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from .models import Friendship, User, BingoGrid, TileInteraction
-from django.db import IntegrityError
-from django.db.models import Q, F, Window
+from .utils import check_bingo
+from django.utils import timezone
 from django.db.models.functions import DenseRank
+from django.db.models import Q, F, Window
+from django.db import IntegrityError
+from .models import Friendship, User, BingoGrid, TileInteraction
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.shortcuts import get_object_or_404
+from rest_framework import status, permissions
+from .serializers import (UserRegisterSerializer, UserProfileSerializer,
+                          LeaderboardUserSerializer, BingoGridSerializer,
+                          UpdatePreferencesSerializer, ChallengeCompleteSerializer)
 
 
 @api_view(['DELETE'])
@@ -47,7 +51,8 @@ def get_current_user(request):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_user_preferences(request):
-    serializer = UpdatePreferencesSerializer(instance=request.user, data=request.data)
+    serializer = UpdatePreferencesSerializer(
+        instance=request.user, data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(status=status.HTTP_200_OK)
@@ -73,7 +78,8 @@ def start_challenge(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
-        TileInteraction.objects.create(user=request.user, position=challenge_index, grid=grid)
+        TileInteraction.objects.create(
+            user=request.user, position=challenge_index, grid=grid)
     except IntegrityError:
         # Throw an error if there is already an interaction between that user and that challenge
         return Response(status=status.HTTP_409_CONFLICT)
@@ -186,7 +192,8 @@ def request_friendship(request, user_id):
     receiver = get_object_or_404(User, user_id=user_id)
 
     try:
-        new_friendship = Friendship(requester=request.user, receiver=receiver, status=Friendship.PENDING)
+        new_friendship = Friendship(
+            requester=request.user, receiver=receiver, status=Friendship.PENDING)
         new_friendship.full_clean()
         new_friendship.save()
         return Response(
@@ -259,3 +266,57 @@ def get_bingo_grid(request):
             for tile in user_interaction:
                 grid['challenges'][tile.position]['status'] = 'Completed' if tile.completed else 'Started'
     return Response(grid, status=status.HTTP_200_OK)
+
+
+@api_view(['PATCH'])
+@permission_classes((permissions.IsAuthenticated, ))
+def complete_challenge(request):
+    """
+    This view returns a dictionary the following information.
+    'challenge_points' contains the points earned from completing the challenge.
+    'bingo_points' contains the points earned from bingos completed
+    'bingo_rows' contains the row in which a bingo was just achieved, if any, from 0-3, -1 if no bingo
+    'bingo_cols' contains the column in which a bingo was just achieved, if any, from 0-3, -1 if no bingo
+    'bingo_diag' contains the diagonal in which a bingo was just achieved, if any, denoted by the first row
+    tile the diagonal contains, either 0 or 3, -1 if no bingo.
+    'full_bingo' contains a boolean, representing whether the full grid has been completed.
+    """
+    try:
+        active_grid = BingoGrid.objects.get(is_active=True)
+    except BingoGrid.DoesNotExist:
+        return Response(
+            {"message": "No bingo grid found. Please contact support."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+    serializer = ChallengeCompleteSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    tile = get_object_or_404(TileInteraction, user=request.user,
+                             grid=active_grid, position=serializer.validated_data['position'])
+
+    # Update consent and image fields.
+    tile.consent = serializer.validated_data['consent']
+    tile.image = serializer.validated_data['image']
+
+    # Points should only be awarded once.
+    if tile.completed:
+        return Response({'error': 'Challenge has already been completed for this user.'}, status=status.HTTP_409_CONFLICT)
+
+    tile.completed = True
+    tile.date_completed = timezone.now()
+    tile.save()
+
+    challenge = active_grid.challenges.all()[tile.position]
+    challenge.total_completions += 1
+    challenge.save()
+
+    user = request.user
+    user.total_points += challenge.points
+    user.save()
+
+    bingos = check_bingo(tile)
+    response = {'challenge_points': challenge.points}
+    response.update(bingos)
+
+    return Response(response, status.HTTP_200_OK)
