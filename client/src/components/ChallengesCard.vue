@@ -28,11 +28,14 @@
 
     <v-card-text class="d-flex justify-space-between align-center">
       <div class="details">
+        <p>
+          {{ description }}
+        </p>
         <p class="mb-2">
-          <strong>Complete Date:</strong> {{ finishDate }}
+          <strong>Start Date:</strong> {{ startDate }}
         </p>
         <p>
-          <strong>Start Date:</strong> {{ startDate }}
+          <strong>Finish Date:</strong> {{ finishDate }}
         </p>
       </div>
       
