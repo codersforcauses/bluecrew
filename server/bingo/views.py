@@ -162,10 +162,10 @@ def get_leaderboard(request):
             order_by=F('total_points').desc(),
         )
     )
+    
     serializer = LeaderboardUserSerializer(user_set, many=True)
     leaderboard = []
     current_user_index = -1
-    user_found = False
 
     # Process users
     for i in range(len(serializer.data)):
@@ -173,19 +173,20 @@ def get_leaderboard(request):
         if logged_in and not request.user.is_superuser:
             if user_set[i].username == str(request.user):
                 current_user_index = i
-                user_found = True
+
         # Add users to leaderboard up to leaderboard_size
         if i < leaderboard_size:
             serializer.data[i]['rank'] = user_set[i].rank
             leaderboard.append(serializer.data[i])
-        elif user_found:  # If we've found the current user and filled the leaderboard, we can stop
-            break
 
-    # Append current user to end of leaderboard if they're logged in and not a superuser
-    if logged_in and not request.user.is_superuser and current_user_index != -1 and current_user_index >= leaderboard_size:
-        leaderboard.append(serializer.data[current_user_index])
+    # Always append current user to end of leaderboard if they're logged in and not a superuser
+    if logged_in and not request.user.is_superuser and current_user_index != -1:
+        current_user_data = serializer.data[current_user_index]
+        current_user_data['rank'] = user_set[current_user_index].rank
+        leaderboard.append(current_user_data)
 
     return Response(leaderboard, status=status.HTTP_200_OK)
+
 
 
 @api_view(['POST'])

@@ -53,19 +53,21 @@ const fetchLeaderboard = async () => {
 
     const data = response.data
 
-    if (userStore.isLoggedIn && data.length > 0) {
+    if (userStore.isLoggedIn) {
       isSuperuser.value = userStore.userData?.is_superuser || false
 
-      if (!isSuperuser.value) {
-        // For regular users, show their rank separately and in the list
+      if (!isSuperuser.value && data.length > 0) {
+        // For regular users, show their rank separately
         const currentUserData = data[data.length - 1]
         currentUser.value = transformEntry(currentUserData, true)
-        leaderboardData.value = data.map((entry) => transformEntry(entry))
+        // Remove duplicate entry from main list if present
+        leaderboardData.value = data.slice(0, -1).map((entry) => transformEntry(entry))
       } else {
-        // For superusers, just show the list without any highlighting
+        // For superusers or empty data, just show the list
         leaderboardData.value = data.map((entry) => transformEntry(entry, false))
       }
     } else {
+      // Not logged in, show all entries
       leaderboardData.value = data.map((entry) => transformEntry(entry))
     }
   } catch (err) {
