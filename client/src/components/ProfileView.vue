@@ -2,10 +2,11 @@
     <v-container>
       <ChallengesCard
         :title="title"
-        :subtitle="subtitle"
+        :description="description"
+        :type="type"
         :points="points"
-        :completeDate="completeDate"
-        :timeSpent="timeSpent"
+        :startDate="startDate"
+        :finishDate="finishDate"
         :status="status"
       />
     </v-container>
@@ -23,18 +24,20 @@
     setup() {
       // Reactive state variables using Composition API
       const title = ref("Challenge 1");
-      const subtitle = ref("Bingo 1");
+      const description = ref("This is a challenge");
+      const type = ref<'connect' | 'understand' | 'act'>('connect');
       const points = ref(200);
-      const completeDate = ref("27/11/2024 10:27pm");
-      const timeSpent = ref("60min");
-      const status = ref("Complete");
+      const startDate = ref("27/11/2024 9:27pm")
+      const finishDate = ref("27/11/2024 10:27pm");
+      const status = ref<'complete' | 'uncomplete'>('complete');
   
       return {
         title,
-        subtitle,
+        description,
+        type,
         points,
-        completeDate,
-        timeSpent,
+        startDate,
+        finishDate,
         status,
       };
     },
