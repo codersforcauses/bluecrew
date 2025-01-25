@@ -290,7 +290,6 @@ def complete_challenge(request):
             {"message": "No bingo grid found. Please contact support."},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
-
     serializer = ChallengeCompleteSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
