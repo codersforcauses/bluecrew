@@ -51,6 +51,8 @@
   padding-right: 20px;
   align-items: center;
   border-radius: 8px;
+  border-width: 4px;
+  border-color: #4a4a4a ;
 }
 .subtitle {
   color: #6b6b6b;
