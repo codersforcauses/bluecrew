@@ -7,10 +7,9 @@
     points: number
     startDate: string
     finishDate: string
-    status: 'Complete' | 'Uncomplete'
+    status: 'Complete' | 'In Progress'
   }>()
 </script>
-
 <template>
   <v-card class="pa-4 bg-primaryBrown challenge-row"  outlined>
     <v-card-title class="d-flex justify-space-between align-center">
@@ -20,8 +19,8 @@
       </div>
       <span class="ml-auto pr-5 text-body-1 font-weight-bold">{{ points }}pts</span>
       <div>
-        <v-chip color="success" text-color="white" class="status-indicator" outlined>
-          ✔ {{ status }}
+        <v-chip :class="[status === 'Complete' ? 'bg-success' : 'bg-lightBlue']" text-color="white" class="status-indicator" outlined>
+          {{ status }}
         </v-chip>
       </div>
     </v-card-title>
