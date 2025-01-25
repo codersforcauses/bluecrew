@@ -89,7 +89,7 @@ const handleApply = () => {
         <v-col cols="12">
           <p class="text-h6 font-weight-bold mb-2">Edit Profile (Avatar, Bio & Visibility)</p>
         </v-col>
-        <v-col cols="12">
+        <v-col cols="12 mb-4">
           <v-btn
             class="bg-primaryBlue"
             prepend-icon="mdi-pencil"
@@ -106,7 +106,7 @@ const handleApply = () => {
     <template v-else>
       <v-container class="pa-4">
         <v-row>
-          <v-col cols="12" :cols-sm="9">
+          <v-col :cols="xs ? 12 : 9">
             <!-- Avatar Selection -->
             <v-row>
               <v-col cols="12">
@@ -162,7 +162,7 @@ const handleApply = () => {
             </v-row>
           </v-col>
           <!-- Action Buttons -->
-          <v-col cols="12" :cols-sm="3">
+          <v-col :cols="xs ? 12 : 3">
             <v-row>
               <v-col cols="12">
                 <v-btn
