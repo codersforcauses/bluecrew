@@ -26,7 +26,7 @@ const router = createRouter({
       path: '/preferences',
       name: 'preferences',
       component: PreferenceView,
-      
+      meta: { requiresAuth: true },
     },
     {
       path: '/leaderboard',

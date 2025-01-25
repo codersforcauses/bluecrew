@@ -15,12 +15,24 @@ const selectedAvatar = ref(0)
 const visibility = ref('Bluecrew only')
 
 const avatarOptions = [
-  { src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' },
-  { src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' },
-  { src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' },
-  { src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' },
-  { src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' },
-  { src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' },
+  {
+    src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
+  },
+  {
+    src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
+  },
+  {
+    src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
+  },
+  {
+    src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
+  },
+  {
+    src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
+  },
+  {
+    src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
+  },
 ]
 
 const handleEditClick = () => {
@@ -132,33 +144,29 @@ const handleApply = () => {
             <v-row>
               <v-col cols="12">
                 <p class="text-h6 font-weight-bold mb-4">Visibility</p>
-                <v-item-group 
-                mandatory
-                class="d-flex flex-column"
-                selected-class="bg-primaryGreen"
-                v-model="visibility">
-                  <v-btn 
-                  class="mb-2 bg-primaryBrown"
-                  variant="outlined"
-                  value="Bluecrew only">Bluecrew only</v-btn>
-                  <v-btn 
-                  class="mb-2 bg-primaryBrown"
-                  variant="outlined"
-                  value="Friend only">Friend only</v-btn>
-                  <v-btn 
-                  class="bg-primaryBrown"
-                  variant="outlined"
-                  value="Public">Public</v-btn>
+                <v-item-group
+                  mandatory
+                  class="d-flex flex-column"
+                  selected-class="bg-primaryGreen"
+                  v-model="visibility"
+                >
+                  <v-btn class="mb-2 bg-primaryBrown" variant="outlined" value="Bluecrew only"
+                    >Bluecrew only</v-btn
+                  >
+                  <v-btn class="mb-2 bg-primaryBrown" variant="outlined" value="Friend only"
+                    >Friend only</v-btn
+                  >
+                  <v-btn class="bg-primaryBrown" variant="outlined" value="Public">Public</v-btn>
                 </v-item-group>
               </v-col>
             </v-row>
           </v-col>
-            <!-- Action Buttons -->
+          <!-- Action Buttons -->
           <v-col cols="12" :cols-sm="3">
             <v-row>
               <v-col cols="12">
                 <v-btn
-                  class="d-flex" 
+                  class="d-flex"
                   prepend-icon="mdi-content-save"
                   color="primaryBlue"
                   block

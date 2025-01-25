@@ -26,7 +26,7 @@ const colourTheme = {
     primaryGrey: '#4F4F4F',
     primaryBrown: '#EDE1D0',
     primaryWhite: '#FFFFFF',
-    primaryGreen: '#007D85'
+    primaryGreen: '#007D85',
   },
 }
 
