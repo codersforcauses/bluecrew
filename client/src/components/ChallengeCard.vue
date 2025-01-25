@@ -91,7 +91,7 @@ const finish = () => {
         <v-card-text>{{ description }}</v-card-text>
       </div>
       <v-card-actions>
-        <v-btn color="white" v-if="!isLoggedIn" @click="openLoginModal">Start</v-btn>
+        <v-btn color="white" v-if="!isLoggedIn" @click="openLoginModal">Login in</v-btn>
         <v-btn color="white" v-else @click="startTask">Start</v-btn>
       </v-card-actions>
     </template>
