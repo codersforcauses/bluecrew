@@ -12,7 +12,7 @@
 </script>
 
 <template>
-  <v-card class="pa-4" outlined>
+  <v-card class="pa-4 bg-primaryBrown" outlined>
     <v-card-title class="d-flex justify-space-between align-center">
       <div>
         <span class="font-weight-bold text-h6">{{ title }}</span>
