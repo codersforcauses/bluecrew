@@ -54,7 +54,7 @@ const fetchLeaderboard = async () => {
 
     if (userStore.isLoggedIn && data.length > 0) {
       isSuperuser.value = userStore.userData?.is_superuser || false
-      
+
       if (!isSuperuser.value) {
         // For regular users, show their rank separately and in the list
         const currentUserData = data[data.length - 1]
