@@ -60,7 +60,7 @@
   font-family: poppins;
 }
 .details p {
-  margin: 4px 0;
+  margin-bottom: 15px;
   font-size: 14px;
   color: #4a4a4a;
   font-family: poppins;
