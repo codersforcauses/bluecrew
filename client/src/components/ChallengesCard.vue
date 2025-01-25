@@ -12,7 +12,7 @@
 </script>
 
 <template>
-  <v-card class="pa-4 bg-primaryBrown" outlined>
+  <v-card class="pa-4 bg-primaryBrown challenge-row"  outlined>
     <v-card-title class="d-flex justify-space-between align-center">
       <div>
         <span class="font-weight-bold text-h6">{{ title }}</span>
@@ -44,6 +44,14 @@
 </template>
 
 <style scoped>
+.challenge-row {
+  gap: 16px;
+  min-height: 50px;
+  padding-left: 20px;
+  padding-right: 20px;
+  align-items: center;
+  border-radius: 8px;
+}
 .subtitle {
   color: #6b6b6b;
   font-size: 14px;
