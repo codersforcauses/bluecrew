@@ -3,11 +3,11 @@
   defineProps<{
     title: string
     description: string
-    type: 'connect' | 'understand' | 'act'
+    type: 'Connect' | 'Understand' | 'Act'
     points: number
     startDate: string
     finishDate: string
-    status: 'complete' | 'uncomplete'
+    status: 'Complete' | 'Uncomplete'
   }>()
 </script>
 
@@ -16,9 +16,14 @@
     <v-card-title class="d-flex justify-space-between align-center">
       <div>
         <span class="font-weight-bold text-h6">{{ title }}</span>
-        <span class="subtitle ml-2 text-subtitle-2">{{ description }}</span>
+        <span class="subtitle ml-2 text-subtitle-2">{{ type }}</span>
       </div>
       <span class="text-body-1 font-weight-bold">{{ points }}pts</span>
+      <div>
+        <v-chip color="success" text-color="white" class="status-indicator" outlined>
+          ✔ {{ status }}
+        </v-chip>
+      </div>
     </v-card-title>
 
     <v-card-text class="d-flex justify-space-between align-center">
@@ -30,14 +35,7 @@
           <strong>Start Date:</strong> {{ startDate }}
         </p>
       </div>
-      <v-chip
-        color="success"
-        text-color="white"
-        class="status-indicator"
-        outlined
-      >
-        ✔ {{ status }}
-      </v-chip>
+      
     </v-card-text>
   </v-card>
 </template>
