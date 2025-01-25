@@ -19,34 +19,25 @@
       </div>
       <div class="d-flex flex-column">
         <span class="ml-auto pr-5 text-body-1 font-weight-bold">{{ points }}pts</span>
-        <div>
-          <v-chip :class="[status === 'Complete' ? 'bg-success' : 'bg-lightBlue']" text-color="white" class="status-indicator" outlined>
-            {{ status }}
-          </v-chip>
-        </div>
       </div>
     </v-card-title>
-
 
     <v-card-text class="d-flex justify-space-between align-center">
       <div class="details">
         <p>
           {{ description }}
         </p>
-        <v-img
-          class="mb-5"
-          max-height="64"
-          max-width="64"
-          min-width="64"
-          cover
-          src=brain.svg
-        ></v-img>
         <p class="mb-2">
           <strong>Start Date:</strong> {{ startDate }}
         </p>
         <p>
           <strong>Finish Date:</strong> {{ finishDate }}
         </p>
+      </div>
+      <div>
+        <v-chip :class="[status === 'Complete' ? 'bg-success' : 'bg-lightBlue']" text-color="white" class="status-indicator align-self-center" outlined>
+          {{ status }}
+        </v-chip>
       </div>
       
     </v-card-text>
