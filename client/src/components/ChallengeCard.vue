@@ -91,7 +91,7 @@ const finish = () => {
         <v-card-text>{{ description }}</v-card-text>
       </div>
       <v-card-actions>
-        <v-btn color="white" v-if="!isLoggedIn" @click="openLoginModal">Login in</v-btn>
+        <v-btn color="white" v-if="!isLoggedIn" @click="openLoginModal">Login</v-btn>
         <v-btn color="white" v-else @click="startTask">Start</v-btn>
       </v-card-actions>
     </template>
@@ -223,10 +223,12 @@ li {
 .v-btn {
   background-color: rgb(var(--v-theme-primaryPink));
   color: rgb(var(--v-theme-primaryWhite));
+  display: flex;
   justify-content: center;
-  padding: 12px 28px;
+  align-items: center;
+  padding: 24px 20px;
   font-size: 18px;
-  border-radius: 12px;
+  border-radius: 50px;
   min-width: 120px;
 }
 
@@ -333,13 +335,6 @@ li {
   margin-top: -30px; /* Adjust the button position */
 }
 
-.finish-button {
-  background-color: rgb(var(--v-theme-primaryPink));
-  color: white;
-  padding: 8px 24px;
-  border-radius: 20px;
-}
-/* Mobile styles - Apply when screen width is 600px or less */
 @media (max-width: 600px) {
   .v-card {
     padding: 16px;
