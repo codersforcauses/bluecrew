@@ -121,7 +121,9 @@ const finish = () => {
         </div>
 
         <div class="finish-button-wrapper">
-          <v-btn @click="finish" class="finish-button">Finish</v-btn>
+          <v-card-actions>
+            <v-btn class="finish-button" @click="finish">Finish</v-btn>
+          </v-card-actions>
         </div>
       </div>
     </template>
@@ -332,7 +334,7 @@ li {
 
 .finish-button-wrapper {
   text-align: center;
-  margin-top: -30px; /* Adjust the button position */
+  margin-top: -50px; /* Adjust the button position */
 }
 
 @media (max-width: 600px) {
@@ -430,6 +432,7 @@ li {
   /* Make the finish button more touch-friendly */
   .finish-button-wrapper {
     margin-top: -24px;
+    width: 100%;
   }
 
   /* Adjust checkbox for mobile */
