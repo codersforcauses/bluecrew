@@ -52,7 +52,9 @@ const goToBingoPage = () => {
           </h2>
           <div class="buttons">
             <template v-if="userStore.isLoggedIn">
-              <p class="welcome-text">Welcome back, {{ userStore.userData?.userName }}.</p>
+              <p class="text-primaryGreen welcome-text">
+                Welcome back, {{ userStore.userData?.userName }}.
+              </p>
               <v-btn
                 id="bingo-button"
                 class="bg-primaryBlue text-creamyWhite"
