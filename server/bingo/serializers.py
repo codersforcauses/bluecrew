@@ -67,7 +67,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'email': data['email'],
             'visibility': data['visibility'],
             'avatar': data['avatar'],
-            'is_superuser': data['is_superuser']
+            'isSuperuser': data['is_superuser']
         }
 
 

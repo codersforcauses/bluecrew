@@ -8,7 +8,7 @@ export interface User {
   email: string
   visibility: 0 | 1 | 2
   avatar: 0 | 1 | 2 | 3 | 4 | 5
-  is_superuser: boolean
+  isSuperuser: boolean
 }
 
 export interface UserRegistrationForm {
