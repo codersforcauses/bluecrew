@@ -91,7 +91,7 @@ const handleApply = () => {
         </v-col>
         <v-col cols="12 mb-4">
           <v-btn
-            class="bg-primaryBlue"
+            class="bg-primaryBlue mb-4"
             prepend-icon="mdi-pencil"
             :block="xs"
             @click="handleEditClick"
