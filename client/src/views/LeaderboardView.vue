@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import LeaderboardRow from '@/components/LeaderboardRow.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
+
 import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import server from '@/utils/server'
@@ -86,6 +87,7 @@ onMounted(() => {
   <v-container class="custom-container">
     <WaveBanner imageSrc="/teambuilding-background.jpg" />
   </v-container>
+
   <v-container>
     <h2 class="leaderboard-text text-primaryPink mb-4 mb-sm-3 mb-md-4">Leaderboard</h2>
 
