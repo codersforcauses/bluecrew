@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import getAvatarPath from '@/utils/avatar'
 defineProps<{
   rank: number
   avatarIndex: number
@@ -20,7 +21,7 @@ defineProps<{
       max-width="32"
       min-width="32"
       cover
-      src="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
+      :src="`/${getAvatarPath(avatarIndex)}`"
     ></v-img>
     <p class="me-auto font-weight-bold truncate-name">{{ name }}</p>
     <p :class="[isHighlighted ? 'font-weight-bold' : '']" class="text-right points">
