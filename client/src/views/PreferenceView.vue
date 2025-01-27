@@ -13,25 +13,29 @@ const totalPoints = ref('1000pts')
 const isEditing = ref(false)
 const selectedAvatar = ref(0)
 const visibility = ref('Bluecrew only')
+const visOptions = ['Bluecrew only', 'Friend only', 'Public']
 
 const avatarOptions = [
   {
-    src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
+    src: 'clown-fish.svg',
   },
   {
-    src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
+    src: 'jellyfish.svg',
   },
   {
-    src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
+    src: 'seal.svg',
   },
   {
-    src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
+    src: 'starfish.svg',
   },
   {
-    src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
+    src: 'stingray.svg',
   },
   {
-    src: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
+    src: 'turtle.svg',
+  },
+  {
+    src: 'whale.svg',
   },
 ]
 
@@ -134,7 +138,7 @@ const handleApply = () => {
                 <p class="text-h6 font-weight-bold mb-4">Bio</p>
                 <v-textarea
                   v-model="bio"
-                  :placeholder="bio"
+                  placeholder="Add your bio here"
                   variant="outlined"
                   bg-color="rgb(var(--v-theme-primaryBrown))"
                 ></v-textarea>
@@ -148,16 +152,20 @@ const handleApply = () => {
                 <v-item-group
                   mandatory
                   class="d-flex flex-column"
-                  selected-class="bg-primaryGreen"
                   v-model="visibility"
                 >
-                  <v-btn class="mb-2 bg-primaryBrown" variant="outlined" value="Bluecrew only"
-                    >Bluecrew only</v-btn
+                  <v-btn
+                    v-for="option in visOptions"
+                    :key="option"
+                    :class="[
+                      'mb-2',
+                      visibility === option ? 'bg-primaryGreen' : 'bg-primaryBrown'
+                    ]"
+                    variant="outlined"
+                    @click="visibility = option"
                   >
-                  <v-btn class="mb-2 bg-primaryBrown" variant="outlined" value="Friend only"
-                    >Friend only</v-btn
-                  >
-                  <v-btn class="bg-primaryBrown" variant="outlined" value="Public">Public</v-btn>
+                    {{ option }}
+                  </v-btn>
                 </v-item-group>
               </v-col>
             </v-row>
