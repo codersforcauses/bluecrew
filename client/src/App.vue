@@ -15,7 +15,7 @@ const userStore = useUserStore()
   <v-app>
     <NavBarWrapper />
     <v-main class="main-content">
-      <RouterView :key="userStore.forceReload" />
+      <RouterView :key="userStore.isLoggedIn ? 1 : 0" />
     </v-main>
     <BluecrewFooter />
   </v-app>
