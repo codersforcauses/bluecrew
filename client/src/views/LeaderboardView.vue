@@ -29,7 +29,6 @@ const leaderboardData = ref<LeaderboardEntry[]>([])
 const currentUser = ref<LeaderboardEntry | null>(null)
 const isLoading = ref(true)
 const error = ref<string | null>(null)
-const isSuperuser = ref(false)
 
 const transformEntry = (
   entry: LeaderboardApiEntry,
@@ -53,20 +52,11 @@ const fetchLeaderboard = async () => {
     })
 
     const data = response.data
-
-    if (userStore.isLoggedIn) {
-      isSuperuser.value = userStore.userData?.is_superuser || false
-
-      if (!isSuperuser.value && data.length > 0) {
-        // For regular users, show their rank separately
-        const currentUserData = data[data.length - 1]
-        currentUser.value = transformEntry(currentUserData, true)
-        // Remove duplicate entry from main list if present
-        leaderboardData.value = data.slice(0, -1).map((entry) => transformEntry(entry))
-      } else {
-        // For superusers or empty data, just show the list
-        leaderboardData.value = data.map((entry) => transformEntry(entry, false))
-      }
+    if (userStore.normalUserLoggedIn && data.length > 0) {
+      const currentUserData = data[data.length - 1]
+      currentUser.value = transformEntry(currentUserData, true)
+      // Transform the data immediately when assigning
+      leaderboardData.value = data.slice(0, -1).map((entry) => transformEntry(entry))
     } else {
       // Not logged in, show all entries
       leaderboardData.value = data.map((entry) => transformEntry(entry))
@@ -101,7 +91,7 @@ onMounted(() => {
 
     <template v-else>
       <!-- Your Rank - Only show if logged in, current user exists, and not a superuser -->
-      <template v-if="userStore.isLoggedIn && currentUser && !isSuperuser">
+      <template v-if="userStore.normalUserLoggedIn && currentUser">
         <h3 class="section-title text-primaryBlue">Your Rank</h3>
         <v-row>
           <v-col cols="12">

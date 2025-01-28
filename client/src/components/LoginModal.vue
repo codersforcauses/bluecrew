@@ -64,9 +64,9 @@ const submitForm = async () => {
       </v-card-title>
 
       <v-card-subtitle class="text-center subtitle mt-2 text-primaryPink">
-        <strong
-          ><h3><b>Welcome Back</b></h3></strong
-        >
+        <strong>
+          <h3><b>Welcome Back</b></h3>
+        </strong>
       </v-card-subtitle>
       <v-card-text>
         <p class="text-center subtitle mb-4 text-primaryPink">

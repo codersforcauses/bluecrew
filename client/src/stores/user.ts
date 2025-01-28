@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { useStorage } from '@vueuse/core'
+import { useStorage, StorageSerializers } from '@vueuse/core'
 import { computed } from 'vue'
 import type { User } from '@/types/user'
 import server from '@/utils/server'
@@ -7,11 +7,15 @@ import { isAxiosError } from 'axios'
 import router from '@/router'
 
 export const useUserStore = defineStore('user', () => {
-  const userData = useStorage<User | null>('userData', null)
+  const userData = useStorage<User | null>('userData', null, undefined, {
+    serializer: StorageSerializers.object,
+  })
   const accessToken = useStorage<string | null>('accessToken', null)
   const refreshToken = useStorage<string | null>('refreshToken', null)
 
   const isLoggedIn = computed(() => userData.value !== null)
+  const normalUserLoggedIn = computed(() => userData.value !== null && !userData.value.isSuperuser)
+  const superUserLoggedIn = computed(() => userData.value !== null && userData.value.isSuperuser)
 
   //Logout Status
   const logout = () => {
@@ -77,6 +81,8 @@ export const useUserStore = defineStore('user', () => {
   return {
     userData,
     isLoggedIn,
+    normalUserLoggedIn,
+    superUserLoggedIn,
     accessToken,
     refreshToken,
     logout,
