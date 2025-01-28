@@ -21,9 +21,6 @@ const avatarOptions = [
     src: 'clown-fish.svg',
   },
   {
-    src: 'jellyfish.svg',
-  },
-  {
     src: 'seal.svg',
   },
   {
@@ -36,7 +33,7 @@ const avatarOptions = [
     src: 'turtle.svg',
   },
   {
-    src: 'whale.svg',
+    src: 'jellyfish.svg',
   },
 ]
 
@@ -74,7 +71,7 @@ const handleApply = () => {
               max-height="96"
               max-width="96"
               min-width="96"
-              cover
+              contain
               :src="avatar"
             ></v-img>
           </div>
@@ -125,7 +122,7 @@ const handleApply = () => {
                     max-height="96"
                     max-width="96"
                     min-width="96"
-                    cover
+                    contain
                     class="rounded-circle cursor-pointer"
                     :class="{ 'border-primary': selectedAvatar === index }"
                     @click="selectedAvatar = index"
@@ -151,18 +148,11 @@ const handleApply = () => {
             <v-row>
               <v-col cols="12">
                 <p class="text-h6 font-weight-bold mb-4 justify-center">Visibility</p>
-                <v-item-group
-                  mandatory
-                  class="d-flex flex-column"
-                  v-model="visibility"
-                >
+                <v-item-group mandatory class="d-flex flex-column" v-model="visibility">
                   <v-btn
                     v-for="option in visOptions"
                     :key="option"
-                    :class="[
-                      'mb-2',
-                      visibility === option ? 'bg-primaryGreen' : 'bg-primaryBrown'
-                    ]"
+                    :class="['mb-2', visibility === option ? 'bg-primaryGreen' : 'bg-primaryBrown']"
                     variant="outlined"
                     @click="visibility = option"
                   >
