@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import type { User } from '@/types/user'
 import server from '@/utils/server'
 import { isAxiosError } from 'axios'
+import router from '@/router'
 
 export const useUserStore = defineStore('user', () => {
   const userData = useStorage<User | null>('userData', null)
@@ -17,6 +18,9 @@ export const useUserStore = defineStore('user', () => {
     userData.value = null
     accessToken.value = null
     refreshToken.value = null
+    if (router.currentRoute.value.meta.requiresAuth === true) {
+      router.push('/')
+    }
   }
 
   const login = async (body: { username: string; password: string }) => {
