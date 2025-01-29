@@ -2,43 +2,29 @@
 import WaveBanner from '@/components/WaveBanner.vue'
 import { ref } from 'vue'
 import { useDisplay } from 'vuetify'
+import avatarPaths from '@/utils/avatar'
+import { useUserStore } from '@/stores/user'
+import type { User } from '@/types/user'
+import server from '@/utils/server'
+import { AxiosError } from 'axios'
 
 const { xs } = useDisplay()
+const userStore = useUserStore()
 
-// to be edited with stuff from user store
-const username = ref('Username')
-const fullName = ref('Firstname Lastname')
-const bio = ref('This is a bio.')
-const totalPoints = ref('1000pts')
+const bio = ref<string>('')
 const isEditing = ref(false)
-const visibility = ref('Bluecrew only')
-const visOptions = ['Bluecrew only', 'Friend only', 'Public']
+const visOptions = ['Bluecrew only', 'Friends only', 'Public']
+const visibility = ref<0 | 1 | 2>(0)
+const bioError = ref<string>('')
 
-const selectedAvatar = ref(0)
-const avatar = ref('/clown-fish.svg')
-const avatarOptions = [
-  {
-    src: 'clown-fish.svg',
-  },
-  {
-    src: 'seal.svg',
-  },
-  {
-    src: 'starfish.svg',
-  },
-  {
-    src: 'stingray.svg',
-  },
-  {
-    src: 'turtle.svg',
-  },
-  {
-    src: 'jellyfish.svg',
-  },
-]
+const selectedAvatar = ref<0 | 1 | 2 | 3 | 4 | 5>(0)
 
 const handleEditClick = () => {
   isEditing.value = true
+  const nonNullUser = userStore.userData as User
+  bio.value = nonNullUser.bio
+  visibility.value = nonNullUser.visibility
+  selectedAvatar.value = nonNullUser.avatar
 }
 
 const handleCancel = () => {
@@ -46,13 +32,36 @@ const handleCancel = () => {
 }
 
 const handleApply = () => {
-  avatar.value = avatarOptions[selectedAvatar.value].src
-  isEditing.value = false
+  server
+    .put('update-preferences/', {
+      avatar: selectedAvatar.value,
+      bio: bio.value,
+      visibility: visibility.value,
+    })
+    .then(() => {
+      const nonNullUser = userStore.userData!
+      nonNullUser.avatar = selectedAvatar.value
+      nonNullUser.bio = bio.value
+      nonNullUser.visibility = visibility.value
+      isEditing.value = false
+      alert('Preferences successfully changed!')
+    })
+    .catch((error: AxiosError) => {
+      if (
+        error.response &&
+        error.response.status === 400 &&
+        'bio' in (error.response.data as object)
+      ) {
+        bioError.value = 'Please enter a bio with at most 300 characters'
+      } else {
+        console.log('An unexpected error occurred')
+      }
+    })
 }
 </script>
 
 <template>
-  <v-container fluid class="pa-0 d-flex flex-column">
+  <v-container fluid class="pa-0 d-flex flex-column" v-if="userStore.userData">
     <!-- Wave Banner in Both States -->
     <v-row v-if="!xs" class="header">
       <WaveBanner imageSrc="/beach-header.jpg" />
@@ -72,7 +81,7 @@ const handleApply = () => {
               max-width="96"
               min-width="96"
               contain
-              :src="avatar"
+              :src="avatarPaths[userStore.userData.avatar]"
             ></v-img>
           </div>
         </v-col>
@@ -80,10 +89,12 @@ const handleApply = () => {
 
       <v-row class="px-4 px-sm-16">
         <v-col cols="12" class="d-flex flex-column">
-          <p class="text-h4 font-weight-bold mb-1">{{ username }}</p>
-          <h3 class="text-h6 mb-1">{{ fullName }}</h3>
-          <p class="mb-1">{{ bio }}</p>
-          <p class="text-body-1">Total Point: {{ totalPoints }}</p>
+          <p class="text-h4 font-weight-bold mb-1">{{ userStore.userData!.userName }}</p>
+          <h3 class="text-h6 mb-1">
+            {{ userStore.userData.firstName }} {{ userStore.userData.lastName }}
+          </h3>
+          <p class="mb-1">{{ userStore.userData.bio }}</p>
+          <p class="text-body-1">Total Points: {{ userStore.userData!.totalPoints }} pts</p>
         </v-col>
       </v-row>
 
@@ -116,16 +127,16 @@ const handleApply = () => {
                 <p class="text-h6 font-weight-bold mb-4">Avatar</p>
                 <div class="d-flex flex-wrap gap-4 justify-center">
                   <v-img
-                    v-for="(avatar, index) in avatarOptions"
+                    v-for="(avatar, index) in avatarPaths"
                     :key="index"
-                    :src="avatar.src"
+                    :src="avatar"
                     max-height="96"
                     max-width="96"
                     min-width="96"
                     contain
                     class="rounded-circle cursor-pointer"
                     :class="{ 'border-primary': selectedAvatar === index }"
-                    @click="selectedAvatar = index"
+                    @click="selectedAvatar = index as 0 | 1 | 2 | 3 | 4 | 5"
                   />
                 </div>
               </v-col>
@@ -137,8 +148,10 @@ const handleApply = () => {
                 <p class="text-h6 font-weight-bold mb-4">Bio</p>
                 <v-textarea
                   v-model="bio"
-                  placeholder="Add your bio here"
+                  :error-messages="bioError"
+                  placeholder="Tell us about yourself!"
                   variant="outlined"
+                  @focus="bioError = ''"
                   bg-color="rgb(var(--v-theme-primaryBrown))"
                 ></v-textarea>
               </v-col>
@@ -150,11 +163,11 @@ const handleApply = () => {
                 <p class="text-h6 font-weight-bold mb-4 justify-center">Visibility</p>
                 <v-item-group mandatory class="d-flex flex-column" v-model="visibility">
                   <v-btn
-                    v-for="option in visOptions"
+                    v-for="(option, index) in visOptions"
                     :key="option"
-                    :class="['mb-2', visibility === option ? 'bg-primaryGreen' : 'bg-primaryBrown']"
+                    :class="['mb-2', visibility === index ? 'bg-primaryGreen' : 'bg-primaryBrown']"
                     variant="outlined"
-                    @click="visibility = option"
+                    @click="visibility = index as 0 | 1 | 2"
                   >
                     {{ option }}
                   </v-btn>
