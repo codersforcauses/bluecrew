@@ -61,7 +61,7 @@ const handleApply = () => {
 </script>
 
 <template>
-  <v-container fluid class="pa-0 d-flex flex-column w-100" v-if="userStore.userData">
+  <v-container fluid class="pa-0 d-flex flex-column" v-if="userStore.userData">
     <!-- Wave Banner in Both States -->
     <v-row v-if="!xs" class="header">
       <WaveBanner imageSrc="/beach-header.jpg" />
@@ -99,7 +99,7 @@ const handleApply = () => {
       </v-row>
 
       <!-- Edit Profile Section -->
-      <v-row class="px-4 px-sm-16" no-gutters>
+      <v-row class="px-4 px-sm-16 ml-3" no-gutters>
         <v-col cols="12">
           <p class="text-h6 font-weight-bold mb-2">Edit Profile (Avatar, Bio & Visibility)</p>
         </v-col>
