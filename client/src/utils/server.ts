@@ -48,10 +48,9 @@ server.interceptors.response.use(
             return server(config)
           }
         }
-      } catch (error) {
+      } catch {
         // Refresh token expired, need to login again
-        console.log(error)
-        //userStore.logout()
+        userStore.logout()
       }
     }
 
