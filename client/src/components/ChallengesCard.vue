@@ -31,14 +31,6 @@ const show = ref(false);
         <p>
           {{ description }}
         </p>
-        <v-img
-          class="mb-5"
-          max-height="64"
-          max-width="64"
-          min-width="64"
-          cover
-          src=brain.svg
-        ></v-img>
         <p class="mb-2">
           <strong>Start Date:</strong> {{ startDate }}
         </p>
@@ -47,9 +39,9 @@ const show = ref(false);
         </p>
       </div>
       <div>
-        <v-chip :class="[status === 'Complete' ? 'bg-success' : 'bg-lightBlue']" text-color="white" class="status-indicator align-self-center" outlined>
+        <!-- <v-chip :class="[status === 'Complete' ? 'bg-success' : 'bg-lightBlue']" text-color="white" class="status-indicator align-self-center" outlined>
           {{ status }}
-        </v-chip>
+        </v-chip> -->
       </div>
       
     </v-card-text>
@@ -64,7 +56,11 @@ const show = ref(false);
       <div v-show="show">
         <v-divider class="my-3"></v-divider>
         <v-card-text>
-          Template from Vuetify
+          <v-img
+          width="100%"
+          cover
+          src=teambuilding-background.jpg
+        ></v-img>
         </v-card-text>
       </div>
     </v-expand-transition>
