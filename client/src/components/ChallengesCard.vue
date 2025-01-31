@@ -47,7 +47,10 @@ const show = ref(false);
     </v-card-text>
 
     <div class="d-flex justify-end mt-n15">
-    <v-btn variant="text" @click="show = !show">
+    <v-btn
+      color="primaryBlue"
+      variant="flat"
+      @click="show = !show">
       {{ show ? 'Hide Evidence' : 'Show Evidence' }}
     </v-btn>
     </div>
