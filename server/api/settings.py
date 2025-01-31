@@ -46,6 +46,7 @@ SIMPLE_JWT = {
     "USER_ID_FIELD": "user_id",
 
     "SIGNING_KEY": SECRET_KEY,
+    'UPDATE_LAST_LOGIN': True,
 }
 
 REST_FRAMEWORK = {
