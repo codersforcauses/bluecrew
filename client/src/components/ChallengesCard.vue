@@ -54,7 +54,7 @@ const show = ref(false);
 
     <v-expand-transition>
       <div v-show="show">
-        <v-divider class="my-3"></v-divider>
+        <v-divider class="my-1"></v-divider>
         <v-card-text>
           <v-img
           width="100%"
