@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+
+const show = ref(false);
 
   defineProps<{
     title: string
@@ -9,6 +12,7 @@
     finishDate: string
     status: 'Complete' | 'In Progress'
   }>()
+
 </script>
 <template>
   <v-card class="pa-4 bg-primaryBrown challenge-row"  outlined>
@@ -49,6 +53,21 @@
       </div>
       
     </v-card-text>
+
+    <div class="d-flex justify-end mt-n15">
+    <v-btn variant="text" @click="show = !show">
+      {{ show ? 'Hide Evidence' : 'Show Evidence' }}
+    </v-btn>
+    </div>
+
+    <v-expand-transition>
+      <div v-show="show">
+        <v-divider class="my-3"></v-divider>
+        <v-card-text>
+          Template from Vuetify
+        </v-card-text>
+      </div>
+    </v-expand-transition>
   </v-card>
 </template>
 
