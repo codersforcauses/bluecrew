@@ -57,13 +57,13 @@ const show = ref(false);
 
     <v-expand-transition>
       <div v-show="show">
-        <v-divider class="my-1"></v-divider>
+        <v-divider class="my-1"/>
         <v-card-text>
           <v-img
           width="100%"
           cover
           src=teambuilding-background.jpg
-        ></v-img>
+        />
         </v-card-text>
       </div>
     </v-expand-transition>
