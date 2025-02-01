@@ -81,6 +81,7 @@ class UpdatePreferencesSerializer(serializers.ModelSerializer):
         model = User
         fields = ["avatar", "bio", "visibility"]
 
+
 class ProfilePageChallengeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Challenge
@@ -99,6 +100,7 @@ class ProfilePageSerializer(serializers.ModelSerializer):
         model = User
         fields = ["first_name", "last_name", "bio",
                   "total_points", "avatar"]
+
 
 class ChallengeCompleteSerializer(serializers.ModelSerializer):
     # Serializer for completing challenge view.

@@ -13,7 +13,7 @@ from rest_framework import status, permissions
 from .serializers import (UserRegisterSerializer, UserProfileSerializer,
                           LeaderboardUserSerializer, BingoGridSerializer,
                           UpdatePreferencesSerializer, ChallengeCompleteSerializer,
-                          ProfilePageChallengeSerializer, ProfilePageSerializer, 
+                          ProfilePageChallengeSerializer, ProfilePageSerializer,
                           ProfilePageTileSerializer)
 
 
@@ -299,6 +299,7 @@ def get_profile_page(request, username):
         "challenges": challenges_tiles_data
     }
     return Response(response_data, status=status.HTTP_200_OK)
+
 
 @api_view(['PATCH'])
 @permission_classes((permissions.IsAuthenticated, ))
