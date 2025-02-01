@@ -24,7 +24,7 @@ const goToBingoPage = () => {
 }
 
 const messageStore = useMessageStore()
-messageStore.showMessage('Uh oh!','Stinky...', 'warning')
+messageStore.showMessage('Uh oh!', 'Stinky...', 'warning')
 </script>
 
 <template>

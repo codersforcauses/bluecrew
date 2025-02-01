@@ -9,9 +9,13 @@ export const useMessageStore = defineStore('message', () => {
   const content = ref('')
   const type = ref<MessageType>('success')
 
-  function showMessage(messageTitle: string, message: string, messageType: MessageType = 'success') {
+  function showMessage(
+    messageTitle: string,
+    message: string,
+    messageType: MessageType = 'success',
+  ) {
     isOpen.value = true
-    title.value = messageTitle 
+    title.value = messageTitle
     content.value = message
     type.value = messageType
   }
@@ -28,6 +32,6 @@ export const useMessageStore = defineStore('message', () => {
     content,
     type,
     showMessage,
-    closeMessage
+    closeMessage,
   }
 })
