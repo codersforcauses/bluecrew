@@ -59,14 +59,14 @@ const submitForm = async () => {
     <v-card>
       <v-container>
         <v-row align="center">
-          <!-- Back to Login Button: Only visible on forgot-password page -->
+
           <template v-if="currentPage === 'forgot-password'">
             <button class="back-button" @click="setCurrentPage('login')">
               <v-icon icon="mdi-arrow-left"></v-icon>
             </button>
           </template>
           <v-spacer />
-          <!-- Close Button -->
+
           <button class="close-button" @click="closeDialog">
             <v-icon icon="mdi-close-circle-outline"></v-icon>
           </button>
