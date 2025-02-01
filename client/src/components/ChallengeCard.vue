@@ -100,12 +100,8 @@ const finish = () => {
     <template v-else-if="status === 'started'">
       <div class="description">
         <div class="submission-area" width="95%">
-          <v-textarea
-            v-model="taskSubmission.feedback"
-            placeholder="Feedback"
-            class="custom-textarea"
-            variant="plain"
-          ></v-textarea>
+          <v-textarea v-model="taskSubmission.feedback" placeholder="Feedback" class="custom-textarea"
+            variant="plain"></v-textarea>
 
           <div class="file-preview" v-if="taskSubmission.image">
             <img src="/FileIcon.svg" alt="File icon" class="file-icon" />
@@ -250,6 +246,7 @@ li {
   width: 95%;
   border: none;
 }
+
 .upload-icon {
   width: 24px;
   height: 24px;
@@ -264,9 +261,11 @@ li {
   color: rgb(var(--v-theme-primaryWhite));
   opacity: 0.9;
 }
+
 .completed-btn {
   background-color: rgb(var(--v-theme-lightBlue));
 }
+
 .hidden-input {
   display: none;
 }
@@ -288,6 +287,7 @@ li {
   outline: none;
   box-shadow: none;
 }
+
 .custom-textarea {
   background-color: transparent;
   border: none;
@@ -320,7 +320,8 @@ li {
   color: rgb(var(--v-theme-primaryBlue));
   font-size: 12px;
   text-align: center;
-  white-space: nowrap; /* Prevent text wrapping */
+  white-space: nowrap;
+  /* Prevent text wrapping */
   max-width: 84px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -334,7 +335,8 @@ li {
 
 .finish-button-wrapper {
   text-align: center;
-  margin-top: -50px; /* Adjust the button position */
+  margin-top: -50px;
+  /* Adjust the button position */
 }
 
 @media (max-width: 600px) {
@@ -381,11 +383,13 @@ li {
   .v-card-text {
     font-size: 14px;
   }
+
   .v-icon {
     position: absolute;
     top: 16px;
     right: 16px;
   }
+
   li {
     font-size: 14px;
     margin: 6px 0;
@@ -439,6 +443,7 @@ li {
   .v-checkbox {
     margin: 8px 0;
   }
+
   .v-btn {
     font-size: 16px;
     padding: 14px 32px;
