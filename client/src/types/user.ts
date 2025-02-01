@@ -8,6 +8,7 @@ export interface User {
   email: string
   visibility: 0 | 1 | 2
   avatar: 0 | 1 | 2 | 3 | 4 | 5
+  isSuperuser: boolean
 }
 
 export interface UserRegistrationForm {
@@ -16,8 +17,8 @@ export interface UserRegistrationForm {
   firstName: string
   lastName: string
   dateOfBirth: string
-  genderId: string | null
-  indigenousTIS: string | null
+  genderId: string
+  indigenousTIS: string
   password: string
   confirmPassword: string
 }

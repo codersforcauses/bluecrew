@@ -2,9 +2,15 @@
 import { ref, computed } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import { useDisplay } from 'vuetify'
+import { useUserStore } from '@/stores/user'
 
 const { xs } = useDisplay()
 const modalStore = useModalStore()
+const userStore = useUserStore()
+
+const username = ref('')
+const password = ref('')
+const valid = ref(false)
 
 const isDialogVisible = computed({
   get: () => modalStore.currentModal === 'login',
@@ -23,9 +29,16 @@ const openRegisterModal = () => {
   modalStore.openRegister()
 }
 
-const username = ref('')
-const password = ref('')
-const valid = ref(false)
+const submitForm = async () => {
+  const body = {
+    username: username.value,
+    password: password.value,
+  }
+  const loginResult = await userStore.login(body)
+  if (loginResult === true) {
+    closeDialog()
+  }
+}
 </script>
 
 <template>
@@ -51,9 +64,9 @@ const valid = ref(false)
       </v-card-title>
 
       <v-card-subtitle class="text-center subtitle mt-2 text-primaryPink">
-        <strong
-          ><h3><b>Welcome Back</b></h3></strong
-        >
+        <strong>
+          <h3><b>Welcome Back</b></h3>
+        </strong>
       </v-card-subtitle>
       <v-card-text>
         <p class="text-center subtitle mb-4 text-primaryPink">
@@ -107,6 +120,7 @@ const valid = ref(false)
             :disabled="!valid"
             rounded
             elevation="12"
+            @click="submitForm"
           >
             Sign In
           </v-btn>

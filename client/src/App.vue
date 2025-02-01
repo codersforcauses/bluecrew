@@ -1,19 +1,23 @@
 <script setup lang="ts">
 import { useModalStore } from '@/stores/modal'
+import { useUserStore } from '@/stores/user'
 import { RouterView } from 'vue-router'
 import LoginModal from './components/LoginModal.vue'
 import BluecrewFooter from '@/components/BluecrewFooter.vue'
 import RegisterModal from '@/components/RegisterModal.vue'
 import NavBarWrapper from './components/NavBarWrapper.vue'
+import GenericMessage from '@/components/GenericMessage.vue'
 
 const modalStore = useModalStore()
+const userStore = useUserStore()
 </script>
 
 <template>
   <v-app>
     <NavBarWrapper />
     <v-main class="main-content">
-      <RouterView />
+      <RouterView :key="userStore.isLoggedIn ? 1 : 0" />
+      <GenericMessage />
     </v-main>
     <BluecrewFooter />
   </v-app>

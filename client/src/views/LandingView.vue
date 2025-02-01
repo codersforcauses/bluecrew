@@ -1,9 +1,14 @@
 <script setup lang="ts">
+import WaveBanner from '@/components/WaveBanner.vue'
 import { useModalStore } from '@/stores/modal'
 import { useDisplay } from 'vuetify'
+import { useUserStore } from '@/stores/user'
+import { useRouter } from 'vue-router'
 
 const { xs } = useDisplay()
 const modalStore = useModalStore()
+const userStore = useUserStore()
+const router = useRouter()
 
 const openRegisterModal = () => {
   modalStore.openRegister()
@@ -12,11 +17,16 @@ const openRegisterModal = () => {
 const openLoginModal = () => {
   modalStore.openLogin()
 }
+
+const goToBingoPage = () => {
+  router.push({ name: 'blingo' })
+}
 </script>
 
 <template>
   <v-container fluid class="fill-height pa-0 flex-column">
     <v-row v-if="!xs" class="header">
+      <WaveBanner imageSrc="/beach-header.jpg" />
       <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
     </v-row>
     <v-row class="flex-grow-1 w-100" align="center">
@@ -41,24 +51,40 @@ const openLoginModal = () => {
             </template>
           </h2>
           <div class="buttons">
-            <v-btn
-              id="register-button"
-              class="bg-primaryPink text-creamyWhite"
-              rounded="xl"
-              size="x-large"
-              @click="openRegisterModal"
-            >
-              Get Started
-            </v-btn>
-            <v-btn
-              id="login-button"
-              class="bg-primaryBlue text-creamyWhite"
-              rounded="xl"
-              size="x-large"
-              @click="openLoginModal"
-            >
-              I already have an account
-            </v-btn>
+            <template v-if="userStore.isLoggedIn">
+              <p class="text-primaryGreen welcome-text">
+                Welcome back, {{ userStore.userData?.userName }}.
+              </p>
+              <v-btn
+                id="bingo-button"
+                class="bg-primaryBlue text-creamyWhite"
+                rounded="xl"
+                size="x-large"
+                @click="goToBingoPage"
+              >
+                Go to Bingo
+              </v-btn>
+            </template>
+            <template v-else>
+              <v-btn
+                id="register-button"
+                class="bg-primaryPink text-creamyWhite"
+                rounded="xl"
+                size="x-large"
+                @click="openRegisterModal"
+              >
+                Get Started
+              </v-btn>
+              <v-btn
+                id="login-button"
+                class="bg-primaryBlue text-creamyWhite"
+                rounded="xl"
+                size="x-large"
+                @click="openLoginModal"
+              >
+                I already have an account
+              </v-btn>
+            </template>
           </div>
         </div>
       </v-col>
@@ -93,5 +119,12 @@ const openLoginModal = () => {
   flex-direction: column;
   gap: 60px;
   margin: 50px auto;
+}
+
+.welcome-text {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
 }
 </style>

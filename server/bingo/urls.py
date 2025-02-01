@@ -27,4 +27,8 @@ urlpatterns = [
          views.accept_friendship, name='accept_friendship'),
     path('get-profile-page/<str:username>/',
          views.get_profile_page, name='get_profile_page')
+    path('complete-challenge/', views.complete_challenge,
+         name='complete_challenge'),
+    path('request-friendship/<int:user_id>/',
+         views.request_friendship, name='request_friendship'),
 ]

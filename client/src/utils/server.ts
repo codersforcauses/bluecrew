@@ -35,14 +35,12 @@ server.interceptors.response.use(
         const oldAccessToken = userStore.accessToken
 
         // Try to refresh token using HTTP request
-        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/refresh`, {
-          refreshToken: userStore.refreshToken,
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/token/refresh/`, {
+          refresh: userStore.refreshToken,
         })
-
         // Update access token in store
-        if (response.data.accessToken) {
-          userStore.accessToken = response.data.accessToken
-
+        if (response.data.access) {
+          userStore.accessToken = response.data.access
           // If new token obtained, retry original request
           if (userStore.accessToken !== oldAccessToken) {
             const config = error.config
@@ -52,7 +50,7 @@ server.interceptors.response.use(
         }
       } catch {
         // Refresh token expired, need to login again
-        await userStore.logout()
+        userStore.logout()
       }
     }
 
