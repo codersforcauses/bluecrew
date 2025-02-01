@@ -114,14 +114,13 @@ const submitForm = async () => {
               variant="outlined"
             ></v-text-field>
             <div class="mt-3">
-              <a href="#" class="text-lightBlue" @click.prevent="setCurrentPage('forgot-password')">
+              <a class="text-lightBlue" @click.prevent="setCurrentPage('forgot-password')">
                 <p class="text-subtitle-2 margin-left-adjust">Forgot Username or Password?</p>
               </a>
             </div>
             <v-btn
-              class="d-flex justify-center mt-4 w-50 mx-auto"
+              class="d-flex button-custom justify-center mt-4 w-50 mx-auto"
               color="primaryBlue"
-              :style="{ height: '50px' }"
               :disabled="!valid"
               rounded
               elevation="12"
@@ -134,7 +133,7 @@ const submitForm = async () => {
         <v-card-actions class="d-flex justify-center text-primaryPink">
           <footer>
             Don't have an account?
-            <a href="#" class="text-primaryPink" @click.prevent="openRegisterModal">Sign up</a>
+            <a class="text-primaryPink" @click.prevent="openRegisterModal">Sign up</a>
           </footer>
         </v-card-actions>
       </template>
@@ -174,6 +173,9 @@ const submitForm = async () => {
 </template>
 
 <style scoped>
+.button-custom {
+  height: 50px;
+}
 .back-button {
   position: absolute;
   top: 16px;
