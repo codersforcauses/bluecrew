@@ -39,7 +39,7 @@ const show = ref(false);
         </p>
       </div>
       <div>
-        <v-chip :class="[status === 'Complete' ? 'bg-success' : 'bg-lightBlue']" text-color="white" class="status-indicator align-self-center" outlined>
+        <v-chip :class="[status === 'Complete' ? 'bg-success' : 'bg-lightBlue']" text-color="white" class="status-indicator align-self-center mb-15" outlined>
           {{ status }}
         </v-chip>
       </div>
