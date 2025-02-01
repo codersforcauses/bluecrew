@@ -1,7 +1,21 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const show = ref(false);
+const isMobile = ref(false);
+
+const checkMobile = () => {
+  isMobile.value = window.innerWidth <= 600;
+};
+
+onMounted(() => {
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkMobile);
+});
 
   defineProps<{
     title: string
@@ -70,6 +84,7 @@ const show = ref(false);
       </div>
     </v-expand-transition>
   </v-card>
+
 </template>
 
 <style scoped>

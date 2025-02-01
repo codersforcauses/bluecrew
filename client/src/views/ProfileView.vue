@@ -8,7 +8,7 @@
   const points = ref(200);
   const startDate = ref("27/11/2024 9:27pm");
   const finishDate = ref("27/11/2024 10:27pm");
-  const status = ref<'Complete' | 'In Progress'>('In Progress');
+  const status = ref<'Complete' | 'In Progress'>('Complete');
 </script>
 
 <template>
