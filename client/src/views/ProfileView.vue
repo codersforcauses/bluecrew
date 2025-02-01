@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref } from "vue";
-  import ChallengesCard from "@/components/ChallengesCard.vue";
+  import ChallengesCard from "@/components/ChallengeInteraction.vue";
 
   const title = ref("Challenge 1");
   const description = ref("This is a challenge");
