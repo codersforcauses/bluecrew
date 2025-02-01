@@ -143,7 +143,7 @@ const openLoginModal = () => {
                   persistent-placeholder
                 ></v-text-field>
               </div>
-              
+
               <div class="form-group">
                 <label for="genderId" class="text-primaryPink">Gender Identity</label>
                 <v-select
