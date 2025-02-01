@@ -43,7 +43,6 @@ const show = ref(false);
           {{ status }}
         </v-chip>
       </div>
-      
     </v-card-text>
 
     <div class="d-flex justify-end mt-n15">
