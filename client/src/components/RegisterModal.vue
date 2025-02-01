@@ -11,20 +11,20 @@ const userStore = useUserStore()
 
 const currentPage = ref<'register' | 'confirmation'>('register')
 
+const indigenousIdentites = ['Prefer not to say', 'Yes', 'No']
+const genderIdentities = ['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say']
+
 const formData = ref<UserRegistrationForm>({
   username: '',
   email: '',
   firstName: '',
   lastName: '',
   dateOfBirth: '',
-  genderId: '',
-  indigenousTIS: '',
+  genderId: genderIdentities[4],
+  indigenousTIS: indigenousIdentites[0],
   password: '',
   confirmPassword: '',
 })
-
-const indigenousIdentites = ['Prefer not to say', 'Yes', 'No']
-const genderIdentities = ['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say']
 
 const isDialogVisible = computed({
   get: () => modalStore.currentModal === 'register',
