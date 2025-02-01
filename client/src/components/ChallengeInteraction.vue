@@ -26,7 +26,7 @@ const show = ref(false);
       </div>
     </v-card-title>
 
-    <div class="d-flex row">
+    <div class="d-flex flex-row">
       <v-card-text class="d-flex justify-space-between align-center">
         <div class="details">
           <p>
@@ -41,13 +41,13 @@ const show = ref(false);
         </div>
       </v-card-text>
 
-      <div class="d-flex flex-column">
-          <div class="d-flex justify-end">
-            <v-chip :class="[status === 'Complete' ? 'bg-success' : 'bg-lightBlue']" text-color="white" class="status-indicator align-self-center" outlined>
+      <div class="d-flex flex-column align-center justify-space-between">
+          <div :class="[status === 'Complete' ? 'mt-5 ml-8' : 'mt-8 mr-4']">
+            <v-chip :class="[status === 'Complete' ? 'bg-success' : 'bg-lightBlue']" text-color="white" class="status-indicator align-center" outlined>
               {{ status }}
             </v-chip>
           </div>
-          <div v-if="status === 'Complete'" class="d-flex justify-end mt-6">
+          <div v-if="status === 'Complete'" class="mb-3">
             <v-btn
               color="primaryBlue"
               variant="flat"
