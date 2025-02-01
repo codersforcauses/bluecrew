@@ -63,10 +63,6 @@ const router = createRouter({
       name: 'profile',
       component: ProfileView,
     },
-    {
-      path: '/:pathMatch(.)',
-      redirect: '/404',
-    },
   ],
 })
 
