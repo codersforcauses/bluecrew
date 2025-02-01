@@ -49,7 +49,7 @@ onUnmounted(() => {
         </div>
       </v-card-text>
 
-      <div class="d-flex flex-row align-center justify-space-between">
+      <div class="d-flex flex-row align-center justify-space-between ml-5 mr-5">
           <div>
             <p class="mb-2">
               <strong>Start Date:</strong> {{ startDate }}
@@ -65,7 +65,7 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <div v-if="status === 'Complete'" class="d-flex justify-center align-center mt-3">
+        <div v-if="status === 'Complete'" class="d-flex justify-center align-center mt-5 mb-2">
           <v-btn
             color="primaryBlue"
             variant="flat"
