@@ -21,6 +21,9 @@ const formData = ref<UserRegistrationForm>({
   confirmPassword: '',
 })
 
+const indigenousIdentites = ['Prefer not to say', 'Yes', 'No']
+const genderIdentities = ['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say']
+
 const isDialogVisible = computed({
   get: () => modalStore.currentModal === 'register',
   set: (value: boolean) => {
@@ -41,8 +44,8 @@ const submitForm = async () => {
     first_name: formData.value.firstName,
     last_name: formData.value.lastName,
     birthdate: formData.value.dateOfBirth,
-    gender_identity: formData.value.genderId,
-    indigenous_identity: formData.value.indigenousTIS,
+    gender_identity: genderIdentities.indexOf(formData.value.genderId),
+    indigenous_identity: indigenousIdentites.indexOf(formData.value.indigenousTIS),
     password: formData.value.password,
   }
   const registrationResult = await userStore.registerUser(body)
@@ -137,7 +140,7 @@ const openLoginModal = () => {
                 hide-details="auto"
                 class="bg-primaryBrown"
                 placeholder="Select your gender identity"
-                :items="['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say']"
+                :items="genderIdentities"
                 v-model="formData.genderId"
                 variant="outlined"
               ></v-select>
@@ -151,7 +154,7 @@ const openLoginModal = () => {
                 hide-details="auto"
                 class="bg-primaryBrown"
                 placeholder="Please select"
-                :items="['Yes', 'No', 'Prefer not to say']"
+                :items="indigenousIdentites"
                 v-model="formData.indigenousTIS"
                 variant="outlined"
               ></v-select>
