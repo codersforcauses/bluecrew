@@ -1,5 +1,5 @@
 from rest_framework import status, permissions
-from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer, UpdatePreferencesSerializer
+from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer, UpdatePreferencesSerializer, ProfilePageChallengeSerializer, ProfilePageSerializer, ProfilePageTileSerializer
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view, permission_classes
@@ -240,19 +240,42 @@ def get_bingo_grid(request):
 
 
 @api_view(['GET'])
-def get_challenge_page_info(request, username):
+def get_profile_page(request, username):
     try:
         target_user = User.objects.get(username=username)
-        target_user_info = [target_user.first_name, target_user.last_name,
-                            target_user.bio, target_user.total_points, target_user.avatar]
+        target_user_info = {
+            "first_name": target_user.first_name,
+            "last_name": target_user.last_name,
+            "bio": target_user.bio,
+            "total_points": target_user.total_points,
+            "avatar": target_user.avatar
+        }
     except User.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
     if not check_access(request.user, target_user):
-        return Response(target_user_info, status=status.HTTP_200_OK)
+        response_data = {
+            "user_info": target_user_info,
+            "challenges": []
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
 
     target_tiles = TileInteraction.objects.filter(user=target_user)
-    target_challenges = [tile.grid.challenges[tile.position]
-                         for tile in target_tiles]
-    challenges_info = [[challenge.name, challenge.description, challenge.type, challenge.points, tile.image, tile.date_started, tile.date_completed]
-                       for tile, challenge in zip(target_tiles, target_challenges)]
-    return Response((target_user_info, challenges_info), status=status.HTTP_200_OK)
+    target_challenges = [list(tile.grid.challenges.all())[
+        tile.position] for tile in target_tiles]
+
+    challenges_info = [
+        {
+            "name": challenge.name,
+            "description": challenge.description,
+            "challenge_type": challenge.challenge_type,
+            "points": challenge.points,
+            # "image": tile.image,
+            "date_started": tile.date_started,
+            "date_completed": tile.date_completed
+        }
+        for tile, challenge in zip(target_tiles, target_challenges)]
+    response_data = {
+        "user_info": target_user_info,
+        "challenges": challenges_info
+    }
+    return Response(response_data, status=status.HTTP_200_OK)

@@ -1,8 +1,7 @@
 from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from .models import BingoGrid, Challenge
+from .models import BingoGrid, Challenge, TileInteraction
 
 User = get_user_model()
 
@@ -83,7 +82,27 @@ class BingoGridSerializer(serializers.ModelSerializer):
         fields = ['grid_id', 'challenges']
 
 
-class UpdatePreferencesSerializer(ModelSerializer):
+class UpdatePreferencesSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["avatar", "bio", "visibility"]
+
+
+class ProfilePageChallengeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Challenge
+        fields = ["name", "description", "challenge_type",
+                  "points"]
+
+
+class ProfilePageTileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TileInteraction
+        fields = ["image", "date_started", "date_completed"]
+
+
+class ProfilePageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name", "bio",
+                  "total_points", "avatar"]

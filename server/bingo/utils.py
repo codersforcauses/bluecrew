@@ -2,17 +2,10 @@ from .models import Friendship
 
 
 def check_access(current_user, target_user):
-    permission = 'minimum_access'
-    if current_user.is_staff():
-        permission = "staff"
-    elif (current_user.is_authenticated() and
-          (Friendship.objects.get(requester=current_user, receiver=target_user or
-                                  Friendship.objects.get(requester=current_user, receiver=target_user)))):
-        permission = "friend"
-    access_map = {
-        'minimum_access': ['public'],
-        'friend': ['public', 'friends_only'],
-        'staff': ['public', 'friends_only', 'staff_only'],
-    }
-    # Check if the visibility is allowed for the given permission
-    return target_user.visibility in access_map[permission]
+    if current_user.is_staff:
+        return True  # Can view any
+    elif (current_user.is_authenticated and
+          (Friendship.objects.filter(requester=current_user, receiver=target_user).exists() or
+           Friendship.objects.filter(requester=target_user, receiver=current_user).exists())):
+        return target_user.visibility != 0  # Can view any except staff
+    return target_user.visibility == 2  # Only can view public
