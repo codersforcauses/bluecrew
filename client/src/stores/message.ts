@@ -5,27 +5,27 @@ export type MessageType = 'success' | 'warning' | 'error'
 
 export const useMessageStore = defineStore('message', () => {
   const isOpen = ref(false)
-  const content = ref('')
   const title = ref('')
+  const content = ref('')
   const type = ref<MessageType>('success')
 
-  function showMessage(message: string, messageTitle: string, messageType: MessageType = 'success') {
+  function showMessage(messageTitle: string, message: string, messageType: MessageType = 'success') {
     isOpen.value = true
-    content.value = message
     title.value = messageTitle 
+    content.value = message
     type.value = messageType
   }
 
   function closeMessage() {
     isOpen.value = false
-    content.value = ''
     title.value = ''
+    content.value = ''
   }
 
   return {
     isOpen,
-    content,
     title,
+    content,
     type,
     showMessage,
     closeMessage

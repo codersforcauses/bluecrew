@@ -1,12 +1,18 @@
 <template>
-  <v-snackbar :model-value="visible" :color="color" timeout="3000" top @update:model-value="close">
-    <div v-if="isOpen">
-      <div class="message-content">
-        <h3 class="message-title">{{ title }}</h3>
-        <p class="message-text">{{ content }}</p>
-      </div>
+  <v-snackbar
+    :model-value="store.isOpen"
+    :color="color"
+    timeout="3000"
+    top
+    @update:model-value="close"
+  >
+    <div class="message-content">
+      <h3 class="message-title">{{ store.title }}</h3>
+      <p class="message-text">{{ store.content }}</p>
     </div>
-    <v-btn class="close-btn" @click="close" variant="text">CLOSE</v-btn>
+    <template v-slot:actions>
+      <v-btn class="close-btn" @click="close" variant="text">CLOSE</v-btn>
+    </template>
   </v-snackbar>
 </template>
 
@@ -14,19 +20,7 @@
 import { computed } from 'vue'
 import { useMessageStore } from '@/stores/message'
 
-const props = defineProps({
-  visible: {
-    type: Boolean,
-    required: true,
-  },
-  title: String,
-  text: String,
-  type: {
-    type: String,
-    default: 'success',
-    validator: (value: string) => ['success', 'warning', 'error'].includes(value),
-  },
-})
+const store = useMessageStore()
 
 const colorMapping: Record<string, string> = {
   success: 'green',
@@ -34,12 +28,7 @@ const colorMapping: Record<string, string> = {
   error: 'red',
 }
 
-const color = computed(() => colorMapping[props.type] || 'green')
-
-const store = useMessageStore()
-
-const isOpen = computed(() => store.isOpen)
-const content = computed(() => store.content)
+const color = computed(() => colorMapping[store.type])
 
 const close = () => {
   store.closeMessage()
