@@ -4,7 +4,6 @@ import { useModalStore } from '@/stores/modal'
 import { useDisplay } from 'vuetify'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
-import { useMessageStore } from '@/stores/message'
 
 const { xs } = useDisplay()
 const modalStore = useModalStore()
@@ -22,9 +21,6 @@ const openLoginModal = () => {
 const goToBingoPage = () => {
   router.push({ name: 'blingo' })
 }
-
-const messageStore = useMessageStore()
-messageStore.showMessage('Uh oh!', 'Stinky...', 'warning')
 </script>
 
 <template>
