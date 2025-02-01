@@ -2,7 +2,7 @@ from .models import Friendship
 
 
 def check_access(current_user, target_user):
-    if current_user.is_staff:
+    if current_user.is_staff or current_user == target_user:
         return True  # Can view any
     elif (current_user.is_authenticated and
           (Friendship.objects.filter(requester=current_user, receiver=target_user).exists() or
