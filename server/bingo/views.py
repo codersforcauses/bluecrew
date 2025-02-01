@@ -269,7 +269,7 @@ def get_profile_page(request, username):
             "description": challenge.description,
             "challenge_type": challenge.challenge_type,
             "points": challenge.points,
-            # "image": tile.image,
+            "image": tile.image.url if tile.image else None,
             "date_started": tile.date_started,
             "date_completed": tile.date_completed
         }
