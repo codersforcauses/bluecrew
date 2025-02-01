@@ -40,35 +40,38 @@ onUnmounted(() => {
       </div>
     </v-card-title>
 
-    <div class="d-flex flex-row">
+    <div class="d-flex flex-column">
       <v-card-text class="d-flex justify-space-between align-center">
         <div class="details">
           <p>
             {{ description }}
           </p>
-          <p class="mb-2">
-            <strong>Start Date:</strong> {{ startDate }}
-          </p>
-          <p>
-            <strong>Finish Date:</strong> {{ finishDate }}
-          </p>
         </div>
       </v-card-text>
 
-      <div class="d-flex flex-column align-center justify-space-between">
-          <div :class="[status === 'Complete' ? 'mt-5 ml-8' : 'mt-8 mr-4']">
+      <div class="d-flex flex-row align-center justify-space-between">
+          <div>
+            <p class="mb-2">
+              <strong>Start Date:</strong> {{ startDate }}
+            </p>
+            <p>
+              <strong>Finish Date:</strong> {{ finishDate }}
+            </p>
+          </div>
+          <div class="align-center justify-center">
             <v-chip :class="[status === 'Complete' ? 'bg-success' : 'bg-lightBlue']" text-color="white" class="status-indicator align-center" outlined>
               {{ status }}
             </v-chip>
           </div>
-          <div v-if="status === 'Complete'" class="mb-3">
-            <v-btn
-              color="primaryBlue"
-              variant="flat"
-              @click="show = !show">
-              {{ show ? 'Hide Evidence' : 'Show Evidence' }}
-            </v-btn>
-          </div>
+        </div>
+
+        <div v-if="status === 'Complete'" class="d-flex justify-center align-center mt-3">
+          <v-btn
+            color="primaryBlue"
+            variant="flat"
+            @click="show = !show">
+            {{ show ? 'Hide Evidence' : 'Show Evidence' }}
+          </v-btn>
         </div>
     </div>
     <v-expand-transition>
