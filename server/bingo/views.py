@@ -243,39 +243,26 @@ def get_bingo_grid(request):
 def get_profile_page(request, username):
     try:
         target_user = User.objects.get(username=username)
-        target_user_info = {
-            "first_name": target_user.first_name,
-            "last_name": target_user.last_name,
-            "bio": target_user.bio,
-            "total_points": target_user.total_points,
-            "avatar": target_user.avatar
-        }
     except User.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    user_info = ProfilePageSerializer(target_user).data
+
     if not check_access(request.user, target_user):
-        response_data = {
-            "user_info": target_user_info,
-            "challenges": []
-        }
-        return Response(response_data, status=status.HTTP_200_OK)
+        return Response({"user_info": user_info, "challenges": []}, status=status.HTTP_200_OK)
 
     target_tiles = TileInteraction.objects.filter(user=target_user)
     target_challenges = [list(tile.grid.challenges.all())[
         tile.position] for tile in target_tiles]
 
-    challenges_info = [
-        {
-            "name": challenge.name,
-            "description": challenge.description,
-            "challenge_type": challenge.challenge_type,
-            "points": challenge.points,
-            "image": tile.image.url if tile.image else None,
-            "date_started": tile.date_started,
-            "date_completed": tile.date_completed
-        }
-        for tile, challenge in zip(target_tiles, target_challenges)]
+    tiles_data = ProfilePageTileSerializer(target_tiles, many=True).data
+    challenges_data = (ProfilePageChallengeSerializer(
+        target_challenges, many=True).data)
+    challenges_tiles_data = [{**tile_data, **challenge_data}
+                             for tile_data, challenge_data in zip(tiles_data, challenges_data)]
+
     response_data = {
-        "user_info": target_user_info,
-        "challenges": challenges_info
+        "user_info": user_info,
+        "challenges": challenges_tiles_data
     }
     return Response(response_data, status=status.HTTP_200_OK)

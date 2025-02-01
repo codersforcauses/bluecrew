@@ -91,8 +91,7 @@ class ProfilePageViewTestCase(TestCase):
         self.assertEqual(challenge1['challenge_type'], 'act')
         self.assertEqual(challenge1['points'], 5)
         self.assertEqual(challenge1['image'], '/path/to/image1.png')
-        self.assertEqual(challenge1['date_completed'], datetime(
-            2025, 1, 18, 11, 0, tzinfo=timezone.utc))
+        self.assertEqual(challenge1['date_completed'], '2025-01-18T11:00:00Z')
 
         # Check second challenge
         challenge2 = challenges[1]
@@ -101,26 +100,4 @@ class ProfilePageViewTestCase(TestCase):
         self.assertEqual(challenge2['challenge_type'], 'act')
         self.assertEqual(challenge2['points'], 5)
         self.assertEqual(challenge2['image'], '/path/to/image2.png')
-        self.assertEqual(challenge2['date_completed'], datetime(
-            2025, 1, 18, 11, 0, tzinfo=timezone.utc))
-
-    # def test_get_profile_page_user_not_found(self):
-    #     self.client.force_authenticate(user=self.user2)
-    #     url = reverse('get_profile_page', kwargs={
-    #                   'username': 'nonexistentuser'})
-    #     response = self.client.get(url)
-    #     self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-    #     self.assertEqual(response.data['error'], 'User not found')
-
-    # def test_get_profile_page_access_denied(self):
-    #     # Attempt to access user1's profile with user3 (not a friend)
-    #     self.client.force_authenticate(user=self.user3)
-    #     url = reverse('get_profile_page', kwargs={'username': 'testuser1'})
-    #     response = self.client.get(url)
-    #     self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-    #     self.assertEqual(response.data['error'], 'Access denied')
-
-    # def test_get_profile_page_unauthenticated(self):
-    #     url = reverse('get_profile_page', kwargs={'username': 'testuser1'})
-    #     response = self.client.get(url)
-    #     self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(challenge2['date_completed'], '2025-01-18T11:00:00Z')
