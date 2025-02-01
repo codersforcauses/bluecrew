@@ -88,3 +88,4 @@ class UserSearchTest(TestCase):
         self.target_result = ({'avatar': self.target_user.avatar, 'username': self.target_user.username,
                                'user_id': self.target_user.user_id}, 'You are not friends.')
         self.assertIn(self.target_result, response.data)
+        self.assertEqual(len(response.data), 15)
