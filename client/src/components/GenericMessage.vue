@@ -1,8 +1,10 @@
 <template>
   <v-snackbar :model-value="visible" :color="color" timeout="3000" top @update:model-value="close">
-    <div class="message-content">
-      <h3 class="message-title">{{ title }}</h3>
-      <p class="message-text">{{ text }}</p>
+    <div v-if="isOpen">
+      <div class="message-content">
+        <h3 class="message-title">{{ title }}</h3>
+        <p class="message-text">{{ content }}</p>
+      </div>
     </div>
     <v-btn class="close-btn" @click="close" variant="text">CLOSE</v-btn>
   </v-snackbar>
@@ -10,6 +12,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useMessageStore } from '@/stores/message'
 
 const props = defineProps({
   visible: {
@@ -25,8 +28,6 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:visible'])
-
 const colorMapping: Record<string, string> = {
   success: 'green',
   warning: 'amber',
@@ -35,8 +36,13 @@ const colorMapping: Record<string, string> = {
 
 const color = computed(() => colorMapping[props.type] || 'green')
 
+const store = useMessageStore()
+
+const isOpen = computed(() => store.isOpen)
+const content = computed(() => store.content)
+
 const close = () => {
-  emit('update:visible', false)
+  store.closeMessage()
 }
 </script>
 
