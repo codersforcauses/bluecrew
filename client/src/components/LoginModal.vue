@@ -59,7 +59,6 @@ const submitForm = async () => {
     <v-card>
       <v-container>
         <v-row align="center">
-
           <template v-if="currentPage === 'forgot-password'">
             <button class="back-button" @click="setCurrentPage('login')">
               <v-icon icon="mdi-arrow-left"></v-icon>
