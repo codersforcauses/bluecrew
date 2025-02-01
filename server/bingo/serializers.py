@@ -35,7 +35,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 class LeaderboardUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'total_points']
+        fields = ['username', 'total_points', 'avatar']
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -50,7 +50,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'total_points',  # maps to totalPoints
             'email',
             'visibility',
-            'avatar'
+            'avatar',
+            'is_superuser'
         ]
 
     def to_representation(self, instance):
@@ -65,7 +66,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'totalPoints': data['total_points'],
             'email': data['email'],
             'visibility': data['visibility'],
-            'avatar': data['avatar']
+            'avatar': data['avatar'],
+            'isSuperuser': data['is_superuser']
         }
 
 

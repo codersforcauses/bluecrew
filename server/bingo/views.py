@@ -143,46 +143,48 @@ def get_incoming_requests(request):
 @api_view(['GET'])
 def get_leaderboard(request):
     """
-    Returns a leaderboard of size 'leaderboard_size'.
+    Returns a leaderboard of size 'leaderboard_size', excluding superusers.
     The current user's rank is also added to the end of the leaderboard, regardless of rank.
     If the current user has a place in the leaderboard, they will appear twice - in the leaderboard and at the end.
     """
-    # Size of the leaderboard returned, excluding the current user.
     logged_in = request.user.is_authenticated
     leaderboard_size = 20
-    user_set = User.objects.all()
+
+    # Filter out superusers and get base queryset
+    user_set = User.objects.filter(is_superuser=False)
     if not user_set:
         return Response({'No users found in database.'}, status=status.HTTP_200_OK)
-    # Annotate the user query set with each user's respective rank.
+
+    # Annotate ranks
     user_set = user_set.annotate(
         rank=Window(
             expression=DenseRank(),
             order_by=F('total_points').desc(),
         )
     )
-    serializer = LeaderboardUserSerializer(
-        user_set, many=True)
+
+    serializer = LeaderboardUserSerializer(user_set, many=True)
     leaderboard = []
     current_user_index = -1
-    user_found = False
+
+    # Process users
     for i in range(len(serializer.data)):
-        # Check for current user.
-        if logged_in:
+        # Only look for current user if they're logged in and not a superuser
+        if logged_in and not request.user.is_superuser:
             if user_set[i].username == str(request.user):
                 current_user_index = i
-                user_found = True
-            # If checking indices over the leaderboard_size, skip any users that are not the current user.
-        if i >= leaderboard_size:
-            # End search if leaderboard is populated, and the current user's rank is found.
-            if user_found or not logged_in:
-                break
-        else:
-            # Add annotated rank field to serializer.
+
+        # Add users to leaderboard up to leaderboard_size
+        if i < leaderboard_size:
             serializer.data[i]['rank'] = user_set[i].rank
             leaderboard.append(serializer.data[i])
-    # Append current user to end of leaderboard.
-    if logged_in:
-        leaderboard.append(serializer.data[current_user_index])
+
+    # Always append current user to end of leaderboard if they're logged in and not a superuser
+    if logged_in and not request.user.is_superuser and current_user_index != -1:
+        current_user_data = serializer.data[current_user_index]
+        current_user_data['rank'] = user_set[current_user_index].rank
+        leaderboard.append(current_user_data)
+
     return Response(leaderboard, status=status.HTTP_200_OK)
 
 
@@ -288,7 +290,6 @@ def complete_challenge(request):
             {"message": "No bingo grid found. Please contact support."},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
-
     serializer = ChallengeCompleteSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
