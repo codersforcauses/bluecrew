@@ -45,13 +45,13 @@ const show = ref(false);
       </div>
     </v-card-text>
 
-    <div class="d-flex justify-end mt-n15">
-    <v-btn
+    <div v-if="status === 'Complete'" class="d-flex justify-end mt-n15">
+      <v-btn
       color="primaryBlue"
       variant="flat"
       @click="show = !show">
       {{ show ? 'Hide Evidence' : 'Show Evidence' }}
-    </v-btn>
+      </v-btn>
     </div>
 
     <v-expand-transition>
