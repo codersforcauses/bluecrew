@@ -26,34 +26,37 @@ const show = ref(false);
       </div>
     </v-card-title>
 
-    <v-card-text class="d-flex justify-space-between align-center">
-      <div class="details">
-        <p>
-          {{ description }}
-        </p>
-        <p class="mb-2">
-          <strong>Start Date:</strong> {{ startDate }}
-        </p>
-        <p>
-          <strong>Finish Date:</strong> {{ finishDate }}
-        </p>
-      </div>
-      <div>
-        <v-chip :class="[status === 'Complete' ? 'bg-success' : 'bg-lightBlue']" text-color="white" class="status-indicator align-self-center mb-15" outlined>
-          {{ status }}
-        </v-chip>
-      </div>
-    </v-card-text>
+    <div class="d-flex row">
+      <v-card-text class="d-flex justify-space-between align-center">
+        <div class="details">
+          <p>
+            {{ description }}
+          </p>
+          <p class="mb-2">
+            <strong>Start Date:</strong> {{ startDate }}
+          </p>
+          <p>
+            <strong>Finish Date:</strong> {{ finishDate }}
+          </p>
+        </div>
+      </v-card-text>
 
-    <div v-if="status === 'Complete'" class="d-flex justify-end mt-n15">
-      <v-btn
-      color="primaryBlue"
-      variant="flat"
-      @click="show = !show">
-      {{ show ? 'Hide Evidence' : 'Show Evidence' }}
-      </v-btn>
+      <div class="d-flex flex-column">
+          <div class="d-flex justify-end">
+            <v-chip :class="[status === 'Complete' ? 'bg-success' : 'bg-lightBlue']" text-color="white" class="status-indicator align-self-center" outlined>
+              {{ status }}
+            </v-chip>
+          </div>
+          <div v-if="status === 'Complete'" class="d-flex justify-end mt-6">
+            <v-btn
+              color="primaryBlue"
+              variant="flat"
+              @click="show = !show">
+              {{ show ? 'Hide Evidence' : 'Show Evidence' }}
+            </v-btn>
+          </div>
+        </div>
     </div>
-
     <v-expand-transition>
       <div v-show="show">
         <v-divider class="my-1"/>
