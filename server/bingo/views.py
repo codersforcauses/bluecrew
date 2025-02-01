@@ -1,7 +1,6 @@
 from rest_framework import status, permissions
 from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer, UpdatePreferencesSerializer
 from django.shortcuts import get_object_or_404, redirect
-from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -11,11 +10,11 @@ from .tokens import email_verification_token_generator
 from django.db import IntegrityError
 from django.db.models import Q, F, Window
 from django.db.models.functions import DenseRank
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.conf import settings
-from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
+from django.template.loader import render_to_string
 from smtplib import SMTPException, SMTPSenderRefused
 
 
@@ -53,14 +52,19 @@ def request_email_verification(request):
         return Response(status=status.HTTP_400_BAD_REQUEST)
     encoded_user = urlsafe_base64_encode(force_bytes(user.pk))
     token = email_verification_token_generator.make_token(user)
+    content = render_to_string(
+        "verification.html",
+        context={"encoded_user": encoded_user, "token": token}
+    )
+    message = EmailMessage(
+        "Bingo Email Verification",
+        content,
+        settings.VERIFICATION_EMAIL,
+        list(email)
+    )
+    message.content_subtype = "html"
     try:
-        send_mail(
-            "Bingo Email Verification",
-            f"https://{get_current_site(request).domain}{reverse("confirm_email")}?user={encoded_user}+token={token}",
-            settings.VERIFICATION_EMAIL,
-            list(email),
-            fail_silently=False
-        )
+        message.send(fail_silently=False)
     except SMTPSenderRefused:
         return Response(status=status.HTTP_400_BAD_REQUEST)
     except SMTPException:

@@ -21,6 +21,6 @@ urlpatterns = [
     path('bingo-grid/', views.get_bingo_grid, name='get_bingo_grid'),
     path('accept-friendship/<int:friendship_id>/', views.accept_friendship, name='accept_friendship'),
     path("email-validation", views.request_email_verification, name='request_verification'),
-    path("activate", views.confirm_email, name="confirm_email")
+    path("activate", views.confirm_email, name="confirm_email"),
     path('request-friendship/<int:user_id>/', views.request_friendship, name='request_friendship'),
 ]
