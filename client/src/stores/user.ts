@@ -55,8 +55,8 @@ export const useUserStore = defineStore('user', () => {
     first_name: string
     last_name: string
     birthdate: string
-    gender_identity: string
-    indigenous_identity: string
+    gender_identity: number
+    indigenous_identity: number
     password: string
   }) => {
     try {
