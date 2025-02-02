@@ -4,9 +4,7 @@ from datetime import date
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 from sortedm2m.fields import SortedManyToManyField
-from django.conf import settings
 from django.utils.safestring import mark_safe
-import os
 
 
 class UserManager(BaseUserManager):
