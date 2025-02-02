@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
-from django.utils.safestring import mark_safe
 
 from .models import User, Challenge, Friendship, BingoGrid, TileInteraction
 
@@ -37,11 +36,7 @@ class TileInteractionAdmin(admin.ModelAdmin):
     readonly_fields = ('image_display',)
 
     def image_display(self, obj):
-        return mark_safe('<img src="{url}" width="{width}" height="{height}">'.format(
-            url=obj.image,  # once again, this is the name of the actual image field in your model
-            width=200,  # or define custom width
-            height=200,  # same as above
-        ))
+        return obj.get_image_html()
 
 
 admin.site.unregister(Group)

@@ -174,6 +174,13 @@ STATIC_ROOT = "static_files"
 # These files are then copied to the STATIC_ROOT location.
 STATICFILES_DIRS = ("static",)
 
+MEDIA_DIR = "challenge_images/"
+
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_DIR)
+
+MEDIA_URL = '/media/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
