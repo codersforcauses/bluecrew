@@ -82,8 +82,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         NA = (0, "Prefer not to say")
         Y = (1, "Yes")
         N = (2, "No")
-    indigenous_identity = models.BooleanField(
+    indigenous_identity = models.IntegerField(
         choices=IndigenousIdentity,
+        blank=False,
         default=IndigenousIdentity.NA
     )
 
