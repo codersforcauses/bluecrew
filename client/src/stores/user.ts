@@ -5,6 +5,7 @@ import type { User } from '@/types/user'
 import server from '@/utils/server'
 import { isAxiosError } from 'axios'
 import router from '@/router'
+import { useMessageStore } from './message'
 
 export const useUserStore = defineStore('user', () => {
   const userData = useStorage<User | null>('userData', null, undefined, {
@@ -26,7 +27,7 @@ export const useUserStore = defineStore('user', () => {
       router.push('/')
     }
   }
-
+  const messageStore = useMessageStore()
   const login = async (body: { username: string; password: string }) => {
     try {
       const tokenResponse = await server.post('/token/', body)
@@ -39,11 +40,13 @@ export const useUserStore = defineStore('user', () => {
       return true
     } catch (error) {
       if (isAxiosError(error)) {
-        console.error('Login failed:', error.response?.data || error)
-        alert(`Error: ${error.response?.data?.message || 'Login failed.'}`)
+        messageStore.showMessage(
+          'Error',
+          error.response?.data?.message || 'Login failed. Please try again.',
+          'error',
+        )
       } else {
-        console.error('Unexpected error:', error)
-        alert('An unexpected error occured. Please try again.')
+        messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
       }
       return false
     }
@@ -62,15 +65,13 @@ export const useUserStore = defineStore('user', () => {
     try {
       // API call to register using axios server instance
       const response = await server.post('/register/', body)
-      console.log('Registration successful:', response.data)
+      messageStore.showMessage('Registration successful', response.data, 'success')
       return true
     } catch (error) {
       if (isAxiosError(error)) {
-        console.error('Registration failed:', error.response?.data || error)
-        alert(`Error: ${error.response?.data?.message || 'Registration failed.'}`)
+        messageStore.showMessage('Registration failed:', error.response?.data || error, 'error')
       } else {
-        console.error('Unexpected error:', error)
-        alert('An unexpected error occured. Please try again.')
+        messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
       }
       return false
     }
