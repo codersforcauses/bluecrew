@@ -157,7 +157,8 @@ USE_I18N = True
 USE_TZ = True
 
 # Log to file in production
-if not DEBUG:
+# Source: https://mattsegal.dev/file-logging-django.html
+if not DEBUG and os.environ.get("GITHUB_ACTION") is not None:
     LOGGING = {
         "version": 1,
         "disable_existing_loggers": False,
