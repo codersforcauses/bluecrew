@@ -36,23 +36,25 @@ class UserSearchTest(TestCase):
         response = self.client.post(
             self.url, data={'query_string': 'lebronjames'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0][1], 'You have requested friendship.')
+        self.assertEqual(response.data[0]['status'],
+                         'You have requested friendship.')
 
         response = self.client.post(
             self.url, data={'query_string': 'lebronjamesjr'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0][1], f'Pending friendship request. {
-                         self.friendship2.id}')
-
+        self.assertEqual(response.data[0]['status'],
+                         'Pending friendship request.')
+        self.assertEqual(
+            response.data[0]['friendship_id'], self.friendship2.id)
         response = self.client.post(
             self.url, data={'query_string': 'lebronjamesfanpage'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0][1], 'You are not friends.')
+        self.assertEqual(response.data[0]['status'], 'You are not friends.')
 
         response = self.client.post(
             self.url, data={'query_string': 'lbjking'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0][1], 'You are friends.')
+        self.assertEqual(response.data[0]['status'], 'You are friends.')
 
     def test_exclude_superuser(self):
         User.objects.create_user(
@@ -85,7 +87,15 @@ class UserSearchTest(TestCase):
         response = self.client.post(
             self.url, data={'query_string': 'uniqueuname'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.target_result = ({'avatar': self.target_user.avatar, 'username': self.target_user.username,
-                               'user_id': self.target_user.user_id}, 'You are not friends.')
+        self.target_result = {'user_data': {'avatar': self.target_user.avatar, 'username': self.target_user.username,
+                                            'user_id': self.target_user.user_id}, 'status': 'You are not friends.'}
         self.assertIn(self.target_result, response.data)
         self.assertEqual(len(response.data), 15)
+
+    def test_no_match_found(self):
+
+        self.client.force_authenticate(user=self.current_user)
+        response = self.client.post(
+            self.url, data={'query_string': 'uniqueuname'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)

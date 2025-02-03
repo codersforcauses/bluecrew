@@ -331,8 +331,9 @@ def find_user(request):
     This view will return a set of users whose usernames begin with a given string.
     The number of users returned is equal to USERS_RETURNED
     The view requires 1 argument 'query_string' which is the string that the search will be performed with.
-    The view returns a list of tuples in the form:
-    [({'avatar': int, 'username': str, 'user_id': int}, friendship_message), ...]
+    The view returns a list of dictionaries in the form:
+    [{'user_data': {'avatar': int, 'username': str, 'user_id': int},
+      'status': friendship_message, 'friendship_id': friendship.id}, ...]
     friendship_message are either: 'You are friends.', 'You are not friends.', 'You've requested friendship.',
     or 'Pending friendship request.'
     """
@@ -342,8 +343,9 @@ def find_user(request):
     except KeyError:
         return Response({'error': 'Field "query_string" is required in this request'},
                         status=status.HTTP_400_BAD_REQUEST)
+
     user_set = User.objects.filter(
-        username__istartswith=query_string, is_active=True, is_superuser=False)[:USERS_RETURNED]
+        username__istartswith=query_string, is_active=True, is_superuser=False).order_by('username')[:USERS_RETURNED]
     serializer = UserSearchSerializer(user_set, many=True)
     response = check_friendships(serializer.data, request.user)
     return Response(response, status=status.HTTP_200_OK)
