@@ -4,13 +4,30 @@ from django.conf import settings
 
 
 def check_access(current_user, target_user):
+    """
+    Profile visibility levels:
+      - 0 (staff-only): Only staff members can view.
+      - 1 (friends-only): Viewable by staff and friends.
+      - 2 (public): Viewable by anyone, including non-logged-in users.
+
+    Conditions for access:
+      1. Staff members can view any profile.
+      2. Users can view their own profile.
+      3. Friends can view each others' profile except staff-only.
+      4. Public profiles (visibility=2) are accessible to everyone.
+    """
+    # Staff members and the profile owner can always view the profile.
     if current_user.is_staff or current_user == target_user:
-        return True  # Can view any
+        return True
+
+    # Check if `current_user` and `target_user` are friends.
     elif (current_user.is_authenticated and
           (Friendship.objects.filter(requester=current_user, receiver=target_user).exists() or
            Friendship.objects.filter(requester=target_user, receiver=current_user).exists())):
-        return target_user.visibility != 0  # Can view any except staff
-    return target_user.visibility == 2  # Only can view public
+        return target_user.visibility != 0
+
+    # Public profiles (visibility=2) are accessible to everyone.
+    return target_user.visibility == 2
 
 
 def check_bingo(tile):

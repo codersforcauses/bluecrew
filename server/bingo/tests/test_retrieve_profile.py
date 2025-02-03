@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
+from rest_framework.fields import DateTimeField
 from ..models import User, Challenge, BingoGrid, TileInteraction, Friendship
 from datetime import datetime, timezone
 
@@ -13,19 +14,19 @@ class ProfilePageViewTestCase(TestCase):
         # Create users with different visibility settings
         self.users = {
             'public': self._create_test_user(
-                'public',
+                username='public',
                 visibility=2,
                 first_name='Public',
                 avatar=1
             ),
             'friend': self._create_test_user(
-                'friend',
+                username='friend',
                 visibility=1,
                 first_name='Friend',
                 avatar=2
             ),
             'staff': self._create_test_user(
-                'staff',
+                username='staff',
                 visibility=0,
                 first_name='Staff',
                 avatar=3
@@ -97,7 +98,10 @@ class ProfilePageViewTestCase(TestCase):
         self.assertEqual(challenge['challenge_type'], 'act')
         self.assertEqual(challenge['points'], 5)
         self.assertEqual(challenge['image'], '/path/to/image0.png')
-        self.assertEqual(challenge['date_completed'], '2025-01-18T11:00:00Z')
+        self.assertEqual(challenge['date_completed'],
+                         DateTimeField().to_representation(
+                             datetime(2025, 1, 18, 11, 0, tzinfo=timezone.utc))
+                         )
 
     def _create_generic_user(self):
         new_user = self._create_test_user(
@@ -122,10 +126,27 @@ class ProfilePageViewTestCase(TestCase):
         self.client.force_authenticate(user=new_user)
 
     def test_all_visbility_permissions_pairs(self):
-        for i, set_current_user in enumerate([None, self._create_generic_user, self._create_friend_user, self._create_super_user]):
+        """
+        Tests all access combinations of visibilities and users
+        If access (O) is allowed, assert the challenges are correct otherwise (X) assert they are empty
+
+                 | PUBLIC | FRIENDS | STAFF |
+        NON-USER |   O    |    X    |   X   |
+         GENERIC |   O    |    X    |   X   |
+          FRIEND |   O    |    O    |   X   |
+           STAFF |   O    |    O    |   O   |
+
+        """
+        user_roles = [
+            None,  # Unauthenticated user
+            self._create_generic_user,  # Regular user
+            self._create_friend_user,  # Friend
+            self._create_super_user,  # Admin
+        ]
+        for role_idx, set_current_user in enumerate(user_roles):
             if set_current_user is not None:
                 set_current_user()
-            for j, (username, target_user) in enumerate(self.users.items()):
+            for visibility_idx, (username, target_user) in enumerate(self.users.items()):
                 response = self.client.get(
                     reverse('get_profile_page', kwargs={
                             'username': username})
@@ -133,9 +154,11 @@ class ProfilePageViewTestCase(TestCase):
                 self.assertEqual(response.status_code, status.HTTP_200_OK)
                 self._assert_basic_user_info(
                     response.data, target_user)
-                if i > j or (i == 0 and j == 0):
-                    self._assert_challenge_data(response.data['challenges'])
+                if role_idx > visibility_idx or (role_idx == 0 and visibility_idx == 0):
+                    self._assert_challenge_data(
+                        response.data['challenges'])  # Only if have access
                 else:
+                    # If no access
                     self.assertEqual(response.data['challenges'], [])
 
     def test_get_non_user(self):

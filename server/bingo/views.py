@@ -274,10 +274,7 @@ def get_bingo_grid(request):
 
 @api_view(['GET'])
 def get_profile_page(request, username):
-    try:
-        target_user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    target_user = get_object_or_404(User, username=username, is_active=True)
 
     user_info = ProfilePageSerializer(target_user).data
 
