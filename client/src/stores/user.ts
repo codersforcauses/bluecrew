@@ -55,16 +55,14 @@ export const useUserStore = defineStore('user', () => {
     first_name: string
     last_name: string
     birthdate: string
-    gender_identity: string
-    indigenous_identity: string
+    gender_identity: number
+    indigenous_identity: number
     password: string
   }) => {
     try {
       // API call to register using axios server instance
       const response = await server.post('/register/', body)
-
       console.log('Registration successful:', response.data)
-      alert('Registration successful!')
       return true
     } catch (error) {
       if (isAxiosError(error)) {
