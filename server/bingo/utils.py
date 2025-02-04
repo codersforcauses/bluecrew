@@ -1,4 +1,4 @@
-from .models import TileInteraction  # noqa
+from .models import TileInteraction, Friendship
 import math
 from django.conf import settings
 
@@ -60,3 +60,32 @@ def check_bingo(tile):
             bingos['full_bingo'] = True
             bingos['bingo_points'] += settings.GRID_COMPLETE
     return bingos
+
+
+def check_friendships(user_set, current_user):
+    list_out = []
+    for user in user_set:
+        friendship = get_or_none(
+            Friendship, requester=current_user, receiver=user['user_id'])
+        if friendship:
+            if friendship.status == friendship.PENDING:
+                list_out.append(
+                    {'user_data': user, 'status': 'You have requested friendship.'})
+            elif friendship.status == friendship.ACCEPTED:
+                list_out.append(
+                    {'user_data': user, 'status': 'You are friends.'})
+        elif (friendship := get_or_none(Friendship, requester=user['user_id'], receiver=current_user)) is not None:
+            if friendship:
+                list_out.append(
+                    {'user_data': user, 'status': 'Pending friendship request.', 'friendship_id': friendship.id})
+        else:
+            list_out.append(
+                {'user_data': user, 'status': 'You are not friends.'})
+    return list_out
+
+
+def get_or_none(classmodel, **kwargs):
+    try:
+        return classmodel.objects.get(**kwargs)
+    except classmodel.DoesNotExist:
+        return None

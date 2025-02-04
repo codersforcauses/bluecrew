@@ -92,3 +92,9 @@ class ChallengeCompleteSerializer(serializers.ModelSerializer):
             'position': {'required': True},
             'consent': {'required': True},
         }
+
+
+class UserSearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['avatar', 'username', 'user_id']
