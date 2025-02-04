@@ -23,6 +23,21 @@ export interface UserRegistrationForm {
   confirmPassword: string
 }
 
+export interface BackendUser {
+  username: string
+  email: string
+  first_name: string
+  last_name: string
+  birthdate: string
+  gender_identity: number
+  indigenous_identity: number
+  password: string
+}
+
+export type BackendUserErrors = {
+  [P in keyof BackendUser]?: string[]
+}
+
 export interface UserRegistrationFormFields {
   formAttribute: keyof UserRegistrationForm
   fieldName: string

@@ -96,7 +96,7 @@ const submitForm = async () => {
           <p class="text-center subtitle mb-4 text-primaryPink">
             <b>Login to your existing account</b>
           </p>
-          <v-form v-model="valid" validate-on="blur">
+          <v-form v-model="valid" validate-on="blur" @submit.prevent="submitForm">
             <v-card-subtitle class="text-left subtitle mb-3 pa-0 text-primaryPink">
               Username
             </v-card-subtitle>
@@ -134,10 +134,10 @@ const submitForm = async () => {
             <v-btn
               class="d-flex button-custom justify-center mt-4 w-50 mx-auto"
               color="primaryBlue"
-              :disabled="!valid"
               rounded
               elevation="12"
-              @click="submitForm"
+              type="submit"
+              :disabled="!valid"
             >
               Sign In
             </v-btn>

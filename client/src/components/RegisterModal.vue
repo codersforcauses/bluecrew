@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useModalStore } from '@/stores/modal'
-import type { UserRegistrationForm, UserRegistrationFormFields } from '@/types/user'
+import type { BackendUser, UserRegistrationForm, UserRegistrationFormFields } from '@/types/user'
 import { useDisplay } from 'vuetify'
 import { useUserStore } from '@/stores/user'
 
@@ -94,8 +94,22 @@ const formFields: UserRegistrationFormFields[] = [
   },
 ]
 
+const valid = ref(false)
 const required = (value: string) => !!value || 'Required.'
 const emailProbablyValid = (value: string) => /^\S+@\S+\.\S+$/.test(value) || 'Invalid e-mail.'
+const passwordsMatch = (value: string) =>
+  value === formData.value.password || 'Passwords do not match.'
+
+const getRules = (type: 'text' | 'email' | 'password' | 'date') => {
+  switch (type) {
+    case 'email':
+      return [emailProbablyValid, required]
+    case 'password':
+      return [passwordsMatch, required]
+    default:
+      return [required]
+  }
+}
 
 const isDialogVisible = computed({
   get: () => modalStore.currentModal === 'register',
@@ -111,7 +125,7 @@ const setCurrentPage = (page: 'register' | 'confirmation') => {
 }
 
 const submitForm = async () => {
-  const body = {
+  const body: BackendUser = {
     username: formData.value.username,
     email: formData.value.email,
     first_name: formData.value.firstName,
@@ -157,7 +171,12 @@ const openLoginModal = () => {
 
             <strong class="text-primaryGreen">Create an account</strong>
 
-            <v-form class="register-form" @submit.prevent="submitForm" validate-on="blur">
+            <v-form
+              v-model="valid"
+              class="register-form"
+              @submit.prevent="submitForm"
+              validate-on="blur"
+            >
               <div v-for="(formField, index) in formFields" class="form-group" :key="index">
                 <label :for="formField.formAttribute" class="text-primaryPink">{{
                   formField.fieldName
@@ -179,9 +198,7 @@ const openLoginModal = () => {
                   bg-color="primaryBrown"
                   variant="outlined"
                   :type="formField.fieldType"
-                  :rules="
-                    formField.fieldType === 'email' ? [emailProbablyValid, required] : [required]
-                  "
+                  :rules="getRules(formField.fieldType)"
                 />
               </div>
               <v-btn
@@ -189,8 +206,9 @@ const openLoginModal = () => {
                 color="primaryBlue"
                 :style="{ height: '50px' }"
                 rounded
+                :disabled="!valid"
                 elevation="12"
-                @click="submitForm"
+                type="submit"
               >
                 Sign Up
               </v-btn>

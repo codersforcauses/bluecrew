@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { useStorage, StorageSerializers } from '@vueuse/core'
 import { computed } from 'vue'
-import type { User } from '@/types/user'
+import type { BackendUser, User } from '@/types/user'
 import server from '@/utils/server'
 import { isAxiosError } from 'axios'
 import router from '@/router'
@@ -50,16 +50,7 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  const registerUser = async (body: {
-    username: string
-    email: string
-    first_name: string
-    last_name: string
-    birthdate: string
-    gender_identity: number
-    indigenous_identity: number
-    password: string
-  }) => {
+  const registerUser = async (body: BackendUser) => {
     try {
       // API call to register using axios server instance
       const response = await server.post('/register/', body)
@@ -67,11 +58,6 @@ export const useUserStore = defineStore('user', () => {
       return true
     } catch (error) {
       if (isAxiosError(error)) {
-        console.error('Registration failed:', error.response?.data || error)
-        alert(`Error: ${error.response?.data?.message || 'Registration failed.'}`)
-      } else {
-        console.error('Unexpected error:', error)
-        alert('An unexpected error occured. Please try again.')
       }
       return false
     }
