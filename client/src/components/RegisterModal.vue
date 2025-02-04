@@ -4,10 +4,12 @@ import { useModalStore } from '@/stores/modal'
 import type { BackendUser, UserRegistrationForm, UserRegistrationFormFields } from '@/types/user'
 import { useDisplay } from 'vuetify'
 import { useUserStore } from '@/stores/user'
+import { useMessageStore } from '@/stores/message'
 
 const { xs } = useDisplay()
 const modalStore = useModalStore()
 const userStore = useUserStore()
+const messageStore = useMessageStore()
 
 const currentPage = ref<'register' | 'confirmation'>('register')
 
@@ -26,47 +28,53 @@ const formData = ref<UserRegistrationForm>({
   confirmPassword: '',
 })
 
+const formServerErrors = ref<UserRegistrationForm>({
+  username: '',
+  email: '',
+  firstName: '',
+  lastName: '',
+  dateOfBirth: '',
+  genderId: '',
+  indigenousTIS: '',
+  password: '',
+  confirmPassword: '',
+})
+
 const formFields: UserRegistrationFormFields[] = [
   {
     formAttribute: 'username',
     fieldName: 'Username',
     fieldPlaceholder: 'Enter your username',
-    errorMessages: '',
     fieldType: 'text',
   },
   {
     formAttribute: 'email',
     fieldName: 'Email',
     fieldPlaceholder: 'Enter your email',
-    errorMessages: '',
     fieldType: 'email',
   },
   {
     formAttribute: 'firstName',
     fieldName: 'First Name',
     fieldPlaceholder: 'Enter your first name',
-    errorMessages: '',
     fieldType: 'text',
   },
   {
     formAttribute: 'lastName',
     fieldName: 'Last Name',
     fieldPlaceholder: 'Enter your last name',
-    errorMessages: '',
     fieldType: 'text',
   },
   {
     formAttribute: 'dateOfBirth',
     fieldName: 'Date of Birth',
     fieldPlaceholder: 'dd-mm-yyyy',
-    errorMessages: '',
     fieldType: 'date',
   },
   {
     formAttribute: 'genderId',
     fieldName: 'Gender Identity',
     fieldPlaceholder: 'Select your gender identity',
-    errorMessages: '',
     fieldType: 'text',
     dropDownItems: genderIdentities,
   },
@@ -74,7 +82,6 @@ const formFields: UserRegistrationFormFields[] = [
     formAttribute: 'indigenousTIS',
     fieldName: 'Indigenous or Torres Strait Islander',
     fieldPlaceholder: 'Please select',
-    errorMessages: '',
     fieldType: 'text',
     dropDownItems: indigenousIdentites,
   },
@@ -82,14 +89,12 @@ const formFields: UserRegistrationFormFields[] = [
     formAttribute: 'password',
     fieldName: 'Password',
     fieldPlaceholder: 'Enter your password',
-    errorMessages: '',
     fieldType: 'password',
   },
   {
     formAttribute: 'confirmPassword',
     fieldName: 'Confirm Password',
     fieldPlaceholder: 'Confirm your password',
-    errorMessages: '',
     fieldType: 'password',
   },
 ]
@@ -138,6 +143,25 @@ const submitForm = async () => {
   const registrationResult = await userStore.registerUser(body)
   if (registrationResult === true) {
     setCurrentPage('confirmation')
+  } else if (registrationResult === false) {
+    messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
+  } else {
+    const nameMapping: Array<{
+      serverName: keyof BackendUser
+      clientName: keyof UserRegistrationForm
+    }> = [
+      { serverName: 'username', clientName: 'username' },
+      { serverName: 'first_name', clientName: 'firstName' },
+      { serverName: 'last_name', clientName: 'lastName' },
+      { serverName: 'email', clientName: 'email' },
+      { serverName: 'birthdate', clientName: 'dateOfBirth' },
+      { serverName: 'password', clientName: 'password' },
+    ]
+    nameMapping.forEach(({ serverName, clientName }) => {
+      if (registrationResult[serverName]) {
+        formServerErrors.value[clientName] = registrationResult[serverName][0]
+      }
+    })
   }
 }
 
@@ -199,6 +223,8 @@ const openLoginModal = () => {
                   variant="outlined"
                   :type="formField.fieldType"
                   :rules="getRules(formField.fieldType)"
+                  :error-messages="formServerErrors[formField.formAttribute]"
+                  @focus="formServerErrors[formField.formAttribute] = ''"
                 />
               </div>
               <v-btn

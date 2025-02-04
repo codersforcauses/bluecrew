@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { useStorage, StorageSerializers } from '@vueuse/core'
 import { computed } from 'vue'
-import type { BackendUser, User } from '@/types/user'
+import type { BackendUser, BackendUserErrors, User } from '@/types/user'
 import server from '@/utils/server'
 import { isAxiosError } from 'axios'
 import router from '@/router'
@@ -50,7 +50,7 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  const registerUser = async (body: BackendUser) => {
+  const registerUser = async (body: BackendUser): Promise<boolean | BackendUserErrors> => {
     try {
       // API call to register using axios server instance
       const response = await server.post('/register/', body)
@@ -58,6 +58,9 @@ export const useUserStore = defineStore('user', () => {
       return true
     } catch (error) {
       if (isAxiosError(error)) {
+        if (error.response?.status === 400) {
+          return error.response.data as BackendUserErrors
+        }
       }
       return false
     }

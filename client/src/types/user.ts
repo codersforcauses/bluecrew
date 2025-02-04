@@ -35,14 +35,13 @@ export interface BackendUser {
 }
 
 export type BackendUserErrors = {
-  [P in keyof BackendUser]?: string[]
+  [P in keyof BackendUser]?: [string, ...string[]]
 }
 
 export interface UserRegistrationFormFields {
   formAttribute: keyof UserRegistrationForm
   fieldName: string
   fieldPlaceholder: string
-  errorMessages: string
   fieldType: 'text' | 'email' | 'password' | 'date'
   dropDownItems?: string[]
 }
