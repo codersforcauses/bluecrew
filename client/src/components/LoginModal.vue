@@ -3,10 +3,12 @@ import { ref, computed } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import { useDisplay } from 'vuetify'
 import { useUserStore } from '@/stores/user'
+import { useMessageStore } from '@/stores/message'
 
 const { xs } = useDisplay()
 const modalStore = useModalStore()
 const userStore = useUserStore()
+const messageStore = useMessageStore()
 
 const username = ref('')
 const password = ref('')
@@ -18,6 +20,8 @@ const currentPage = ref<'login' | 'forgot-password'>('login')
 const setCurrentPage = (page: 'login' | 'forgot-password') => {
   currentPage.value = page
 }
+const required = (value: string) => !!value || 'Required.'
+const errorMessage = ref('')
 
 const isDialogVisible = computed({
   get: () => modalStore.currentModal === 'login',
@@ -43,7 +47,12 @@ const submitForm = async () => {
   }
   const loginResult = await userStore.login(body)
   if (loginResult === true) {
+    messageStore.showMessage('Success', 'Login success.', 'success')
     closeDialog()
+  } else if (loginResult === false) {
+    messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
+  } else {
+    errorMessage.value = 'No user with the given username and password was found.'
   }
 }
 </script>
@@ -87,7 +96,7 @@ const submitForm = async () => {
           <p class="text-center subtitle mb-4 text-primaryPink">
             <b>Login to your existing account</b>
           </p>
-          <v-form v-model="valid" lazy-validation>
+          <v-form v-model="valid" validate-on="blur">
             <v-card-subtitle class="text-left subtitle mb-3 pa-0 text-primaryPink">
               Username
             </v-card-subtitle>
@@ -95,10 +104,12 @@ const submitForm = async () => {
               v-model="username"
               placeholder="Enter your username"
               hide-details="auto"
-              required
+              :rules="[required]"
               outlined
-              class="bg-primaryBrown"
+              bg-color="primaryBrown"
               variant="outlined"
+              :error-messages="errorMessage"
+              @focus="errorMessage = ''"
             ></v-text-field>
             <v-card-subtitle class="text-left subtitle mt-3 mb-3 pa-0 text-primaryPink">
               Password
@@ -108,10 +119,12 @@ const submitForm = async () => {
               placeholder="Enter your password"
               hide-details="auto"
               type="password"
-              required
+              :rules="[required]"
               outlined
-              class="bg-primaryBrown"
+              bg-color="primaryBrown"
               variant="outlined"
+              :error-messages="errorMessage"
+              @focus="errorMessage = ''"
             ></v-text-field>
             <div class="mt-3">
               <a class="text-lightBlue" @click.prevent="setCurrentPage('forgot-password')">
@@ -176,6 +189,7 @@ const submitForm = async () => {
 .button-custom {
   height: 50px;
 }
+
 .back-button {
   position: absolute;
   top: 16px;

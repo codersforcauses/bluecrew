@@ -27,7 +27,10 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  const login = async (body: { username: string; password: string }) => {
+  const login = async (body: {
+    username: string
+    password: string
+  }): Promise<boolean | 'invalid'> => {
     try {
       const tokenResponse = await server.post('/token/', body)
       const { access, refresh } = tokenResponse.data
@@ -39,11 +42,9 @@ export const useUserStore = defineStore('user', () => {
       return true
     } catch (error) {
       if (isAxiosError(error)) {
-        console.error('Login failed:', error.response?.data || error)
-        alert(`Error: ${error.response?.data?.message || 'Login failed.'}`)
-      } else {
-        console.error('Unexpected error:', error)
-        alert('An unexpected error occured. Please try again.')
+        if (error.response?.status === 401) {
+          return 'invalid'
+        }
       }
       return false
     }
