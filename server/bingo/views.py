@@ -1,14 +1,19 @@
-from rest_framework import status, permissions
-from .serializers import UserRegisterSerializer, UserProfileSerializer, LeaderboardUserSerializer, BingoGridSerializer, UpdatePreferencesSerializer
-from django.shortcuts import get_object_or_404
-from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from .models import Friendship, User, BingoGrid, TileInteraction
-from django.db import IntegrityError
-from django.db.models import Q, F, Window
+from .utils import check_bingo, check_friendships
+from django.utils import timezone
 from django.db.models.functions import DenseRank
+from django.db.models import Q, F, Window
+from django.db import IntegrityError
+from .models import Friendship, User, BingoGrid, TileInteraction
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.shortcuts import get_object_or_404
+from rest_framework import status, permissions
+from .serializers import (UserRegisterSerializer, UserProfileSerializer,
+                          LeaderboardUserSerializer, BingoGridSerializer,
+                          UpdatePreferencesSerializer, ChallengeCompleteSerializer,
+                          UserSearchSerializer)
 
 
 @api_view(['DELETE'])
@@ -47,7 +52,8 @@ def get_current_user(request):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_user_preferences(request):
-    serializer = UpdatePreferencesSerializer(instance=request.user, data=request.data)
+    serializer = UpdatePreferencesSerializer(
+        instance=request.user, data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(status=status.HTTP_200_OK)
@@ -73,7 +79,8 @@ def start_challenge(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
-        TileInteraction.objects.create(user=request.user, position=challenge_index, grid=grid)
+        TileInteraction.objects.create(
+            user=request.user, position=challenge_index, grid=grid)
     except IntegrityError:
         # Throw an error if there is already an interaction between that user and that challenge
         return Response(status=status.HTTP_409_CONFLICT)
@@ -137,47 +144,75 @@ def get_incoming_requests(request):
 @api_view(['GET'])
 def get_leaderboard(request):
     """
-    Returns a leaderboard of size 'leaderboard_size'.
+    Returns a leaderboard of size 'leaderboard_size', excluding superusers.
     The current user's rank is also added to the end of the leaderboard, regardless of rank.
     If the current user has a place in the leaderboard, they will appear twice - in the leaderboard and at the end.
     """
-    # Size of the leaderboard returned, excluding the current user.
     logged_in = request.user.is_authenticated
     leaderboard_size = 20
-    user_set = User.objects.all()
+
+    # Filter out superusers and get base queryset
+    user_set = User.objects.filter(is_superuser=False)
     if not user_set:
         return Response({'No users found in database.'}, status=status.HTTP_200_OK)
-    # Annotate the user query set with each user's respective rank.
+
+    # Annotate ranks
     user_set = user_set.annotate(
         rank=Window(
             expression=DenseRank(),
             order_by=F('total_points').desc(),
         )
     )
-    serializer = LeaderboardUserSerializer(
-        user_set, many=True)
+
+    serializer = LeaderboardUserSerializer(user_set, many=True)
     leaderboard = []
     current_user_index = -1
-    user_found = False
+
+    # Process users
     for i in range(len(serializer.data)):
-        # Check for current user.
-        if logged_in:
+        # Only look for current user if they're logged in and not a superuser
+        if logged_in and not request.user.is_superuser:
             if user_set[i].username == str(request.user):
                 current_user_index = i
-                user_found = True
-            # If checking indices over the leaderboard_size, skip any users that are not the current user.
-        if i >= leaderboard_size:
-            # End search if leaderboard is populated, and the current user's rank is found.
-            if user_found or not logged_in:
-                break
-        else:
-            # Add annotated rank field to serializer.
+
+        # Add users to leaderboard up to leaderboard_size
+        if i < leaderboard_size:
             serializer.data[i]['rank'] = user_set[i].rank
             leaderboard.append(serializer.data[i])
-    # Append current user to end of leaderboard.
-    if logged_in:
-        leaderboard.append(serializer.data[current_user_index])
+
+    # Always append current user to end of leaderboard if they're logged in and not a superuser
+    if logged_in and not request.user.is_superuser and current_user_index != -1:
+        current_user_data = serializer.data[current_user_index]
+        current_user_data['rank'] = user_set[current_user_index].rank
+        leaderboard.append(current_user_data)
+
     return Response(leaderboard, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes((permissions.IsAuthenticated, ))
+def request_friendship(request, user_id):
+    receiver = get_object_or_404(User, user_id=user_id)
+
+    try:
+        new_friendship = Friendship(
+            requester=request.user, receiver=receiver, status=Friendship.PENDING)
+        new_friendship.full_clean()
+        new_friendship.save()
+        return Response(
+            {"message": "Friendship request sent successfully."},
+            status=status.HTTP_201_CREATED
+        )
+    except ValidationError as e:
+        error_message = e.message_dict.get('__all__', ['Validation error'])[0]
+        if "already exists" in error_message or "reverse friendship" in error_message:
+            return Response({"error": error_message}, status=status.HTTP_409_CONFLICT)
+        return Response({"error": error_message}, status=status.HTTP_400_BAD_REQUEST)
+    except IntegrityError:
+        return Response(
+            {"error": "A friendship request already exists or is pending."},
+            status=status.HTTP_409_CONFLICT
+        )
 
 
 @api_view(['POST'])
@@ -234,3 +269,83 @@ def get_bingo_grid(request):
             for tile in user_interaction:
                 grid['challenges'][tile.position]['status'] = 'Completed' if tile.completed else 'Started'
     return Response(grid, status=status.HTTP_200_OK)
+
+
+@api_view(['PATCH'])
+@permission_classes((permissions.IsAuthenticated, ))
+def complete_challenge(request):
+    """
+    This view returns a dictionary the following information.
+    'challenge_points' contains the points earned from completing the challenge.
+    'bingo_points' contains the points earned from bingos completed
+    'bingo_rows' contains the row in which a bingo was just achieved, if any, from 0-3, -1 if no bingo
+    'bingo_cols' contains the column in which a bingo was just achieved, if any, from 0-3, -1 if no bingo
+    'bingo_diag' contains the diagonal in which a bingo was just achieved, if any, denoted by the first row
+    tile the diagonal contains, either 0 or 3, -1 if no bingo.
+    'full_bingo' contains a boolean, representing whether the full grid has been completed.
+    """
+    try:
+        active_grid = BingoGrid.objects.get(is_active=True)
+    except BingoGrid.DoesNotExist:
+        return Response(
+            {"message": "No bingo grid found. Please contact support."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+    serializer = ChallengeCompleteSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    tile = get_object_or_404(TileInteraction, user=request.user,
+                             grid=active_grid, position=serializer.validated_data['position'])
+
+    # Update consent and image fields.
+    tile.consent = serializer.validated_data['consent']
+    tile.image = serializer.validated_data['image']
+
+    # Points should only be awarded once.
+    if tile.completed:
+        return Response({'error': 'Challenge has already been completed for this user.'}, status=status.HTTP_409_CONFLICT)
+
+    tile.completed = True
+    tile.date_completed = timezone.now()
+    tile.save()
+
+    challenge = active_grid.challenges.all()[tile.position]
+    challenge.total_completions += 1
+    challenge.save()
+
+    user = request.user
+    user.total_points += challenge.points
+    user.save()
+
+    bingos = check_bingo(tile)
+    response = {'challenge_points': challenge.points}
+    response.update(bingos)
+
+    return Response(response, status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes((permissions.IsAuthenticated, ))
+def find_user(request):
+    """
+    This view will return a set of users whose usernames begin with a given string.
+    The number of users returned is equal to USERS_RETURNED
+    The view requires 1 argument 'query_string' which is the string that the search will be performed with.
+    The view returns a list of dictionaries in the form:
+    [{'user_data': {'avatar': int, 'username': str, 'user_id': int},
+      'status': friendship_message, 'friendship_id': friendship.id}, ...]
+    friendship_message are either: 'You are friends.', 'You are not friends.', 'You've requested friendship.',
+    or 'Pending friendship request.'
+    """
+    USERS_RETURNED = 15
+    try:
+        query_string = request.data['query_string']
+    except KeyError:
+        return Response({'error': 'Field "query_string" is required in this request'},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    user_set = User.objects.filter(
+        username__istartswith=query_string, is_active=True, is_superuser=False).order_by('username')[:USERS_RETURNED]
+    serializer = UserSearchSerializer(user_set, many=True)
+    response = check_friendships(serializer.data, request.user)
+    return Response(response, status=status.HTTP_200_OK)

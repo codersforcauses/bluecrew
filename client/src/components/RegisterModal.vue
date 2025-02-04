@@ -9,14 +9,19 @@ const { xs } = useDisplay()
 const modalStore = useModalStore()
 const userStore = useUserStore()
 
+const currentPage = ref<'register' | 'confirmation'>('register')
+
+const indigenousIdentites = ['Prefer not to say', 'Yes', 'No']
+const genderIdentities = ['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say']
+
 const formData = ref<UserRegistrationForm>({
   username: '',
   email: '',
   firstName: '',
   lastName: '',
   dateOfBirth: '',
-  genderId: '',
-  indigenousTIS: '',
+  genderId: genderIdentities[4],
+  indigenousTIS: indigenousIdentites[0],
   password: '',
   confirmPassword: '',
 })
@@ -30,8 +35,8 @@ const isDialogVisible = computed({
   },
 })
 
-const closeDialog = () => {
-  modalStore.closeModal()
+const setCurrentPage = (page: 'register' | 'confirmation') => {
+  currentPage.value = page
 }
 
 const submitForm = async () => {
@@ -41,15 +46,20 @@ const submitForm = async () => {
     first_name: formData.value.firstName,
     last_name: formData.value.lastName,
     birthdate: formData.value.dateOfBirth,
-    gender_identity: formData.value.genderId,
-    indigenous_identity: formData.value.indigenousTIS,
+    gender_identity: genderIdentities.indexOf(formData.value.genderId),
+    indigenous_identity: indigenousIdentites.indexOf(formData.value.indigenousTIS),
     password: formData.value.password,
   }
   const registrationResult = await userStore.registerUser(body)
   if (registrationResult === true) {
-    closeDialog()
+    setCurrentPage('confirmation')
   }
 }
+
+const closeDialog = () => {
+  modalStore.closeModal()
+}
+
 const openLoginModal = () => {
   modalStore.openLogin()
 }
@@ -66,136 +76,161 @@ const openLoginModal = () => {
     >
       <v-card>
         <v-card-text style="height: auto; overflow-y: auto">
-          <div class="header">
-            <button class="close-button" @click="closeDialog">
-              <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
-            </button>
-            <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
-          </div>
-          <strong class="text-primaryPink">Create an account</strong>
-          <form class="register-form" @submit.prevent="submitForm">
-            <div class="form-group">
-              <label for="username" class="text-primaryPink">Username</label>
-              <v-text-field
-                hide-details="auto"
-                placeholder="Enter your username"
-                v-model="formData.username"
-                class="bg-primaryBrown"
-                variant="outlined"
-              ></v-text-field>
+          <template v-if="currentPage === 'register'">
+            <div class="header">
+              <button class="close-button" @click="closeDialog">
+                <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
+              </button>
+              <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
             </div>
 
-            <div class="form-group">
-              <label for="email" class="text-primaryPink">Email</label>
-              <v-text-field
-                hide-details="auto"
-                placeholder="Enter your email"
-                v-model="formData.email"
-                class="bg-primaryBrown"
-                variant="outlined"
-              ></v-text-field>
-            </div>
+            <strong class="text-primaryGreen">Create an account</strong>
 
-            <div class="form-group">
-              <label for="firstName" class="text-primaryPink">First Name</label>
-              <v-text-field
-                hide-details="auto"
-                placeholder="Enter your first name"
-                v-model="formData.firstName"
-                class="bg-primaryBrown"
-                variant="outlined"
-              ></v-text-field>
-            </div>
+            <form class="register-form" @submit.prevent="submitForm">
+              <div class="form-group">
+                <label for="username" class="text-primaryPink">Username</label>
+                <v-text-field
+                  hide-details="auto"
+                  placeholder="Enter your username"
+                  v-model="formData.username"
+                  class="bg-primaryBrown"
+                  variant="outlined"
+                ></v-text-field>
+              </div>
 
-            <div class="form-group">
-              <label for="lastName" class="text-primaryPink">Last Name</label>
-              <v-text-field
-                hide-details="auto"
-                placeholder="Enter your last name"
-                v-model="formData.lastName"
-                class="bg-primaryBrown"
-                variant="outlined"
-              ></v-text-field>
-            </div>
+              <div class="form-group">
+                <label for="email" class="text-primaryPink">Email</label>
+                <v-text-field
+                  hide-details="auto"
+                  placeholder="Enter your email"
+                  v-model="formData.email"
+                  class="bg-primaryBrown"
+                  variant="outlined"
+                ></v-text-field>
+              </div>
 
-            <div class="form-group">
-              <label for="dateOfBirth" class="text-primaryPink">Date of Birth</label>
-              <v-text-field
-                type="date"
-                hide-details="auto"
-                placeholder="dd-mm-yyyy"
-                v-model="formData.dateOfBirth"
-                class="bg-primaryBrown"
-                variant="outlined"
-                persistent-placeholder
-              ></v-text-field>
-            </div>
+              <div class="form-group">
+                <label for="firstName" class="text-primaryPink">First Name</label>
+                <v-text-field
+                  hide-details="auto"
+                  placeholder="Enter your first name"
+                  v-model="formData.firstName"
+                  class="bg-primaryBrown"
+                  variant="outlined"
+                ></v-text-field>
+              </div>
 
-            <div class="form-group">
-              <label for="genderId" class="text-primaryPink">Gender Identity</label>
-              <v-select
-                hide-details="auto"
-                class="bg-primaryBrown"
-                placeholder="Select your gender identity"
-                :items="['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say']"
-                v-model="formData.genderId"
-                variant="outlined"
-              ></v-select>
-            </div>
+              <div class="form-group">
+                <label for="lastName" class="text-primaryPink">Last Name</label>
+                <v-text-field
+                  hide-details="auto"
+                  placeholder="Enter your last name"
+                  v-model="formData.lastName"
+                  class="bg-primaryBrown"
+                  variant="outlined"
+                ></v-text-field>
+              </div>
 
-            <div class="form-group">
-              <label for="indigenousTIS" class="text-primaryPink">
-                Indigenous or Torres Strait Islander
-              </label>
-              <v-select
-                hide-details="auto"
-                class="bg-primaryBrown"
-                placeholder="Please select"
-                :items="['Yes', 'No', 'Prefer not to say']"
-                v-model="formData.indigenousTIS"
-                variant="outlined"
-              ></v-select>
-            </div>
+              <div class="form-group">
+                <label for="dateOfBirth" class="text-primaryPink">Date of Birth</label>
+                <v-text-field
+                  type="date"
+                  hide-details="auto"
+                  placeholder="dd-mm-yyyy"
+                  v-model="formData.dateOfBirth"
+                  class="bg-primaryBrown"
+                  variant="outlined"
+                  persistent-placeholder
+                ></v-text-field>
+              </div>
 
-            <div class="form-group">
-              <label for="password" class="text-primaryPink">Password</label>
-              <v-text-field
-                hide-details="auto"
-                placeholder="Enter your password"
-                v-model="formData.password"
-                type="password"
-                class="bg-primaryBrown"
-                variant="outlined"
-              ></v-text-field>
-            </div>
+              <div class="form-group">
+                <label for="genderId" class="text-primaryPink">Gender Identity</label>
+                <v-select
+                  hide-details="auto"
+                  class="bg-primaryBrown"
+                  placeholder="Select your gender identity"
+                  :items="['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say']"
+                  v-model="formData.genderId"
+                  variant="outlined"
+                ></v-select>
+              </div>
 
-            <div class="form-group">
-              <label for="confirmPassword" class="text-primaryPink">Confirm Password</label>
-              <v-text-field
-                hide-details="auto"
-                placeholder="Confirm your password"
-                v-model="formData.confirmPassword"
-                type="password"
-                class="bg-primaryBrown"
-                variant="outlined"
-              ></v-text-field>
+              <div class="form-group">
+                <label for="indigenousTIS" class="text-primaryPink">
+                  Indigenous or Torres Strait Islander
+                </label>
+                <v-select
+                  hide-details="auto"
+                  class="bg-primaryBrown"
+                  placeholder="Please select"
+                  :items="['Yes', 'No', 'Prefer not to say']"
+                  v-model="formData.indigenousTIS"
+                  variant="outlined"
+                ></v-select>
+              </div>
+
+              <div class="form-group">
+                <label for="password" class="text-primaryPink">Password</label>
+                <v-text-field
+                  hide-details="auto"
+                  placeholder="Enter your password"
+                  v-model="formData.password"
+                  type="password"
+                  class="bg-primaryBrown"
+                  variant="outlined"
+                ></v-text-field>
+              </div>
+
+              <div class="form-group">
+                <label for="confirmPassword" class="text-primaryPink">Confirm Password</label>
+                <v-text-field
+                  hide-details="auto"
+                  placeholder="Confirm your password"
+                  v-model="formData.confirmPassword"
+                  type="password"
+                  class="bg-primaryBrown"
+                  variant="outlined"
+                ></v-text-field>
+              </div>
+              <v-btn
+                class="d-flex justify-center mt-4 w-50 mx-auto"
+                color="primaryBlue"
+                :style="{ height: '50px' }"
+                rounded
+                elevation="12"
+                @click="submitForm"
+              >
+                Sign Up
+              </v-btn>
+            </form>
+
+            <footer class="text-primaryPink">
+              Already have an account?
+              <a href="#" class="text-primaryPink" @click.prevent="openLoginModal">Sign In</a>
+            </footer>
+          </template>
+
+          <template v-if="currentPage === 'confirmation'">
+            <div class="header">
+              <button class="close-button" @click="closeDialog">
+                <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
+              </button>
+              <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
             </div>
+            <h2 class="text-primaryGreen text-center">One More Step</h2>
+            <p class="text-center">Please check your inbox for a link to verify your email.</p>
             <v-btn
               class="d-flex justify-center mt-4 w-50 mx-auto"
               color="primaryBlue"
               :style="{ height: '50px' }"
               rounded
               elevation="12"
-              @click="submitForm"
+              @click="closeDialog"
             >
-              Sign Up
+              Close
             </v-btn>
-          </form>
-
-          <footer class="text-primaryPink">
-            Already have an account?
-            <a href="#" class="text-primaryPink" @click.prevent="openLoginModal">Sign In</a>
-          </footer>
+          </template>
         </v-card-text>
       </v-card>
     </v-dialog>
