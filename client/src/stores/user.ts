@@ -69,7 +69,7 @@ export const useUserStore = defineStore('user', () => {
       return true
     } catch (error) {
       if (isAxiosError(error)) {
-        messageStore.showMessage('Registration failed:', error.response?.data || error, 'error')
+        messageStore.showMessage('Registration failed.', error.response?.data || error, 'error')
       } else {
         messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
       }

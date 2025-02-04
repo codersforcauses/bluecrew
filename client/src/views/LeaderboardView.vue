@@ -5,6 +5,7 @@ import WaveBanner from '@/components/WaveBanner.vue'
 
 import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
+import { useMessageStore } from '@/stores/message'
 import server from '@/utils/server'
 
 // What we receive from the API
@@ -28,7 +29,7 @@ const userStore = useUserStore()
 const leaderboardData = ref<LeaderboardEntry[]>([])
 const currentUser = ref<LeaderboardEntry | null>(null)
 const isLoading = ref(true)
-const error = ref<string | null>(null)
+const messageStore = useMessageStore()
 
 const transformEntry = (
   entry: LeaderboardApiEntry,
@@ -62,7 +63,8 @@ const fetchLeaderboard = async () => {
       leaderboardData.value = data.map((entry) => transformEntry(entry))
     }
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Failed to fetch leaderboard data'
+    const errorMessage = err instanceof Error ? err.message : 'Failed to fetch leaderboard data'
+    messageStore.showMessage('Error', errorMessage, 'error')
   } finally {
     isLoading.value = false
   }
@@ -83,10 +85,6 @@ onMounted(() => {
 
     <div v-if="isLoading" class="text-center pa-4">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
-    </div>
-
-    <div v-else-if="error" class="text-center error--text pa-4">
-      {{ error }}
     </div>
 
     <template v-else>
