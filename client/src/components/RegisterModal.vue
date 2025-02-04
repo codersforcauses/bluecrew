@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useModalStore } from '@/stores/modal'
-import type { UserRegistrationForm } from '@/types/user'
+import type { UserRegistrationForm, UserRegistrationFormFields } from '@/types/user'
 import { useDisplay } from 'vuetify'
 import { useUserStore } from '@/stores/user'
 
@@ -25,6 +25,77 @@ const formData = ref<UserRegistrationForm>({
   password: '',
   confirmPassword: '',
 })
+
+const formFields: UserRegistrationFormFields[] = [
+  {
+    formAttribute: 'username',
+    fieldName: 'Username',
+    fieldPlaceholder: 'Enter your username',
+    errorMessages: '',
+    fieldType: 'text',
+  },
+  {
+    formAttribute: 'email',
+    fieldName: 'Email',
+    fieldPlaceholder: 'Enter your email',
+    errorMessages: '',
+    fieldType: 'email',
+  },
+  {
+    formAttribute: 'firstName',
+    fieldName: 'First Name',
+    fieldPlaceholder: 'Enter your first name',
+    errorMessages: '',
+    fieldType: 'text',
+  },
+  {
+    formAttribute: 'lastName',
+    fieldName: 'Last Name',
+    fieldPlaceholder: 'Enter your last name',
+    errorMessages: '',
+    fieldType: 'text',
+  },
+  {
+    formAttribute: 'dateOfBirth',
+    fieldName: 'Date of Birth',
+    fieldPlaceholder: 'dd-mm-yyyy',
+    errorMessages: '',
+    fieldType: 'date',
+  },
+  {
+    formAttribute: 'genderId',
+    fieldName: 'Gender Identity',
+    fieldPlaceholder: 'Select your gender identity',
+    errorMessages: '',
+    fieldType: 'text',
+    dropDownItems: genderIdentities,
+  },
+  {
+    formAttribute: 'indigenousTIS',
+    fieldName: 'Indigenous or Torres Strait Islander',
+    fieldPlaceholder: 'Please select',
+    errorMessages: '',
+    fieldType: 'text',
+    dropDownItems: indigenousIdentites,
+  },
+  {
+    formAttribute: 'password',
+    fieldName: 'Password',
+    fieldPlaceholder: 'Enter your password',
+    errorMessages: '',
+    fieldType: 'password',
+  },
+  {
+    formAttribute: 'confirmPassword',
+    fieldName: 'Confirm Password',
+    fieldPlaceholder: 'Confirm your password',
+    errorMessages: '',
+    fieldType: 'password',
+  },
+]
+
+const required = (value: string) => !!value || 'Required.'
+const emailProbablyValid = (value: string) => /^\S+@\S+\.\S+$/.test(value) || 'Invalid e-mail.'
 
 const isDialogVisible = computed({
   get: () => modalStore.currentModal === 'register',
@@ -86,112 +157,32 @@ const openLoginModal = () => {
 
             <strong class="text-primaryGreen">Create an account</strong>
 
-            <form class="register-form" @submit.prevent="submitForm">
-              <div class="form-group">
-                <label for="username" class="text-primaryPink">Username</label>
-                <v-text-field
-                  hide-details="auto"
-                  placeholder="Enter your username"
-                  v-model="formData.username"
-                  class="bg-primaryBrown"
-                  variant="outlined"
-                ></v-text-field>
-              </div>
-
-              <div class="form-group">
-                <label for="email" class="text-primaryPink">Email</label>
-                <v-text-field
-                  hide-details="auto"
-                  placeholder="Enter your email"
-                  v-model="formData.email"
-                  class="bg-primaryBrown"
-                  variant="outlined"
-                ></v-text-field>
-              </div>
-
-              <div class="form-group">
-                <label for="firstName" class="text-primaryPink">First Name</label>
-                <v-text-field
-                  hide-details="auto"
-                  placeholder="Enter your first name"
-                  v-model="formData.firstName"
-                  class="bg-primaryBrown"
-                  variant="outlined"
-                ></v-text-field>
-              </div>
-
-              <div class="form-group">
-                <label for="lastName" class="text-primaryPink">Last Name</label>
-                <v-text-field
-                  hide-details="auto"
-                  placeholder="Enter your last name"
-                  v-model="formData.lastName"
-                  class="bg-primaryBrown"
-                  variant="outlined"
-                ></v-text-field>
-              </div>
-
-              <div class="form-group">
-                <label for="dateOfBirth" class="text-primaryPink">Date of Birth</label>
-                <v-text-field
-                  type="date"
-                  hide-details="auto"
-                  placeholder="dd-mm-yyyy"
-                  v-model="formData.dateOfBirth"
-                  class="bg-primaryBrown"
-                  variant="outlined"
-                  persistent-placeholder
-                ></v-text-field>
-              </div>
-
-              <div class="form-group">
-                <label for="genderId" class="text-primaryPink">Gender Identity</label>
+            <v-form class="register-form" @submit.prevent="submitForm" validate-on="blur">
+              <div v-for="(formField, index) in formFields" class="form-group" :key="index">
+                <label :for="formField.formAttribute" class="text-primaryPink">{{
+                  formField.fieldName
+                }}</label>
                 <v-select
+                  v-if="formField.dropDownItems"
                   hide-details="auto"
-                  class="bg-primaryBrown"
-                  placeholder="Select your gender identity"
-                  :items="['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say']"
-                  v-model="formData.genderId"
+                  :placeholder="formField.fieldPlaceholder"
+                  v-model="formData[formField.formAttribute]"
+                  bg-color="primaryBrown"
                   variant="outlined"
-                ></v-select>
-              </div>
-
-              <div class="form-group">
-                <label for="indigenousTIS" class="text-primaryPink">
-                  Indigenous or Torres Strait Islander
-                </label>
-                <v-select
-                  hide-details="auto"
-                  class="bg-primaryBrown"
-                  placeholder="Please select"
-                  :items="['Yes', 'No', 'Prefer not to say']"
-                  v-model="formData.indigenousTIS"
-                  variant="outlined"
-                ></v-select>
-              </div>
-
-              <div class="form-group">
-                <label for="password" class="text-primaryPink">Password</label>
+                  :items="formField.dropDownItems"
+                />
                 <v-text-field
+                  v-else
                   hide-details="auto"
-                  placeholder="Enter your password"
-                  v-model="formData.password"
-                  type="password"
-                  class="bg-primaryBrown"
+                  :placeholder="formField.fieldPlaceholder"
+                  v-model="formData[formField.formAttribute]"
+                  bg-color="primaryBrown"
                   variant="outlined"
-                ></v-text-field>
-              </div>
-
-              <div class="form-group">
-                <label for="confirmPassword" class="text-primaryPink">Confirm Password</label>
-                <v-text-field
-                  hide-details="auto"
-                  placeholder="Confirm your password"
-                  v-model="formData.confirmPassword"
-                  type="password"
-                  class="bg-primaryBrown"
-                  variant="outlined"
-                ></v-text-field>
+                  :type="formField.fieldType"
+                  :rules="
+                    formField.fieldType === 'email' ? [emailProbablyValid, required] : [required]
+                  "
+                />
               </div>
               <v-btn
                 class="d-flex justify-center mt-4 w-50 mx-auto"
@@ -203,11 +194,11 @@ const openLoginModal = () => {
               >
                 Sign Up
               </v-btn>
-            </form>
+            </v-form>
 
             <footer class="text-primaryPink">
               Already have an account?
-              <a href="#" class="text-primaryPink" @click.prevent="openLoginModal">Sign In</a>
+              <a class="text-primaryPink" @click.prevent="openLoginModal">Sign In</a>
             </footer>
           </template>
 

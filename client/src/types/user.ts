@@ -22,3 +22,12 @@ export interface UserRegistrationForm {
   password: string
   confirmPassword: string
 }
+
+export interface UserRegistrationFormFields {
+  formAttribute: keyof UserRegistrationForm
+  fieldName: string
+  fieldPlaceholder: string
+  errorMessages: string
+  fieldType: 'text' | 'email' | 'password' | 'date'
+  dropDownItems?: string[]
+}
