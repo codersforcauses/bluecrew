@@ -14,6 +14,7 @@ const username = ref('')
 const password = ref('')
 const email = ref('')
 const valid = ref(false)
+const loading = ref(false)
 
 const currentPage = ref<'login' | 'forgot-password'>('login')
 
@@ -41,6 +42,7 @@ const openRegisterModal = () => {
 }
 
 const submitForm = async () => {
+  loading.value = true
   const body = {
     username: username.value,
     password: password.value,
@@ -54,6 +56,7 @@ const submitForm = async () => {
   } else {
     errorMessage.value = 'No user with the given username and password was found.'
   }
+  loading.value = false
 }
 </script>
 
@@ -138,6 +141,7 @@ const submitForm = async () => {
               elevation="12"
               type="submit"
               :disabled="!valid"
+              :loading="loading"
             >
               Sign In
             </v-btn>

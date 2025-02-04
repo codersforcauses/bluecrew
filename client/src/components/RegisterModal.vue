@@ -100,6 +100,7 @@ const formFields: UserRegistrationFormFields[] = [
 ]
 
 const valid = ref(false)
+const loading = ref(false)
 const required = (value: string) => !!value || 'Required.'
 const emailProbablyValid = (value: string) => /^\S+@\S+\.\S+$/.test(value) || 'Invalid e-mail.'
 const passwordsMatch = (value: string) =>
@@ -130,6 +131,7 @@ const setCurrentPage = (page: 'register' | 'confirmation') => {
 }
 
 const submitForm = async () => {
+  loading.value = true
   const body: BackendUser = {
     username: formData.value.username,
     email: formData.value.email,
@@ -163,6 +165,7 @@ const submitForm = async () => {
       }
     })
   }
+  loading.value = false
 }
 
 const closeDialog = () => {
@@ -233,6 +236,7 @@ const openLoginModal = () => {
                 :style="{ height: '50px' }"
                 rounded
                 :disabled="!valid"
+                :loading="loading"
                 elevation="12"
                 type="submit"
               >
