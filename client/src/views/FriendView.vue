@@ -1,14 +1,13 @@
-# FriendView.vue
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useDisplay } from 'vuetify'
 import FriendComponent from '@/components/FriendComponent.vue'
+import WaveBanner from '@/components/WaveBanner.vue'
+import { useDisplay } from 'vuetify'
 
-// Track which subpage is currently active for mobile view
+const { xs } = useDisplay()
+
+// Track which subpage is currently active
 const currentSubpage = ref<'list' | 'incoming' | 'outgoing'>('list')
-
-// Get viewport info from Vuetify for responsive design
-const { mobile } = useDisplay()
 
 interface FriendEntry {
   id: number
@@ -36,14 +35,39 @@ const outgoingRequests = ref<FriendEntry[]>([
 
 // Search functionality
 const searchQuery = ref('')
-const searchResults = computed(() => {
+
+// Computed properties for filtering search results
+const existingFriendsResults = computed(() => {
+  if (!searchQuery.value) return []
+  return currentFriends.value.filter(friend => 
+    friend.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  )
+})
+
+const otherUsersResults = computed(() => {
   if (!searchQuery.value) return []
   // Mock search results - replace with actual search logic
-  return [
-    { id: 7, avatarIndex: 0, name: 'Alex Thompson' },
-    { id: 8, avatarIndex: 1, name: 'Jessica Wilson' },
+  const mockResults = [
+    { id: 7, avatarIndex: 0, name: 'Alex Thompson', status: 'none' },
+    { id: 8, avatarIndex: 1, name: 'Jessica Wilson', status: 'outgoing' },
+    { id: 9, avatarIndex: 2, name: 'Mike Johnson', status: 'incoming' }
   ]
+  return mockResults.filter(user => 
+    user.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  )
 })
+
+// Helper method to determine which variant to show
+const getUserVariant = (user: { status: string }) => {
+  switch (user.status) {
+    case 'outgoing':
+      return 'messageSent'
+    case 'incoming':
+      return 'accept'
+    default:
+      return 'send'
+  }
+}
 
 // Event handlers
 const handleAccept = (id: number) => {
@@ -58,60 +82,67 @@ const handleDelete = (id: number) => {
   console.log('Delete friend:', id)
 }
 
-const handleAddFriend = (id: number) => {
-  console.log('Add friend:', id)
+const handleDetails = (id: number) => {
+  console.log('View details:', id)
 }
 
-const handleDismiss = (id: number) => {
-  console.log('Dismiss request:', id)
+const handleSend = (id: number) => {
+  console.log('Send friend request:', id)
 }
 </script>
 
 <template>
+  <v-container class="custom-container">
+    <WaveBanner imageSrc="/teambuilding-background.jpg" />
+  </v-container>
+
   <v-container>
-    <h2 class="friend-text text-primaryPink mb-4 mb-sm-3 mb-md-4">Friends</h2>
+    <h2 class="friend-text text-primaryBlue mb-4 mb-sm-3 mb-md-4">Friends</h2>
 
     <!-- Search Bar -->
     <v-text-field
       v-model="searchQuery"
       prepend-inner-icon="mdi-magnify"
       label="Search users"
-      single-line
+      class="mb-6 search-field text-center"
       hide-details
-      class="mb-6 search-field"
+      single-line
       variant="outlined"
+      color="primaryBlue"
+      bg-color="creamWhite"
+      :style="{ 'text-align': 'center' }"
     ></v-text-field>
 
-    <!-- Mobile View -->
-    <template v-if="mobile">
+    <!-- Only show navigation and regular content if not searching -->
+    <template v-if="!searchQuery">
       <!-- Navigation Buttons -->
       <v-btn-group class="w-100 mb-6">
         <v-btn
-          :color="currentSubpage === 'list' ? 'primaryPink' : 'primaryBlue'"
+          :color="currentSubpage === 'list' ? 'primaryGreen' : 'primaryBlue'"
           @click="currentSubpage = 'list'"
-          class="flex-grow-1"
+          class="flex-grow-1 text-caption text-sm-subtitle-2 font-poppins"
         >
           Friends List
         </v-btn>
         <v-btn
-          :color="currentSubpage === 'incoming' ? 'primaryPink' : 'primaryBlue'"
+          :color="currentSubpage === 'incoming' ? 'primaryGreen' : 'primaryBlue'"
           @click="currentSubpage = 'incoming'"
-          class="flex-grow-1"
+          class="flex-grow-1 text-caption text-sm-subtitle-2 font-poppins"
         >
           Incoming
         </v-btn>
         <v-btn
-          :color="currentSubpage === 'outgoing' ? 'primaryPink' : 'primaryBlue'"
+          :color="currentSubpage === 'outgoing' ? 'primaryGreen' : 'primaryBlue'"
           @click="currentSubpage = 'outgoing'"
-          class="flex-grow-1"
+          class="flex-grow-1 text-caption text-sm-subtitle-2 font-poppins"
         >
           Outgoing
         </v-btn>
       </v-btn-group>
 
-      <!-- Mobile Content -->
+      <!-- Regular Content -->
       <div v-if="currentSubpage === 'list'">
-        <h3 class="section-title2 text-primaryBlue mb-4">Friends List</h3>
+        <h3 class="section-title2 text-primaryBlue">Friends List</h3>
         <v-row class="friend-scroll">
           <v-col v-for="friend in currentFriends" :key="friend.id" cols="12">
             <FriendComponent
@@ -125,7 +156,7 @@ const handleDismiss = (id: number) => {
       </div>
 
       <div v-if="currentSubpage === 'incoming'">
-        <h3 class="section-title2 text-primaryBlue mb-4">Incoming Requests</h3>
+        <h3 class="section-title2 text-primaryBlue">Incoming Requests</h3>
         <v-row class="friend-scroll">
           <v-col v-for="request in incomingRequests" :key="request.id" cols="12">
             <FriendComponent
@@ -140,7 +171,7 @@ const handleDismiss = (id: number) => {
       </div>
 
       <div v-if="currentSubpage === 'outgoing'">
-        <h3 class="section-title2 text-primaryBlue mb-4">Outgoing Requests</h3>
+        <h3 class="section-title2 text-primaryBlue">Outgoing Requests</h3>
         <v-row class="friend-scroll">
           <v-col v-for="request in outgoingRequests" :key="request.id" cols="12">
             <FriendComponent
@@ -154,83 +185,71 @@ const handleDismiss = (id: number) => {
       </div>
     </template>
 
-    <!-- Desktop View -->
-    <template v-else>
-      <div class="d-flex gap-6">
-        <!-- Left Column -->
-        <div class="flex-grow-1">
-          <!-- Friend Requests Section -->
-          <h3 class="section-title2 text-primaryBlue mb-4">Friend Requests</h3>
-          <v-row class="friend-scroll mb-6">
-            <v-col v-for="request in incomingRequests" :key="request.id" cols="12">
-              <FriendComponent
-                :avatar-index="request.avatarIndex"
-                :name="request.name"
-                variant="acceptReject"
-                @accept="handleAccept(request.id)"
-                @reject="handleReject(request.id)"
-              />
-            </v-col>
-          </v-row>
+    <!-- Search Results -->
+    <template v-if="searchQuery">
+      <!-- Existing Friends Section -->
+      <div v-if="existingFriendsResults.length > 0">
+        <h3 class="section-title2 text-primaryBlue">Existing Friends - {{ existingFriendsResults.length }}</h3>
+        <v-row class="friend-scroll">
+          <v-col v-for="result in existingFriendsResults" :key="result.id" cols="12">
+            <FriendComponent
+              :avatar-index="result.avatarIndex"
+              :name="result.name"
+              variant="details"
+              @details="handleDetails(result.id)"
+            />
+          </v-col>
+        </v-row>
+      </div>
 
-          <!-- Friends List Section -->
-          <h3 class="section-title2 text-primaryBlue mb-4">Friends List</h3>
-          <v-row class="friend-scroll">
-            <v-col v-for="friend in currentFriends" :key="friend.id" cols="12">
-              <FriendComponent
-                :avatar-index="friend.avatarIndex"
-                :name="friend.name"
-                variant="delete"
-                @delete="handleDelete(friend.id)"
-              />
-            </v-col>
-          </v-row>
-        </div>
-
-        <!-- Right Column (Search Results) -->
-        <div v-if="searchQuery" class="search-results">
-          <h3 class="section-title2 text-primaryBlue mb-4">Search Results</h3>
-          <v-row class="friend-scroll">
-            <v-col v-for="result in searchResults" :key="result.id" cols="12">
-              <FriendComponent
-                :avatar-index="result.avatarIndex"
-                :name="result.name"
-                variant="addFriend"
-                @add-friend="handleAddFriend(result.id)"
-              />
-            </v-col>
-          </v-row>
-        </div>
+      <!-- Other Users Section -->
+      <div v-if="otherUsersResults.length > 0">
+        <h3 class="section-title2 text-primaryBlue">Other Users - {{ otherUsersResults.length }}</h3>
+        <v-row class="friend-scroll">
+          <v-col v-for="result in otherUsersResults" :key="result.id" cols="12">
+            <FriendComponent
+              :avatar-index="result.avatarIndex"
+              :name="result.name"
+              :variant="getUserVariant(result)"
+              @send="handleSend(result.id)"
+              @accept="handleAccept(result.id)"
+            />
+          </v-col>
+        </v-row>
       </div>
     </template>
   </v-container>
 </template>
 
 <style scoped>
+.custom-container {
+  max-width: 100%;
+  padding: 0;
+}
+
 .friend-text {
-  font-family: 'Poppins', sans-serif;
-  font-weight: bold;
-  font-size: 2rem;
+  text-align: center;
+  font-family: 'Lilita One', cursive;
+  font-size: 40px;
+  font-weight: 500;
 }
 
 .section-title2 {
-  font-family: 'Poppins', sans-serif;
+  margin-top: 32px;
+  margin-bottom: 2px;
+  font-size: 20px;
+  font-family: 'Poppins', cursive;
+  text-align: left;
   font-weight: bold;
-  font-size: 1.5rem;
-}
-
-.search-field {
-  max-width: 600px;
-}
-
-.search-results {
-  width: 300px;
-  min-width: 300px;
 }
 
 .friend-scroll {
-  max-height: calc(100vh - 400px);
+  max-height: 400px;
   overflow-y: auto;
+}
+
+.search-field {
+  max-width: 100%;
 }
 
 /* Custom scrollbar styling */
@@ -249,5 +268,10 @@ const handleDismiss = (id: number) => {
 
 .friend-scroll::-webkit-scrollbar-thumb:hover {
   background: rgb(var(--v-theme-primaryPink));
+}
+
+.font-poppins {
+  font-family: 'Poppins', cursive !important;
+  font-weight: bold !important;
 }
 </style>
