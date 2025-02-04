@@ -18,6 +18,16 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             'last_name': {'required': True}
         }
 
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+            email=validated_data['email'],
+            password=validated_data['password'],
+        )
+        return user
+
     def validate_password(self, value):
         validate_password(value)
         return value
