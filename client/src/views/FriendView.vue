@@ -4,8 +4,6 @@ import FriendComponent from '@/components/FriendComponent.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
 import { useDisplay } from 'vuetify'
 
-const { xs } = useDisplay()
-
 // Track which subpage is currently active
 const currentSubpage = ref<'list' | 'incoming' | 'outgoing'>('list')
 
