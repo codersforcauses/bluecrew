@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue'
 import FriendComponent from '@/components/FriendComponent.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
-import { useDisplay } from 'vuetify'
 
 // Track which subpage is currently active
 const currentSubpage = ref<'list' | 'incoming' | 'outgoing'>('list')
@@ -11,6 +10,9 @@ interface FriendEntry {
   id: number
   avatarIndex: number
   name: string
+}
+const handleDismiss = (id: number) => {
+  console.log('Dismiss friend request:', id)
 }
 
 // Current friends list
