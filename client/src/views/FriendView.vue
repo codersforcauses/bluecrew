@@ -39,8 +39,8 @@ const searchQuery = ref('')
 // Computed properties for filtering search results
 const existingFriendsResults = computed(() => {
   if (!searchQuery.value) return []
-  return currentFriends.value.filter(friend => 
-    friend.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  return currentFriends.value.filter((friend) =>
+    friend.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
   )
 })
 
@@ -50,10 +50,10 @@ const otherUsersResults = computed(() => {
   const mockResults = [
     { id: 7, avatarIndex: 0, name: 'Alex Thompson', status: 'none' },
     { id: 8, avatarIndex: 1, name: 'Jessica Wilson', status: 'outgoing' },
-    { id: 9, avatarIndex: 2, name: 'Mike Johnson', status: 'incoming' }
+    { id: 9, avatarIndex: 2, name: 'Mike Johnson', status: 'incoming' },
   ]
-  return mockResults.filter(user => 
-    user.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  return mockResults.filter((user) =>
+    user.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
   )
 })
 
@@ -189,7 +189,9 @@ const handleSend = (id: number) => {
     <template v-if="searchQuery">
       <!-- Existing Friends Section -->
       <div v-if="existingFriendsResults.length > 0">
-        <h3 class="section-title2 text-primaryBlue">Existing Friends - {{ existingFriendsResults.length }}</h3>
+        <h3 class="section-title2 text-primaryBlue">
+          Existing Friends - {{ existingFriendsResults.length }}
+        </h3>
         <v-row class="friend-scroll">
           <v-col v-for="result in existingFriendsResults" :key="result.id" cols="12">
             <FriendComponent
@@ -204,7 +206,9 @@ const handleSend = (id: number) => {
 
       <!-- Other Users Section -->
       <div v-if="otherUsersResults.length > 0">
-        <h3 class="section-title2 text-primaryBlue">Other Users - {{ otherUsersResults.length }}</h3>
+        <h3 class="section-title2 text-primaryBlue">
+          Other Users - {{ otherUsersResults.length }}
+        </h3>
         <v-row class="friend-scroll">
           <v-col v-for="result in otherUsersResults" :key="result.id" cols="12">
             <FriendComponent

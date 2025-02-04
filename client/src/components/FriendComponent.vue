@@ -3,7 +3,16 @@ import { ref } from 'vue'
 defineProps<{
   avatarIndex: number
   name: string
- variant?: 'default' | 'acceptReject' | 'dismiss' | 'delete' | 'addFriend' | 'accept' | 'details' | 'send' | 'messageSent'
+  variant?:
+    | 'default'
+    | 'acceptReject'
+    | 'dismiss'
+    | 'delete'
+    | 'addFriend'
+    | 'accept'
+    | 'details'
+    | 'send'
+    | 'messageSent'
 }>()
 const showDialog = ref(false)
 const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend', 'details', 'send'])
@@ -60,26 +69,22 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend', 
         </v-card>
       </v-dialog>
     </div>
-    
+
     <!-- Send variant -->
     <div v-if="variant === 'send'" class="send-action">
-      <v-btn color="primaryBlue" variant="flat" @click="emit('send')">
-        Send
-      </v-btn>
+      <v-btn color="primaryBlue" variant="flat" @click="emit('send')"> Send </v-btn>
     </div>
 
     <!-- Message Sent variant -->
     <div v-if="variant === 'messageSent'" class="message-sent-action">
-      <v-btn color="primaryBlue" variant="flat" disabled class="opacity-75">
-        Message Sent
-      </v-btn>
+      <v-btn color="primaryBlue" variant="flat" disabled class="opacity-75"> Message Sent </v-btn>
     </div>
 
     <!-- Add Friend variant -->
     <div v-if="variant === 'addFriend'" class="add-friend-action">
       <v-btn color="primaryPink" variant="flat" @click="emit('addFriend')"> Add Friend </v-btn>
     </div>
-    
+
     <!-- Accept variant -->
     <div v-if="variant === 'accept'" class="accept-action">
       <v-btn color="primaryPink" variant="flat" @click="emit('accept')"> Accept </v-btn>
