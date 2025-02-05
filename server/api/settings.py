@@ -182,3 +182,7 @@ STATICFILES_DIRS = ("static",)
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Points for completing bingo line and grid
+BINGO_COMPLETE = 100
+GRID_COMPLETE = 500

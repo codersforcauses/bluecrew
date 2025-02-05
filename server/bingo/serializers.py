@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from .models import BingoGrid, Challenge
+from .models import BingoGrid, Challenge, TileInteraction
 
 User = get_user_model()
 
@@ -10,22 +10,13 @@ User = get_user_model()
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'password']
+        fields = ['username', 'first_name', 'last_name', 'email',
+                  'password', 'indigenous_identity', 'gender_identity']
         extra_kwargs = {
             'password': {'write_only': True},
             'first_name': {'required': True},
             'last_name': {'required': True}
         }
-
-    def create(self, validated_data):
-        user = User.objects.create_user(
-            username=validated_data['username'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-            email=validated_data['email'],
-            password=validated_data['password'],
-        )
-        return user
 
     def validate_password(self, value):
         validate_password(value)
@@ -35,7 +26,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 class LeaderboardUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'total_points']
+        fields = ['username', 'total_points', 'avatar']
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -50,7 +41,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'total_points',  # maps to totalPoints
             'email',
             'visibility',
-            'avatar'
+            'avatar',
+            'is_superuser'
         ]
 
     def to_representation(self, instance):
@@ -65,11 +57,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'totalPoints': data['total_points'],
             'email': data['email'],
             'visibility': data['visibility'],
-            'avatar': data['avatar']
+            'avatar': data['avatar'],
+            'isSuperuser': data['is_superuser']
         }
 
 
 class ChallengeSerializer(serializers.ModelSerializer):
+    # Nested serializer for BingoGridSerializer
     class Meta:
         model = Challenge
         fields = ['name', 'description', 'challenge_type', 'points']
@@ -87,3 +81,14 @@ class UpdatePreferencesSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ["avatar", "bio", "visibility"]
+
+
+class ChallengeCompleteSerializer(serializers.ModelSerializer):
+    # Serializer for completing challenge view.
+    class Meta:
+        model = TileInteraction
+        fields = ['position', 'consent', 'image']
+        extra_kwargs = {
+            'position': {'required': True},
+            'consent': {'required': True},
+        }
