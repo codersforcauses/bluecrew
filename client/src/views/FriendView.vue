@@ -30,7 +30,7 @@ const incomingRequests = ref<FriendEntry[]>([
 // Outgoing friend requests
 const outgoingRequests = ref<FriendEntry[]>([
   { id: 5, avatarIndex: 5, name: 'Michael Brown' },
-  { id: 6, avatarIndex: 6, name: 'Emma Davis' },
+  { id: 6, avatarIndex: 0, name: 'Emma Davis' },
 ])
 
 // Search functionality
@@ -61,7 +61,7 @@ const otherUsersResults = computed(() => {
 const getUserVariant = (user: { status: string }) => {
   switch (user.status) {
     case 'outgoing':
-      return 'messageSent'
+      return 'requestSent'
     case 'incoming':
       return 'accept'
     default:
@@ -82,8 +82,8 @@ const handleDelete = (id: number) => {
   console.log('Delete friend:', id)
 }
 
-const handleDetails = (id: number) => {
-  console.log('View details:', id)
+const handledefault = (id: number) => {
+  console.log('View default:', id)
 }
 
 const handleSend = (id: number) => {
@@ -105,13 +105,13 @@ const handleSend = (id: number) => {
       prepend-inner-icon="mdi-magnify"
       label="Search users"
       class="mb-6 search-field text-center"
-      hide-details
+      hide-default
       single-line
       variant="outlined"
       color="primaryBlue"
       bg-color="creamWhite"
-      :style="{ 'text-align': 'center' }"
-    ></v-text-field>
+      clearable
+    />
 
     <!-- Only show navigation and regular content if not searching -->
     <template v-if="!searchQuery">
@@ -197,8 +197,8 @@ const handleSend = (id: number) => {
             <FriendComponent
               :avatar-index="result.avatarIndex"
               :name="result.name"
-              variant="details"
-              @details="handleDetails(result.id)"
+              variant="default"
+              @default="handledefault(result.id)"
             />
           </v-col>
         </v-row>
