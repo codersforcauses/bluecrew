@@ -29,4 +29,5 @@ urlpatterns = [
          name='complete_challenge'),
     path('request-friendship/<int:user_id>/',
          views.request_friendship, name='request_friendship'),
+    path('user-search/', views.find_user, name='user_search'),
 ]
