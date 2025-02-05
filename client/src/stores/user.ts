@@ -60,7 +60,7 @@ export const useUserStore = defineStore('user', () => {
   }) => {
     try {
       // API call to register using axios server instance
-      const response = await server.post('/register/', body)
+      await server.post('/register/', body)
       messageStore.showMessage('Success', 'Registration successful', 'success')
       return true
     } catch (error) {
