@@ -63,7 +63,7 @@ const fetchLeaderboard = async () => {
       leaderboardData.value = data.map((entry) => transformEntry(entry))
     }
   } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : 'Failed to fetch leaderboard data'
+    const errorMessage = 'Failed to fetch leaderboard data'
     messageStore.showMessage('Error', errorMessage, 'error')
   } finally {
     isLoading.value = false
