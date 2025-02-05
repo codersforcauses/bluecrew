@@ -62,9 +62,13 @@ const fetchLeaderboard = async () => {
       // Not logged in, show all entries
       leaderboardData.value = data.map((entry) => transformEntry(entry))
     }
-  } catch (err) {
-    const errorMessage = 'Failed to fetch leaderboard data'
-    messageStore.showMessage('Error', errorMessage, 'error')
+  } catch (err: unknown) {
+    // Use unknown type and type guard to ensure type safety
+    if (err instanceof Error) {
+      messageStore.showMessage('Error', `Failed to fetch leaderboard data: ${err.message}`, 'error')
+    } else {
+      messageStore.showMessage('Error', 'Failed to fetch leaderboard data', 'error')
+    }
   } finally {
     isLoading.value = false
   }
