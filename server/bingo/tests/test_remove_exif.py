@@ -1,14 +1,34 @@
 from PIL import Image, ExifTags
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
-from ..models import TileInteraction, BingoGrid
+from ..models import TileInteraction, BingoGrid, Challenge
 from ..models import User
 from io import BytesIO
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient
 
 
 class ImageExifRemovalTest(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="testuser")
+
+        self.grid = BingoGrid.objects.create(is_active=True)
+
+        c = Challenge.objects.create(
+                name="Challenge 1",
+                description="Description 1",
+                challenge_type="act",
+                points=5
+            )
+        self.grid.challenges.add(c)
+
+        self.tile = TileInteraction.objects.create(
+            user=self.user,
+            position=0,
+            grid=self.grid,
+            completed=False
+        )
 
         # Create test image
         image = Image.new("RGB", (100, 100), color="red")
@@ -32,29 +52,22 @@ class ImageExifRemovalTest(TestCase):
         buffer.seek(0)
         self.image = SimpleUploadedFile("test_image_with_exif.jpg", buffer.read(), content_type="image/jpeg")
 
-    def test_exif_metadata_removed(self):
-        """Test that EXIF metadata is removed after image processing with django-resized."""
-        # Check EXIF metadata exists before attempting to remove
-        img_data = BytesIO(self.image.read())
-        img = Image.open(img_data)
-        exif_before = img._getexif()
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
 
-        self.assertIsNotNone(exif_before)
+        self.url = reverse('complete_challenge')
 
-        grid = BingoGrid.objects.create(is_active=True)
+    def test_exif_removed(self):
+        data = {
+            "position": 0,
+            "consent": True,
+            "image": self.image
+        }
+        response = self.client.patch(self.url, data, format="multipart")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        tile = TileInteraction.objects.create(
-            user=self.user,
-            position=1,
-            grid=grid,
-            image=self.image,
-            consent=True,
-            completed=False
-        )
-
-        image_path = tile.image.path
-        with open(image_path, "rb") as img_file:
-            img_data = img_file.read()
+        self.tile.refresh_from_db()
+        img_data = self.tile.image.read()
 
         img = Image.open(BytesIO(img_data))
         exif_after = img._getexif()
