@@ -40,11 +40,7 @@ export const useUserStore = defineStore('user', () => {
       return true
     } catch (error) {
       if (isAxiosError(error)) {
-        messageStore.showMessage(
-          'Error',
-          error.response?.data?.message || 'Login failed. Please try again.',
-          'error',
-        )
+        messageStore.showMessage('Error', 'Login failed. Please try again.', 'error')
       } else {
         messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
       }
@@ -65,11 +61,11 @@ export const useUserStore = defineStore('user', () => {
     try {
       // API call to register using axios server instance
       const response = await server.post('/register/', body)
-      messageStore.showMessage('Registration successful', response.data, 'success')
+      messageStore.showMessage('Success', 'Registration successful', 'success')
       return true
     } catch (error) {
       if (isAxiosError(error)) {
-        messageStore.showMessage('Registration failed.', error.response?.data || error, 'error')
+        messageStore.showMessage('Error', 'Registration failed.', 'error')
       } else {
         messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
       }
