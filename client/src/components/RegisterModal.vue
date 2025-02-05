@@ -161,7 +161,11 @@ const submitForm = async () => {
     ]
     nameMapping.forEach(({ serverName, clientName }) => {
       if (registrationResult[serverName]) {
-        formServerErrors.value[clientName] = registrationResult[serverName][0]
+        const errorFromServer = registrationResult[serverName][0]
+        // make sure the error from the server is capitalized correctly
+        formServerErrors.value[clientName] = errorFromServer
+          ? errorFromServer[0].toUpperCase() + errorFromServer.slice(1)
+          : ''
       }
     })
   }
