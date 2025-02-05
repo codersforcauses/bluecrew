@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import avatarPaths from '@/utils/avatar'
 
-const props = defineProps<{
+defineProps<{
   avatarIndex: number
   name: string
   variant?:
