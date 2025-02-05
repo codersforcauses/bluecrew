@@ -14,6 +14,7 @@ from django.core.mail import EmailMessage
 from django.conf import settings
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
+from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
 from smtplib import SMTPException, SMTPSenderRefused
 
@@ -54,7 +55,7 @@ def request_email_verification(request):
     token = email_verification_token_generator.make_token(user)
     content = render_to_string(
         "verification.html",
-        context={"encoded_user": encoded_user, "token": token}
+        context={"uid64": encoded_user, "token": token, "domain": Site.objects.get_current().domain}
     )
     message = EmailMessage(
         "Bingo Email Verification",

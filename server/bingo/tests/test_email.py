@@ -25,7 +25,8 @@ class TestEmailVerification(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(mail.outbox), 1)
         # link = mail.outbox[0].body
-        response = self.client.get(
+        print(mail.outbox[0].body)
+        '''response = self.client.get(
             reverse("confirm_email"),
             {}
-        )
+        )'''
