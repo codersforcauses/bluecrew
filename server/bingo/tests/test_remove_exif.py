@@ -15,19 +15,20 @@ class ImageExifRemovalTest(TestCase):
         buffer = BytesIO()
 
         exif = image.getexif()
+        gps_ifd = {}
 
-        # Find the tag key for ImageDescription
-        image_desc_tag = None
-        for tag, name in ExifTags.TAGS.items():
-            if name == "ImageDescription":
-                image_desc_tag = tag
-                break
+        # Set dummy GPS latitude and longitude EXIF metadata
+        gps_ifd[1] = 'S'
+        gps_ifd[2] = ((19, 1), (45, 1), (519948, 10000))
+        gps_ifd[3] = 'E'
+        gps_ifd[4] = ((149, 1), (14, 1), (392059, 10000))
 
-        # Set dummy ImageDescription EXIF metadata
-        if image_desc_tag is not None:
-            exif[image_desc_tag] = "Test Image with EXIF"
+        gps_tag = ExifTags.GPSTAGS.get('GPSInfo', None)
 
-        image.save(buffer, format="JPEG", exif=exif.tobytes())
+        if gps_tag is not None:
+            exif[gps_tag] = gps_ifd
+
+        image.save(buffer, format="JPEG", exif=exif)
         buffer.seek(0)
         self.image = SimpleUploadedFile("test_image_with_exif.jpg", buffer.read(), content_type="image/jpeg")
 
