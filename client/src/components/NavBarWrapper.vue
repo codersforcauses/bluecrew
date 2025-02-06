@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useDisplay } from 'vuetify'
 import { useRouter } from 'vue-router'
 import NavBarMobile from '@/components/NavBarMobile.vue'
@@ -19,7 +19,7 @@ const truncatedUserName = computed(() => {
   return userName.value.length > 10 ? `${userName.value.slice(0, 10)}...` : userName.value
 })
 
-const baseNavigationInfo = [
+const baseNavigationInfo: NavigationInfo[] = [
   { name: 'Home', routerName: 'landing', requireAuth: false },
   { name: 'Blingo', routerName: 'blingo', requireAuth: false },
   { name: 'Leaderboard', routerName: 'leaderboard', requireAuth: false },
@@ -27,7 +27,12 @@ const baseNavigationInfo = [
   { name: 'Preferences', routerName: 'preferences', requireAuth: true },
 ]
 
-const pages = ref<NavigationInfo[]>(baseNavigationInfo)
+const pages = computed<NavigationInfo[]>(() => {
+  if (userStore.superUserLoggedIn) {
+    return [...baseNavigationInfo, { name: 'Admin', routerName: 'admin', requireAuth: true }]
+  }
+  return baseNavigationInfo
+})
 
 const handleAuth = async () => {
   if (isLoggedIn.value) {
@@ -48,28 +53,32 @@ const handleSignInClick = (action: 'login' | 'register') => {
     modalStore.openRegister()
   }
 }
-
-watch(() => userStore.superUserLoggedIn, (superUserLoggedIn) => {
-  if (superUserLoggedIn) {
-    pages.value = [...baseNavigationInfo, { name: "Admin", routerName: "admin", requireAuth: true }]
-  } else {
-    pages.value = baseNavigationInfo
-  }
-})
 </script>
 
 <template>
   <div class="sticky-nav bg-primaryWhite">
     <!-- Desktop NavBar -->
     <div v-if="smAndUp" class="nav-bar-desktop">
-      <NavBarDesktop :is-logged-in="isLoggedIn" :user-name="truncatedUserName" :pages="pages"
-        @navigate="handleNavigation" @auth="handleAuth" @sign-in-click="handleSignInClick" />
+      <NavBarDesktop
+        :is-logged-in="isLoggedIn"
+        :user-name="truncatedUserName"
+        :pages="pages"
+        @navigate="handleNavigation"
+        @auth="handleAuth"
+        @sign-in-click="handleSignInClick"
+      />
     </div>
 
     <!-- Mobile NavBar -->
     <div v-else class="nav-bar-mobile">
-      <NavBarMobile :is-logged-in="isLoggedIn" :user-name="truncatedUserName" :pages="pages"
-        @navigate="handleNavigation" @auth="handleAuth" @sign-in-click="handleSignInClick" />
+      <NavBarMobile
+        :is-logged-in="isLoggedIn"
+        :user-name="truncatedUserName"
+        :pages="pages"
+        @navigate="handleNavigation"
+        @auth="handleAuth"
+        @sign-in-click="handleSignInClick"
+      />
     </div>
   </div>
 </template>

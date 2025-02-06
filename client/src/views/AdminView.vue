@@ -1,34 +1,25 @@
 <script setup lang="ts">
-import BlingoTile from '@/components/BingoTile.vue'
+import WaveBanner from '@/components/WaveBanner.vue'
 </script>
 
 <template>
-  <div class="d-flex flex-column align-center mt-5 mx-5">
-    <div class="d-flex ga-1 w-100">
-      <v-text-field />
-      <v-text-field />
-      <v-text-field />
-      <v-text-field />
-    </div>
-    <div class="d-flex ga-1 mt-1 w-100">
-      <v-text-field />
-      <v-text-field />
-      <v-text-field />
-      <v-text-field />
-    </div>
-    <div class="d-flex ga-1 mt-1 w-100">
-      <v-text-field />
-      <v-text-field />
-      <v-text-field />
-      <v-text-field />
-    </div>
-    <div class="d-flex ga-1 mt-1 w-100">
-      <v-text-field />
-      <v-text-field />
-      <v-text-field />
-      <v-text-field />
+  <WaveBanner image-src="teambuilding-background.jpg" />
+  <h2 class="text-center text-primaryBlue mb-4">Admin</h2>
+  <div class="d-flex flex-column align-center mt-5 px-5">
+    <div v-for="row in 4" :key="row" class="d-flex flex-row ga-1 row mb-1">
+      <v-text-field
+        v-for="col in 4"
+        :key="col"
+        hide-details
+        variant="outlined"
+        bg-color="primaryBrown"
+      />
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.row {
+  max-width: 400px;
+}
+</style>
