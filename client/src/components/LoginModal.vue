@@ -265,7 +265,7 @@ footer {
   opacity: 1;
 }
 
-a:hover {
+a {
   text-decoration: underline;
 }
 </style>

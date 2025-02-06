@@ -45,6 +45,7 @@ export const useUserStore = defineStore('user', () => {
         if (error.response?.status === 401) {
           return 'invalid'
         }
+      } else {
       }
       return false
     }
@@ -53,8 +54,7 @@ export const useUserStore = defineStore('user', () => {
   const registerUser = async (body: BackendUser): Promise<boolean | BackendUserErrors> => {
     try {
       // API call to register using axios server instance
-      const response = await server.post('/register/', body)
-      console.log('Registration successful:', response.data)
+      await server.post('/register/', body)
       return true
     } catch (error) {
       if (isAxiosError(error)) {

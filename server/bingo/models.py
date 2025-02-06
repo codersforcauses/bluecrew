@@ -4,6 +4,7 @@ from datetime import date
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 from sortedm2m.fields import SortedManyToManyField
+from django_resized import ResizedImageField
 
 
 class UserManager(BaseUserManager):
@@ -207,9 +208,10 @@ class TileInteraction(models.Model):
     # The bingo grid that this interaction concerns
     grid = models.ForeignKey(BingoGrid, on_delete=models.CASCADE)
 
-    image = models.ImageField(
+    image = ResizedImageField(
         upload_to="challenge_images/",  # idk where we want to put this atm
-        blank=True
+        blank=True,
+        keep_meta=False
     )
 
     completed = models.BooleanField(default=False)
