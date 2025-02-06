@@ -123,3 +123,15 @@ class UserSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['avatar', 'username', 'user_id']
+
+
+class UpdateBingoGridSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BingoGrid
+        fields = ('challenges', )
+
+    def validate_challenges(self, value):
+        if len(value) != 16 or len(set(value)) != 16:
+            raise serializers.ValidationError(
+                "You must provide the ids of exactly 16 distinct challenges")
+        return value

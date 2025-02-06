@@ -13,7 +13,7 @@ from rest_framework import status, permissions
 from .serializers import (UserRegisterSerializer, UserProfileSerializer,
                           LeaderboardUserSerializer, BingoGridSerializer,
                           UpdatePreferencesSerializer, ChallengeCompleteSerializer,
-                          UserSearchSerializer)
+                          UserSearchSerializer, UpdateBingoGridSerializer)
 
 
 @api_view(['DELETE'])
@@ -349,3 +349,20 @@ def find_user(request):
     serializer = UserSearchSerializer(user_set, many=True)
     response = check_friendships(serializer.data, request.user)
     return Response(response, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes((permissions.IsAdminUser, ))
+def update_bingo_grid(request):
+    serializer = UpdateBingoGridSerializer(data=request.data)
+    if serializer.is_valid():
+        old_grids = BingoGrid.objects.filter(is_active=True)
+        new_grid = serializer.create(serializer.validated_data)
+        for old_grid in old_grids:
+            old_grid.is_active = False
+            old_grid.save()
+        new_grid.is_active = True
+        new_grid.save()
+        return Response({"message": "Bingo grid successfully updated."}, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

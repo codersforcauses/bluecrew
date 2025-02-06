@@ -30,4 +30,5 @@ urlpatterns = [
     path('request-friendship/<int:user_id>/',
          views.request_friendship, name='request_friendship'),
     path('user-search/', views.find_user, name='user_search'),
+    path('update-bingo-grid/', views.update_bingo_grid, name='update-bingo-grid'),
 ]
