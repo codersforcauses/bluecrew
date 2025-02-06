@@ -34,7 +34,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return value
 
     def to_internal_value(self, data):
-        if data['birthdate'] == "":
+        if data.get('birthdate', None) == "":
             data.pop('birthdate')
         return super(UserRegisterSerializer, self).to_internal_value(data)
 
