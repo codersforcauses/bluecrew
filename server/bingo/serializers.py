@@ -3,6 +3,7 @@ from rest_framework.serializers import ModelSerializer
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from .models import BingoGrid, Challenge, TileInteraction
+from datetime import date
 
 User = get_user_model()
 
@@ -10,27 +11,32 @@ User = get_user_model()
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email',
+        fields = ['username', 'first_name', 'last_name', 'email', 'birthdate',
                   'password', 'indigenous_identity', 'gender_identity']
         extra_kwargs = {
             'password': {'write_only': True},
-            'first_name': {'required': True},
-            'last_name': {'required': True}
         }
 
     def create(self, validated_data):
         user = User.objects.create_user(
-            username=validated_data['username'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-            email=validated_data['email'],
-            password=validated_data['password'],
+            **validated_data
         )
         return user
 
     def validate_password(self, value):
         validate_password(value)
         return value
+
+    def validate_birthdate(self, value):
+        if value and value > date.today():
+            raise serializers.ValidationError(
+                'Birth date cannot be in the future.')
+        return value
+
+    def to_internal_value(self, data):
+        if data['birthdate'] == "":
+            data.pop('birthdate')
+        return super(UserRegisterSerializer, self).to_internal_value(data)
 
 
 class LeaderboardUserSerializer(serializers.ModelSerializer):
