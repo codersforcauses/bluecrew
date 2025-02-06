@@ -16,23 +16,21 @@ from .utils import check_bingo
 def start_challenge(request):
     try:
         challenge_index = int(request.data["position"])
-    except ValueError:
-        return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    if challenge_index not in range(16):
-        return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        if challenge_index not in range(16):
+            return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    try:
         grid = BingoGrid.objects.get(is_active=True)
-    except ObjectDoesNotExist:
-        # Throw an error if no grid is currently active
-        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    try:
         TileInteraction.objects.create(
-            user=request.user, position=challenge_index, grid=grid)
+            user=request.user, position=challenge_index, grid=grid
+        )
+
+    except (ValueError, KeyError):
+        return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+    except ObjectDoesNotExist:
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     except IntegrityError:
-        # Throw an error if there is already an interaction between that user and that challenge
         return Response(status=status.HTTP_409_CONFLICT)
 
     return Response(status=status.HTTP_200_OK)
@@ -41,7 +39,7 @@ def start_challenge(request):
 @api_view(['GET'])
 def get_bingo_grid(request):
     """
-    This view returns a dictionary with two keys.
+    This view returns data with the following fields.
     'grid_id' contains the pk of the active bingo grid.
     'challenges' contains a list of 16 dictionaries, 1 for each challenge.
     Each challenge dictionary contains the 'name', 'description', 'challenge_type', and 'points' of the challenge.
@@ -72,7 +70,7 @@ def get_bingo_grid(request):
 @permission_classes((permissions.IsAuthenticated, ))
 def complete_challenge(request):
     """
-    This view returns a dictionary the following information.
+    This view returns data with the following fields.
     'challenge_points' contains the points earned from completing the challenge.
     'bingo_points' contains the points earned from bingos completed
     'bingo_rows' contains the row in which a bingo was just achieved, if any, from 0-3, -1 if no bingo
