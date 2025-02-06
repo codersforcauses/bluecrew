@@ -15,6 +15,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
                   'password', 'indigenous_identity', 'gender_identity']
         extra_kwargs = {
             'password': {'write_only': True},
+            'first_name': {'required': True},
+            'last_name': {'required': True},
         }
 
     def create(self, validated_data):
@@ -33,9 +35,16 @@ class UserRegisterSerializer(serializers.ModelSerializer):
                 'Birth date cannot be in the future.')
         return value
 
+    # Front end sends empty strings if form is empty, but serializer will interpret this a string.
+    # Similarly, first_name and last_name are sent as empty string if the form is not filled.
+    # We want to interpret this as no value given, not as a string.
     def to_internal_value(self, data):
-        if data.get('birthdate', None) == "":
+        if data.get('birthdate', None) == '':
             data.pop('birthdate')
+        if data.get('first_name', None) == '':
+            data.pop('first_name')
+        if data.get('last_name', None) == '':
+            data.pop('last_name')
         return super(UserRegisterSerializer, self).to_internal_value(data)
 
 
