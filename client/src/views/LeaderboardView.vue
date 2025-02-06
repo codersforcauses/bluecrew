@@ -65,7 +65,7 @@ const fetchLeaderboard = async () => {
   } catch (err: unknown) {
     // Use unknown type and type guard to ensure type safety
     if (err instanceof Error) {
-      messageStore.showMessage('Error', `Failed to fetch leaderboard data: ${err.message}`, 'error')
+      messageStore.showMessage('Error', `Failed to fetch leaderboard data`, 'error')
     } else {
       messageStore.showMessage('Error', 'Failed to fetch leaderboard data', 'error')
     }
