@@ -151,8 +151,8 @@ def get_leaderboard(request):
     logged_in = request.user.is_authenticated
     leaderboard_size = 20
 
-    # Filter out superusers and get base queryset
-    user_set = User.objects.filter(is_superuser=False)
+    # Filter out superusers/inactive users and get base queryset
+    user_set = User.objects.filter(is_superuser=False, is_active=True)
     if not user_set:
         return Response({'No users found in database.'}, status=status.HTTP_200_OK)
 
@@ -193,7 +193,9 @@ def get_leaderboard(request):
 @permission_classes((permissions.IsAuthenticated, ))
 def request_friendship(request, user_id):
     receiver = get_object_or_404(User, user_id=user_id)
-
+    if not receiver.is_active:
+        return Response({'error': 'This user is not active - no friend request was sent.'},
+                        status=status.HTTP_400_BAD_REQUEST)
     try:
         new_friendship = Friendship(
             requester=request.user, receiver=receiver, status=Friendship.PENDING)
