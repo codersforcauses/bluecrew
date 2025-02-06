@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useModalStore } from '@/stores/modal'
-import type { UserRegistrationForm } from '@/types/user'
+import type { BackendUser, UserRegistrationForm, UserRegistrationFormFields } from '@/types/user'
 import { useDisplay } from 'vuetify'
 import { useUserStore } from '@/stores/user'
+import { useMessageStore } from '@/stores/message'
 
 const { xs } = useDisplay()
 const modalStore = useModalStore()
 const userStore = useUserStore()
+const messageStore = useMessageStore()
 
 const currentPage = ref<'register' | 'confirmation'>('register')
 
@@ -26,6 +28,95 @@ const formData = ref<UserRegistrationForm>({
   confirmPassword: '',
 })
 
+const formServerErrors = ref<UserRegistrationForm>({
+  username: '',
+  email: '',
+  firstName: '',
+  lastName: '',
+  dateOfBirth: '',
+  genderId: '',
+  indigenousTIS: '',
+  password: '',
+  confirmPassword: '',
+})
+
+const formFields: UserRegistrationFormFields[] = [
+  {
+    formAttribute: 'username',
+    fieldName: 'Username',
+    fieldPlaceholder: 'Enter your username',
+    fieldType: 'text',
+  },
+  {
+    formAttribute: 'email',
+    fieldName: 'Email',
+    fieldPlaceholder: 'Enter your email',
+    fieldType: 'email',
+  },
+  {
+    formAttribute: 'firstName',
+    fieldName: 'First Name',
+    fieldPlaceholder: 'Enter your first name',
+    fieldType: 'text',
+  },
+  {
+    formAttribute: 'lastName',
+    fieldName: 'Last Name',
+    fieldPlaceholder: 'Enter your last name',
+    fieldType: 'text',
+  },
+  {
+    formAttribute: 'dateOfBirth',
+    fieldName: 'Date of Birth',
+    fieldPlaceholder: 'dd-mm-yyyy',
+    fieldType: 'date',
+  },
+  {
+    formAttribute: 'genderId',
+    fieldName: 'Gender Identity',
+    fieldPlaceholder: 'Select your gender identity',
+    fieldType: 'text',
+    dropDownItems: genderIdentities,
+  },
+  {
+    formAttribute: 'indigenousTIS',
+    fieldName: 'Indigenous or Torres Strait Islander',
+    fieldPlaceholder: 'Please select',
+    fieldType: 'text',
+    dropDownItems: indigenousIdentites,
+  },
+  {
+    formAttribute: 'password',
+    fieldName: 'Password',
+    fieldPlaceholder: 'Enter your password',
+    fieldType: 'password',
+  },
+  {
+    formAttribute: 'confirmPassword',
+    fieldName: 'Confirm Password',
+    fieldPlaceholder: 'Confirm your password',
+    fieldType: 'password',
+  },
+]
+
+const valid = ref(false)
+const loading = ref(false)
+const required = (value: string) => !!value || 'Required.'
+const emailProbablyValid = (value: string) => /^\S+@\S+\.\S+$/.test(value) || 'Invalid e-mail.'
+const passwordsMatch = (value: string) =>
+  value === formData.value.password || 'Passwords do not match.'
+
+const getRules = (type: 'text' | 'email' | 'password' | 'date') => {
+  switch (type) {
+    case 'email':
+      return [emailProbablyValid, required]
+    case 'password':
+      return [passwordsMatch, required]
+    default:
+      return [required]
+  }
+}
+
 const isDialogVisible = computed({
   get: () => modalStore.currentModal === 'register',
   set: (value: boolean) => {
@@ -40,7 +131,8 @@ const setCurrentPage = (page: 'register' | 'confirmation') => {
 }
 
 const submitForm = async () => {
-  const body = {
+  loading.value = true
+  const body: BackendUser = {
     username: formData.value.username,
     email: formData.value.email,
     first_name: formData.value.firstName,
@@ -53,7 +145,31 @@ const submitForm = async () => {
   const registrationResult = await userStore.registerUser(body)
   if (registrationResult === true) {
     setCurrentPage('confirmation')
+  } else if (registrationResult === false) {
+    messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
+  } else {
+    const nameMapping: Array<{
+      serverName: keyof BackendUser
+      clientName: keyof UserRegistrationForm
+    }> = [
+      { serverName: 'username', clientName: 'username' },
+      { serverName: 'first_name', clientName: 'firstName' },
+      { serverName: 'last_name', clientName: 'lastName' },
+      { serverName: 'email', clientName: 'email' },
+      { serverName: 'birthdate', clientName: 'dateOfBirth' },
+      { serverName: 'password', clientName: 'password' },
+    ]
+    nameMapping.forEach(({ serverName, clientName }) => {
+      if (registrationResult[serverName]) {
+        const errorFromServer = registrationResult[serverName][0]
+        // make sure the error from the server is capitalized correctly
+        formServerErrors.value[clientName] = errorFromServer
+          ? errorFromServer[0].toUpperCase() + errorFromServer.slice(1)
+          : ''
+      }
+    })
   }
+  loading.value = false
 }
 
 const closeDialog = () => {
@@ -86,128 +202,55 @@ const openLoginModal = () => {
 
             <strong class="text-primaryGreen">Create an account</strong>
 
-            <form class="register-form" @submit.prevent="submitForm">
-              <div class="form-group">
-                <label for="username" class="text-primaryPink">Username</label>
-                <v-text-field
-                  hide-details="auto"
-                  placeholder="Enter your username"
-                  v-model="formData.username"
-                  class="bg-primaryBrown"
-                  variant="outlined"
-                ></v-text-field>
-              </div>
-
-              <div class="form-group">
-                <label for="email" class="text-primaryPink">Email</label>
-                <v-text-field
-                  hide-details="auto"
-                  placeholder="Enter your email"
-                  v-model="formData.email"
-                  class="bg-primaryBrown"
-                  variant="outlined"
-                ></v-text-field>
-              </div>
-
-              <div class="form-group">
-                <label for="firstName" class="text-primaryPink">First Name</label>
-                <v-text-field
-                  hide-details="auto"
-                  placeholder="Enter your first name"
-                  v-model="formData.firstName"
-                  class="bg-primaryBrown"
-                  variant="outlined"
-                ></v-text-field>
-              </div>
-
-              <div class="form-group">
-                <label for="lastName" class="text-primaryPink">Last Name</label>
-                <v-text-field
-                  hide-details="auto"
-                  placeholder="Enter your last name"
-                  v-model="formData.lastName"
-                  class="bg-primaryBrown"
-                  variant="outlined"
-                ></v-text-field>
-              </div>
-
-              <div class="form-group">
-                <label for="dateOfBirth" class="text-primaryPink">Date of Birth</label>
-                <v-text-field
-                  type="date"
-                  hide-details="auto"
-                  placeholder="dd-mm-yyyy"
-                  v-model="formData.dateOfBirth"
-                  class="bg-primaryBrown"
-                  variant="outlined"
-                  persistent-placeholder
-                ></v-text-field>
-              </div>
-
-              <div class="form-group">
-                <label for="genderId" class="text-primaryPink">Gender Identity</label>
+            <v-form
+              v-model="valid"
+              class="register-form"
+              @submit.prevent="submitForm"
+              validate-on="blur"
+            >
+              <div v-for="(formField, index) in formFields" class="form-group" :key="index">
+                <label :for="formField.formAttribute" class="text-primaryPink">{{
+                  formField.fieldName
+                }}</label>
                 <v-select
+                  v-if="formField.dropDownItems"
                   hide-details="auto"
-                  class="bg-primaryBrown"
-                  placeholder="Select your gender identity"
-                  :items="['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say']"
-                  v-model="formData.genderId"
+                  :placeholder="formField.fieldPlaceholder"
+                  v-model="formData[formField.formAttribute]"
+                  bg-color="primaryBrown"
                   variant="outlined"
-                ></v-select>
-              </div>
-
-              <div class="form-group">
-                <label for="indigenousTIS" class="text-primaryPink">
-                  Indigenous or Torres Strait Islander
-                </label>
-                <v-select
-                  hide-details="auto"
-                  class="bg-primaryBrown"
-                  placeholder="Please select"
-                  :items="['Yes', 'No', 'Prefer not to say']"
-                  v-model="formData.indigenousTIS"
-                  variant="outlined"
-                ></v-select>
-              </div>
-
-              <div class="form-group">
-                <label for="password" class="text-primaryPink">Password</label>
+                  :items="formField.dropDownItems"
+                />
                 <v-text-field
+                  v-else
                   hide-details="auto"
-                  placeholder="Enter your password"
-                  v-model="formData.password"
-                  type="password"
-                  class="bg-primaryBrown"
+                  :placeholder="formField.fieldPlaceholder"
+                  v-model="formData[formField.formAttribute]"
+                  bg-color="primaryBrown"
                   variant="outlined"
-                ></v-text-field>
-              </div>
-
-              <div class="form-group">
-                <label for="confirmPassword" class="text-primaryPink">Confirm Password</label>
-                <v-text-field
-                  hide-details="auto"
-                  placeholder="Confirm your password"
-                  v-model="formData.confirmPassword"
-                  type="password"
-                  class="bg-primaryBrown"
-                  variant="outlined"
-                ></v-text-field>
+                  :type="formField.fieldType"
+                  :rules="getRules(formField.fieldType)"
+                  :error-messages="formServerErrors[formField.formAttribute]"
+                  @focus="formServerErrors[formField.formAttribute] = ''"
+                />
               </div>
               <v-btn
                 class="d-flex justify-center mt-4 w-50 mx-auto"
                 color="primaryBlue"
                 :style="{ height: '50px' }"
                 rounded
+                :disabled="!valid"
+                :loading="loading"
                 elevation="12"
-                @click="submitForm"
+                type="submit"
               >
                 Sign Up
               </v-btn>
-            </form>
+            </v-form>
 
             <footer class="text-primaryPink">
               Already have an account?
-              <a href="#" class="text-primaryPink" @click.prevent="openLoginModal">Sign In</a>
+              <a class="text-primaryPink" @click.prevent="openLoginModal">Sign In</a>
             </footer>
           </template>
 
