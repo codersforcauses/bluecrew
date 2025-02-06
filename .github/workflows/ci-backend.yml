@@ -83,6 +83,7 @@ jobs:
           POSTGRES_PORT: 5432
           EMAIL_PORT: 1025
           FRONTEND_URL: http://localhost:3000
+          GITHUB_ACTION: true
         run: |
           source .venv/bin/activate
           python manage.py migrate
@@ -96,6 +97,7 @@ jobs:
           POSTGRES_PORT: 5432
           EMAIL_PORT: 1025
           FRONTEND_URL: http://localhost:3000
+          GITHUB_ACTION: true
         run: |
           source .venv/bin/activate
           python3 -m pip install coverage

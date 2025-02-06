@@ -1,10 +1,11 @@
+from django_resized import ResizedImageField
+from django.utils.safestring import mark_safe
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin, AbstractBaseUser, BaseUserManager
 from datetime import date
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 from sortedm2m.fields import SortedManyToManyField
-from django.utils.safestring import mark_safe
 
 
 class UserManager(BaseUserManager):
@@ -208,8 +209,10 @@ class TileInteraction(models.Model):
     # The bingo grid that this interaction concerns
     grid = models.ForeignKey(BingoGrid, on_delete=models.CASCADE)
 
-    image = models.ImageField(
-        blank=True
+    image = ResizedImageField(
+        upload_to="",  # idk where we want to put this atm
+        blank=True,
+        keep_meta=False
     )
 
     completed = models.BooleanField(default=False)

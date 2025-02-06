@@ -1,4 +1,4 @@
-from .utils import check_bingo
+from .utils import check_bingo, check_friendships
 from django.utils import timezone
 from django.db.models.functions import DenseRank
 from django.db.models import Q, F, Window
@@ -12,7 +12,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status, permissions
 from .serializers import (UserRegisterSerializer, UserProfileSerializer,
                           LeaderboardUserSerializer, BingoGridSerializer,
-                          UpdatePreferencesSerializer, ChallengeCompleteSerializer)
+                          UpdatePreferencesSerializer, ChallengeCompleteSerializer,
+                          UserSearchSerializer)
 
 
 @api_view(['DELETE'])
@@ -321,3 +322,30 @@ def complete_challenge(request):
     response.update(bingos)
 
     return Response(response, status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes((permissions.IsAuthenticated, ))
+def find_user(request):
+    """
+    This view will return a set of users whose usernames begin with a given string.
+    The number of users returned is equal to USERS_RETURNED
+    The view requires 1 argument 'query_string' which is the string that the search will be performed with.
+    The view returns a list of dictionaries in the form:
+    [{'user_data': {'avatar': int, 'username': str, 'user_id': int},
+      'status': friendship_message, 'friendship_id': friendship.id}, ...]
+    friendship_message are either: 'You are friends.', 'You are not friends.', 'You've requested friendship.',
+    or 'Pending friendship request.'
+    """
+    USERS_RETURNED = 15
+    try:
+        query_string = request.data['query_string']
+    except KeyError:
+        return Response({'error': 'Field "query_string" is required in this request'},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    user_set = User.objects.filter(
+        username__istartswith=query_string, is_active=True, is_superuser=False).order_by('username')[:USERS_RETURNED]
+    serializer = UserSearchSerializer(user_set, many=True)
+    response = check_friendships(serializer.data, request.user)
+    return Response(response, status=status.HTTP_200_OK)
