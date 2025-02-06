@@ -8,6 +8,7 @@ import FriendView from '@/views/FriendView.vue'
 import BlingoView from '@/views/BlingoView.vue'
 import PreferenceView from '@/views/PreferenceView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import AdminView from '@/views/AdminView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,18 +36,20 @@ const router = createRouter({
       component: LeaderboardView,
     },
     {
+      path: '/profile',
+      name: 'profile',
+      component: ProfileView,
+    },
+    {
       path: '/blingo',
       name: 'blingo',
       component: BlingoView,
     },
     {
-      path: '/404',
-      name: '404',
-      component: () => import('@/views/404Error.vue'),
-    },
-    {
-      path: '/:pathMatch(.*)*',
-      redirect: '/404',
+      path: '/admin',
+      name: 'admin',
+      component: AdminView,
+      meta: { requiresAuth: true, requiresAdmin: true },
     },
     {
       path: '/404',
@@ -56,11 +59,6 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)*',
       redirect: '/404',
-    },
-    {
-      path: '/profile',
-      name: 'profile',
-      component: ProfileView,
     },
   ],
 })
@@ -69,7 +67,10 @@ router.beforeEach((to, from) => {
   const userStore = useUserStore()
   const modalStore = useModalStore()
 
-  if (to.meta.requiresAuth && !userStore.isLoggedIn) {
+  if (
+    (to.meta.requiresAuth && !userStore.isLoggedIn) ||
+    (to.meta.requiresAdmin && !userStore.superUserLoggedIn)
+  ) {
     modalStore.openLogin()
     return { name: from.name }
   }
