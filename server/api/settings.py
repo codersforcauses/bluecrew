@@ -46,6 +46,7 @@ SIMPLE_JWT = {
     "USER_ID_FIELD": "user_id",
 
     "SIGNING_KEY": SECRET_KEY,
+    'UPDATE_LAST_LOGIN': True,
 }
 
 REST_FRAMEWORK = {
@@ -210,6 +211,13 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, "static_files")
 # This is where to _find_ static files when 'collectstatic' is run.
 # These files are then copied to the STATIC_ROOT location.
 STATICFILES_DIRS = (os.path.join(PROJECT_ROOT, "static"),)
+
+MEDIA_DIR = "challenge_images/"
+
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_DIR)
+
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

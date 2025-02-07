@@ -1,6 +1,10 @@
-from .models import TileInteraction, Friendship
-import math
 from django.conf import settings
+import math
+from rest_framework import status
+from rest_framework.response import Response
+
+from ..models import TileInteraction, Friendship
+from ..serializers import (UserProfileSerializer,)
 
 
 def check_bingo(tile):
@@ -89,3 +93,21 @@ def get_or_none(classmodel, **kwargs):
         return classmodel.objects.get(**kwargs)
     except classmodel.DoesNotExist:
         return None
+
+
+def get_friend_requests(request, is_outgoing=True):
+    """Helper function to get friend requests.
+    Args:
+        request: The HTTP request
+        is_outgoing: If True, get outgoing requests; if False, get incoming
+    """
+    filter_kwargs = {
+        'status': 'pending',
+        'requester' if is_outgoing else 'receiver': request.user
+    }
+    friendships = Friendship.objects.filter(**filter_kwargs)
+    friend_users = [
+        getattr(friendship, 'receiver' if is_outgoing else 'requester') for friendship in friendships
+    ]
+    serializer = UserProfileSerializer(friend_users, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
