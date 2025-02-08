@@ -51,3 +51,7 @@ class TestEmailVerification(TestCase):
         self.assertEqual(response.status_code, 302)
         self.user.refresh_from_db()
         self.assertTrue(self.user.is_active)
+
+    def test_no_email(self):
+        response = self.client.post(reverse("request_verification"))
+        print(response.status_code)

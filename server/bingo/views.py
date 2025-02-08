@@ -47,10 +47,10 @@ def register_user(request):
 
 @api_view(['POST'])
 def request_email_verification(request):
-    email = request.data['email']
     try:
+        email = request.POST['email']
         user = User.objects.get(email=email)
-    except ObjectDoesNotExist:
+    except (ObjectDoesNotExist, KeyError):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     if user.is_active:
