@@ -43,7 +43,7 @@ class TestEmailVerification(TestCase):
         link = id_parser.href
 
         self.assertNotEqual(link, None, "Link was not found in email content")
-        
+
         '''response = self.client.get(
             reverse("confirm_email"),
             {}
