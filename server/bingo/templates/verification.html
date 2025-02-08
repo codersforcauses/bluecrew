@@ -7,7 +7,7 @@
     <br>
         <h1>Welcome!</h1>
         {# The activation link should have an id valued "verify_link" to ensure testability #}
-        <p>To verify your email for BlueCrew and Ocean Youth Bingo, follow the link <a id="verify_link" href="https://{{ domain }}{% url 'confirm_email'%}?uid64={{ uid64 }}+token={{ token }}">here</a></p>
+        <p>To verify your email for BlueCrew and Ocean Youth Bingo, follow the link <a id="verify_link" href="{{ url }}">here</a></p>
         <br>
         <p>If you didn't sign up for an account, this email can be safely ignored</p>
     </body>

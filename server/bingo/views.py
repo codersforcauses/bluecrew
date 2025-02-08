@@ -13,8 +13,8 @@ from django.core.mail import EmailMessage
 from django.conf import settings
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
-from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
+from django.urls import reverse
 from smtplib import SMTPException, SMTPSenderRefused
 from .utils import check_bingo
 from django.utils import timezone
@@ -57,9 +57,10 @@ def request_email_verification(request):
         return Response(status=status.HTTP_400_BAD_REQUEST)
     encoded_user = urlsafe_base64_encode(force_bytes(user.pk))
     token = email_verification_token_generator.make_token(user)
+    url = request.build_absolute_uri(f"{reverse("confirm_email")}?uid64={encoded_user}+token={token}")
     content = render_to_string(
         "verification.html",
-        context={"uid64": encoded_user, "token": token, "domain": Site.objects.get_current().domain}
+        context={"url": url}
     )
     message = EmailMessage(
         "Bingo Email Verification",
@@ -79,7 +80,13 @@ def request_email_verification(request):
 
 
 @api_view(["GET"])
-def confirm_email(request, uid64, token):
+def confirm_email(request):
+    try:
+        uid64 = request.GET["uid64"]
+        token = request.GET["token"]
+    except KeyError:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
     uid = force_str(urlsafe_base64_decode(uid64))
     user = get_object_or_404(User, user_id=uid)
     if user.is_active:
