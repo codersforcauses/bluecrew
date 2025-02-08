@@ -31,6 +31,24 @@ const profileData = ref({
       finishDate: '27/11/2024 11:27pm',
       status: 'Complete' as const,
     },
+    {
+      title: 'Challenge 2',
+      description: 'Bingo 2 Challenge Description',
+      type: 'Act' as const,
+      points: 200,
+      startDate: '27/11/2024 10:27pm',
+      finishDate: '27/11/2024 11:27pm',
+      status: 'Complete' as const,
+    },
+    {
+      title: 'Challenge 3',
+      description: 'Bingo 1 Challenge Description',
+      type: 'Connect' as const,
+      points: 200,
+      startDate: '27/11/2024 10:27pm',
+      finishDate: '27/11/2024 11:27pm',
+      status: 'In Progress' as const,
+    },
   ],
 })
 </script>
@@ -68,7 +86,7 @@ const profileData = ref({
     <!-- Challenges Section -->
     <v-row class="px-4 px-sm-16 mx-0">
       <v-col cols="12">
-        <h2 class="text-h6 font-weight-bold mb-4">Challenge Complete</h2>
+        <h2 class="text-h6 font-weight-bold mb-4">Challenges</h2>
         <div class="d-flex flex-column gap-4">
           <ChallengeInteraction
             v-for="challenge in profileData.challenges"
