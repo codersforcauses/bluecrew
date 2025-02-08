@@ -3,6 +3,19 @@ from django.urls import reverse
 from django.core import mail
 from ..models import User
 from datetime import date
+from html.parser import HTMLParser
+
+
+class FindHREFByID(HTMLParser):
+    def __init__(self, target_id, *, convert_charrefs=True):
+        self.target_id = target_id
+        self.href = None
+        super().__init__(convert_charrefs=convert_charrefs)
+
+    def handle_starttag(self, tag, attrs):
+        if ("id", self.target_id) in attrs:
+            attr_dict = dict(attrs)
+            self.href = attr_dict.get("href")
 
 
 class TestEmailVerification(TestCase):
@@ -24,8 +37,13 @@ class TestEmailVerification(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(mail.outbox), 1)
-        # link = mail.outbox[0].body
-        print(mail.outbox[0].body)
+
+        id_parser = FindHREFByID("verify_link")
+        id_parser.feed(mail.outbox[0].body)
+        link = id_parser.href
+
+        self.assertNotEqual(link, None, "Link was not found in email content")
+        
         '''response = self.client.get(
             reverse("confirm_email"),
             {}
