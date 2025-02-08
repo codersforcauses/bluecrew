@@ -42,6 +42,10 @@ class ProfilePageViewTestCase(TestCase):
         for user in self.users.values():
             self._create_tile_interactions(user, self.grid, 16)
 
+        # Default tile completion date
+        self.completion_date = DateTimeField().to_representation(
+            datetime(2025, 1, 18, 11, 0, tzinfo=timezone.utc))
+
     def _create_test_user(self, username, visibility, first_name, avatar):
         """Helper method to create a test user with standard attributes"""
         return User.objects.create_user(
@@ -97,11 +101,8 @@ class ProfilePageViewTestCase(TestCase):
         self.assertEqual(challenge['description'], 'Description 0')
         self.assertEqual(challenge['challenge_type'], 'act')
         self.assertEqual(challenge['points'], 5)
-        self.assertEqual(challenge['image'], '/path/to/image0.png')
-        self.assertEqual(challenge['date_completed'],
-                         DateTimeField().to_representation(
-                             datetime(2025, 1, 18, 11, 0, tzinfo=timezone.utc))
-                         )
+        self.assertEqual(challenge['image'], '/media/path/to/image0.png')
+        self.assertEqual(challenge['date_completed'], self.completion_date)
 
     def _create_generic_user(self):
         new_user = self._create_test_user(
@@ -159,7 +160,7 @@ class ProfilePageViewTestCase(TestCase):
                         response.data['challenges'])  # Only if have access
                 else:
                     # If no access
-                    self.assertEqual(response.data['challenges'], [])
+                    self.assertEqual(len(response.data['challenges']), 0)
 
     def test_get_non_user(self):
         response = self.client.get(

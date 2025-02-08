@@ -1,3 +1,5 @@
+from django_resized import ResizedImageField
+from django.utils.safestring import mark_safe
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin, AbstractBaseUser, BaseUserManager
 from datetime import date
@@ -207,9 +209,10 @@ class TileInteraction(models.Model):
     # The bingo grid that this interaction concerns
     grid = models.ForeignKey(BingoGrid, on_delete=models.CASCADE)
 
-    image = models.ImageField(
-        upload_to="challenge_images/",  # idk where we want to put this atm
-        blank=True
+    image = ResizedImageField(
+        upload_to="",  # idk where we want to put this atm
+        blank=True,
+        keep_meta=False
     )
 
     completed = models.BooleanField(default=False)
@@ -229,6 +232,11 @@ class TileInteraction(models.Model):
             models.UniqueConstraint(
                 fields=['user', 'grid', 'position'], name='unique_user_grid_challenge')
         ]
+
+    def get_image_html(self):
+        if self.image:
+            return mark_safe(f'<img src="{self.image.url}" width="100%" height="auto">')
+        return None
 
     def __str__(self):
         return (f'Interaction of {self.user.username} with bingo grid '

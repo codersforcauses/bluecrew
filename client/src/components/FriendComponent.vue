@@ -1,12 +1,24 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import avatarPaths from '@/utils/avatar'
+
 defineProps<{
   avatarIndex: number
   name: string
-  variant?: 'default' | 'acceptReject' | 'dismiss' | 'delete' | 'addFriend' | 'accept'
+  variant?:
+    | 'default'
+    | 'acceptReject'
+    | 'dismiss'
+    | 'delete'
+    | 'addFriend'
+    | 'accept'
+    | 'details'
+    | 'send'
+    | 'requestSent'
 }>()
+
 const showDialog = ref(false)
-const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
+const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend', 'details', 'send'])
 </script>
 
 <template>
@@ -17,9 +29,9 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
       max-width="32"
       min-width="32"
       cover
-      src="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
-    ></v-img>
-    <v-text class="me-auto font-weight-bold truncate-name">{{ name }}</v-text>
+      :src="`/${avatarPaths[avatarIndex]}`"
+    />
+    <p class="me-auto font-weight-bold truncate-name">{{ name }}</p>
 
     <!-- Accept/Reject variant -->
     <div v-if="variant === 'acceptReject'" class="acceptreject">
@@ -29,14 +41,16 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
 
     <!-- Dismiss variant -->
     <div v-if="variant === 'dismiss'" class="dismiss-action">
-      <v-btn color="primaryBlue" variant="flat" @click="emit('dismiss')" class="dismiss-btn">
+      <v-btn color="primaryBlue" variant="flat" @click="emit('dismiss')" class="font-poppins">
         Dismiss
       </v-btn>
     </div>
 
     <!-- Delete variant -->
     <div v-if="variant === 'delete'" class="delete-action">
-      <v-btn color="primaryPink" variant="flat" @click="showDialog = true"> Delete </v-btn>
+      <v-btn color="primaryPink" variant="flat" @click="showDialog = true" class="font-poppins">
+        Delete
+      </v-btn>
 
       <!-- Delete confirmation dialog -->
       <v-dialog v-model="showDialog" max-width="400">
@@ -44,9 +58,21 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
           <strong>Confirm Deletion</strong>
           <p>Are you sure you want to delete this friend?</p>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primaryBlue" variant="flat" @click="showDialog = false"> Cancel </v-btn>
-            <v-btn color="primaryPink" variant="flat" @click="emit('delete'), (showDialog = false)">
+            <v-spacer />
+            <v-btn
+              color="primaryBlue"
+              variant="flat"
+              @click="showDialog = false"
+              class="font-poppins"
+            >
+              Cancel
+            </v-btn>
+            <v-btn
+              color="primaryPink"
+              variant="flat"
+              @click="emit('delete'), (showDialog = false)"
+              class="font-poppins"
+            >
               Confirm
             </v-btn>
           </v-card-actions>
@@ -54,14 +80,32 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend'])
       </v-dialog>
     </div>
 
+    <!-- Send variant -->
+    <div v-if="variant === 'send'" class="send-action">
+      <v-btn color="primaryBlue" variant="flat" @click="emit('send')" class="font-poppins">
+        Send
+      </v-btn>
+    </div>
+
+    <!-- Request Sent variant -->
+    <div v-if="variant === 'requestSent'" class="request-sent-action">
+      <v-btn color="primaryBlue" variant="flat" disabled class="opacity-75 font-poppins">
+        Request Sent
+      </v-btn>
+    </div>
+
     <!-- Add Friend variant -->
     <div v-if="variant === 'addFriend'" class="add-friend-action">
-      <v-btn color="primaryPink" variant="flat" @click="emit('addFriend')"> Add Friend </v-btn>
+      <v-btn color="primaryPink" variant="flat" @click="emit('addFriend')" class="font-poppins">
+        Add Friend
+      </v-btn>
     </div>
 
     <!-- Accept variant -->
     <div v-if="variant === 'accept'" class="accept-action">
-      <v-btn color="primaryPink" variant="flat" @click="emit('accept')"> Accept </v-btn>
+      <v-btn color="primaryPink" variant="flat" @click="emit('accept')" class="font-poppins">
+        Accept
+      </v-btn>
     </div>
   </div>
 </template>
@@ -112,11 +156,19 @@ p {
 .dismiss-action,
 .delete-action,
 .add-friend-action,
-.accept-action {
+.accept-action,
+.details-action,
+.send-action,
+.request-sent-action {
   margin-left: 8px;
 }
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.font-poppins {
+  font-family: 'Poppins', cursive !important;
+  font-weight: bold !important;
 }
 </style>
