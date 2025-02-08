@@ -51,7 +51,7 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
           </div>
 
           <!-- Learn More Section -->
-          <div class="learn-more-section">
+          <div class="learn-more-section text-primaryGreen">
             <p class="learn-more-title">Want to learn more?</p>
             <p class="learn-more-text">
               Head to <a href="https://bluecrew.com.au/" class="text-link">https://bluecrew.com.au/</a>
@@ -103,7 +103,7 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
       </div>
 
       <!-- Learn More Section -->
-      <div class="learn-more-section">
+      <div class="learn-more-section text-priamryGreen">
         <p class="learn-more-title">Want to learn more?</p>
         <p class="learn-more-text">
           Head to <a href="https://bluecrew.com.au/" class="text-link">https://bluecrew.com.au/</a>
