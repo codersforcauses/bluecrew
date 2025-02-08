@@ -18,8 +18,6 @@ from django.template.loader import render_to_string
 from smtplib import SMTPException, SMTPSenderRefused
 from .utils import check_bingo
 from django.utils import timezone
-from .models import Friendship, User, BingoGrid, TileInteraction
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from .serializers import (UserRegisterSerializer, UserProfileSerializer,
                           LeaderboardUserSerializer, BingoGridSerializer,
                           UpdatePreferencesSerializer, ChallengeCompleteSerializer)
