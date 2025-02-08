@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useModalStore } from '@/stores/modal'
+import type { RouteLocationNormalized } from 'vue-router'
 
 import LandingView from '@/views/LandingView.vue'
 import LeaderboardView from '@/views/LeaderboardView.vue'
@@ -8,8 +9,18 @@ import FriendView from '@/views/FriendView.vue'
 import BlingoView from '@/views/BlingoView.vue'
 import PreferenceView from '@/views/PreferenceView.vue'
 import ProfileView from '@/views/ProfileView.vue'
-import TestProfileView from '@/views/TestProfileView.vue'
 
+export const routes = [
+  // ... 其他路由
+  {
+    path: '/profile/:username?',
+    name: 'user-profile',
+    component: ProfileView,
+    props: (route: RouteLocationNormalized) => ({
+      username: route.params.username as string | undefined,
+    }),
+  },
+]
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -62,11 +73,6 @@ const router = createRouter({
       path: '/profile',
       name: 'profile',
       component: ProfileView,
-    },
-    {
-      path: '/testprofile',
-      name: 'testprofile',
-      component: TestProfileView,
     },
   ],
 })
