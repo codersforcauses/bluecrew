@@ -4,6 +4,7 @@ from django.core import mail
 from ..models import User
 from datetime import date
 from html.parser import HTMLParser
+from django.conf import settings
 
 
 class FindHREFByID(HTMLParser):
@@ -37,14 +38,16 @@ class TestEmailVerification(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].from_email, settings.VERIFICATION_EMAIL)
 
         id_parser = FindHREFByID("verify_link")
         id_parser.feed(mail.outbox[0].body)
-        link = id_parser.href
+        url = id_parser.href
+        self.assertNotEqual(url, None, "Link was not found in email content")
 
-        self.assertNotEqual(link, None, "Link was not found in email content")
+        path = url.split("testserver")[1]
 
-        '''response = self.client.get(
-            reverse("confirm_email"),
-            {}
-        )'''
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, 302)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_active)
