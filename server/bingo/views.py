@@ -57,7 +57,7 @@ def request_email_verification(request):
         return Response(status=status.HTTP_400_BAD_REQUEST)
     encoded_user = urlsafe_base64_encode(force_bytes(user.pk))
     token = email_verification_token_generator.make_token(user)
-    url = request.build_absolute_uri(f"{reverse("confirm_email")}?uid64={encoded_user}+token={token}")
+    url = request.build_absolute_uri(f"{reverse("confirm_email")}?uid64={encoded_user}&token={token}")
     content = render_to_string(
         "verification.html",
         context={"url": url}
