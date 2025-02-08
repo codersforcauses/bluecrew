@@ -54,4 +54,37 @@ class TestEmailVerification(TestCase):
 
     def test_no_email(self):
         response = self.client.post(reverse("request_verification"))
-        print(response.status_code)
+        self.assertEqual(response.status_code, 400)
+
+    def test_already_active(self):
+        self.user.is_active = True
+        self.user.save()
+        response = self.client.post(
+            reverse("request_verification"),
+            {"email": self.user.email}
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_repeat_activation(self):
+        self.client.post(reverse("request_verification"), {"email": self.user.email})
+        id_parser = FindHREFByID("verify_link")
+        id_parser.feed(mail.outbox[0].body)
+        path = id_parser.href.split("testserver")[1]
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, 302)
+
+    def test_invalid_UID(self):
+        response = self.client.get(
+            reverse("confirm_email"),
+            {"uid64": "0", "token": "4"}
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_unused_UID(self):
+        response = self.client.get(
+            reverse("confirm_email"),
+            {"uid64": "12", "token": "4"}
+        )
+        self.assertEqual(response.status_code, 404)

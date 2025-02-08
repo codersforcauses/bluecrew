@@ -81,21 +81,23 @@ def request_email_verification(request):
 
 @api_view(["GET"])
 def confirm_email(request):
+    success_path = "/"
+
     try:
         uid64 = request.GET["uid64"]
         token = request.GET["token"]
-    except KeyError:
+        uid = force_str(urlsafe_base64_decode(uid64))
+    except (KeyError, ValueError):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    uid = force_str(urlsafe_base64_decode(uid64))
     user = get_object_or_404(User, user_id=uid)
     if user.is_active:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return redirect(success_path)
     if not email_verification_token_generator.check_token(user, token):
         return Response(status=status.HTTP_404_NOT_FOUND)
     user.is_active = True
     user.save()
-    return redirect("/")
+    return redirect(success_path)
 
 
 @api_view(['GET'])
