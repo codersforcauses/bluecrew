@@ -47,7 +47,7 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
 
           <div class="header-section desktop-header">
             <h1 class="blingo-title">Blingo</h1>
-            <h2 class="blingo-subtitle">Connecting to the ocean</h2>
+            <h2 class="blingo-subtitle text-primaryGreen">Connecting to the ocean</h2>
           </div>
 
           <!-- Learn More Section -->
@@ -84,7 +84,7 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
       <!-- Title Section -->
       <div class="header-section mobile-header">
         <h1 class="blingo-title">Blingo</h1>
-        <h2 class="blingo-subtitle">Connecting to the ocean</h2>
+        <h2 class="blingo-subtitle text-priamryGreen">Connecting to the ocean</h2>
       </div>
 
       <!-- Game Grid -->
