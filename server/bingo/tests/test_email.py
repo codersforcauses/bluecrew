@@ -5,6 +5,8 @@ from ..models import User
 from datetime import date
 from html.parser import HTMLParser
 from django.conf import settings
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
 
 
 class FindHREFByID(HTMLParser):
@@ -85,6 +87,13 @@ class TestEmailVerification(TestCase):
     def test_unused_UID(self):
         response = self.client.get(
             reverse("confirm_email"),
-            {"uid64": "12", "token": "4"}
+            {"uid64": urlsafe_base64_encode(force_bytes(self.user.pk+1)), "token": "4"}
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_invalid_token(self):
+        response = self.client.get(
+            reverse("confirm_email"),
+            {"uid64": urlsafe_base64_encode(force_bytes(self.user.pk)), "token": "42"}
         )
         self.assertEqual(response.status_code, 404)
