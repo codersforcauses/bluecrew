@@ -25,4 +25,5 @@ urlpatterns = [
     path('complete-challenge/', views.complete_challenge, name='complete_challenge'),
     path("email-validation", views.request_email_verification, name='request_verification'),
     path("activate", views.confirm_email, name="confirm_email"),
+    path('user-search/', views.find_user, name='user_search'),
 ]
