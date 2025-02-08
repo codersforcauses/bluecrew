@@ -95,7 +95,7 @@ def confirm_email(request):
         return Response(status=status.HTTP_404_NOT_FOUND)
     user.is_active = True
     user.save()
-    return redirect("current_user")
+    return redirect("/")
 
 
 @api_view(['GET'])
