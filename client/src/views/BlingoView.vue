@@ -5,7 +5,6 @@ import BlingoTile from '@/components/BingoTile.vue'
 import ChallengeCard from '@/components/ChallengeCard.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
 
-
 const { xs } = useDisplay()
 
 const containerClass = computed(() => (!xs.value ? 'desktop-container' : 'mobile-container'))
@@ -16,7 +15,8 @@ const currentChallenge = ref({
   title: 'Watch an Ocean Documentary',
   points: 200,
   type: 'understand' as const,
-  description: 'Here are some of our top picks! You can choose one of them or watch one of your own. Tell us what you thought and submit a picture.',
+  description:
+    'Here are some of our top picks! You can choose one of them or watch one of your own. Tell us what you thought and submit a picture.',
   status: 'not started' as const,
 })
 
@@ -42,28 +42,41 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
     <!-- Desktop Version -->
     <template v-if="!xs">
       <div class="desktop-layout">
-
         <div class="left-section">
-
+          <!-- Header Section -->
           <div class="header-section desktop-header">
-            <h1 class="blingo-title">Blingo</h1>
+            <h1 class="blingo-title text-primaryBlue">Blingo</h1>
             <h2 class="blingo-subtitle text-primaryGreen">Connecting to the ocean</h2>
+          </div>
+
+          <!-- Challenge Card -->
+          <div v-if="showChallengeCard" class="challenge-card-container desktop-challenge-card">
+            <ChallengeCard
+              v-bind="currentChallenge"
+              :is-logged-in="true"
+              @close="handleCloseChallenge"
+              @status-change="handleStatusChange"
+            />
           </div>
 
           <!-- Learn More Section -->
           <div class="learn-more-section text-primaryGreen">
             <p class="learn-more-title">Want to learn more?</p>
             <p class="learn-more-text">
-              Head to <a href="https://bluecrew.com.au/" class="text-link">https://bluecrew.com.au/</a>
+              Head to
+              <a href="https://bluecrew.com.au/" class="text-link">https://bluecrew.com.au/</a>
             </p>
             <p class="learn-more-text">
-              and <a href="https://www.oceanyouth.org/" class="text-link">https://www.oceanyouth.org/</a>
+              and
+              <a href="https://www.oceanyouth.org/" class="text-link"
+                >https://www.oceanyouth.org/</a
+              >
             </p>
           </div>
         </div>
 
         <!-- Game Grid -->
-        <div class="game-grid">
+        <div class="game-grid desktop-game-grid">
           <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
             <BlingoTile
               v-for="(_, col) in 4"
@@ -83,8 +96,8 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
     <template v-else>
       <!-- Title Section -->
       <div class="header-section mobile-header">
-        <h1 class="blingo-title">Blingo</h1>
-        <h2 class="blingo-subtitle text-priamryGreen">Connecting to the ocean</h2>
+        <h1 class="blingo-title text-primaryBlue">Blingo</h1>
+        <h2 class="blingo-subtitle text-primaryGreen">Connecting to the ocean</h2>
       </div>
 
       <!-- Game Grid -->
@@ -103,26 +116,27 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
       </div>
 
       <!-- Learn More Section -->
-      <div class="learn-more-section text-priamryGreen">
+      <div class="learn-more-section text-primaryGreen mt-8">
         <p class="learn-more-title">Want to learn more?</p>
         <p class="learn-more-text">
           Head to <a href="https://bluecrew.com.au/" class="text-link">https://bluecrew.com.au/</a>
         </p>
         <p class="learn-more-text">
-          and <a href="https://www.oceanyouth.org/" class="text-link">https://www.oceanyouth.org/</a>
+          and
+          <a href="https://www.oceanyouth.org/" class="text-link">https://www.oceanyouth.org/</a>
         </p>
       </div>
-    </template>
 
-    <!-- Challenge Card -->
-    <div v-if="showChallengeCard" class="challenge-card-overlay">
-      <ChallengeCard
-        v-bind="currentChallenge"
-        :is-logged-in="true"
-        @close="handleCloseChallenge"
-        @status-change="handleStatusChange"
-      />
-    </div>
+      <!-- Challenge Card -->
+      <div v-if="showChallengeCard" class="challenge-card-overlay">
+        <ChallengeCard
+          v-bind="currentChallenge"
+          :is-logged-in="true"
+          @close="handleCloseChallenge"
+          @status-change="handleStatusChange"
+        />
+      </div>
+    </template>
   </div>
 </template>
 
@@ -140,39 +154,37 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
 }
 
 .blingo-title {
-  font-size: 2.5rem;
-  font-weight: bold;
+  font-family: 'Lilita One', cursive;
   text-align: center;
 }
 
 .blingo-subtitle {
-  font-size: 1.25rem;
   text-align: center;
 }
 
-
-.desktop-header {
-  text-align: left;
+.desktop-challenge-card {
+  max-width: 60%;
+  margin: 0 auto;
 }
 
-.desktop-header .blingo-title,
-.desktop-header .blingo-subtitle {
-  text-align: center;
-}
-
+/* Learn More Section */
 .learn-more-section {
   text-align: center;
 }
 
 .learn-more-title {
+  font-weight: bold;
   font-size: 1.25rem;
   margin-bottom: 0.5rem;
 }
 
 .learn-more-text {
+  font-weight: bold;
   margin: 0.5rem 0;
+  font-size: 1rem;
 }
 
+/* Challenge Card Overlay for Mobile */
 .challenge-card-overlay {
   position: fixed;
   top: 50%;
@@ -196,31 +208,48 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
   z-index: -1;
 }
 
+/* Mobile Layout */
 .mobile-container {
   flex-direction: column;
   padding: 1.25rem;
 }
 
-.mobile-container .learn-more-section {
-  text-align: center;
+.mobile-container .blingo-title {
+  font-size: 2.5rem;
 }
 
+.mobile-container .blingo-subtitle {
+  font-size: 1.25rem;
+}
+
+/* Desktop Layout */
 .desktop-layout {
   display: flex;
   justify-content: space-between;
+  align-items: stretch;
   width: 100%;
   padding: 2rem;
 }
 
-.left-section {
-  flex: 1;
-  max-width: 30%;
+.desktop-header .blingo-title {
+  font-size: 3rem;
 }
 
-.game-grid {
-  flex: 2;
+.desktop-header .blingo-subtitle {
+  font-size: 1.5rem;
+}
+
+.desktop-game-grid {
+  flex: 1;
+  max-width: 40%;
+}
+
+.left-section {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
 }
 
 .grid-row {
@@ -228,10 +257,8 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
   gap: 0.25rem;
   margin-bottom: 0.25rem;
 }
-.challenge-card-overlay {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+
+.grid-row:last-child {
+  margin-bottom: 0;
 }
 </style>

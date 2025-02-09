@@ -100,8 +100,12 @@ const finish = () => {
     <template v-else-if="status === 'started'">
       <div class="description">
         <div class="submission-area" width="95%">
-          <v-textarea v-model="taskSubmission.feedback" placeholder="Feedback" class="custom-textarea"
-            variant="plain"></v-textarea>
+          <v-textarea
+            v-model="taskSubmission.feedback"
+            placeholder="Feedback"
+            class="custom-textarea"
+            variant="plain"
+          ></v-textarea>
 
           <div class="file-preview" v-if="taskSubmission.image">
             <img src="/FileIcon.svg" alt="File icon" class="file-icon" />
