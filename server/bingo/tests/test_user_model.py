@@ -77,7 +77,7 @@ class UpdatePreferencesTest(TestCase):
             last_name="Doe",
             birthdate=date(1, 1, 1),
             avatar=0,
-            visibility=User.Visibility.BLUECREW
+            visibility=User.Visibility.STAFF
         )
         self.client = APIClient()
         self.client.force_authenticate(self.user)
@@ -95,8 +95,10 @@ class UpdatePreferencesTest(TestCase):
         self.assertEqual(self.user.bio, "words")
 
     def test_invalid(self):
-        self.assertEqual(self.request(-1, User.Visibility.BLUECREW).status_code, 400)
-        self.assertEqual(self.request('a', User.Visibility.PUBLIC).status_code, 400)
+        self.assertEqual(
+            self.request(-1, User.Visibility.STAFF).status_code, 400)
+        self.assertEqual(self.request(
+            'a', User.Visibility.PUBLIC).status_code, 400)
         self.assertEqual(self.request(5, 3).status_code, 400)
         self.assertEqual(self.request(bio="!"*301).status_code, 400)
 
@@ -110,6 +112,7 @@ class UpdatePreferencesTest(TestCase):
     def test_unauthenitcated(self):
         response = APIClient().put(
             reverse("update_preferences"),
-            {"avatar": 1, "visibility": User.Visibility.FRIENDS, "bio": "Stuff and things"}
+            {"avatar": 1, "visibility": User.Visibility.FRIENDS,
+                "bio": "Stuff and things"}
         )
         self.assertEqual(response.status_code, 401)

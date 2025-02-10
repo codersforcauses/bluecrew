@@ -26,6 +26,8 @@ urlpatterns = [
     path('bingo-grid/', bingo_views.get_bingo_grid, name='get_bingo_grid'),
     path('accept-friendship/<int:friendship_id>/',
          friends_views.accept_friendship, name='accept_friendship'),
+    path('get-profile-page/<str:username>/',
+         user_views.get_profile_page, name='get_profile_page'),
     path('complete-challenge/', bingo_views.complete_challenge,
          name='complete_challenge'),
     path('request-friendship/<int:user_id>/',
