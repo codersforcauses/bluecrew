@@ -1,18 +1,10 @@
-# FriendView.vue
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import FriendComponent from '@/components/FriendComponent.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
-import { useUserStore } from '@/stores/user'
 import server from '@/utils/server'
 
-// Track which subpage is currently active
-const currentSubpage = ref<'list' | 'incoming' | 'outgoing'>('list')
-const isLoading = ref(true)
-const error = ref<string | null>(null)
-const searchQuery = ref('')
-
-// What we receive from the API
+// Types
 interface FriendEntry {
   userId: number
   userName: string
@@ -30,94 +22,64 @@ interface SearchResult {
   friendship_id?: number
 }
 
-// Current friends list
+type FriendAction = 'accept' | 'delete' | 'dismiss' | 'reject' | 'send'
+type SubPage = 'list' | 'incoming' | 'outgoing'
+
+// State
+const currentSubpage = ref<SubPage>('list')
+const isLoading = ref(true)
+const error = ref<string | null>(null)
+const searchQuery = ref('')
 const currentFriends = ref<FriendEntry[]>([])
 const incomingRequests = ref<FriendEntry[]>([])
 const outgoingRequests = ref<FriendEntry[]>([])
 const searchResults = ref<SearchResult[]>([])
 
-// Computed properties for filtering search results
-const existingFriendsResults = computed(() => {
-  if (!searchQuery.value) return []
-  return currentFriends.value.filter((friend) =>
-    friend.userName.toLowerCase().includes(searchQuery.value.toLowerCase()),
-  )
-})
+// Computed
+const existingFriendsResults = computed(() => 
+  searchQuery.value ? currentFriends.value.filter(friend => 
+    friend.userName.toLowerCase().includes(searchQuery.value.toLowerCase())
+  ) : []
+)
 
-const filteredSearchResults = computed(() => {
-  if (!searchResults.value) return []
-  
-  // Get list of existing friend IDs
-  const existingFriendIds = currentFriends.value.map(friend => friend.userId)
-  // Get current user's ID
-  const currentUserId = useUserStore().user?.userId 
-  
-  // Filter out yourself and existing friends
-  return searchResults.value.filter(result => 
-    result.user_data.user_id !== currentUserId && 
-    !existingFriendIds.includes(result.user_data.user_id)
-  )
-})
+const filteredSearchResults = computed(() => 
+  searchResults.value?.filter(result => 
+    !currentFriends.value.some(friend => friend.userId === result.user_data.user_id)
+  ) ?? []
+)
 
-// Helper method to determine which variant to show
+// Helpers
 const getUserVariant = (status: string) => {
   switch (status) {
-    case "You have requested friendship.":
-      return 'requestSent'
-    case "Pending friendship request.":
-      return 'accept'
-    case "You are friends.":
-      return 'details'
-    default:
-      return 'send'
+    case "You have requested friendship.": return 'requestSent'
+    case "Pending friendship request.": return 'accept'
+    case "You are friends.": return 'details'
+    default: return 'send'
   }
 }
 
-// Fetch functions for each list
-const fetchFriends = async () => {
+// Data fetching
+const fetchFriendsData = async () => {
+  isLoading.value = true
+  error.value = null
+  
   try {
-    const response = await server.get<FriendEntry[]>('/friends/', {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-    currentFriends.value = response.data
+    const [friendsResponse, incomingResponse, outgoingResponse] = await Promise.all([
+      server.get<FriendEntry[]>('/friends/'),
+      server.get<FriendEntry[]>('/friends/requests/incoming/'),
+      server.get<FriendEntry[]>('/friends/requests/outgoing/')
+    ])
+
+    currentFriends.value = friendsResponse.data
+    incomingRequests.value = incomingResponse.data
+    outgoingRequests.value = outgoingResponse.data
   } catch (err) {
-    console.error('Error fetching friends:', err)
-    error.value = err instanceof Error ? err.message : 'Failed to fetch friends'
+    error.value = 'Failed to fetch friends data'
+  } finally {
+    isLoading.value = false
   }
 }
 
-const fetchIncomingRequests = async () => {
-  try {
-    const response = await server.get<FriendEntry[]>('/friends/requests/incoming/', {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-    incomingRequests.value = response.data
-  } catch (err) {
-    console.error('Error fetching incoming requests:', err)
-  }
-}
-
-const fetchOutgoingRequests = async () => {
-  try {
-    const response = await server.get<FriendEntry[]>('/friends/requests/outgoing/', {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-    outgoingRequests.value = response.data
-  } catch (err) {
-    console.error('Error fetching outgoing requests:', err)
-  }
-}
-
-// Search functionality
 const searchUsers = async () => {
   if (!searchQuery.value) {
     searchResults.value = []
@@ -130,103 +92,37 @@ const searchUsers = async () => {
     })
     searchResults.value = response.data
   } catch (err) {
-    console.error('Error searching users:', err)
     searchResults.value = []
-  }
-}
-
-// Watch for search input changes
-watch(searchQuery, () => {
-  searchUsers()
-})
-
-// Initialize data
-const fetchAllData = async () => {
-  isLoading.value = true
-  error.value = null
-  try {
-    await Promise.all([
-      fetchFriends(),
-      fetchIncomingRequests(),
-      fetchOutgoingRequests()
-    ])
-  } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Failed to fetch data'
-  } finally {
-    isLoading.value = false
+    error.value = 'Failed to search users'
   }
 }
 
 // Event handlers
-const handleAccept = async (userId: number, friendshipId: number) => {
+const handleFriendAction = async (action: FriendAction, userId: number, friendshipId?: number) => {
   try {
-    await server.post(`/accept-friendship/${friendshipId}/`)
-    await fetchAllData()
-  } catch (err) {
-    console.error('Error accepting friend request:', err)
-    error.value = 'Failed to accept friend request'
-  }
-}
-
-const handleReject = async (userId: number, friendshipId: number) => {
-  try {
-    await server.delete(`/delete-friendship/${friendshipId}/`)
-    await fetchAllData()
-  } catch (err) {
-    console.error('Error rejecting friend request:', err)
-    error.value = 'Failed to reject friend request'
-  }
-}
-
-const handleDelete = async (userId: number, friendshipId?: number) => {
-  console.log('Deleting friendship:', { userId, friendshipId }); // Debug log
-  
-  if (!friendshipId) {
-    console.error('No friendship ID provided for user:', userId);
-    error.value = 'Cannot delete friend: Missing friendship ID';
-    return;
-  }
-
-  try {
-    await server.delete(`/delete-friendship/${friendshipId}/`);
-    await fetchAllData();
-  } catch (err) {
-    console.error('Error deleting friend:', err);
-    if (err.response) {
-      console.error('Error response:', err.response.data); // Log the error response
+    switch (action) {
+      case 'accept':
+        await server.post(`/accept-friendship/${friendshipId}/`)
+        break
+      case 'send':
+        await server.post(`/request-friendship/${userId}/`)
+        break
+      case 'delete':
+      case 'dismiss':
+      case 'reject':
+        await server.delete(`/delete-friendship/${friendshipId}/`)
+        break
     }
-    error.value = 'Failed to delete friend';
-  }
-}
-
-const handleDismiss = async (userId: number, friendshipId: number) => {
-  try {
-    await server.delete(`/delete-friendship/${friendshipId}/`)
-    await fetchAllData()
+    await fetchFriendsData()
+    if (action === 'send') await searchUsers()
   } catch (err) {
-    console.error('Error dismissing request:', err)
-    error.value = 'Failed to dismiss request'
+    error.value = `Failed to ${action} friend${action === 'send' ? ' request' : ''}`
   }
 }
 
-const handleSend = async (userId: number) => {
-  try {
-    await server.post(`/request-friendship/${userId}/`)
-    await fetchAllData()
-    await searchUsers()
-  } catch (err) {
-    console.error('Error sending friend request:', err)
-    error.value = 'Failed to send friend request'
-  }
-}
-
-const handleDefault = (userId: number) => {
-  console.log('View friend details:', userId)
-}
-
-onMounted(() => {
-  fetchAllData()
-})
+// Lifecycle
+watch(searchQuery, searchUsers)
+onMounted(fetchFriendsData)
 </script>
 
 <template>
@@ -246,7 +142,6 @@ onMounted(() => {
     </div>
 
     <div v-else>
-      <!-- Search Bar -->
       <v-text-field
         v-model="searchQuery"
         prepend-inner-icon="mdi-magnify"
@@ -262,41 +157,36 @@ onMounted(() => {
 
       <!-- Regular Content -->
       <div v-if="!searchQuery">
-        <!-- Navigation Buttons -->
         <v-btn-group class="w-100 mb-6">
           <v-btn
-            :color="currentSubpage === 'list' ? 'primaryGreen' : 'primaryBlue'"
-            @click="currentSubpage = 'list'"
+            v-for="page in ['list', 'incoming', 'outgoing']"
+            :key="page"
+            :color="currentSubpage === page ? 'primaryGreen' : 'primaryBlue'"
+            @click="currentSubpage = page"
             class="flex-grow-1 text-caption text-sm-subtitle-2 font-poppins"
           >
-            Friends List
-          </v-btn>
-          <v-btn
-            :color="currentSubpage === 'incoming' ? 'primaryGreen' : 'primaryBlue'"
-            @click="currentSubpage = 'incoming'"
-            class="flex-grow-1 text-caption text-sm-subtitle-2 font-poppins"
-          >
-            Incoming
-          </v-btn>
-          <v-btn
-            :color="currentSubpage === 'outgoing' ? 'primaryGreen' : 'primaryBlue'"
-            @click="currentSubpage = 'outgoing'"
-            class="flex-grow-1 text-caption text-sm-subtitle-2 font-poppins"
-          >
-            Outgoing
+            {{ page.charAt(0).toUpperCase() + page.slice(1) }}
           </v-btn>
         </v-btn-group>
 
         <!-- Friends List -->
         <div v-if="currentSubpage === 'list'">
           <h3 class="section-title2 text-primaryBlue">Friends List</h3>
-          <v-row class="friend-scroll">
+          <v-row v-if="currentFriends.length === 0" class="text-center my-6">
+            <v-col>
+              <p class="text-primaryBlue font-italic">
+                Looks like you haven't added any friends yet! 
+                <br>Start by searching for users to connect with.
+              </p>
+            </v-col>
+          </v-row>
+          <v-row v-else class="friend-scroll">
             <v-col v-for="friend in currentFriends" :key="friend.userId" cols="12">
               <FriendComponent
                 :avatar-index="friend.avatar"
                 :name="friend.userName"
                 variant="delete"
-                @delete="handleDelete(friend.userId, friend.friendship_id)"
+                @delete="handleFriendAction('delete', friend.userId, friend.friendship_id)"
               />
             </v-col>
           </v-row>
@@ -305,14 +195,22 @@ onMounted(() => {
         <!-- Incoming Requests -->
         <div v-if="currentSubpage === 'incoming'">
           <h3 class="section-title2 text-primaryBlue">Incoming Requests</h3>
-          <v-row class="friend-scroll">
+          <v-row v-if="incomingRequests.length === 0" class="text-center my-6">
+            <v-col>
+              <p class="text-primaryBlue font-italic">
+                Oh no! No friend requests yet. 
+                <br>Keep exploring and connecting with others!
+              </p>
+            </v-col>
+          </v-row>
+          <v-row v-else class="friend-scroll">
             <v-col v-for="request in incomingRequests" :key="request.userId" cols="12">
               <FriendComponent
                 :avatar-index="request.avatar"
                 :name="request.userName"
                 variant="acceptReject"
-                @accept="handleAccept(request.userId, request.friendship_id)"
-                @reject="handleReject(request.userId, request.friendship_id)"
+                @accept="handleFriendAction('accept', request.userId, request.friendship_id)"
+                @reject="handleFriendAction('reject', request.userId, request.friendship_id)"
               />
             </v-col>
           </v-row>
@@ -321,13 +219,21 @@ onMounted(() => {
         <!-- Outgoing Requests -->
         <div v-if="currentSubpage === 'outgoing'">
           <h3 class="section-title2 text-primaryBlue">Outgoing Requests</h3>
-          <v-row class="friend-scroll">
+          <v-row v-if="outgoingRequests.length === 0" class="text-center my-6">
+            <v-col>
+              <p class="text-primaryBlue font-italic">
+                No pending friend requests at the moment. 
+                <br>Keep exploring and sending connection requests!
+              </p>
+            </v-col>
+          </v-row>
+          <v-row v-else class="friend-scroll">
             <v-col v-for="request in outgoingRequests" :key="request.userId" cols="12">
               <FriendComponent
                 :avatar-index="request.avatar"
                 :name="request.userName"
                 variant="dismiss"
-                @dismiss="handleDismiss(request.userId, request.friendship_id)"
+                @dismiss="handleFriendAction('dismiss', request.userId, request.friendship_id)"
               />
             </v-col>
           </v-row>
@@ -347,7 +253,6 @@ onMounted(() => {
                 :avatar-index="friend.avatar"
                 :name="friend.userName"
                 variant="details"
-                @default="handleDefault(friend.userId)"
               />
             </v-col>
           </v-row>
@@ -364,11 +269,10 @@ onMounted(() => {
                 :avatar-index="result.user_data.avatar"
                 :name="result.user_data.username"
                 :variant="getUserVariant(result.status)"
-                @send="handleSend(result.user_data.user_id)"
-                @accept="handleAccept(result.user_data.user_id, result.friendship_id)"
-                @reject="result.friendship_id && handleReject(result.user_data.user_id, result.friendship_id)"
-                @dismiss="result.friendship_id && handleDismiss(result.user_data.user_id, result.friendship_id)"
-                @default="handleDefault(result.user_data.user_id)"
+                @send="handleFriendAction('send', result.user_data.user_id)"
+                @accept="handleFriendAction('accept', result.user_data.user_id, result.friendship_id)"
+                @reject="result.friendship_id && handleFriendAction('reject', result.user_data.user_id, result.friendship_id)"
+                @dismiss="result.friendship_id && handleFriendAction('dismiss', result.user_data.user_id, result.friendship_id)"
               />
             </v-col>
           </v-row>
