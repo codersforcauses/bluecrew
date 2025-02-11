@@ -95,8 +95,10 @@ def check_bingo(tile):
 def check_friendships(user_set, current_user):
     list_out = []
     for user in user_set:
-        friendship = get_or_none(
-            Friendship, requester=current_user, receiver=user['user_id'])
+        # Skip if this is the current user
+        if user['user_id'] == current_user.user_id:
+            continue
+        friendship = get_or_none(Friendship, requester=current_user, receiver=user['user_id'])
         if friendship:
             if friendship.status == friendship.PENDING:
                 list_out.append(
