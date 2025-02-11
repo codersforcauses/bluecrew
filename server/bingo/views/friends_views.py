@@ -7,7 +7,6 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from ..models import Friendship, User
-from ..serializers import UserProfileSerializer
 from ..serializers import FriendshipUserSerializer
 from .utils import get_friend_requests
 
@@ -33,7 +32,7 @@ def get_friends(request):
     ).filter(
         Q(requester=request.user) | Q(receiver=request.user)
     )
-    
+
     friend_data = []
     for friendship in friendships:
         friend = (friendship.receiver if friendship.requester ==
@@ -43,7 +42,7 @@ def get_friends(request):
             context={'friendship': friendship}
         )
         friend_data.append(serializer.data)
-    
+
     return Response(friend_data, status=status.HTTP_200_OK)
 
 

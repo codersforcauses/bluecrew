@@ -81,7 +81,7 @@ const fetchFriendsData = async () => {
     currentFriends.value = friendsResponse.data
     incomingRequests.value = incomingResponse.data
     outgoingRequests.value = outgoingResponse.data
-  } catch (err) {
+  } catch {
     error.value = 'Failed to fetch friends data'
   } finally {
     isLoading.value = false
@@ -99,7 +99,7 @@ const searchUsers = async () => {
       query_string: searchQuery.value,
     })
     searchResults.value = response.data
-  } catch (err) {
+  } catch {
     searchResults.value = []
     error.value = 'Failed to search users'
   }
@@ -123,7 +123,7 @@ const handleFriendAction = async (action: FriendAction, userId: number, friendsh
     }
     await fetchFriendsData()
     if (action === 'send') await searchUsers()
-  } catch (err) {
+  } catch {
     error.value = `Failed to ${action} friend${action === 'send' ? ' request' : ''}`
   }
 }
@@ -167,7 +167,7 @@ onMounted(fetchFriendsData)
       <div v-if="!searchQuery">
         <v-btn-group class="w-100 mb-6">
           <v-btn
-            v-for="page in ['list', 'incoming', 'outgoing']"
+            v-for="page in ['list', 'incoming', 'outgoing'] as const"
             :key="page"
             :color="currentSubpage === page ? 'primaryGreen' : 'primaryBlue'"
             @click="currentSubpage = page"
@@ -176,7 +176,6 @@ onMounted(fetchFriendsData)
             {{ page.charAt(0).toUpperCase() + page.slice(1) }}
           </v-btn>
         </v-btn-group>
-
         <!-- Friends List -->
         <div v-if="currentSubpage === 'list'">
           <h3 class="section-title2 text-primaryBlue">Friends List</h3>
