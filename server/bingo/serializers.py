@@ -133,5 +133,5 @@ class UpdateBingoGridSerializer(serializers.ModelSerializer):
     def validate_challenges(self, value):
         if len(value) != 16 or len(set(value)) != 16:
             raise serializers.ValidationError(
-                "You must provide the ids of exactly 16 distinct challenges")
+                "You must provide the ids of exactly 16 distinct challenges.")
         return value
