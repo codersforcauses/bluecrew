@@ -130,7 +130,10 @@ const submitForm = async () => {
               @focus="errorMessage = ''"
             ></v-text-field>
             <div class="mt-3">
-              <a class="text-lightBlue" @click.prevent="setCurrentPage('forgot-password')">
+              <a
+                class="text-lightBlue cursor-pointer"
+                @click.prevent="setCurrentPage('forgot-password')"
+              >
                 <p class="text-subtitle-2 margin-left-adjust">Forgot Username or Password?</p>
               </a>
             </div>
