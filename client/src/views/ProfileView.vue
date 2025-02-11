@@ -1,10 +1,29 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import ChallengeInteraction from '@/components/ChallengeInteraction.vue'
-import WaveBanner from '@/components/WaveBanner.vue'
+import { ref, onMounted } from 'vue'
 import { useDisplay } from 'vuetify'
 import { useUserStore } from '@/stores/user'
+import { useModalStore } from '@/stores/modal'
+import { useRouter } from 'vue-router'
+import ChallengeInteraction from '@/components/ChallengeInteraction.vue'
+import WaveBanner from '@/components/WaveBanner.vue'
 import avatarPaths from '@/utils/avatar'
+import { mockUsers, currentUserData } from '@/utils/mockData' //for testing
+import type { User } from '@/types/user'
+
+// types
+interface Challenge {
+  title: string
+  description: string
+  type: 'Connect' | 'Understand' | 'Act'
+  points: number
+  startDate: string
+  finishDate?: string
+  status: 'Complete' | 'In Progress'
+}
+
+interface UserWithChallenges extends User {
+  challenges: Challenge[]
+}
 
 const props = defineProps<{
   username?: string
@@ -12,49 +31,36 @@ const props = defineProps<{
 
 const { xs } = useDisplay()
 const userStore = useUserStore()
+const modalStore = useModalStore()
+const router = useRouter()
+const profileData = ref<UserWithChallenges | null>(null) //data for the profile
 
-// 模拟数据
-const profileData = ref({
-  userName: 'Username',
-  firstName: 'Firstname',
-  lastName: 'Lastname',
-  bio: 'This is a bio.',
-  totalPoints: 2000,
-  avatar: 0,
-  challenges: [
-    {
-      title: 'Challenge 1',
-      description: 'Bingo 1 Challenge Description',
-      type: 'Connect' as const,
-      points: 200,
-      startDate: '27/11/2024 10:27pm',
-      finishDate: '27/11/2024 11:27pm',
-      status: 'Complete' as const,
-    },
-    {
-      title: 'Challenge 2',
-      description: 'Bingo 2 Challenge Description',
-      type: 'Act' as const,
-      points: 200,
-      startDate: '27/11/2024 10:27pm',
-      finishDate: '27/11/2024 11:27pm',
-      status: 'Complete' as const,
-    },
-    {
-      title: 'Challenge 3',
-      description: 'Bingo 3 Challenge Description',
-      type: 'Understand' as const,
-      points: 200,
-      startDate: '27/11/2024 10:27pm',
-      finishDate: '29/11/2024 12:27pm',
-      status: 'In Progress' as const,
-    },
-  ],
+const initializeProfile = () => {
+  if (!userStore.isLoggedIn) {
+    modalStore.openLogin()
+    router.push('/')
+    return
+  } //if user is not logged in, open login modal
+
+  if (props.username) {
+    const userData = mockUsers[props.username]
+    if (userData) {
+      profileData.value = userData
+    } else {
+      router.push('/404')
+    }
+  } else {
+    profileData.value = currentUserData
+  }
+}
+
+onMounted(() => {
+  initializeProfile()
 })
 </script>
 
 <template>
-  <v-container fluid class="pa-0 d-flex flex-column">
+  <v-container v-if="profileData" fluid class="pa-0 d-flex flex-column">
     <!-- Wave Banner Header -->
     <v-row v-if="!xs" class="header">
       <WaveBanner imageSrc="/beach-header.jpg" />
