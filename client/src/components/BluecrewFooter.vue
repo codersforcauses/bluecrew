@@ -4,7 +4,7 @@
       <!-- Desktop Layout -->
       <div v-if="!smAndDown" class="desktop-layout">
         <div class="company-section">
-          <img src="/oy-logo.png" alt="Ocean Youth Logo" class="company-logo" />
+          <img src="/OY-logo-white.svg" alt="Ocean Youth Logo" class="company-logo" />
           <div class="link-group">
             <div class="social-icons">
               <a href="https://www.facebook.com/oceanyouth" target="_blank" class="social-link">
@@ -91,7 +91,7 @@
             <!-- Ocean Youth -->
             <div class="mobile-company">
               <div class="company-content">
-                <img src="/oy-logo.png" alt="Ocean Youth Logo" class="mobile-logo" />
+                <img src="/OY-logo-white.svg" alt="Ocean Youth Logo" class="mobile-logo" />
                 <div class="mobile-links">
                   <div class="mobile-social">
                     <a href="https://www.facebook.com/oceanyouth" target="_blank">
