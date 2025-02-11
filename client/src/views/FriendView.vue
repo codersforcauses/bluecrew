@@ -36,25 +36,33 @@ const outgoingRequests = ref<FriendEntry[]>([])
 const searchResults = ref<SearchResult[]>([])
 
 // Computed
-const existingFriendsResults = computed(() => 
-  searchQuery.value ? currentFriends.value.filter(friend => 
-    friend.userName.toLowerCase().includes(searchQuery.value.toLowerCase())
-  ) : []
+const existingFriendsResults = computed(() =>
+  searchQuery.value
+    ? currentFriends.value.filter((friend) =>
+        friend.userName.toLowerCase().includes(searchQuery.value.toLowerCase()),
+      )
+    : [],
 )
 
-const filteredSearchResults = computed(() => 
-  searchResults.value?.filter(result => 
-    !currentFriends.value.some(friend => friend.userId === result.user_data.user_id)
-  ) ?? []
+const filteredSearchResults = computed(
+  () =>
+    searchResults.value?.filter(
+      (result) =>
+        !currentFriends.value.some((friend) => friend.userId === result.user_data.user_id),
+    ) ?? [],
 )
 
 // Helpers
 const getUserVariant = (status: string) => {
   switch (status) {
-    case "You have requested friendship.": return 'requestSent'
-    case "Pending friendship request.": return 'accept'
-    case "You are friends.": return 'details'
-    default: return 'send'
+    case 'You have requested friendship.':
+      return 'requestSent'
+    case 'Pending friendship request.':
+      return 'accept'
+    case 'You are friends.':
+      return 'details'
+    default:
+      return 'send'
   }
 }
 
@@ -62,12 +70,12 @@ const getUserVariant = (status: string) => {
 const fetchFriendsData = async () => {
   isLoading.value = true
   error.value = null
-  
+
   try {
     const [friendsResponse, incomingResponse, outgoingResponse] = await Promise.all([
       server.get<FriendEntry[]>('/friends/'),
       server.get<FriendEntry[]>('/friends/requests/incoming/'),
-      server.get<FriendEntry[]>('/friends/requests/outgoing/')
+      server.get<FriendEntry[]>('/friends/requests/outgoing/'),
     ])
 
     currentFriends.value = friendsResponse.data
@@ -88,7 +96,7 @@ const searchUsers = async () => {
 
   try {
     const response = await server.post<SearchResult[]>('/user-search/', {
-      query_string: searchQuery.value
+      query_string: searchQuery.value,
     })
     searchResults.value = response.data
   } catch (err) {
@@ -175,8 +183,8 @@ onMounted(fetchFriendsData)
           <v-row v-if="currentFriends.length === 0" class="text-center my-6">
             <v-col>
               <p class="text-primaryBlue font-italic">
-                Looks like you haven't added any friends yet! 
-                <br>Start by searching for users to connect with.
+                Looks like you haven't added any friends yet!
+                <br />Start by searching for users to connect with.
               </p>
             </v-col>
           </v-row>
@@ -198,8 +206,8 @@ onMounted(fetchFriendsData)
           <v-row v-if="incomingRequests.length === 0" class="text-center my-6">
             <v-col>
               <p class="text-primaryBlue font-italic">
-                Oh no! No friend requests yet. 
-                <br>Keep exploring and connecting with others!
+                Oh no! No friend requests yet.
+                <br />Keep exploring and connecting with others!
               </p>
             </v-col>
           </v-row>
@@ -222,8 +230,8 @@ onMounted(fetchFriendsData)
           <v-row v-if="outgoingRequests.length === 0" class="text-center my-6">
             <v-col>
               <p class="text-primaryBlue font-italic">
-                No pending friend requests at the moment. 
-                <br>Keep exploring and sending connection requests!
+                No pending friend requests at the moment.
+                <br />Keep exploring and sending connection requests!
               </p>
             </v-col>
           </v-row>
@@ -264,15 +272,27 @@ onMounted(fetchFriendsData)
             Other Users - {{ filteredSearchResults.length }}
           </h3>
           <v-row class="friend-scroll">
-            <v-col v-for="result in filteredSearchResults" :key="result.user_data.user_id" cols="12">
+            <v-col
+              v-for="result in filteredSearchResults"
+              :key="result.user_data.user_id"
+              cols="12"
+            >
               <FriendComponent
                 :avatar-index="result.user_data.avatar"
                 :name="result.user_data.username"
                 :variant="getUserVariant(result.status)"
                 @send="handleFriendAction('send', result.user_data.user_id)"
-                @accept="handleFriendAction('accept', result.user_data.user_id, result.friendship_id)"
-                @reject="result.friendship_id && handleFriendAction('reject', result.user_data.user_id, result.friendship_id)"
-                @dismiss="result.friendship_id && handleFriendAction('dismiss', result.user_data.user_id, result.friendship_id)"
+                @accept="
+                  handleFriendAction('accept', result.user_data.user_id, result.friendship_id)
+                "
+                @reject="
+                  result.friendship_id &&
+                    handleFriendAction('reject', result.user_data.user_id, result.friendship_id)
+                "
+                @dismiss="
+                  result.friendship_id &&
+                    handleFriendAction('dismiss', result.user_data.user_id, result.friendship_id)
+                "
               />
             </v-col>
           </v-row>
