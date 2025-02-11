@@ -8,6 +8,7 @@ from rest_framework.response import Response
 
 from ..models import Friendship, User
 from ..serializers import UserProfileSerializer
+from ..serializers import FriendshipUserSerializer
 from .utils import get_friend_requests
 
 
@@ -27,20 +28,23 @@ def delete_friendship(request, friendship_id):
 @api_view(['GET'])
 @permission_classes((permissions.IsAuthenticated, ))
 def get_friends(request):
-    """Get all accepted friends of the logged-in user.
-    Requires authentication."""
     friendships = Friendship.objects.filter(
         status='accepted'
     ).filter(
         Q(requester=request.user) | Q(receiver=request.user)
     )
-    friend_users = []
+    
+    friend_data = []
     for friendship in friendships:
         friend = (friendship.receiver if friendship.requester ==
                   request.user else friendship.requester)
-        friend_users.append(friend)
-    serializer = UserProfileSerializer(friend_users, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = FriendshipUserSerializer(
+            friend,
+            context={'friendship': friendship}
+        )
+        friend_data.append(serializer.data)
+    
+    return Response(friend_data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])

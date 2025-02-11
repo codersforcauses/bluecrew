@@ -5,6 +5,8 @@ from rest_framework.response import Response
 
 from ..models import TileInteraction, Friendship
 from ..serializers import (UserProfileSerializer,)
+from ..serializers import FriendshipUserSerializer
+
 
 
 def check_access(current_user, target_user):
@@ -133,8 +135,18 @@ def get_friend_requests(request, is_outgoing=True):
         'requester' if is_outgoing else 'receiver': request.user
     }
     friendships = Friendship.objects.filter(**filter_kwargs)
-    friend_users = [
-        getattr(friendship, 'receiver' if is_outgoing else 'requester') for friendship in friendships
-    ]
-    serializer = UserProfileSerializer(friend_users, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    # Prepare the response data
+    result = []
+    for friendship in friendships:
+        # Get the friend (either requester or receiver)
+        friend = getattr(friendship, 'receiver' if is_outgoing else 'requester')
+        
+        # Create serializer with friendship context
+        serializer = FriendshipUserSerializer(
+            friend,
+            context={'friendship': friendship}
+        )
+        result.append(serializer.data)
+    
+    return Response(result, status=status.HTTP_200_OK)

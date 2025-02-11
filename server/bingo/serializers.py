@@ -142,3 +142,17 @@ class UserSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['avatar', 'username', 'user_id']
+
+
+class FriendshipUserSerializer(serializers.ModelSerializer):
+    userId = serializers.IntegerField(source='user_id')
+    userName = serializers.CharField(source='username')
+    friendship_id = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['userId', 'userName', 'avatar', 'friendship_id']
+
+    def get_friendship_id(self, obj):
+        friendship = self.context.get('friendship')
+        return friendship.id if friendship else None
