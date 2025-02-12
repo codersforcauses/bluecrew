@@ -26,7 +26,13 @@ class AuthorAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
-admin.site.register(Challenge)
+@admin.register(Challenge)
+class ChallengeAdmin(admin.ModelAdmin):
+    fields = ('id', 'name', 'description', 'challenge_type',
+              'points', 'total_completions')
+    readonly_fields = ('total_completions', 'id')
+
+
 admin.site.register(Friendship)
 admin.site.register(BingoGrid)
 
