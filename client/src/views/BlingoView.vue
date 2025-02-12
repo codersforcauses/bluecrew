@@ -18,8 +18,9 @@ const challengeInfos = ref<ChallengeInfo[]>([
     title: 'Watch an Ocean Documentary',
     points: 200,
     type: 'understand',
-    description: 'Here are some of our top picks! You can choose one of them or watch one of your own. Tell us what you thought and submit a picture.',
-    status: 'not started'
+    description:
+      'Here are some of our top picks! You can choose one of them or watch one of your own. Tell us what you thought and submit a picture.',
+    status: 'not started',
   },
   // Add more challenges to fill all 16 tiles
   ...Array(15).fill({
@@ -27,8 +28,8 @@ const challengeInfos = ref<ChallengeInfo[]>([
     points: 100,
     type: 'connect',
     description: 'placeholder text',
-    status: 'not started'
-  })
+    status: 'not started',
+  }),
 ])
 
 const selectedTile = ref<number | null>(null)
@@ -70,8 +71,12 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
 
           <!-- Challenge Card -->
           <div v-if="showChallengeCard" class="challenge-card-container desktop-challenge-card">
-            <ChallengeCard v-bind="currentChallenge" :is-logged-in="userStore.isLoggedIn" @close="handleCloseChallenge"
-              @status-change="handleStatusChange" />
+            <ChallengeCard
+              v-bind="currentChallenge"
+              :is-logged-in="userStore.isLoggedIn"
+              @close="handleCloseChallenge"
+              @status-change="handleStatusChange"
+            />
           </div>
 
           <!-- Learn More Section -->
@@ -83,7 +88,9 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
             </p>
             <p class="learn-more-text">
               and
-              <a href="https://www.oceanyouth.org/" class="text-link">https://www.oceanyouth.org/</a>
+              <a href="https://www.oceanyouth.org/" class="text-link"
+                >https://www.oceanyouth.org/</a
+              >
             </p>
           </div>
         </div>
@@ -92,9 +99,11 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
         <div class="game-grid desktop-game-grid">
           <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
             <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
-              <BingoTile v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
+              <BingoTile
+                v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
                 :selected="selectedTile === (row - 1) * 4 + (col - 1)"
-                @click="handleTileClick((row - 1) * 4 + (col - 1))" />
+                @click="handleTileClick((row - 1) * 4 + (col - 1))"
+              />
             </div>
           </div>
         </div>
@@ -113,9 +122,11 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
       <div class="game-grid">
         <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
           <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
-            <BingoTile v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
+            <BingoTile
+              v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
               :selected="selectedTile === (row - 1) * 4 + (col - 1)"
-              @click="handleTileClick((row - 1) * 4 + (col - 1))" />
+              @click="handleTileClick((row - 1) * 4 + (col - 1))"
+            />
           </div>
         </div>
       </div>
@@ -134,8 +145,12 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
 
       <!-- Challenge Card -->
       <div v-if="showChallengeCard" class="challenge-card-overlay">
-        <ChallengeCard v-bind="currentChallenge" :is-logged-in="userStore.isLoggedIn" @close="handleCloseChallenge"
-          @status-change="handleStatusChange" />
+        <ChallengeCard
+          v-bind="currentChallenge"
+          :is-logged-in="userStore.isLoggedIn"
+          @close="handleCloseChallenge"
+          @status-change="handleStatusChange"
+        />
       </div>
     </template>
   </div>
