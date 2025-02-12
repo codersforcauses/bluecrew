@@ -197,7 +197,7 @@ const openLoginModal = () => {
               <button class="close-button" @click="closeDialog">
                 <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
               </button>
-              <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
+              <img src="/blingo-logo.svg" alt="logo" class="logo" />
             </div>
 
             <strong class="text-primaryGreen">Create an account</strong>
@@ -250,7 +250,7 @@ const openLoginModal = () => {
 
             <footer class="text-primaryPink">
               Already have an account?
-              <a class="text-primaryPink" @click.prevent="openLoginModal">Sign In</a>
+              <a class="text-primaryPink cursor-pointer" @click.prevent="openLoginModal">Sign In</a>
             </footer>
           </template>
 
@@ -259,7 +259,7 @@ const openLoginModal = () => {
               <button class="close-button" @click="closeDialog">
                 <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
               </button>
-              <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
+              <img src="/blingo-logo.svg" alt="Blingo Logo" class="logo" />
             </div>
             <h2 class="text-primaryGreen text-center">One More Step</h2>
             <p class="text-center">Please check your inbox for a link to verify your email.</p>
@@ -360,5 +360,10 @@ a {
   text-decoration: underline;
   font-family: poppins;
   font-weight: bold;
+}
+
+.logo {
+  height: 100px;
+  width: 100%;
 }
 </style>
