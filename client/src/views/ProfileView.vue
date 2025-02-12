@@ -34,6 +34,7 @@ const userStore = useUserStore()
 const modalStore = useModalStore()
 const router = useRouter()
 const profileData = ref<UserWithChallenges | null>(null) //data for the profile
+userStore.userData = currentUserData //for testing
 
 const initializeProfile = () => {
   if (!userStore.isLoggedIn) {
