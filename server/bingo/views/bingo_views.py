@@ -132,6 +132,6 @@ def update_bingo_grid(request):
             old_grid.save()
         new_grid.is_active = True
         new_grid.save()
-        return Response({"message": "Bingo grid successfully updated."}, status=status.HTTP_200_OK)
+        return Response({"message": "Bingo grid successfully updated."}, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
