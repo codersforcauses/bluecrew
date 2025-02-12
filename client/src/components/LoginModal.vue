@@ -85,7 +85,7 @@ const submitForm = async () => {
       </v-container>
 
       <v-card-title class="d-flex justify-center">
-        <img src="@/assets/bluecrew-logo.png" alt="Blue Crew Logo" style="width: 100px" />
+        <img src="/blingo-logo.svg" alt="Blingo Logo" class="logo" />
       </v-card-title>
 
       <!-- Login Page -->
@@ -130,7 +130,10 @@ const submitForm = async () => {
               @focus="errorMessage = ''"
             ></v-text-field>
             <div class="mt-3">
-              <a class="text-lightBlue" @click.prevent="setCurrentPage('forgot-password')">
+              <a
+                class="text-lightBlue cursor-pointer"
+                @click.prevent="setCurrentPage('forgot-password')"
+              >
                 <p class="text-subtitle-2 margin-left-adjust">Forgot Username or Password?</p>
               </a>
             </div>
@@ -150,7 +153,9 @@ const submitForm = async () => {
         <v-card-actions class="d-flex justify-center text-primaryPink">
           <footer>
             Don't have an account?
-            <a class="text-primaryPink" @click.prevent="openRegisterModal">Sign up</a>
+            <a class="text-primaryPink cursor-pointer" @click.prevent="openRegisterModal"
+              >Sign up</a
+            >
           </footer>
         </v-card-actions>
       </template>
@@ -267,5 +272,9 @@ footer {
 
 a {
   text-decoration: underline;
+}
+
+.logo {
+  height: 100px;
 }
 </style>
