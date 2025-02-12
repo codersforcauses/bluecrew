@@ -8,8 +8,10 @@ import { ref } from 'vue'
 const isValid = ref(false)
 const errorMessage = ref('')
 const messageStore = useMessageStore()
-const isInt = (val: string) => /^[1-9]\d*$/.test(val) || 'Please enter a whole number'
-const challengeIds = ref<string[]>(new Array(16).fill(''))
+const isInt = (val: string) =>
+  val.length === 0 || /^[1-9]\d*$/.test(val) || 'Please enter a whole number'
+const initialContents = new Array(16).fill('')
+const challengeIds = ref<string[]>([...initialContents])
 
 function extractInvalidId(errorMessage: string): number | undefined {
   const startIndex = errorMessage.indexOf('Invalid pk')
@@ -31,6 +33,7 @@ function updateBingo() {
         'A new bingo grid has gone live with the challenges you specified',
         'success',
       )
+      challengeIds.value = [...initialContents]
     })
     .catch((error: AxiosError) => {
       const challenges = (error.response?.data as { challenges?: [string, ...string[]] })
