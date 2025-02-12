@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import type { ChallengeType, ChallengeStatus } from '@/types/challenge'
 
 const props = defineProps<{
-  type: 'connect' | 'understand' | 'act'
-  text: string
-  status: 'not started' | 'started' | 'completed'
+  type: ChallengeType
+  title: string
+  status: ChallengeStatus
   selected: boolean
 }>()
 
@@ -50,13 +51,11 @@ const iconBackground = computed(() => {
 </script>
 
 <template>
-  <div
-    :class="[backgroundColour, textColour, selected ? 'border-selected' : 'border-subtle']"
-    class="outer-tile rounded-lg d-flex flex-column align-center cursor-pointer w-100"
-  >
+  <div :class="[backgroundColour, textColour, selected ? 'border-selected' : 'border-subtle']"
+    class="outer-tile rounded-lg d-flex flex-column align-center cursor-pointer w-100">
     <v-img class="icon" :class="iconBackground" :src="icon" />
     <p class="w-100 tile-text text-center font-weight-bold overflow-x-hidden overflow-hidden">
-      {{ text }}
+      {{ title }}
     </p>
   </div>
 </template>

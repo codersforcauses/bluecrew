@@ -1,27 +1,43 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useDisplay } from 'vuetify'
-import BlingoTile from '@/components/BingoTile.vue'
+import { useUserStore } from '@/stores/user'
+import type { ChallengeInfo } from '@/types/challenge'
+import BingoTile from '@/components/BingoTile.vue'
 import ChallengeCard from '@/components/ChallengeCard.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
 
 const { xs } = useDisplay()
+const userStore = useUserStore()
 
 const containerClass = computed(() => (!xs.value ? 'desktop-container' : 'mobile-container'))
 
+// Define all challenge info objects
+const challengeInfos = ref<ChallengeInfo[]>([
+  {
+    title: 'Watch an Ocean Documentary',
+    points: 200,
+    type: 'understand',
+    description: 'Here are some of our top picks! You can choose one of them or watch one of your own. Tell us what you thought and submit a picture.',
+    status: 'not started'
+  },
+  // Add more challenges to fill all 16 tiles
+  ...Array(15).fill({
+    title: 'Ocean Challenge',
+    points: 100,
+    type: 'connect',
+    description: 'placeholder text',
+    status: 'not started'
+  })
+])
+
 const selectedTile = ref<number | null>(null)
 const showChallengeCard = ref(false)
-const currentChallenge = ref({
-  title: 'Watch an Ocean Documentary',
-  points: 200,
-  type: 'understand' as const,
-  description:
-    'Here are some of our top picks! You can choose one of them or watch one of your own. Tell us what you thought and submit a picture.',
-  status: 'not started' as const,
-})
+const currentChallenge = ref<ChallengeInfo>(challengeInfos.value[0])
 
 const handleTileClick = (index: number) => {
   selectedTile.value = index
+  currentChallenge.value = challengeInfos.value[index]
   showChallengeCard.value = true
 }
 
@@ -31,7 +47,10 @@ const handleCloseChallenge = () => {
 }
 
 const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') => {
-  currentChallenge.value.status = newStatus
+  if (selectedTile.value !== null) {
+    challengeInfos.value[selectedTile.value].status = newStatus
+    currentChallenge.value.status = newStatus
+  }
 }
 </script>
 
@@ -51,12 +70,8 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
 
           <!-- Challenge Card -->
           <div v-if="showChallengeCard" class="challenge-card-container desktop-challenge-card">
-            <ChallengeCard
-              v-bind="currentChallenge"
-              :is-logged-in="true"
-              @close="handleCloseChallenge"
-              @status-change="handleStatusChange"
-            />
+            <ChallengeCard v-bind="currentChallenge" :is-logged-in="userStore.isLoggedIn" @close="handleCloseChallenge"
+              @status-change="handleStatusChange" />
           </div>
 
           <!-- Learn More Section -->
@@ -68,9 +83,7 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
             </p>
             <p class="learn-more-text">
               and
-              <a href="https://www.oceanyouth.org/" class="text-link"
-                >https://www.oceanyouth.org/</a
-              >
+              <a href="https://www.oceanyouth.org/" class="text-link">https://www.oceanyouth.org/</a>
             </p>
           </div>
         </div>
@@ -78,15 +91,11 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
         <!-- Game Grid -->
         <div class="game-grid desktop-game-grid">
           <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
-            <BlingoTile
-              v-for="(_, col) in 4"
-              :key="`tile-${row}-${col}`"
-              type="connect"
-              text="placeholder text"
-              status="not started"
-              :selected="selectedTile === (row - 1) * 4 + col"
-              @click="handleTileClick((row - 1) * 4 + col)"
-            />
+            <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
+              <BingoTile v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
+                :selected="selectedTile === (row - 1) * 4 + (col - 1)"
+                @click="handleTileClick((row - 1) * 4 + (col - 1))" />
+            </div>
           </div>
         </div>
       </div>
@@ -103,15 +112,11 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
       <!-- Game Grid -->
       <div class="game-grid">
         <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
-          <BlingoTile
-            v-for="(_, col) in 4"
-            :key="`tile-${row}-${col}`"
-            type="connect"
-            text="placeholder text"
-            status="not started"
-            :selected="selectedTile === (row - 1) * 4 + col"
-            @click="handleTileClick((row - 1) * 4 + col)"
-          />
+          <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
+            <BingoTile v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
+              :selected="selectedTile === (row - 1) * 4 + (col - 1)"
+              @click="handleTileClick((row - 1) * 4 + (col - 1))" />
+          </div>
         </div>
       </div>
 
@@ -129,12 +134,8 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
 
       <!-- Challenge Card -->
       <div v-if="showChallengeCard" class="challenge-card-overlay">
-        <ChallengeCard
-          v-bind="currentChallenge"
-          :is-logged-in="true"
-          @close="handleCloseChallenge"
-          @status-change="handleStatusChange"
-        />
+        <ChallengeCard v-bind="currentChallenge" :is-logged-in="userStore.isLoggedIn" @close="handleCloseChallenge"
+          @status-change="handleStatusChange" />
       </div>
     </template>
   </div>
@@ -147,6 +148,7 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
   align-items: center;
   width: 100%;
   padding: 1.25rem;
+  font-family: 'Poppins', sans-serif;
 }
 
 .header-section {
@@ -208,6 +210,23 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
   z-index: -1;
 }
 
+/* Grid Layout */
+.game-grid {
+  width: 100%;
+}
+
+.grid-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.tile-wrapper {
+  flex: 1;
+  margin: 0 0.125rem;
+  position: relative;
+}
+
 /* Mobile Layout */
 .mobile-container {
   flex-direction: column;
@@ -250,15 +269,5 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
   flex-direction: column;
   justify-content: space-between;
   min-height: 100%;
-}
-
-.grid-row {
-  display: flex;
-  gap: 0.25rem;
-  margin-bottom: 0.25rem;
-}
-
-.grid-row:last-child {
-  margin-bottom: 0;
 }
 </style>
