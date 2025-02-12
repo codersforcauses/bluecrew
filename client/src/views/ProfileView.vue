@@ -63,8 +63,8 @@ onMounted(() => {
   <v-container v-if="profileData" fluid class="pa-0 d-flex flex-column">
     <!-- Wave Banner Header -->
     <v-row v-if="!xs" class="header">
-      <WaveBanner imageSrc="/beach-header.jpg" />
-      <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
+      <WaveBanner imageSrc="/teambuilding-background.jpg" />
+      <img src="/teambuilding-background.jpg" alt="Ocean Beach" class="header-image" />
     </v-row>
 
     <!-- Profile Content -->
