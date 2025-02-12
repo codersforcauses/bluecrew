@@ -67,7 +67,7 @@ const goToBingoPage = () => {
             <template v-else>
               <v-btn
                 id="register-button"
-                class="bg-primaryPink text-creamyWhite"
+                class="bg-primaryGreen text-creamyWhite"
                 rounded="xl"
                 size="x-large"
                 @click="openRegisterModal"

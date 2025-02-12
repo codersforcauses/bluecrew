@@ -223,7 +223,7 @@ li {
 }
 
 .v-btn {
-  background-color: rgb(var(--v-theme-primaryPink));
+  background-color: rgb(var(--v-theme-primaryGreen));
   color: rgb(var(--v-theme-primaryWhite));
   display: flex;
   justify-content: center;

@@ -85,7 +85,7 @@ onMounted(() => {
   </v-container>
 
   <v-container>
-    <h2 class="leaderboard-text text-primaryPink mb-4 mb-sm-3 mb-md-4">Leaderboard</h2>
+    <h2 class="leaderboard-text text-primaryGreen mb-4 mb-sm-3 mb-md-4">Leaderboard</h2>
 
     <div v-if="isLoading" class="text-center pa-4">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>

@@ -209,7 +209,7 @@ const openLoginModal = () => {
               validate-on="blur"
             >
               <div v-for="(formField, index) in formFields" class="form-group" :key="index">
-                <label :for="formField.formAttribute" class="text-primaryPink">{{
+                <label :for="formField.formAttribute" class="text-primaryGreen">{{
                   formField.fieldName
                 }}</label>
                 <v-select
@@ -248,9 +248,9 @@ const openLoginModal = () => {
               </v-btn>
             </v-form>
 
-            <footer class="text-primaryPink">
+            <footer class="text-primaryGreen">
               Already have an account?
-              <a class="text-primaryPink cursor-pointer" @click.prevent="openLoginModal">Sign In</a>
+              <a class="text-primaryGreen cursor-pointer" @click.prevent="openLoginModal">Sign In</a>
             </footer>
           </template>
 
