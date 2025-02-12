@@ -197,7 +197,7 @@ const openLoginModal = () => {
               <button class="close-button" @click="closeDialog">
                 <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
               </button>
-              <img src="/blingo-logo.svg" alt="logo" class="logo" />
+              <img src="/public/blingo-logo.svg" alt="logo" class="logo" />
             </div>
 
             <strong class="text-primaryGreen">Create an account</strong>
@@ -298,8 +298,8 @@ strong {
   width: 100%;
   display: flex;
   flex-direction: column;
-  font-size: 20px;
-  font-family: poppins;
+  font-size: 25px;
+  font-family: 'Lilita One', cursive;
   margin-bottom: 10px;
   align-items: center;
   font-weight: bold;
@@ -315,7 +315,7 @@ img {
 
 label {
   font-weight: bold;
-  font-family: poppins;
+  font-family: 'Poppins';
   padding-bottom: 10px;
 }
 
@@ -352,13 +352,13 @@ button {
 
 footer {
   text-align: center;
-  font-family: poppins;
+  font-family: 'Poppins';
   font-weight: bold;
 }
 
 a {
   text-decoration: underline;
-  font-family: poppins;
+  font-family: 'Poppins';
   font-weight: bold;
 }
 

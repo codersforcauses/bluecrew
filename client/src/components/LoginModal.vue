@@ -85,7 +85,7 @@ const submitForm = async () => {
       </v-container>
 
       <v-card-title class="d-flex justify-center">
-        <img src="/blingo-logo.svg" alt="Blingo Logo" class="logo" />
+        <img src="/public/blingo-logo.svg" alt="Blingo Logo" class="logo" />
       </v-card-title>
 
       <!-- Login Page -->
@@ -134,7 +134,7 @@ const submitForm = async () => {
                 class="text-lightBlue cursor-pointer"
                 @click.prevent="setCurrentPage('forgot-password')"
               >
-                <p class="text-subtitle-2 margin-left-adjust">Forgot Username or Password?</p>
+                <p class="text-subtitle-2 margin-left-adjust text-primaryGreen">Forgot Username or Password?</p>
               </a>
             </div>
             <v-btn
