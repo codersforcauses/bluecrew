@@ -134,7 +134,9 @@ const submitForm = async () => {
                 class="text-lightBlue cursor-pointer"
                 @click.prevent="setCurrentPage('forgot-password')"
               >
-                <p class="text-subtitle-2 margin-left-adjust text-primaryGreen">Forgot Username or Password?</p>
+                <p class="text-subtitle-2 margin-left-adjust text-primaryGreen">
+                  Forgot Username or Password?
+                </p>
               </a>
             </div>
             <v-btn

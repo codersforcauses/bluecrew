@@ -250,7 +250,9 @@ const openLoginModal = () => {
 
             <footer class="text-primaryGreen">
               Already have an account?
-              <a class="text-primaryGreen cursor-pointer" @click.prevent="openLoginModal">Sign In</a>
+              <a class="text-primaryGreen cursor-pointer" @click.prevent="openLoginModal"
+                >Sign In</a
+              >
             </footer>
           </template>
 
@@ -259,7 +261,7 @@ const openLoginModal = () => {
               <button class="close-button" @click="closeDialog">
                 <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
               </button>
-              <img src="/blingo-logo.svg" alt="Blingo Logo" class="logo" />
+              <img src="/public/blingo-logo.svg" alt="Blingo Logo" class="logo" />
             </div>
             <h2 class="text-primaryGreen text-center">One More Step</h2>
             <p class="text-center">Please check your inbox for a link to verify your email.</p>
