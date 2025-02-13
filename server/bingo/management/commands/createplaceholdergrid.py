@@ -3,7 +3,7 @@ from bingo.models import Challenge, BingoGrid
 
 
 class Command(BaseCommand):
-    help = "Create a placeholder bingo grid"
+    help = "Create a placeholder bingo grid."
 
     def handle(self, *args, **options):
         if BingoGrid.objects.filter(is_active=True).exists():
@@ -12,7 +12,7 @@ class Command(BaseCommand):
                 "An active bingo grid was found, so no action was taken."))
         else:
             placeholder_challenges = []
-            challenge_types = ["connect", "understabd", "act"]
+            challenge_types = ["connect", "understand", "act"]
             lorem_ipsum = ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna "
                            "aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis "
                            "aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint "
