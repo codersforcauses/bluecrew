@@ -46,6 +46,7 @@ SIMPLE_JWT = {
     "USER_ID_FIELD": "user_id",
 
     "SIGNING_KEY": SECRET_KEY,
+    'UPDATE_LAST_LOGIN': True,
 }
 
 REST_FRAMEWORK = {
@@ -68,8 +69,6 @@ INSTALLED_APPS = [
     "django_extensions",
     "rest_framework",
     "corsheaders",
-    "api.healthcheck",
-    # For localisations/translations
     "rest_framework_simplejwt",
     "bingo",
     "sortedm2m",
@@ -87,9 +86,14 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    FRONTEND_URL
 ]
+
+CSRF_TRUSTED_ORIGINS = (
+    os.environ.get("CSRF_TRUSTED_ORIGINS").split()
+    if os.environ.get("CSRF_TRUSTED_ORIGINS")
+    else []
+)
 
 ROOT_URLCONF = "api.urls"
 
@@ -157,6 +161,39 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Log to file in production
+# Source: https://mattsegal.dev/file-logging-django.html
+if not DEBUG and os.environ.get("GITHUB_ACTION") is None:
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "root": {"level": "INFO", "handlers": ["file"]},
+        "handlers": {
+            "file": {
+                "level": "INFO",
+                "class": "logging.FileHandler",
+                "filename": "/var/log/django/django.log",
+                "formatter": "app",
+            },
+        },
+        "loggers": {
+            "django": {
+                "handlers": ["file"],
+                "level": "INFO",
+                "propagate": True
+            },
+        },
+        "formatters": {
+            "app": {
+                "format": (
+                    u"%(asctime)s [%(levelname)-8s] "
+                    "(%(module)s.%(funcName)s) %(message)s"
+                ),
+                "datefmt": "%Y-%m-%d %H:%M:%S",
+            },
+        },
+    }
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -167,11 +204,18 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(
 STATIC_URL = "/static/"
 
 # STATIC_ROOT is where the static files get copied to when "collectstatic" is run.
-STATIC_ROOT = "static_files"
+STATIC_ROOT = os.path.join(PROJECT_ROOT, "static_files")
 
 # This is where to _find_ static files when 'collectstatic' is run.
 # These files are then copied to the STATIC_ROOT location.
-STATICFILES_DIRS = ("static",)
+STATICFILES_DIRS = (os.path.join(PROJECT_ROOT, "static"),)
+
+MEDIA_DIR = "challenge_images/"
+
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_DIR)
+
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

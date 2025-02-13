@@ -16,7 +16,7 @@ class RegisterUserTest(TestCase):
     # Required fields not sent.
     def test_register_user_error(self):
         response = self.client.post(
-            '/api/register/', {'username': 'forgotten_fields', 'email': 'test@gmail.com',
+            '/api/register/', {'username': 'forgotten_fields',
                                'password': 'SuperSecure123'}
         )
 

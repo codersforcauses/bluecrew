@@ -2,7 +2,7 @@
   <div class="mobile-nav">
     <div v-if="!isMenuOpen" class="menu-trigger">
       <v-btn icon @click="toggleMenu" class="menu-icon text-primaryWhite">
-        <v-icon class="text-primaryPink" size="28">mdi-menu</v-icon>
+        <v-icon class="text-primaryGreen" size="28">mdi-menu</v-icon>
       </v-btn>
     </div>
 
@@ -16,7 +16,7 @@
       <div class="menu-header">
         <span class="guest-mode text-primaryWhite">{{ userName || 'Guest Mode' }}</span>
         <v-btn icon @click="toggleMenu" class="menu-icon fixed-position">
-          <v-icon class="text-primaryPink" size="28">mdi-menu</v-icon>
+          <v-icon class="text-primaryGreen" size="28">mdi-menu</v-icon>
         </v-btn>
       </div>
 
