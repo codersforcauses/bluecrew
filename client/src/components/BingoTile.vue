@@ -55,8 +55,11 @@ const iconBackground = computed(() => {
 </script>
 
 <template>
-  <div :class="[backgroundColour, textColour, selected ? 'border-selected' : 'border-subtle']"
-    class="outer-tile rounded-lg d-flex flex-column align-center cursor-pointer" :title="title">
+  <div
+    :class="[backgroundColour, textColour, selected ? 'border-selected' : 'border-subtle']"
+    class="outer-tile rounded-lg d-flex flex-column align-center cursor-pointer"
+    :title="title"
+  >
     <v-img class="icon" :class="iconBackground" :src="icon" />
     <p class="tile-text text-center font-weight-bold">
       {{ title }}
