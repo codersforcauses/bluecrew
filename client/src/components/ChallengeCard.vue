@@ -113,12 +113,8 @@ const finish = () => {
     <template v-else-if="status === 'started'">
       <div class="description">
         <div class="submission-area">
-          <v-textarea
-            v-model="taskSubmission.feedback"
-            placeholder="Feedback"
-            class="custom-textarea"
-            variant="plain"
-          ></v-textarea>
+          <v-textarea v-model="taskSubmission.feedback" placeholder="Feedback" class="custom-textarea"
+            variant="plain"></v-textarea>
 
           <div class="file-preview" v-if="taskSubmission.image">
             <img src="/FileIcon.svg" alt="File icon" class="file-icon" />
@@ -151,18 +147,21 @@ const finish = () => {
 </template>
 
 <style scoped>
+/* Main card container with fixed width */
 .challenge-card {
   color: white;
   padding: 24px;
   width: 100%;
   max-width: 500px;
-  min-width: 320px;
+  min-width: 500px;
   margin: 0 auto;
   border-radius: 16px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
 }
 
+/* Header section styles */
 .header {
   display: flex;
   align-items: flex-start;
@@ -200,6 +199,7 @@ const finish = () => {
   flex-shrink: 0;
 }
 
+/* Points display */
 .points {
   text-align: center;
   color: rgba(255, 255, 255, 0.8);
@@ -207,6 +207,7 @@ const finish = () => {
   margin: 4px 0 20px;
 }
 
+/* Text content styles */
 .v-card-text {
   color: white;
   text-align: center;
@@ -226,6 +227,7 @@ const finish = () => {
   box-sizing: border-box;
 }
 
+/* Button container and styles */
 .button-container {
   display: flex;
   justify-content: center;
@@ -250,6 +252,7 @@ const finish = () => {
   padding: 0 32px !important;
 }
 
+/* Submission area styles */
 .submission-area {
   position: relative;
   background-color: rgb(var(--v-theme-primaryBrown));
@@ -284,6 +287,7 @@ const finish = () => {
   box-shadow: none;
 }
 
+/* Upload section styles */
 .upload-icon {
   width: 24px;
   height: 24px;
@@ -330,10 +334,12 @@ const finish = () => {
   right: 20px;
 }
 
+/* Mobile responsive styles */
 @media (max-width: 600px) {
   .challenge-card {
     width: 90%;
-    min-width: 300px;
+    min-width: 320px;
+    max-width: 90vw;
     padding: 16px;
     margin: 0 8px;
     border-radius: 12px;
@@ -425,6 +431,7 @@ const finish = () => {
   }
 }
 
+/* Touch device styles */
 @media (hover: none) {
   .upload-icon:hover {
     background-color: transparent;

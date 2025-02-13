@@ -71,12 +71,8 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
 
           <!-- Challenge Card -->
           <div v-if="showChallengeCard" class="challenge-card-container desktop-challenge-card">
-            <ChallengeCard
-              v-bind="currentChallenge"
-              :is-logged-in="userStore.isLoggedIn"
-              @close="handleCloseChallenge"
-              @status-change="handleStatusChange"
-            />
+            <ChallengeCard v-bind="currentChallenge" :is-logged-in="userStore.isLoggedIn" @close="handleCloseChallenge"
+              @status-change="handleStatusChange" />
           </div>
 
           <!-- Learn More Section -->
@@ -88,9 +84,7 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
             </p>
             <p class="learn-more-text">
               and
-              <a href="https://www.oceanyouth.org/" class="text-link"
-                >https://www.oceanyouth.org/</a
-              >
+              <a href="https://www.oceanyouth.org/" class="text-link">https://www.oceanyouth.org/</a>
             </p>
           </div>
         </div>
@@ -99,11 +93,9 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
         <div class="game-grid desktop-game-grid">
           <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
             <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
-              <BingoTile
-                v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
+              <BingoTile v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
                 :selected="selectedTile === (row - 1) * 4 + (col - 1)"
-                @click="handleTileClick((row - 1) * 4 + (col - 1))"
-              />
+                @click="handleTileClick((row - 1) * 4 + (col - 1))" />
             </div>
           </div>
         </div>
@@ -122,11 +114,9 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
       <div class="game-grid">
         <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
           <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
-            <BingoTile
-              v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
+            <BingoTile v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
               :selected="selectedTile === (row - 1) * 4 + (col - 1)"
-              @click="handleTileClick((row - 1) * 4 + (col - 1))"
-            />
+              @click="handleTileClick((row - 1) * 4 + (col - 1))" />
           </div>
         </div>
       </div>
@@ -145,12 +135,8 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
 
       <!-- Challenge Card -->
       <div v-if="showChallengeCard" class="challenge-card-overlay">
-        <ChallengeCard
-          v-bind="currentChallenge"
-          :is-logged-in="userStore.isLoggedIn"
-          @close="handleCloseChallenge"
-          @status-change="handleStatusChange"
-        />
+        <ChallengeCard v-bind="currentChallenge" :is-logged-in="userStore.isLoggedIn" @close="handleCloseChallenge"
+          @status-change="handleStatusChange" />
       </div>
     </template>
   </div>
@@ -180,8 +166,10 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
 }
 
 .desktop-challenge-card {
-  max-width: 60%;
+  width: 100%;
   margin: 0 auto;
+  position: relative;
+  z-index: 2;
 }
 
 .learn-more-section {
@@ -224,6 +212,34 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
   z-index: -1;
 }
 
+/* Desktop Layout */
+.desktop-layout {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  padding: 2rem;
+  gap: 2rem;
+  min-width: 1000px;
+  /* Minimum width to prevent overlap */
+}
+
+.left-section {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
+  width: 500px;
+  /* Fixed width for left section */
+}
+
+.desktop-game-grid {
+  flex: 0 0 auto;
+  width: 450px;
+  /* Fixed width for game grid */
+}
+
 /* Grid Layout */
 .game-grid {
   width: 100%;
@@ -231,14 +247,21 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
 
 .grid-row {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.25rem;
+  justify-content: flex-start;
+  margin-bottom: 2px;
+  /* Reduced vertical gap */
 }
 
 .tile-wrapper {
-  flex: 1;
-  margin: 0 0.125rem;
-  position: relative;
+  margin-right: 2px;
+  /* Reduced horizontal gap */
+  flex: 0 0 auto;
+  /* Prevent flex stretching */
+}
+
+.tile-wrapper:last-child {
+  margin-right: 0;
+  /* Remove margin from last tile in row */
 }
 
 /* Mobile Layout */
@@ -255,15 +278,6 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
   font-size: 1.25rem;
 }
 
-/* Desktop Layout */
-.desktop-layout {
-  display: flex;
-  justify-content: space-between;
-  align-items: stretch;
-  width: 100%;
-  padding: 2rem;
-}
-
 .desktop-header .blingo-title {
   font-size: 3rem;
 }
@@ -272,16 +286,32 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
   font-size: 1.5rem;
 }
 
-.desktop-game-grid {
-  flex: 1;
-  max-width: 40%;
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .desktop-layout {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .left-section,
+  .desktop-game-grid {
+    width: 100%;
+    max-width: 500px;
+  }
 }
 
-.left-section {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 100%;
+@media (max-width: 600px) {
+  .content-wrapper {
+    padding: 1rem;
+  }
+
+  .mobile-container {
+    padding: 1rem;
+  }
+
+  .game-grid {
+    padding: 0;
+  }
 }
 </style>
