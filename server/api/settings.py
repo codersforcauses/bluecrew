@@ -69,8 +69,6 @@ INSTALLED_APPS = [
     "django_extensions",
     "rest_framework",
     "corsheaders",
-    "api.healthcheck",
-    # For localisations/translations
     "rest_framework_simplejwt",
     "bingo",
     "sortedm2m",
