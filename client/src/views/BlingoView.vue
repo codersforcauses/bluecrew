@@ -184,7 +184,6 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
   margin: 0 auto;
 }
 
-/* Learn More Section */
 .learn-more-section {
   text-align: center;
 }
