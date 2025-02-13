@@ -33,7 +33,7 @@ const goToBingoPage = () => {
       <v-col cols="12" sm="6" align-self="center">
         <v-row>
           <v-col align="center"
-            ><img src="/public/blingo-logo.svg" alt="Blingo Logo" class="logo" />
+            ><img src="/blingo-logo.svg" alt="Blingo Logo" class="logo" />
           </v-col>
         </v-row>
       </v-col>

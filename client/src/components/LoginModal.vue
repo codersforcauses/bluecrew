@@ -85,7 +85,7 @@ const submitForm = async () => {
       </v-container>
 
       <v-card-title class="d-flex justify-center">
-        <img src="/public/blingo-logo.svg" alt="Blingo Logo" class="logo" />
+        <img src="/blingo-logo.svg" alt="Blingo Logo" class="logo" />
       </v-card-title>
 
       <!-- Login Page -->
