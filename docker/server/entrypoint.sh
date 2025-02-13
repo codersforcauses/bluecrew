@@ -11,6 +11,13 @@ done
 
 >&2 echo "Postgres is up - continuing"
 
+if [ "${APP_ENV^^}" = "PRODUCTION" ]; then
+    # Create file to hold django logs
+    printf "\n" && echo "Creating file to hold django logs"
+    echo "Running: mkdir -p /var/log/django && touch /var/log/django/django.log"
+    mkdir -p /var/log/django && touch /var/log/django/django.log
+fi
+
 echo "Applying database migrations"
 python manage.py migrate --noinput
 

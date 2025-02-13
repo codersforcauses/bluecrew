@@ -69,8 +69,6 @@ INSTALLED_APPS = [
     "django_extensions",
     "rest_framework",
     "corsheaders",
-    "api.healthcheck",
-    # For localisations/translations
     "rest_framework_simplejwt",
     "bingo",
     "sortedm2m",
@@ -174,7 +172,7 @@ if not DEBUG and os.environ.get("GITHUB_ACTION") is None:
             "file": {
                 "level": "INFO",
                 "class": "logging.FileHandler",
-                "filename": "/var/log/django.log",
+                "filename": "/var/log/django/django.log",
                 "formatter": "app",
             },
         },
