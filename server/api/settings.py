@@ -172,7 +172,7 @@ if not DEBUG and os.environ.get("GITHUB_ACTION") is None:
             "file": {
                 "level": "INFO",
                 "class": "logging.FileHandler",
-                "filename": "/var/log/django.log",
+                "filename": "/var/log/django/django.log",
                 "formatter": "app",
             },
         },
