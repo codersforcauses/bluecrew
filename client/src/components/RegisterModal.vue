@@ -195,7 +195,7 @@ const openLoginModal = () => {
           <template v-if="currentPage === 'register'">
             <div class="header">
               <button class="close-button" @click="closeDialog">
-                <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
+                <v-icon icon="mdi-close-circle-outline"></v-icon>
               </button>
               <img src="/blingo-logo.svg" alt="logo" class="logo" />
             </div>
@@ -259,7 +259,7 @@ const openLoginModal = () => {
           <template v-if="currentPage === 'confirmation'">
             <div class="header">
               <button class="close-button" @click="closeDialog">
-                <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
+                <v-icon icon="mdi-close-circle-outline"></v-icon>
               </button>
               <img src="/blingo-logo.svg" alt="Blingo Logo" class="logo" />
             </div>
@@ -312,6 +312,7 @@ img {
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 10px;
+  margin-top: -30px;
   width: 100px;
 }
 
@@ -340,8 +341,8 @@ button {
 }
 
 .close-button {
-  width: 0px;
-  height: 0px;
+  width: 40px;
+  height: 40px;
   margin-right: 0px;
   display: flex;
   align-self: flex-end;
@@ -358,6 +359,7 @@ button {
 
 .close-button .v-icon {
   font-size: 20px;
+  margin-top: 0;
 }
 
 footer {
@@ -375,5 +377,10 @@ a {
 .logo {
   height: 100px;
   width: 100%;
+}
+
+h2,
+p {
+  font-family: 'Poppins';
 }
 </style>
