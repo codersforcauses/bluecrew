@@ -22,14 +22,111 @@ const challengeInfos = ref<ChallengeInfo[]>([
       'Here are some of our top picks! You can choose one of them or watch one of your own. Tell us what you thought and submit a picture.',
     status: 'not started',
   },
-  // Add more challenges to fill all 16 tiles
-  ...Array(15).fill({
+  {
     title: 'Ocean Challenge',
     points: 100,
     type: 'connect',
     description: 'placeholder text',
     status: 'not started',
-  }),
+  },
+  {
+    title: 'Ocean Challenge',
+    points: 100,
+    type: 'connect',
+    description: 'placeholder text',
+    status: 'not started',
+  },
+  {
+    title: 'Ocean Challenge',
+    points: 100,
+    type: 'connect',
+    description: 'placeholder text',
+    status: 'not started',
+  },
+  {
+    title: 'Ocean Challenge',
+    points: 100,
+    type: 'connect',
+    description: 'placeholder text',
+    status: 'not started',
+  },
+  {
+    title: 'Ocean Challenge',
+    points: 100,
+    type: 'connect',
+    description: 'placeholder text',
+    status: 'not started',
+  },
+  {
+    title: 'Ocean Challenge',
+    points: 100,
+    type: 'connect',
+    description: 'placeholder text',
+    status: 'not started',
+  },
+  {
+    title: 'Ocean Challenge',
+    points: 100,
+    type: 'connect',
+    description: 'placeholder text',
+    status: 'not started',
+  },
+  {
+    title: 'Ocean Challenge',
+    points: 100,
+    type: 'connect',
+    description: 'placeholder text',
+    status: 'not started',
+  },
+  {
+    title: 'Ocean Challenge',
+    points: 100,
+    type: 'connect',
+    description: 'placeholder text',
+    status: 'not started',
+  },
+  {
+    title: 'Ocean Challenge',
+    points: 100,
+    type: 'connect',
+    description: 'placeholder text',
+    status: 'not started',
+  },
+  {
+    title: 'Ocean Challenge',
+    points: 100,
+    type: 'connect',
+    description: 'placeholder text',
+    status: 'not started',
+  },
+  {
+    title: 'Ocean Challenge',
+    points: 100,
+    type: 'connect',
+    description: 'placeholder text',
+    status: 'not started',
+  },
+  {
+    title: 'Ocean Challenge',
+    points: 100,
+    type: 'connect',
+    description: 'placeholder text',
+    status: 'not started',
+  },
+  {
+    title: 'Ocean Challenge',
+    points: 100,
+    type: 'connect',
+    description: 'placeholder text',
+    status: 'not started',
+  },
+  {
+    title: 'Ocean Challenge',
+    points: 100,
+    type: 'connect',
+    description: 'placeholder text',
+    status: 'not started',
+  },
 ])
 
 const selectedTile = ref<number | null>(null)
@@ -56,153 +153,225 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
 </script>
 
 <template>
-  <WaveBanner imageSrc="/homepage-scaled.jpg" />
+  <div class="main-container">
+    <WaveBanner imageSrc="/homepage-scaled.jpg" />
 
-  <div :class="['content-wrapper', containerClass]">
-    <!-- Desktop Version -->
-    <template v-if="!xs">
-      <div class="desktop-layout">
-        <div class="left-section">
-          <!-- Header Section -->
-          <div class="header-section desktop-header">
+    <div :class="['content-wrapper', containerClass]">
+      <!-- Desktop Version -->
+      <template v-if="!xs">
+        <div class="desktop-layout">
+          <div class="content-container">
+            <div class="left-section">
+              <!-- Header Section -->
+              <div class="header-section desktop-header">
+                <h1 class="blingo-title text-primaryBlue">Blingo</h1>
+                <h2 class="blingo-subtitle text-primaryGreen">Connecting to the ocean</h2>
+              </div>
+
+              <!-- Challenge Card -->
+              <div v-if="showChallengeCard" class="challenge-card-container desktop-challenge-card">
+                <ChallengeCard
+                  v-bind="currentChallenge"
+                  :is-logged-in="userStore.isLoggedIn"
+                  @close="handleCloseChallenge"
+                  @status-change="handleStatusChange"
+                />
+              </div>
+
+              <!-- Learn More Section (Only for Desktop) -->
+              <div class="learn-more-section text-primaryGreen">
+                <p class="learn-more-title">Want to learn more?</p>
+                <p class="learn-more-text">
+                  Head to
+                  <a href="https://bluecrew.com.au/" class="text-link">https://bluecrew.com.au/</a>
+                </p>
+                <p class="learn-more-text mb-0">
+                  and
+                  <a href="https://www.oceanyouth.org/" class="text-link"
+                    >https://www.oceanyouth.org/</a
+                  >
+                </p>
+              </div>
+            </div>
+
+            <!-- Game Grid -->
+            <div class="game-grid desktop-game-grid">
+              <div class="mobile-grid-container">
+                <div class="grid-content">
+                  <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
+                    <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
+                      <BingoTile
+                        v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
+                        :selected="selectedTile === (row - 1) * 4 + (col - 1)"
+                        @click="handleTileClick((row - 1) * 4 + (col - 1))"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <!-- Mobile Layout -->
+      <template v-else>
+        <div class="mobile-content">
+          <!-- Title Section -->
+          <div class="header-section mobile-header">
             <h1 class="blingo-title text-primaryBlue">Blingo</h1>
             <h2 class="blingo-subtitle text-primaryGreen">Connecting to the ocean</h2>
           </div>
 
-          <!-- Challenge Card -->
-          <div v-if="showChallengeCard" class="challenge-card-container desktop-challenge-card">
-            <ChallengeCard
-              v-bind="currentChallenge"
-              :is-logged-in="userStore.isLoggedIn"
-              @close="handleCloseChallenge"
-              @status-change="handleStatusChange"
-            />
-          </div>
-
-          <!-- Learn More Section -->
-          <div class="learn-more-section text-primaryGreen">
-            <p class="learn-more-title">Want to learn more?</p>
-            <p class="learn-more-text">
-              Head to
-              <a href="https://bluecrew.com.au/" class="text-link">https://bluecrew.com.au/</a>
-            </p>
-            <p class="learn-more-text">
-              and
-              <a href="https://www.oceanyouth.org/" class="text-link"
-                >https://www.oceanyouth.org/</a
-              >
-            </p>
-          </div>
-        </div>
-
-        <!-- Game Grid -->
-        <div class="game-grid desktop-game-grid">
-          <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
-            <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
-              <BingoTile
-                v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
-                :selected="selectedTile === (row - 1) * 4 + (col - 1)"
-                @click="handleTileClick((row - 1) * 4 + (col - 1))"
-              />
+          <!-- Game Grid -->
+          <div class="mobile-game-container">
+            <div class="mobile-grid-container">
+              <div class="grid-content">
+                <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
+                  <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
+                    <BingoTile
+                      v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
+                      :selected="selectedTile === (row - 1) * 4 + (col - 1)"
+                      @click="handleTileClick((row - 1) * 4 + (col - 1))"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </template>
 
-    <!-- Mobile Layout -->
-    <template v-else>
-      <!-- Title Section -->
-      <div class="header-section mobile-header">
-        <h1 class="blingo-title text-primaryBlue">Blingo</h1>
-        <h2 class="blingo-subtitle text-primaryGreen">Connecting to the ocean</h2>
-      </div>
-
-      <!-- Game Grid -->
-      <div class="game-grid">
-        <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
-          <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
-            <BingoTile
-              v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
-              :selected="selectedTile === (row - 1) * 4 + (col - 1)"
-              @click="handleTileClick((row - 1) * 4 + (col - 1))"
-            />
-          </div>
+        <!-- Challenge Card -->
+        <div v-if="showChallengeCard" class="challenge-card-overlay">
+          <ChallengeCard
+            v-bind="currentChallenge"
+            :is-logged-in="userStore.isLoggedIn"
+            @close="handleCloseChallenge"
+            @status-change="handleStatusChange"
+          />
         </div>
-      </div>
-
-      <!-- Learn More Section -->
-      <div class="learn-more-section text-primaryGreen mt-8">
-        <p class="learn-more-title">Want to learn more?</p>
-        <p class="learn-more-text">
-          Head to <a href="https://bluecrew.com.au/" class="text-link">https://bluecrew.com.au/</a>
-        </p>
-        <p class="learn-more-text">
-          and
-          <a href="https://www.oceanyouth.org/" class="text-link">https://www.oceanyouth.org/</a>
-        </p>
-      </div>
-
-      <!-- Challenge Card -->
-      <div v-if="showChallengeCard" class="challenge-card-overlay">
-        <ChallengeCard
-          v-bind="currentChallenge"
-          :is-logged-in="userStore.isLoggedIn"
-          @close="handleCloseChallenge"
-          @status-change="handleStatusChange"
-        />
-      </div>
-    </template>
+      </template>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.content-wrapper {
+/* Main container */
+.main-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 100%;
-  padding: 1.25rem;
-  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
 }
 
+/* Content wrapper */
+.content-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  padding: 1rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Desktop styles */
+.content-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+}
+
+.desktop-layout {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.left-section {
+  flex: 0 0 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.desktop-game-grid {
+  flex: 0 0 450px;
+}
+
+/* Mobile styles */
+.mobile-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.mobile-game-container {
+  padding: 0.25rem 0;
+}
+
+/* Header styles */
 .header-section {
-  margin-bottom: 1.5rem;
+  width: 100%;
+  margin-bottom: 0.5rem;
 }
 
 .blingo-title {
   font-family: 'Lilita One', cursive;
   text-align: center;
+  margin-bottom: 0;
 }
 
 .blingo-subtitle {
   text-align: center;
+  margin-top: 0;
 }
 
-.desktop-challenge-card {
+/* Grid styles */
+.mobile-grid-container {
   width: 100%;
-  margin: 0 auto;
-  position: relative;
-  z-index: 2;
+  display: flex;
+  justify-content: center;
 }
 
-.learn-more-section {
-  text-align: center;
+.grid-content {
+  display: inline-block;
+  transform-origin: center;
 }
 
-.learn-more-title {
-  font-weight: bold;
+.grid-row {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
+
+.tile-wrapper {
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+  font-size: 0;
+}
+
+/* Text styles */
+.mobile-container .blingo-title {
+  font-size: 2.5rem;
+}
+
+.mobile-container .blingo-subtitle {
   font-size: 1.25rem;
-  margin-bottom: 0.5rem;
 }
 
-.learn-more-text {
-  font-weight: bold;
-  margin: 0.5rem 0;
-  font-size: 1rem;
+.desktop-header .blingo-title {
+  font-size: 3rem;
 }
 
-/* Challenge Card Overlay for Mobile */
+.desktop-header .blingo-subtitle {
+  font-size: 1.5rem;
+}
+
+/* Challenge card styles */
 .challenge-card-overlay {
   position: fixed;
   top: 50%;
@@ -226,83 +395,38 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
   z-index: -1;
 }
 
-/* Desktop Layout */
-.desktop-layout {
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
+.desktop-challenge-card {
   width: 100%;
-  padding: 2rem;
-  gap: 2rem;
-  min-width: 1000px;
-  /* Minimum width to prevent overlap */
+  margin: 0 auto 1rem;
+  position: relative;
+  z-index: 2;
 }
 
-.left-section {
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 100%;
-  width: 500px;
-  /* Fixed width for left section */
+/* Learn more section styles */
+.learn-more-section {
+  text-align: center;
+  margin: 0;
 }
 
-.desktop-game-grid {
-  flex: 0 0 auto;
-  width: 450px;
-  /* Fixed width for game grid */
-}
-
-/* Grid Layout */
-.game-grid {
-  width: 100%;
-}
-
-.grid-row {
-  display: flex;
-  justify-content: flex-start;
-  margin-bottom: 2px;
-  /* Reduced vertical gap */
-}
-
-.tile-wrapper {
-  margin-right: 2px;
-  /* Reduced horizontal gap */
-  flex: 0 0 auto;
-  /* Prevent flex stretching */
-}
-
-.tile-wrapper:last-child {
-  margin-right: 0;
-  /* Remove margin from last tile in row */
-}
-
-/* Mobile Layout */
-.mobile-container {
-  flex-direction: column;
-  padding: 1.25rem;
-}
-
-.mobile-container .blingo-title {
-  font-size: 2.5rem;
-}
-
-.mobile-container .blingo-subtitle {
+.learn-more-title {
+  font-weight: bold;
   font-size: 1.25rem;
+  margin-bottom: 0.5rem;
 }
 
-.desktop-header .blingo-title {
-  font-size: 3rem;
+.learn-more-text {
+  font-weight: bold;
+  margin: 0.5rem 0;
+  font-size: 1rem;
 }
 
-.desktop-header .blingo-subtitle {
-  font-size: 1.5rem;
+.learn-more-text.mb-0 {
+  margin-bottom: 0;
 }
 
-/* Responsive Design */
+/* Responsive styles */
 @media (max-width: 1200px) {
-  .desktop-layout {
+  .content-container {
     flex-direction: column;
     align-items: center;
     gap: 1rem;
@@ -315,17 +439,43 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 480px) {
   .content-wrapper {
-    padding: 1rem;
+    padding: 0.5rem;
   }
 
-  .mobile-container {
-    padding: 1rem;
+  .grid-content {
+    transform: scale(0.8);
   }
 
-  .game-grid {
-    padding: 0;
+  .mobile-game-container {
+    padding: 0.25rem 0;
+  }
+}
+
+@media (max-width: 400px) {
+  .content-wrapper {
+    padding: 0.25rem;
+  }
+
+  .grid-content {
+    transform: scale(0.7);
+  }
+
+  .mobile-game-container {
+    padding: 0.25rem 0;
+  }
+}
+
+@media (max-width: 350px) {
+  .grid-content {
+    transform: scale(0.65);
+  }
+}
+
+@media (max-width: 300px) {
+  .grid-content {
+    transform: scale(0.6);
   }
 }
 </style>
