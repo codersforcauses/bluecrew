@@ -271,7 +271,7 @@ const handleSend = (id: number) => {
 }
 
 .friend-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgb(var(--v-theme-primaryPink));
+  background: rgb(var(--v-theme-primaryGreen));
 }
 
 .font-poppins {

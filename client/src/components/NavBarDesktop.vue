@@ -6,31 +6,31 @@
         v-for="(page, index) in pages"
         :key="index"
         :style="{ opacity: !page.requireAuth || isLoggedIn ? 1 : 0.5 }"
-        class="text-primaryPink"
+        class="text-primaryGreen"
         @click="$emit('navigate', page.routerName)"
       >
         {{ page.name }}
       </v-btn>
       <v-menu open-on-hover>
         <template #activator="{ props }">
-          <v-btn v-bind="props" class="menu-list text-primaryPink">
+          <v-btn v-bind="props" class="menu-list text-primaryGreen">
             {{ isLoggedIn ? 'Log Out' : 'Sign In' }}
           </v-btn>
         </template>
         <v-list v-if="!isLoggedIn" class="menu-item">
           <v-list-item
-            class="menu-button text-primaryPink bg-primaryWhite"
+            class="menu-button text-primaryGreen bg-primaryWhite"
             @click="$emit('sign-in-click', 'login')"
             >Log In</v-list-item
           >
           <v-list-item
-            class="menu-button text-primaryPink bg-primaryWhite"
+            class="menu-button text-primaryGreen bg-primaryWhite"
             @click="$emit('sign-in-click', 'register')"
             >Register</v-list-item
           >
         </v-list>
         <v-list v-else class="menu-item">
-          <v-list-item class="menu-button text-primaryPink bg-primaryWhite" @click="$emit('auth')"
+          <v-list-item class="menu-button text-primaryGreen bg-primaryWhite" @click="$emit('auth')"
             >Log Out</v-list-item
           >
         </v-list>

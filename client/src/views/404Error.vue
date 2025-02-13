@@ -28,7 +28,7 @@ const goHome = () => {
           <div class="buttons">
             <v-btn
               id="home-button"
-              class="bg-primaryPink text-creamyWhite"
+              class="bg-primaryGreen text-creamyWhite"
               rounded="xl"
               size="x-large"
               @click="goHome"

@@ -22,7 +22,7 @@ const icon = computed(() => {
 const backgroundColour = computed(() => {
   switch (props.status) {
     case 'started':
-      return 'bg-primaryPink'
+      return 'bg-primaryGreen'
     case 'completed':
       return 'bg-lightBlue'
     default:

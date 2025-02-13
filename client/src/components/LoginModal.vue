@@ -90,17 +90,17 @@ const submitForm = async () => {
 
       <!-- Login Page -->
       <template v-if="currentPage === 'login'">
-        <v-card-subtitle class="text-center subtitle mt-2 text-primaryPink">
+        <v-card-subtitle class="text-center subtitle mt-2 text-primaryGreen">
           <strong>
             <h3><b>Welcome Back</b></h3>
           </strong>
         </v-card-subtitle>
         <v-card-text>
-          <p class="text-center subtitle mb-4 text-primaryPink">
+          <p class="text-center subtitle mb-4 text-primaryGreen">
             <b>Login to your existing account</b>
           </p>
           <v-form v-model="valid" validate-on="blur" @submit.prevent="submitForm">
-            <v-card-subtitle class="text-left subtitle mb-3 pa-0 text-primaryPink">
+            <v-card-subtitle class="text-left subtitle mb-3 pa-0 text-primaryGreen">
               Username
             </v-card-subtitle>
             <v-text-field
@@ -114,7 +114,7 @@ const submitForm = async () => {
               :error-messages="errorMessage"
               @focus="errorMessage = ''"
             ></v-text-field>
-            <v-card-subtitle class="text-left subtitle mt-3 mb-3 pa-0 text-primaryPink">
+            <v-card-subtitle class="text-left subtitle mt-3 mb-3 pa-0 text-primaryGreen">
               Password
             </v-card-subtitle>
             <v-text-field
@@ -134,7 +134,9 @@ const submitForm = async () => {
                 class="text-lightBlue cursor-pointer"
                 @click.prevent="setCurrentPage('forgot-password')"
               >
-                <p class="text-subtitle-2 margin-left-adjust">Forgot Username or Password?</p>
+                <p class="text-subtitle-2 margin-left-adjust text-primaryGreen">
+                  Forgot Username or Password?
+                </p>
               </a>
             </div>
             <v-btn
@@ -150,10 +152,10 @@ const submitForm = async () => {
             </v-btn>
           </v-form>
         </v-card-text>
-        <v-card-actions class="d-flex justify-center text-primaryPink">
+        <v-card-actions class="d-flex justify-center text-primaryGreen">
           <footer>
             Don't have an account?
-            <a class="text-primaryPink cursor-pointer" @click.prevent="openRegisterModal"
+            <a class="text-primaryGreen cursor-pointer" @click.prevent="openRegisterModal"
               >Sign up</a
             >
           </footer>
