@@ -19,16 +19,16 @@ onUnmounted(() => {
 
 defineProps<{
   title: string
-  description: string
+  description?: string
   type: 'Connect' | 'Understand' | 'Act'
   points: number
   startDate: string
-  finishDate: string
+  finishDate?: string
   status: 'Complete' | 'In Progress'
 }>()
 </script>
 <template>
-  <v-card class="pa-4 bg-primaryBrown challenge-row" outlined>
+  <v-card class="pa-4 mb-2 bg-primaryBrown challenge-row" outlined>
     <v-card-title class="d-flex justify-space-between align-center">
       <div>
         <span class="font-weight-bold text-h6">{{ title }}</span>
@@ -42,7 +42,7 @@ defineProps<{
     <div class="d-flex flex-column">
       <v-card-text class="d-flex justify-space-between align-center">
         <div class="details">
-          <p>
+          <p v-if="description && status === 'Complete'" class="description">
             {{ description }}
           </p>
         </div>
@@ -51,7 +51,10 @@ defineProps<{
       <div class="d-flex flex-row align-center justify-space-between ml-5 mr-5">
         <div>
           <p class="mb-2"><strong>Start Date:</strong> {{ startDate }}</p>
-          <p><strong>Finish Date:</strong> {{ finishDate }}</p>
+          <p v-if="status === 'Complete'">
+            <strong>Finish Date:</strong>
+            {{ finishDate }}
+          </p>
         </div>
         <div class="align-center justify-center">
           <v-chip
