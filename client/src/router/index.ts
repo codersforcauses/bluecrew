@@ -19,11 +19,11 @@ const router = createRouter({
       component: LandingView,
     },
     {
-      path: '/profile/:username?',
+      path: '/profile',
       name: 'user-profile',
       component: ProfileView,
       props: (route: RouteLocationNormalized) => ({
-        username: route.params.username as string | undefined,
+        username: route.query.username as string | undefined,
       }),
     },
     {
