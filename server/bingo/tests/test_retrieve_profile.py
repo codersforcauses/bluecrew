@@ -33,6 +33,10 @@ class ProfilePageViewTestCase(TestCase):
             )
         }
 
+        # Default tile completion date
+        self.completion_date = datetime(
+            2025, 1, 18, 11, 0, tzinfo=timezone.utc)
+
         # Create grid and challenges
         self.grid = BingoGrid.objects.create()
         self.challenges = self._create_challenges(16)
@@ -41,10 +45,6 @@ class ProfilePageViewTestCase(TestCase):
         # Create tile interactions for each user
         for user in self.users.values():
             self._create_tile_interactions(user, self.grid, 16)
-
-        # Default tile completion date
-        self.completion_date = DateTimeField().to_representation(
-            datetime(2025, 1, 18, 11, 0, tzinfo=timezone.utc))
 
     def _create_test_user(self, username, visibility, first_name, avatar):
         """Helper method to create a test user with standard attributes"""
@@ -79,30 +79,30 @@ class ProfilePageViewTestCase(TestCase):
                 grid=grid,
                 position=i,
                 image=f'path/to/image{i}.png',
-                date_completed=datetime(
-                    2025, 1, 18, 11, 0, tzinfo=timezone.utc)
+                date_completed=self.completion_date
             ) for i in range(count)
         ]
 
     def _assert_basic_user_info(self, response_data, user):
         """Helper method to assert basic user information"""
         user_info = response_data['user_info']
-        self.assertEqual(user_info['first_name'], user.first_name)
-        self.assertEqual(user_info['last_name'], user.last_name)
+        self.assertEqual(user_info['firstName'], user.first_name)
+        self.assertEqual(user_info['lastName'], user.last_name)
         self.assertEqual(user_info['bio'], user.bio)
-        self.assertEqual(user_info['total_points'], user.total_points)
+        self.assertEqual(user_info['totalPoints'], user.total_points)
         self.assertEqual(user_info['avatar'], user.avatar)
 
     def _assert_challenge_data(self, challenges):
         """Helper method to assert challenge data"""
         self.assertEqual(len(challenges), 16)
         challenge = challenges[0]
-        self.assertEqual(challenge['name'], 'Challenge 0')
+        self.assertEqual(challenge['title'], 'Challenge 0')
         self.assertEqual(challenge['description'], 'Description 0')
-        self.assertEqual(challenge['challenge_type'], 'act')
+        self.assertEqual(challenge['type'], 'Act')
         self.assertEqual(challenge['points'], 5)
         self.assertEqual(challenge['image'], '/media/path/to/image0.png')
-        self.assertEqual(challenge['date_completed'], self.completion_date)
+        self.assertEqual(
+            challenge['finishDate'], self.completion_date.strftime("%d/%m/%y %I:%M %p"))
 
     def _create_generic_user(self):
         new_user = self._create_test_user(

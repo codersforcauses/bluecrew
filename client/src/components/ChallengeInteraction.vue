@@ -37,8 +37,12 @@ defineProps<Challenge>()
           </p>
         </div>
         <div class="align-center justify-center">
-          <v-chip :class="[completed ? 'bg-success' : 'bg-lightBlue']" text-color="white"
-            class="status-indicator align-center" outlined>
+          <v-chip
+            :class="[completed ? 'bg-success' : 'bg-lightBlue']"
+            text-color="white"
+            class="status-indicator align-center"
+            outlined
+          >
             {{ completed ? 'Complete' : 'In Progress' }}
           </v-chip>
         </div>
