@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:16.5
+    restart: unless-stopped
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    env_file: .env
+
+  server:
+    image: ${DOCKERHUB_USERNAME}/bluecrew-prod-server:latest
+    container_name: bluecrew_server
+    restart: unless-stopped
+    env_file: .env
+    entrypoint: /entrypoint.sh
+    volumes:
+      - ./opt/gunicorn-logs/:/var/log/gunicorn/
+      - ./opt/django-logs/:/var/log/django/
+      - ./opt/static_files/:/app/static_files
+      - ./opt/media/:/app/challenge_images
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx
+    container_name: bluecrew_nginx
+    restart: unless-stopped
+    ports:
+      - 80:8000
+      - 443:8000
+      - 8000:8000
+    volumes:
+      - ./custom.conf:/etc/nginx/conf.d/default.conf
+      - ./opt/static_files:/opt/static_files
+      - ./opt/media:/opt/media
+      - ./opt/nginx-logs/:/var/log/nginx/
+    depends_on:
+      - server
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: bluecrew_watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30

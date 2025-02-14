@@ -11,6 +11,13 @@ done
 
 >&2 echo "Postgres is up - continuing"
 
+if [ "${APP_ENV^^}" = "PRODUCTION" ]; then
+    # Create file to hold django logs
+    printf "\n" && echo "Creating file to hold django logs"
+    echo "Running: mkdir -p /var/log/django && touch /var/log/django/django.log"
+    mkdir -p /var/log/django && touch /var/log/django/django.log
+fi
+
 echo "Applying database migrations"
 python manage.py migrate --noinput
 
@@ -42,6 +49,6 @@ if [ "${APP_ENV^^}" = "PRODUCTION" ]; then
 
     # Run Gunicorn / Django
     printf "\n" && echo " Running Gunicorn / Django"
-    echo "Running: gunicorn api.wsgi -b 0.0.0.0:8000 --workers=6 --keep-alive 20 --log-file=- --log-level debug --access-logfile=/var/log/accesslogs/gunicorn --capture-output --timeout 50"
-    gunicorn api.wsgi -b 0.0.0.0:8000 --workers=6 --keep-alive 20 --log-file=- --log-level debug --access-logfile=/var/log/accesslogs/gunicorn --capture-output --timeout 50
+    echo "Running: gunicorn api.wsgi -b 0.0.0.0:8081 --workers=3 --keep-alive 20 --log-level info --access-logfile=/var/log/gunicorn/access.log --error-logfile=/var/log/gunicorn/error.log --capture-output --timeout 50"
+    gunicorn api.wsgi -b 0.0.0.0:8081 --workers=3 --keep-alive 20 --log-level info --access-logfile=/var/log/gunicorn/access.log --error-logfile=/var/log/gunicorn/error.log --capture-output --timeout 50
 fi

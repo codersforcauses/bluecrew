@@ -90,6 +90,17 @@ files = [
 Django = ">=3.2"
 
 [[package]]
+name = "django-resized"
+version = "1.0.3"
+description = "Resizes image origin to specified size."
+optional = false
+python-versions = "*"
+files = [
+    {file = "django_resized-1.0.3-py3-none-any.whl", hash = "sha256:b5b0cf0d1db4f8db43362eef121d94d63487e2bff7a59c45046a1420788db353"},
+    {file = "django_resized-1.0.3.tar.gz", hash = "sha256:c199f2b6e315816753df3a7a3889b923d3b73ce89fa16af93761cf2ea9bac4f7"},
+]
+
+[[package]]
 name = "django-sortedm2m"
 version = "4.0.0"
 description = "Drop-in replacement for Django's many to many field with sorted relations."
@@ -732,4 +743,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "6346fc34e05b2ba0f9f90b9509fb1725ff0dce571dfb28df2fcafc06dedeb696"
+content-hash = "17f2f83524987e73b7ae76cf9ac8c407af2f38cfaab546fcea23197a8e5602e3"
