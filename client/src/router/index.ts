@@ -9,6 +9,7 @@ import BlingoView from '@/views/BlingoView.vue'
 import PreferenceView from '@/views/PreferenceView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import ForgotPasswordView from '@/views/ForgotPasswordView.vue'
+import EmailVerificationView from '@/views/EmailVerificationView.vue'
 
 
 const router = createRouter({
@@ -65,10 +66,15 @@ const router = createRouter({
       component: ProfileView,
     },
     {
-      path: '/forgotPassword',
+      path: '/forgot-password',
       name: 'forgotPassword',
-      component: ForgotPasswordView
-    }
+      component: ForgotPasswordView,
+    },
+    {
+      path: '/verify-email',
+      component: EmailVerificationView,
+      props: route => ({ token: route.query.token })
+    }    
   ],
 })
 
