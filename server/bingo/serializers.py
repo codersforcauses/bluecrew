@@ -113,11 +113,28 @@ class ProfilePageChallengeSerializer(serializers.ModelSerializer):
         fields = ["name", "description", "challenge_type",
                   "points"]
 
+    def to_representation(self, instance):
+        # This ensures the field names match the TypeScript interface
+        data = super().to_representation(instance)
+        data["type"] = data.pop("challenge_type").capitalize()
+        data["title"] = data.pop("name")
+        return data
+
 
 class ProfilePageTileSerializer(serializers.ModelSerializer):
+    date_started = serializers.DateTimeField(format="%d/%m/%y %I:%M %p")
+    date_completed = serializers.DateTimeField(format="%d/%m/%y %I:%M %p")
+
     class Meta:
         model = TileInteraction
-        fields = ["image", "date_started", "date_completed"]
+        fields = ["image", "date_started", "date_completed", "completed"]
+
+    def to_representation(self, instance):
+        # This ensures the field names match the TypeScript interface
+        data = super().to_representation(instance)
+        data["finishDate"] = data.pop("date_completed")
+        data["startDate"] = data.pop("date_started")
+        return data
 
 
 class ProfilePageSerializer(serializers.ModelSerializer):
@@ -125,6 +142,14 @@ class ProfilePageSerializer(serializers.ModelSerializer):
         model = User
         fields = ["first_name", "last_name", "bio",
                   "total_points", "avatar"]
+
+    def to_representation(self, instance):
+        # This ensures the field names match the TypeScript interface
+        data = super().to_representation(instance)
+        data["firstName"] = data.pop("first_name")
+        data["lastName"] = data.pop("last_name")
+        data["totalPoints"] = data.pop("total_points")
+        return data
 
 
 class ChallengeCompleteSerializer(serializers.ModelSerializer):

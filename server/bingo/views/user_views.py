@@ -81,7 +81,7 @@ def get_profile_page(request, username):
     user_info = ProfilePageSerializer(target_user).data
 
     if not check_access(request.user, target_user):
-        return Response({"user_info": user_info, "challenges": []}, status=status.HTTP_200_OK)
+        return Response({"user_info": user_info, "challenges": [], "permission": False}, status=status.HTTP_200_OK)
 
     target_tiles = TileInteraction.objects.filter(user=target_user)
     target_challenges = [list(tile.grid.challenges.all())[
@@ -95,6 +95,7 @@ def get_profile_page(request, username):
 
     response_data = {
         "user_info": user_info,
-        "challenges": challenges_tiles_data
+        "challenges": challenges_tiles_data,
+        "permission": True
     }
     return Response(response_data, status=status.HTTP_200_OK)
