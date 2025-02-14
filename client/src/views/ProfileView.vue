@@ -30,7 +30,7 @@ const profileUserName = computed(() => {
   if (props.username) {
     return props.username
   } else if (userStore.userData !== null) {
-    return userStore.userData!.userName
+    return userStore.userData.userName
   } else {
     return ''
   }
@@ -90,8 +90,14 @@ onMounted(() => {
       <v-col cols="12" class="d-flex flex-column">
         <!-- Avatar and Basic Info -->
         <div class="d-flex align-start mb-4">
-          <v-img class="rounded-circle" max-height="96" max-width="96" min-width="96" contain
-            :src="avatarPaths[profileData.avatar]" />
+          <v-img
+            class="rounded-circle"
+            max-height="96"
+            max-width="96"
+            min-width="96"
+            contain
+            :src="avatarPaths[profileData.avatar]"
+          />
         </div>
 
         <p class="text-h4 font-weight-bold mb-1">{{ profileUserName }}</p>
@@ -110,7 +116,11 @@ onMounted(() => {
         </p>
         <p v-else-if="challengeData && challengeData.length === 0">No challenges started yet.</p>
         <div v-else class="d-flex flex-column gap-4">
-          <ChallengeInteraction v-for="challenge in challengeData" :key="challenge.title" v-bind="challenge" />
+          <ChallengeInteraction
+            v-for="challenge in challengeData"
+            :key="challenge.title"
+            v-bind="challenge"
+          />
         </div>
       </v-col>
     </v-row>
