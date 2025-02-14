@@ -1,9 +1,5 @@
 <script setup lang="ts">
-<<<<<<< HEAD
-import { ref, onMounted } from 'vue'
-=======
 import { ref, onMounted, computed } from 'vue'
->>>>>>> connect-profile-to-backend-temp
 import { useDisplay } from 'vuetify'
 import { useUserStore } from '@/stores/user'
 import { useModalStore } from '@/stores/modal'
@@ -11,32 +7,11 @@ import { useRouter } from 'vue-router'
 import ChallengeInteraction from '@/components/ChallengeInteraction.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
 import avatarPaths from '@/utils/avatar'
-<<<<<<< HEAD
-import { mockUsers, currentUserData } from '@/utils/mockdata' //for testing
-import type { User } from '@/types/user'
-
-// types
-interface Challenge {
-  title: string
-  description: string
-  type: 'Connect' | 'Understand' | 'Act'
-  points: number
-  startDate: string
-  finishDate?: string
-  status: 'Complete' | 'In Progress'
-}
-
-interface UserWithChallenges extends User {
-  challenges: Challenge[]
-}
-
-=======
 import server from '@/utils/server'
 import { useMessageStore } from '@/stores/message'
 import type { AxiosError } from 'axios'
 import type { Challenge, UserProfile } from '@/types/profile'
 
->>>>>>> connect-profile-to-backend-temp
 const props = defineProps<{
   username?: string
 }>()
@@ -44,14 +19,6 @@ const props = defineProps<{
 const { xs } = useDisplay()
 const userStore = useUserStore()
 const modalStore = useModalStore()
-<<<<<<< HEAD
-const router = useRouter()
-const profileData = ref<UserWithChallenges | null>(null) //data for the profile
-userStore.userData = currentUserData //for testing
-
-const initializeProfile = () => {
-  if (!userStore.isLoggedIn) {
-=======
 const messageStore = useMessageStore()
 const router = useRouter()
 const profileData = ref<UserProfile | null>(null) // data for the profile
@@ -71,24 +38,11 @@ const profileUserName = computed(() => {
 
 const initializeProfile = () => {
   if (!userStore.isLoggedIn && !props.username) {
->>>>>>> connect-profile-to-backend-temp
     modalStore.openLogin()
     router.push('/')
     return
   } //if user is not logged in, open login modal
 
-<<<<<<< HEAD
-  if (props.username) {
-    const userData = mockUsers[props.username]
-    if (userData) {
-      profileData.value = userData
-    } else {
-      router.push('/404')
-    }
-  } else {
-    profileData.value = currentUserData
-  }
-=======
   server
     .get(`/get-profile-page/${profileUserName.value}/`)
     .then((res) => {
@@ -113,7 +67,6 @@ const initializeProfile = () => {
         )
       }
     })
->>>>>>> connect-profile-to-backend-temp
 }
 
 onMounted(() => {
@@ -122,14 +75,10 @@ onMounted(() => {
 </script>
 
 <template>
-<<<<<<< HEAD
-  <v-container v-if="profileData" fluid class="pa-0 d-flex flex-column">
-=======
   <div v-if="loading" class="d-flex align-center justify-center h-100">
     <v-progress-circular indeterminate color="primaryBlue" />
   </div>
   <v-container v-else-if="profileData !== null" fluid class="pa-0 d-flex flex-column">
->>>>>>> connect-profile-to-backend-temp
     <!-- Wave Banner Header -->
     <v-row v-if="!xs" class="header">
       <WaveBanner imageSrc="/teambuilding-background.jpg" />
@@ -141,21 +90,11 @@ onMounted(() => {
       <v-col cols="12" class="d-flex flex-column">
         <!-- Avatar and Basic Info -->
         <div class="d-flex align-start mb-4">
-          <v-img
-            class="rounded-circle"
-            max-height="96"
-            max-width="96"
-            min-width="96"
-            contain
-            :src="avatarPaths[profileData.avatar]"
-          />
+          <v-img class="rounded-circle" max-height="96" max-width="96" min-width="96" contain
+            :src="avatarPaths[profileData.avatar]" />
         </div>
 
-<<<<<<< HEAD
-        <p class="text-h4 font-weight-bold mb-1">{{ profileData.userName }}</p>
-=======
         <p class="text-h4 font-weight-bold mb-1">{{ profileUserName }}</p>
->>>>>>> connect-profile-to-backend-temp
         <h3 class="text-h6 mb-1">{{ profileData.firstName }} {{ profileData.lastName }}</h3>
         <p class="mb-1">{{ profileData.bio }}</p>
         <p class="text-body-1">Total Points: {{ profileData.totalPoints }} pts</p>
@@ -166,22 +105,12 @@ onMounted(() => {
     <v-row class="px-4 px-sm-16 mx-0">
       <v-col cols="12">
         <h2 class="text-h6 font-weight-bold mb-4">Challenges</h2>
-<<<<<<< HEAD
-        <div class="d-flex flex-column gap-4">
-          <ChallengeInteraction
-            v-for="challenge in profileData.challenges"
-=======
         <p v-if="!permission" class="text-red">
           You do not have permission to view this person's challenges.
         </p>
         <p v-else-if="challengeData && challengeData.length === 0">No challenges started yet.</p>
         <div v-else class="d-flex flex-column gap-4">
-          <ChallengeInteraction
-            v-for="challenge in challengeData"
->>>>>>> connect-profile-to-backend-temp
-            :key="challenge.title"
-            v-bind="challenge"
-          />
+          <ChallengeInteraction v-for="challenge in challengeData" :key="challenge.title" v-bind="challenge" />
         </div>
       </v-col>
     </v-row>
