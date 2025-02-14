@@ -83,86 +83,114 @@ const finish = () => {
 </script>
 
 <template>
-  <v-card color="primaryBlue" rounded class="challenge-card">
-    <div class="header">
-      <div class="headerIcon" style="display: flex; flex-direction: column">
-        <img :src="typeIcons[type]" :alt="`${type} icon`" />
-        <p>{{ type }}</p>
-      </div>
-      <div class="header-content">
-        <v-card-title>{{ title }}</v-card-title>
-      </div>
-      <v-icon icon="mdi-close-circle-outline" @click="closeCard"></v-icon>
-    </div>
-
-    <v-card-subtitle style="font-weight: bold">
-      <div class="points">{{ points }} Points</div>
-    </v-card-subtitle>
-
-    <template v-if="status === 'not started'">
-      <div class="description">
-        <v-card-text>{{ description }}</v-card-text>
-      </div>
-      <div class="button-container">
-        <v-btn v-if="!isLoggedIn" @click="openLoginModal" class="action-button">Login</v-btn>
-        <v-btn v-else @click="startTask" class="action-button">Start</v-btn>
-      </div>
-    </template>
-
-    <!-- Started Content -->
-    <template v-else-if="status === 'started'">
-      <div class="description">
-        <div class="submission-area">
-          <v-textarea
-            v-model="taskSubmission.feedback"
-            placeholder="Feedback"
-            class="custom-textarea"
-            variant="plain"
-          ></v-textarea>
-
-          <div class="file-preview" v-if="taskSubmission.image">
-            <img src="/FileIcon.svg" alt="File icon" class="file-icon" />
-            <span class="file-name">{{ taskSubmission.image.name }}</span>
-          </div>
-
-          <div class="upload-button-wrapper">
-            <input type="file" id="file" @change="handleImageUpload" class="hidden-input" />
-            <label for="file">
-              <img src="/Upload.svg" alt="Upload icon" class="upload-icon" />
-            </label>
-          </div>
+  <div class="challenge-card-wrapper">
+    <div class="overlay"></div>
+    <v-card color="primaryBlue" rounded class="challenge-card">
+      <div class="header">
+        <div class="headerIcon" style="display: flex; flex-direction: column">
+          <img :src="typeIcons[type]" :alt="`${type} icon`" />
+          <p>{{ type }}</p>
         </div>
+        <div class="header-content">
+          <v-card-title>{{ title }}</v-card-title>
+        </div>
+        <v-icon icon="mdi-close-circle-outline" @click="closeCard"></v-icon>
+      </div>
 
+      <v-card-subtitle style="font-weight: bold">
+        <div class="points">{{ points }} Points</div>
+      </v-card-subtitle>
+
+      <template v-if="status === 'not started'">
+        <div class="description">
+          <v-card-text>{{ description }}</v-card-text>
+        </div>
         <div class="button-container">
-          <v-btn @click="finish" class="action-button">Finish</v-btn>
+          <v-btn v-if="!isLoggedIn" @click="openLoginModal" class="action-button">Login</v-btn>
+          <v-btn v-else @click="startTask" class="action-button">Start</v-btn>
         </div>
-      </div>
-    </template>
+      </template>
 
-    <template v-else>
-      <div class="description">
-        <v-card-text>{{ description }}</v-card-text>
-      </div>
-      <div class="button-container">
-        <v-btn @click="closeCard" class="action-button completed-btn">Completed</v-btn>
-      </div>
-    </template>
-  </v-card>
+      <template v-else-if="status === 'started'">
+        <div class="description">
+          <div class="submission-area">
+            <v-textarea
+              v-model="taskSubmission.feedback"
+              placeholder="Feedback"
+              class="custom-textarea"
+              variant="plain"
+            ></v-textarea>
+
+            <div class="file-preview" v-if="taskSubmission.image">
+              <img src="/FileIcon.svg" alt="File icon" class="file-icon" />
+              <span class="file-name">{{ taskSubmission.image.name }}</span>
+            </div>
+
+            <div class="upload-button-wrapper">
+              <input type="file" id="file" @change="handleImageUpload" class="hidden-input" />
+              <label for="file">
+                <img src="/Upload.svg" alt="Upload icon" class="upload-icon" />
+              </label>
+            </div>
+          </div>
+
+          <div class="button-container">
+            <v-btn @click="finish" class="action-button">Finish</v-btn>
+          </div>
+        </div>
+      </template>
+
+      <template v-else>
+        <div class="description">
+          <v-card-text>{{ description }}</v-card-text>
+        </div>
+        <div class="button-container">
+          <v-btn @click="closeCard" class="action-button completed-btn">Completed</v-btn>
+        </div>
+      </template>
+    </v-card>
+  </div>
 </template>
 
 <style scoped>
-/* Main card container with fixed width */
+/* Card wrapper for mobile overlay */
+.challenge-card-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+/* Overlay background */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+/* Main card container */
 .challenge-card {
   color: white;
   padding: 24px;
   width: 100%;
   max-width: 500px;
-  min-width: 500px;
-  margin: 0 auto;
+  margin: 0;
   border-radius: 16px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   font-family: 'Poppins', sans-serif;
   box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+  z-index: 1001;
 }
 
 /* Header section styles */
@@ -241,19 +269,23 @@ const finish = () => {
 }
 
 .action-button {
-  font-family: 'Poppins', sans-serif !important;
-  border-radius: 50px !important;
-  background-color: rgb(var(--v-theme-primaryPink)) !important;
+  font-family: 'Poppins', sans-serif;
+  border-radius: 50px;
+  background-color: #007d85 !important;
   color: white !important;
-  min-width: 180px !important;
-  height: 50px !important;
-  font-size: 18px !important;
-  text-transform: none !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  letter-spacing: normal !important;
-  padding: 0 32px !important;
+  min-width: 180px;
+  height: 50px;
+  font-size: 18px;
+  text-transform: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: normal;
+  padding: 0 32px;
+}
+
+.action-button.completed-btn {
+  background-color: #3fbee0 !important;
 }
 
 /* Submission area styles */
@@ -261,7 +293,7 @@ const finish = () => {
   position: relative;
   background-color: rgb(var(--v-theme-primaryBrown));
   border-radius: 12px;
-  padding: 0px;
+  padding: 0;
   margin: 20px auto;
   min-height: 200px;
   width: 100%;
@@ -341,11 +373,9 @@ const finish = () => {
 /* Mobile responsive styles */
 @media (max-width: 600px) {
   .challenge-card {
-    width: 90%;
-    min-width: 320px;
-    max-width: 90vw;
+    width: 100%;
     padding: 16px;
-    margin: 0 8px;
+    margin: 0;
     border-radius: 12px;
   }
 
@@ -429,9 +459,9 @@ const finish = () => {
   }
 
   .action-button {
-    font-size: 16px !important;
-    min-width: 160px !important;
-    height: 45px !important;
+    font-size: 16px;
+    min-width: 160px;
+    height: 45px;
   }
 }
 
