@@ -1,49 +1,63 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useModalStore } from '@/stores/modal'
+import { useDisplay } from 'vuetify'
+import type { ChallengeType, ChallengeStatus } from '@/types/challenge'
 
+const { mobile } = useDisplay()
+
+// Define interface for task submission
 interface TaskSubmission {
   feedback: string
   image: File | null
   canShareOnSocialMedia: boolean
 }
 
+// Initialize modal store
 const modalStore = useModalStore()
 
-const openLoginModal = () => {
-  modalStore.openLogin()
-}
+// Initialize task submission state
 const taskSubmission = ref<TaskSubmission>({
   feedback: '',
   image: null,
   canShareOnSocialMedia: false,
 })
 
+// Define emits for component events
 const emit = defineEmits<{
   (evt: 'close'): void
-  (evt: 'status-change', status: 'not started' | 'started' | 'completed'): void
+  (evt: 'status-change', status: ChallengeStatus): void
   (evt: 'task-completed', submission: TaskSubmission): void
 }>()
 
+// Define icons for different challenge types
 const typeIcons = {
-  connect: '/link.svg', // Maybe a network/connection brain icon
-  understand: '/brain.svg', // Perhaps a brain with a lightbulb
-  act: '/walking.svg', // A brain with a rocket or action symbol
+  connect: '/link.svg',
+  understand: '/brain.svg',
+  act: '/walking.svg',
 }
-// Define props
+
+// Define component props with imported types
 const props = defineProps<{
   title: string
   points: number
-  type: 'connect' | 'understand' | 'act'
+  type: ChallengeType
   description: string
-  status: 'not started' | 'started' | 'completed'
+  status: ChallengeStatus
   isLoggedIn: boolean
 }>()
 
+// Handle opening login modal
+const openLoginModal = () => {
+  modalStore.openLogin()
+}
+
+// Handle card close
 const closeCard = () => {
   emit('close')
 }
 
+// Handle task start
 const startTask = () => {
   if (!props.isLoggedIn) {
     return
@@ -51,6 +65,7 @@ const startTask = () => {
   emit('status-change', 'started')
 }
 
+// Handle image upload
 const handleImageUpload = (event: Event) => {
   const target = event.target as HTMLInputElement
   const file = target.files?.[0]
@@ -59,6 +74,7 @@ const handleImageUpload = (event: Event) => {
   }
 }
 
+// Handle task finish
 const finish = () => {
   if (!taskSubmission.value.feedback && !taskSubmission.value.image) {
     alert('Please provide feedback or upload an image')
@@ -70,85 +86,126 @@ const finish = () => {
 </script>
 
 <template>
-  <v-card color="primaryBlue" rounded>
-    <div class="header">
-      <div class="headerIcon" style="display: flex; flex-direction: column">
-        <img :src="typeIcons[type]" :alt="`${type} icon`" />
-        <p>{{ type }}</p>
+  <div :class="['challenge-card-wrapper', { mobile: mobile }]">
+    <div v-if="mobile" class="overlay"></div>
+    <v-card color="primaryBlue" rounded class="challenge-card">
+      <div class="header">
+        <div class="headerIcon" style="display: flex; flex-direction: column">
+          <img :src="typeIcons[type]" :alt="`${type} icon`" />
+          <p>{{ type }}</p>
+        </div>
+        <div class="header-content">
+          <v-card-title>{{ title }}</v-card-title>
+        </div>
+        <v-icon icon="mdi-close-circle-outline" @click="closeCard"></v-icon>
       </div>
-      <div class="header-content">
-        <v-card-title>{{ title }}</v-card-title>
-      </div>
-      <v-icon icon="mdi-close-circle-outline" @click="closeCard"></v-icon>
-    </div>
 
-    <v-card-subtitle style="font-weight: bold">
-      <div class="points">{{ points }} Points</div>
-    </v-card-subtitle>
+      <v-card-subtitle style="font-weight: bold">
+        <div class="points">{{ points }} Points</div>
+      </v-card-subtitle>
 
-    <template v-if="status === 'not started'">
-      <div class="description">
-        <v-card-text>{{ description }}</v-card-text>
-      </div>
-      <v-card-actions>
-        <v-btn color="white" v-if="!isLoggedIn" @click="openLoginModal">Login</v-btn>
-        <v-btn color="white" v-else @click="startTask">Start</v-btn>
-      </v-card-actions>
-    </template>
+      <template v-if="status === 'not started'">
+        <div class="description">
+          <v-card-text>{{ description }}</v-card-text>
+        </div>
+        <div class="button-container">
+          <v-btn v-if="!isLoggedIn" @click="openLoginModal" class="action-button">Login</v-btn>
+          <v-btn v-else @click="startTask" class="action-button">Start</v-btn>
+        </div>
+      </template>
 
-    <!-- Started Content -->
-    <template v-else-if="status === 'started'">
-      <div class="description">
-        <div class="submission-area" width="95%">
-          <v-textarea
-            v-model="taskSubmission.feedback"
-            placeholder="Feedback"
-            class="custom-textarea"
-            variant="plain"
-          ></v-textarea>
+      <template v-else-if="status === 'started'">
+        <div class="description">
+          <div class="submission-area">
+            <v-textarea
+              v-model="taskSubmission.feedback"
+              placeholder="Feedback"
+              class="custom-textarea"
+              variant="plain"
+            ></v-textarea>
 
-          <div class="file-preview" v-if="taskSubmission.image">
-            <img src="/FileIcon.svg" alt="File icon" class="file-icon" />
-            <span class="file-name">{{ taskSubmission.image.name }}</span>
+            <div class="file-preview" v-if="taskSubmission.image">
+              <img src="/FileIcon.svg" alt="File icon" class="file-icon" />
+              <span class="file-name">{{ taskSubmission.image.name }}</span>
+            </div>
+
+            <div class="upload-button-wrapper">
+              <input type="file" id="file" @change="handleImageUpload" class="hidden-input" />
+              <label for="file">
+                <img src="/Upload.svg" alt="Upload icon" class="upload-icon" />
+              </label>
+            </div>
           </div>
 
-          <div class="upload-button-wrapper">
-            <input type="file" id="file" @change="handleImageUpload" class="hidden-input" />
-            <label for="file">
-              <img src="/Upload.svg" alt="Upload icon" class="upload-icon" />
-            </label>
+          <div class="button-container">
+            <v-btn @click="finish" class="action-button">Finish</v-btn>
           </div>
         </div>
+      </template>
 
-        <div class="finish-button-wrapper">
-          <v-card-actions>
-            <v-btn class="finish-button" @click="finish">Finish</v-btn>
-          </v-card-actions>
+      <template v-else>
+        <div class="description">
+          <v-card-text>{{ description }}</v-card-text>
         </div>
-      </div>
-    </template>
-
-    <template v-else>
-      <div class="description">
-        <v-card-text>{{ description }}</v-card-text>
-      </div>
-      <v-card-actions>
-        <v-btn @click="closeCard" class="completed-btn">Completed</v-btn>
-      </v-card-actions>
-    </template>
-  </v-card>
+        <div class="button-container">
+          <v-btn @click="closeCard" class="action-button completed-btn">Completed</v-btn>
+        </div>
+      </template>
+    </v-card>
+  </div>
 </template>
 
 <style scoped>
-.v-card {
-  color: white;
-  padding: 24px;
-  max-width: 800px;
-  margin: 0 auto;
-  border-radius: 16px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+/* Card wrapper base styles */
+.challenge-card-wrapper {
+  width: 100%;
+  margin: 1rem 0;
 }
 
+/* Mobile specific styles */
+.challenge-card-wrapper.mobile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+/* Overlay only shows on mobile */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+/* Main card container */
+.challenge-card {
+  color: white;
+  padding: 24px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  border-radius: 16px;
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+}
+
+.mobile .challenge-card {
+  z-index: 1001;
+}
+
+/* Header section styles */
 .header {
   display: flex;
   align-items: flex-start;
@@ -177,6 +234,7 @@ const finish = () => {
   overflow: visible;
   text-overflow: clip;
   font-weight: bold;
+  font-family: 'Poppins', sans-serif;
 }
 
 .header img {
@@ -185,6 +243,7 @@ const finish = () => {
   flex-shrink: 0;
 }
 
+/* Points display */
 .points {
   text-align: center;
   color: rgba(255, 255, 255, 0.8);
@@ -192,6 +251,7 @@ const finish = () => {
   margin: 4px 0 20px;
 }
 
+/* Text content styles */
 .v-card-text {
   color: white;
   text-align: center;
@@ -199,95 +259,60 @@ const finish = () => {
   margin-bottom: 8px;
   font-size: 16px;
   line-height: 1.5;
-}
-
-ul {
-  list-style-type: disc;
-  padding: 0;
-  margin: 0px 0;
-  text-align: center;
-}
-
-li {
-  margin: 8px 0;
-  color: white;
-  font-size: 16px;
-}
-
-.v-card-actions {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 20px;
-  margin: 0 auto;
-}
-
-.v-btn {
-  background-color: rgb(var(--v-theme-primaryGreen));
-  color: rgb(var(--v-theme-primaryWhite));
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 24px 20px;
-  font-size: 18px;
-  border-radius: 50px;
-  min-width: 120px;
+  font-family: 'Poppins', sans-serif;
 }
 
 .description {
   text-align: center;
   margin: 0;
   padding: 0 16px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-.v-textarea {
-  background-color: rgb(var(--v-theme-primaryBrown));
-  --v-field-border-width: 0;
-  box-shadow: none;
-  padding: 12px;
-  min-height: 120px;
-  color: rgb(var(--v-theme-primaryBlue));
-  width: 95%;
-  border: none;
-}
-.upload-icon {
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
+/* Button container and styles */
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 20px 0;
 }
 
-.upload-icon:hover {
-  background-color: rgba(255, 255, 255, 0.15);
+.action-button {
+  font-family: 'Poppins', sans-serif;
+  border-radius: 50px;
+  background-color: #007d85 !important;
+  color: white !important;
+  min-width: 180px;
+  height: 50px;
+  font-size: 18px;
+  text-transform: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: normal;
+  padding: 0 32px;
 }
 
-.v-checkbox :deep(.v-label) {
-  color: rgb(var(--v-theme-primaryWhite));
-  opacity: 0.9;
-}
-.completed-btn {
-  background-color: rgb(var(--v-theme-lightBlue));
-}
-.hidden-input {
-  display: none;
+.action-button.completed-btn {
+  background-color: #3fbee0 !important;
 }
 
+/* Submission area styles */
 .submission-area {
   position: relative;
   background-color: rgb(var(--v-theme-primaryBrown));
   border-radius: 12px;
-  padding: 0px;
+  padding: 0;
   margin: 20px auto;
   min-height: 200px;
-  width: 90%;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-.custom-textarea :deep(.v-field),
-.custom-textarea :deep(.v-field__field) {
-  background-color: transparent;
-  border: none;
-  outline: none;
-  box-shadow: none;
-}
 .custom-textarea {
   background-color: transparent;
   border: none;
@@ -299,6 +324,30 @@ li {
   width: 100%;
   resize: none;
   overflow-y: auto;
+  font-family: 'Poppins', sans-serif;
+}
+
+.custom-textarea :deep(.v-field),
+.custom-textarea :deep(.v-field__field) {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+/* Upload section styles */
+.upload-icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.upload-icon:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.hidden-input {
+  display: none;
 }
 
 .file-preview {
@@ -320,10 +369,11 @@ li {
   color: rgb(var(--v-theme-primaryBlue));
   font-size: 12px;
   text-align: center;
-  white-space: nowrap; /* Prevent text wrapping */
+  white-space: nowrap;
   max-width: 84px;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-family: 'Poppins', sans-serif;
 }
 
 .upload-button-wrapper {
@@ -332,16 +382,12 @@ li {
   right: 20px;
 }
 
-.finish-button-wrapper {
-  text-align: center;
-  margin-top: -50px; /* Adjust the button position */
-}
-
+/* Mobile responsive styles */
 @media (max-width: 600px) {
-  .v-card {
+  .challenge-card {
+    width: 100%;
     padding: 16px;
-    max-width: 100%;
-    margin: 0 8px;
+    margin: 0;
     border-radius: 12px;
   }
 
@@ -362,7 +408,6 @@ li {
 
   .v-card-title {
     font-size: 20px;
-    font-weight: bold;
   }
 
   .header-content {
@@ -381,14 +426,11 @@ li {
   .v-card-text {
     font-size: 14px;
   }
+
   .v-icon {
     position: absolute;
     top: 16px;
     right: 16px;
-  }
-  li {
-    font-size: 14px;
-    margin: 6px 0;
   }
 
   .submission-area {
@@ -403,7 +445,6 @@ li {
     font-size: 14px;
   }
 
-  /* Adjust the upload and file preview area for better touch targets */
   .file-preview {
     bottom: 16px;
     left: 16px;
@@ -429,34 +470,17 @@ li {
     height: 28px;
   }
 
-  /* Make the finish button more touch-friendly */
-  .finish-button-wrapper {
-    margin-top: -24px;
-    width: 100%;
-  }
-
-  /* Adjust checkbox for mobile */
-  .v-checkbox {
-    margin: 8px 0;
-  }
-  .v-btn {
+  .action-button {
     font-size: 16px;
-    padding: 14px 32px;
-  }
-
-  .v-checkbox :deep(.v-label) {
-    font-size: 14px;
+    min-width: 160px;
+    height: 45px;
   }
 }
 
-/* Add touch-friendly hover states for mobile */
+/* Touch device styles */
 @media (hover: none) {
   .upload-icon:hover {
     background-color: transparent;
-  }
-
-  .v-btn:hover {
-    opacity: 1;
   }
 }
 </style>
