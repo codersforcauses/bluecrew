@@ -52,7 +52,7 @@ defineProps<{
         <div>
           <p class="mb-2"><strong>Start Date:</strong> {{ startDate }}</p>
           <p v-if="status === 'Complete'">
-            <strong>Finish Date:</strong> 
+            <strong>Finish Date:</strong>
             {{ finishDate }}
           </p>
         </div>

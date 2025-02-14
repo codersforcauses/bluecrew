@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router'
 import ChallengeInteraction from '@/components/ChallengeInteraction.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
 import avatarPaths from '@/utils/avatar'
-import { mockUsers, currentUserData } from '@/utils/mockData' //for testing
+import { mockUsers, currentUserData } from '@/utils/mockdata' //for testing
 import type { User } from '@/types/user'
 
 // types
