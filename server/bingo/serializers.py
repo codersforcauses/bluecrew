@@ -160,6 +160,8 @@ class ChallengeCompleteSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'position': {'required': True},
             'consent': {'required': True},
+            'description': {'required': False, 'allow_blank': True}
+
         }
 
 
