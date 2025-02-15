@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from .models import BingoGrid, Challenge, TileInteraction
+from datetime import date
 
 User = get_user_model()
 
@@ -10,27 +10,49 @@ User = get_user_model()
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email',
+        fields = ['username', 'first_name', 'last_name', 'email', 'birthdate',
                   'password', 'indigenous_identity', 'gender_identity']
         extra_kwargs = {
             'password': {'write_only': True},
             'first_name': {'required': True},
-            'last_name': {'required': True}
+            'last_name': {'required': True},
         }
 
     def create(self, validated_data):
         user = User.objects.create_user(
-            username=validated_data['username'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-            email=validated_data['email'],
-            password=validated_data['password'],
+            **validated_data
         )
         return user
 
     def validate_password(self, value):
         validate_password(value)
         return value
+
+    def validate_birthdate(self, value):
+        if value and value > date.today():
+            raise serializers.ValidationError(
+                'Birth date cannot be in the future.')
+        return value
+
+    def validate_username(self, value):
+        name = value.replace('_', '')
+        if not name.isalnum():
+            raise serializers.ValidationError(
+                'Usernames can only contain alphanumeric characters or "_".'
+            )
+        return value
+
+    # Front end sends empty strings if form is empty, but serializer will interpret this a string.
+    # Similarly, first_name and last_name are sent as empty string if the form is not filled.
+    # We want to interpret this as no value given, not as a string.
+    def to_internal_value(self, data):
+        if data.get('birthdate', None) == '':
+            data.pop('birthdate')
+        if data.get('first_name', None) == '':
+            data.pop('first_name')
+        if data.get('last_name', None) == '':
+            data.pop('last_name')
+        return super(UserRegisterSerializer, self).to_internal_value(data)
 
 
 class LeaderboardUserSerializer(serializers.ModelSerializer):
@@ -87,10 +109,55 @@ class BingoGridSerializer(serializers.ModelSerializer):
         fields = ['grid_id', 'challenges']
 
 
-class UpdatePreferencesSerializer(ModelSerializer):
+class UpdatePreferencesSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["avatar", "bio", "visibility"]
+
+
+class ProfilePageChallengeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Challenge
+        fields = ["name", "description", "challenge_type",
+                  "points"]
+
+    def to_representation(self, instance):
+        # This ensures the field names match the TypeScript interface
+        data = super().to_representation(instance)
+        data["type"] = data.pop("challenge_type").capitalize()
+        data["title"] = data.pop("name")
+        return data
+
+
+class ProfilePageTileSerializer(serializers.ModelSerializer):
+    date_started = serializers.DateTimeField(format="%d/%m/%y %I:%M %p")
+    date_completed = serializers.DateTimeField(format="%d/%m/%y %I:%M %p")
+
+    class Meta:
+        model = TileInteraction
+        fields = ["image", "date_started", "date_completed", "completed"]
+
+    def to_representation(self, instance):
+        # This ensures the field names match the TypeScript interface
+        data = super().to_representation(instance)
+        data["finishDate"] = data.pop("date_completed")
+        data["startDate"] = data.pop("date_started")
+        return data
+
+
+class ProfilePageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name", "bio",
+                  "total_points", "avatar"]
+
+    def to_representation(self, instance):
+        # This ensures the field names match the TypeScript interface
+        data = super().to_representation(instance)
+        data["firstName"] = data.pop("first_name")
+        data["lastName"] = data.pop("last_name")
+        data["totalPoints"] = data.pop("total_points")
+        return data
 
 
 class ChallengeCompleteSerializer(serializers.ModelSerializer):
@@ -108,3 +175,15 @@ class UserSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['avatar', 'username', 'user_id']
+
+
+class UpdateBingoGridSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BingoGrid
+        fields = ('challenges', )
+
+    def validate_challenges(self, value):
+        if len(value) != 16 or len(set(value)) != 16:
+            raise serializers.ValidationError(
+                "You must provide the ids of exactly 16 distinct challenges.")
+        return value

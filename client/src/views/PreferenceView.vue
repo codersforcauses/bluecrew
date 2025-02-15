@@ -7,6 +7,7 @@ import { useUserStore } from '@/stores/user'
 import type { User } from '@/types/user'
 import server from '@/utils/server'
 import { AxiosError } from 'axios'
+import { useMessageStore } from '@/stores/message'
 
 const { xs } = useDisplay()
 const userStore = useUserStore()
@@ -16,7 +17,7 @@ const isEditing = ref(false)
 const visOptions = ['Bluecrew only', 'Friends only', 'Public']
 const visibility = ref<0 | 1 | 2>(0)
 const bioError = ref<string>('')
-
+const messageStore = useMessageStore()
 const selectedAvatar = ref<0 | 1 | 2 | 3 | 4 | 5>(0)
 
 const handleEditClick = () => {
@@ -54,7 +55,7 @@ const handleApply = () => {
       ) {
         bioError.value = 'Please enter a bio with at most 300 characters'
       } else {
-        console.log('An unexpected error occurred')
+        messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
       }
     })
 }
@@ -64,8 +65,8 @@ const handleApply = () => {
   <v-container fluid class="pa-0 d-flex flex-column" v-if="userStore.userData">
     <!-- Wave Banner in Both States -->
     <v-row v-if="!xs" class="header">
-      <WaveBanner imageSrc="/beach-header.jpg" />
-      <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
+      <WaveBanner imageSrc="/teambuilding-background.jpg" />
+      <img src="/teambuilding-background.jpg" alt="Ocean Beach" class="header-image" />
     </v-row>
 
     <!-- Main Profile View -->

@@ -4,13 +4,14 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from bingo import views
+from bingo.views import (bingo_views, friends_views, leaderboard_views,
+                         user_views,)
 
 urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('register/', views.register_user, name='register_user'),
-    path('update-preferences/', views.update_user_preferences,
+    path('register/', user_views.register_user, name='register_user'),
+    path('update-preferences/', user_views.update_user_preferences,
          name='update_preferences'),
     path('leaderboard/', views.get_leaderboard, name='get_leaderboard'),
     path('user/me/', views.get_current_user, name='current_user'),
@@ -27,5 +28,7 @@ urlpatterns = [
     path("activate", views.confirm_email, name="confirm_email"),
     path('user-search/', views.find_user, name='user_search'),
     path("request-reset", views.request_password_reset, name="request_password_reset"),
-    path("reset-passoword", views.reset_password, name="reset_password")
+    path("reset-passoword", views.reset_password, name="reset_password"),
+    path('get-profile-page/<str:username>/', user_views.get_profile_page, name='get_profile_page'),
+    path('update-bingo-grid/', bingo_views.update_bingo_grid, name='update-bingo-grid'),
 ]

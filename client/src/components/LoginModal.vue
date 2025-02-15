@@ -3,21 +3,26 @@ import { ref, computed } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import { useDisplay } from 'vuetify'
 import { useUserStore } from '@/stores/user'
+import { useMessageStore } from '@/stores/message'
 
 const { xs } = useDisplay()
 const modalStore = useModalStore()
 const userStore = useUserStore()
+const messageStore = useMessageStore()
 
 const username = ref('')
 const password = ref('')
 const email = ref('')
 const valid = ref(false)
+const loading = ref(false)
 
 const currentPage = ref<'login' | 'forgot-password'>('login')
 
 const setCurrentPage = (page: 'login' | 'forgot-password') => {
   currentPage.value = page
 }
+const required = (value: string) => !!value || 'Required.'
+const errorMessage = ref('')
 
 const isDialogVisible = computed({
   get: () => modalStore.currentModal === 'login',
@@ -37,14 +42,21 @@ const openRegisterModal = () => {
 }
 
 const submitForm = async () => {
+  loading.value = true
   const body = {
     username: username.value,
     password: password.value,
   }
   const loginResult = await userStore.login(body)
   if (loginResult === true) {
+    messageStore.showMessage('Success', 'Login success.', 'success')
     closeDialog()
+  } else if (loginResult === false) {
+    messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
+  } else {
+    errorMessage.value = 'No user with the given username and password was found.'
   }
+  loading.value = false
 }
 </script>
 
@@ -73,34 +85,36 @@ const submitForm = async () => {
       </v-container>
 
       <v-card-title class="d-flex justify-center">
-        <img src="@/assets/bluecrew-logo.png" alt="Blue Crew Logo" style="width: 100px" />
+        <img src="/blingo-logo.svg" alt="Blingo Logo" class="logo" />
       </v-card-title>
 
       <!-- Login Page -->
       <template v-if="currentPage === 'login'">
-        <v-card-subtitle class="text-center subtitle mt-2 text-primaryPink">
+        <v-card-subtitle class="text-center subtitle mt-2 text-primaryGreen">
           <strong>
             <h3><b>Welcome Back</b></h3>
           </strong>
         </v-card-subtitle>
         <v-card-text>
-          <p class="text-center subtitle mb-4 text-primaryPink">
+          <p class="text-center subtitle mb-4 text-primaryGreen">
             <b>Login to your existing account</b>
           </p>
-          <v-form v-model="valid" lazy-validation>
-            <v-card-subtitle class="text-left subtitle mb-3 pa-0 text-primaryPink">
+          <v-form v-model="valid" validate-on="blur" @submit.prevent="submitForm">
+            <v-card-subtitle class="text-left subtitle mb-3 pa-0 text-primaryGreen">
               Username
             </v-card-subtitle>
             <v-text-field
               v-model="username"
               placeholder="Enter your username"
               hide-details="auto"
-              required
+              :rules="[required]"
               outlined
-              class="bg-primaryBrown"
+              bg-color="primaryBrown"
               variant="outlined"
+              :error-messages="errorMessage"
+              @focus="errorMessage = ''"
             ></v-text-field>
-            <v-card-subtitle class="text-left subtitle mt-3 mb-3 pa-0 text-primaryPink">
+            <v-card-subtitle class="text-left subtitle mt-3 mb-3 pa-0 text-primaryGreen">
               Password
             </v-card-subtitle>
             <v-text-field
@@ -108,32 +122,42 @@ const submitForm = async () => {
               placeholder="Enter your password"
               hide-details="auto"
               type="password"
-              required
+              :rules="[required]"
               outlined
-              class="bg-primaryBrown"
+              bg-color="primaryBrown"
               variant="outlined"
+              :error-messages="errorMessage"
+              @focus="errorMessage = ''"
             ></v-text-field>
             <div class="mt-3">
-              <a class="text-lightBlue" @click.prevent="setCurrentPage('forgot-password')">
-                <p class="text-subtitle-2 margin-left-adjust">Forgot Username or Password?</p>
+              <a
+                class="text-lightBlue cursor-pointer"
+                @click.prevent="setCurrentPage('forgot-password')"
+              >
+                <p class="text-subtitle-2 margin-left-adjust text-primaryGreen">
+                  Forgot Username or Password?
+                </p>
               </a>
             </div>
             <v-btn
               class="d-flex button-custom justify-center mt-4 w-50 mx-auto"
               color="primaryBlue"
-              :disabled="!valid"
               rounded
               elevation="12"
-              @click="submitForm"
+              type="submit"
+              :disabled="!valid"
+              :loading="loading"
             >
               Sign In
             </v-btn>
           </v-form>
         </v-card-text>
-        <v-card-actions class="d-flex justify-center text-primaryPink">
+        <v-card-actions class="d-flex justify-center text-primaryGreen">
           <footer>
             Don't have an account?
-            <a class="text-primaryPink" @click.prevent="openRegisterModal">Sign up</a>
+            <a class="text-primaryGreen cursor-pointer" @click.prevent="openRegisterModal"
+              >Sign up</a
+            >
           </footer>
         </v-card-actions>
       </template>
@@ -176,6 +200,7 @@ const submitForm = async () => {
 .button-custom {
   height: 50px;
 }
+
 .back-button {
   position: absolute;
   top: 16px;
@@ -247,7 +272,11 @@ footer {
   opacity: 1;
 }
 
-a:hover {
+a {
   text-decoration: underline;
+}
+
+.logo {
+  height: 100px;
 }
 </style>

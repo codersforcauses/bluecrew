@@ -16,7 +16,7 @@ class RegisterUserTest(TestCase):
     # Required fields not sent.
     def test_register_user_error(self):
         response = self.client.post(
-            '/api/register/', {'username': 'forgotten_fields', 'email': 'test@gmail.com',
+            '/api/register/', {'username': 'forgotten_fields',
                                'password': 'SuperSecure123'}
         )
 
@@ -36,4 +36,12 @@ class RegisterUserTest(TestCase):
                                'first_name': 'larry', 'last_name': 'bird', 'password': '1234'}
         )
 
+        self.assertEqual(response.status_code, 400)
+
+    def test_username_restriction(self):
+        # Test special characters not allowed in username.
+        response = self.client.post(
+            '/api/register/', {'username': '////@@!!', 'email': 'test@test.com',
+                               'first_name': 'larry', 'last_name': 'bird', 'password': 'Password!!@@1234'}
+        )
         self.assertEqual(response.status_code, 400)
