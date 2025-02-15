@@ -42,7 +42,7 @@ const resetPassword = async () => {
         <v-text-field class="mt-2" bg-color="primaryBrown" id="confirmPassword" v-model="confirmPassword" type="password" placeholder="Confirm new password" required />
       </div>
       
-      <v-btn class="d-flex justify-center mt-8 w-50 mx-auto" color="primaryBlue" height="50px" rounded @click="resetPassword">Reset Password</v-btn>
+      <v-btn class="d-flex justify-center mt-8 w-50 mx-auto" color="primaryBlue" height="50px" font-family="Lilita One, cursive" rounded @click="resetPassword">Reset Password</v-btn>
 
     </div>
   </div>
