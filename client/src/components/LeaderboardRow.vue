@@ -1,12 +1,21 @@
 <script setup lang="ts">
 import avatarPaths from '@/utils/avatar'
-defineProps<{
+
+const props = defineProps<{
   rank: number
   avatarIndex: number
   name: string
   points: number
   isHighlighted: boolean
 }>()
+
+const emit = defineEmits<{
+  'click-username': [username: string]
+}>()
+
+const handleUsernameClick = () => {
+  emit('click-username', props.name)
+}
 </script>
 
 <template>
@@ -23,7 +32,9 @@ defineProps<{
       cover
       :src="`/${avatarPaths[avatarIndex]}`"
     ></v-img>
-    <p class="me-auto font-weight-bold truncate-name">{{ name }}</p>
+    <p class="me-auto font-weight-bold truncate-name username-link" @click="handleUsernameClick">
+      {{ name }}
+    </p>
     <p :class="[isHighlighted ? 'font-weight-bold' : '']" class="text-right points">
       {{ points }} pts
     </p>
@@ -50,5 +61,13 @@ defineProps<{
 
 .points {
   white-space: nowrap;
+}
+
+.username-link {
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+    color: rgb(var(--v-theme-primaryBlue));
+  }
 }
 </style>
