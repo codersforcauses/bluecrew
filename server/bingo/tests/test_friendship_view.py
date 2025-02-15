@@ -57,17 +57,14 @@ class FriendViewsTest(TestCase):
         self.client.force_authenticate(user=self.user1)
         response = self.client.get(reverse('all_friends_data'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
         # Check structure of response
         self.assertIn('current_friends', response.data)
         self.assertIn('incoming_requests', response.data)
         self.assertIn('outgoing_requests', response.data)
-        
         # Check counts
         self.assertEqual(len(response.data['current_friends']), 1)
         self.assertEqual(len(response.data['incoming_requests']), 1)
         self.assertEqual(len(response.data['outgoing_requests']), 1)
-        
         # Check specific data
         self.assertEqual(response.data['current_friends'][0]['userName'], 'user2')
         self.assertEqual(response.data['incoming_requests'][0]['userName'], 'user4')
@@ -96,13 +93,12 @@ class FriendViewsTest(TestCase):
         """Test that only GET method is allowed"""
         self.client.force_authenticate(user=self.user1)
         url = reverse('all_friends_data')
-        
+
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-        
+
         response = self.client.put(url)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-        
+
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-

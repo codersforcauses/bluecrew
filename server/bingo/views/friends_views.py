@@ -8,7 +8,6 @@ from rest_framework.response import Response
 
 from ..models import Friendship, User
 from ..serializers import FriendshipUserSerializer
-from .utils import get_friend_requests
 
 
 @api_view(['DELETE'])
