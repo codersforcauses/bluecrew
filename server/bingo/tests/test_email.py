@@ -139,3 +139,55 @@ class TestPasswordReset(TestCase):
         self.assertEqual(response.status_code, 200)
         self.user.refresh_from_db()
         self.assertTrue(self.user.check_password("Is this a good password?"))
+
+    def test_invalid_email(self):
+        response = self.client.post(
+            reverse("request_password_reset"),
+            {"email": "nobody@someone-else.com"}
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_invalid_uid(self):
+        response = self.client.post(
+            reverse("reset_password"),
+            {"uid": urlsafe_base64_encode(force_bytes(self.user.pk+1)), "token": "42", "password": "Is this a good password?"}
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_invalid_password(self):
+        self.client.post(
+            reverse("request_password_reset"),
+            {"email": self.user.email}
+        )
+        id_parser = FindHREFByID("reset_link")
+        id_parser.feed(mail.outbox[0].body)
+        url = id_parser.href
+        query = parse_qs(urlparse(url).query)
+        response = self.client.post(
+            reverse("reset_password"),
+            {"uid": query["uid64"], "token": query["token"], "password": "No."}
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_invalid_token(self):
+        self.client.post(
+            reverse("request_password_reset"),
+            {"email": self.user.email}
+        )
+        id_parser = FindHREFByID("reset_link")
+        id_parser.feed(mail.outbox[0].body)
+        url = id_parser.href
+        query = parse_qs(urlparse(url).query)
+        response = self.client.post(
+            reverse("reset_password"),
+            {"uid": query["uid64"], "token": "AAAA", "password": "Is this a good password?"}
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_invalid_params(self):
+        response = self.client.post(reverse("reset_password"))
+        self.assertEqual(response.status_code, 400)
+
+    def test_weird_uid(self):
+        response = self.client.post(reverse("reset_password"), {"uid": "14", "token": "AAAA", "password": "Is this a good password?"})
+        self.assertEqual(response.status_code, 400)
