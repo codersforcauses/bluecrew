@@ -84,8 +84,7 @@ def request_email_verification(request):
 
 @api_view(["GET"])
 def confirm_email(request):
-    # TODO Check that this redirects to the site homepage, not the api root
-    success_path = "/"
+    success_path = settings.FRONTEND_URL
 
     try:
         uid64 = request.GET["uid64"]
@@ -115,7 +114,7 @@ def request_password_reset(request):
     token = default_token_generator.make_token(user)
     encoded_user = urlsafe_base64_encode(force_bytes(user.pk))
     # TODO Replace with link to the actual reset form
-    url = request.build_absolute_uri(f"{reverse("reset_password")}?uid64={encoded_user}&token={token}")
+    url = request.build_absolute_uri(f"{settings.FRONTEND_URL}/{"reset_path"}/?uid64={encoded_user}&token={token}")
     content = render_to_string(
         "password_reset.html",
         context={"url": url}
