@@ -33,4 +33,5 @@ urlpatterns = [
     path('request-friendship/<int:user_id>/',
          friends_views.request_friendship, name='request_friendship'),
     path('user-search/', user_views.find_user, name='user_search'),
+    path('friends/all/', friends_views.get_all_friends_data, name='all_friends_data'),
 ]

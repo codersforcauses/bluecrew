@@ -114,3 +114,59 @@ def accept_friendship(request, friendship_id):
             {"message": "Friendship accepted successfully."},
             status=status.HTTP_200_OK
         )
+
+
+@api_view(['GET'])
+@permission_classes((permissions.IsAuthenticated, ))
+def get_all_friends_data(request):
+    """Get all friends data including current friends, incoming and outgoing requests in a single request.
+    Requires authentication."""
+    
+    # Get all friendships
+    all_friendships = Friendship.objects.filter(
+        Q(requester=request.user) | Q(receiver=request.user)
+    )
+    
+    # Get accepted friendships
+    accepted_friendships = all_friendships.filter(status=Friendship.ACCEPTED)
+    current_friends = []
+    for friendship in accepted_friendships:
+        friend = (friendship.receiver if friendship.requester == request.user 
+                 else friendship.requester)
+        serializer = FriendshipUserSerializer(
+            friend,
+            context={'friendship': friendship}
+        )
+        current_friends.append(serializer.data)
+
+    # Get pending incoming requests
+    incoming_friendships = all_friendships.filter(
+        status=Friendship.PENDING,
+        receiver=request.user
+    )
+    incoming_requests = []
+    for friendship in incoming_friendships:
+        serializer = FriendshipUserSerializer(
+            friendship.requester,
+            context={'friendship': friendship}
+        )
+        incoming_requests.append(serializer.data)
+
+    # Get pending outgoing requests
+    outgoing_friendships = all_friendships.filter(
+        status=Friendship.PENDING,
+        requester=request.user
+    )
+    outgoing_requests = []
+    for friendship in outgoing_friendships:
+        serializer = FriendshipUserSerializer(
+            friendship.receiver,
+            context={'friendship': friendship}
+        )
+        outgoing_requests.append(serializer.data)
+
+    return Response({
+        "current_friends": current_friends,
+        "incoming_requests": incoming_requests,
+        "outgoing_requests": outgoing_requests
+    }, status=status.HTTP_200_OK)

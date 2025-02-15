@@ -3,6 +3,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import FriendComponent from '@/components/FriendComponent.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
 import server from '@/utils/server'
+import { useMessageStore } from '@/stores/message'
 
 // Types
 interface FriendEntry {
@@ -28,29 +29,12 @@ type SubPage = 'list' | 'incoming' | 'outgoing'
 // State
 const currentSubpage = ref<SubPage>('list')
 const isLoading = ref(true)
-const error = ref<string | null>(null)
 const searchQuery = ref('')
 const currentFriends = ref<FriendEntry[]>([])
 const incomingRequests = ref<FriendEntry[]>([])
 const outgoingRequests = ref<FriendEntry[]>([])
 const searchResults = ref<SearchResult[]>([])
-
-// Computed
-const existingFriendsResults = computed(() =>
-  searchQuery.value
-    ? currentFriends.value.filter((friend) =>
-        friend.userName.toLowerCase().includes(searchQuery.value.toLowerCase()),
-      )
-    : [],
-)
-
-const filteredSearchResults = computed(
-  () =>
-    searchResults.value?.filter(
-      (result) =>
-        !currentFriends.value.some((friend) => friend.userId === result.user_data.user_id),
-    ) ?? [],
-)
+const messageStore = useMessageStore()
 
 // Helpers
 const getUserVariant = (status: string) => {
@@ -66,23 +50,22 @@ const getUserVariant = (status: string) => {
   }
 }
 
-// Data fetching
 const fetchFriendsData = async () => {
   isLoading.value = true
-  error.value = null
 
   try {
-    const [friendsResponse, incomingResponse, outgoingResponse] = await Promise.all([
-      server.get<FriendEntry[]>('/friends/'),
-      server.get<FriendEntry[]>('/friends/requests/incoming/'),
-      server.get<FriendEntry[]>('/friends/requests/outgoing/'),
-    ])
+    const response = await server.get<{
+      current_friends: FriendEntry[]
+      incoming_requests: FriendEntry[]
+      outgoing_requests: FriendEntry[]
+    }>('/friends/all/')
 
-    currentFriends.value = friendsResponse.data
-    incomingRequests.value = incomingResponse.data
-    outgoingRequests.value = outgoingResponse.data
+    // Update all three ref values from the single response
+    currentFriends.value = response.data.current_friends
+    incomingRequests.value = response.data.incoming_requests
+    outgoingRequests.value = response.data.outgoing_requests
   } catch {
-    error.value = 'Failed to fetch friends data'
+    messageStore.showMessage('Error', 'Failed to fetch friends data', 'error')
   } finally {
     isLoading.value = false
   }
@@ -101,30 +84,65 @@ const searchUsers = async () => {
     searchResults.value = response.data
   } catch {
     searchResults.value = []
-    error.value = 'Failed to search users'
+    messageStore.showError('Failed to search users')
   }
 }
 
 // Event handlers
-const handleFriendAction = async (action: FriendAction, userId: number, friendshipId?: number) => {
+const handleFriendAction = async (
+  action: FriendAction,
+  userId: number,
+  friendshipId?: number,
+  arrayIndex?: number,
+) => {
   try {
+    let successMessage = ''
+
     switch (action) {
       case 'accept':
         await server.post(`/accept-friendship/${friendshipId}/`)
+        // Move friend from incomingRequests to currentFriends
+        if (arrayIndex !== undefined) {
+          const acceptedFriend = incomingRequests.value[arrayIndex]
+          incomingRequests.value.splice(arrayIndex, 1)
+          currentFriends.value.push(acceptedFriend)
+        }
+        successMessage = 'Friend request accepted!'
         break
-      case 'send':
-        await server.post(`/request-friendship/${userId}/`)
-        break
+
       case 'delete':
+        await server.delete(`/delete-friendship/${friendshipId}/`)
+        if (arrayIndex !== undefined) {
+          currentFriends.value.splice(arrayIndex, 1)
+        }
+        successMessage = 'Friend removed'
+        break
+
       case 'dismiss':
       case 'reject':
         await server.delete(`/delete-friendship/${friendshipId}/`)
+        if (arrayIndex !== undefined) {
+          const array = action === 'dismiss' ? outgoingRequests : incomingRequests
+          array.value.splice(arrayIndex, 1)
+        }
+        successMessage = action === 'dismiss' ? 'Request cancelled' : 'Request rejected'
+        break
+
+      case 'send':
+        await server.post(`/request-friendship/${userId}/`)
+        await searchUsers() // Still need to refresh search results
+        successMessage = 'Friend request sent!'
         break
     }
-    await fetchFriendsData()
-    if (action === 'send') await searchUsers()
-  } catch {
-    error.value = `Failed to ${action} friend${action === 'send' ? ' request' : ''}`
+
+    // Show success message
+    messageStore.showMessage('Success', successMessage, 'success')
+  } catch (error) {
+    messageStore.showMessage(
+      'Error',
+      `Failed to ${action} friend${action === 'send' ? ' request' : ''}`,
+      'error',
+    )
   }
 }
 
@@ -142,11 +160,7 @@ onMounted(fetchFriendsData)
     <h2 class="friend-text text-primaryBlue mb-4 mb-sm-3 mb-md-4">Friends</h2>
 
     <div v-if="isLoading" class="text-center pa-4">
-      <v-progress-circular indeterminate color="primary"></v-progress-circular>
-    </div>
-
-    <div v-else-if="error" class="text-center error--text pa-4">
-      {{ error }}
+      <v-progress-circular indeterminate color="primary" />
     </div>
 
     <div v-else>
@@ -173,11 +187,12 @@ onMounted(fetchFriendsData)
             @click="currentSubpage = page"
             class="flex-grow-1 text-caption text-sm-subtitle-2 font-poppins"
           >
-            {{ page.charAt(0).toUpperCase() + page.slice(1) }}
+            {{ page === 'list' ? 'Friend List' : page.charAt(0).toUpperCase() + page.slice(1) }}
           </v-btn>
         </v-btn-group>
+
         <!-- Friends List -->
-        <div v-if="currentSubpage === 'list'">
+        <v-sheet v-if="currentSubpage === 'list'">
           <h3 class="section-title2 text-primaryBlue">Friends List</h3>
           <v-row v-if="currentFriends.length === 0" class="text-center my-6">
             <v-col>
@@ -188,19 +203,19 @@ onMounted(fetchFriendsData)
             </v-col>
           </v-row>
           <v-row v-else class="friend-scroll">
-            <v-col v-for="friend in currentFriends" :key="friend.userId" cols="12">
+            <v-col v-for="(friend, index) in currentFriends" :key="friend.userId" cols="12">
               <FriendComponent
                 :avatar-index="friend.avatar"
                 :name="friend.userName"
                 variant="delete"
-                @delete="handleFriendAction('delete', friend.userId, friend.friendship_id)"
+                @delete="handleFriendAction('delete', friend.userId, friend.friendship_id, index)"
               />
             </v-col>
           </v-row>
-        </div>
+        </v-sheet>
 
         <!-- Incoming Requests -->
-        <div v-if="currentSubpage === 'incoming'">
+        <v-sheet v-if="currentSubpage === 'incoming'">
           <h3 class="section-title2 text-primaryBlue">Incoming Requests</h3>
           <v-row v-if="incomingRequests.length === 0" class="text-center my-6">
             <v-col>
@@ -211,20 +226,20 @@ onMounted(fetchFriendsData)
             </v-col>
           </v-row>
           <v-row v-else class="friend-scroll">
-            <v-col v-for="request in incomingRequests" :key="request.userId" cols="12">
+            <v-col v-for="(request, index) in incomingRequests" :key="request.userId" cols="12">
               <FriendComponent
                 :avatar-index="request.avatar"
                 :name="request.userName"
                 variant="acceptReject"
-                @accept="handleFriendAction('accept', request.userId, request.friendship_id)"
-                @reject="handleFriendAction('reject', request.userId, request.friendship_id)"
+                @accept="handleFriendAction('accept', request.userId, request.friendship_id, index)"
+                @reject="handleFriendAction('reject', request.userId, request.friendship_id, index)"
               />
             </v-col>
           </v-row>
-        </div>
+        </v-sheet>
 
         <!-- Outgoing Requests -->
-        <div v-if="currentSubpage === 'outgoing'">
+        <v-sheet v-if="currentSubpage === 'outgoing'">
           <h3 class="section-title2 text-primaryBlue">Outgoing Requests</h3>
           <v-row v-if="outgoingRequests.length === 0" class="text-center my-6">
             <v-col>
@@ -235,30 +250,41 @@ onMounted(fetchFriendsData)
             </v-col>
           </v-row>
           <v-row v-else class="friend-scroll">
-            <v-col v-for="request in outgoingRequests" :key="request.userId" cols="12">
+            <v-col v-for="(request, index) in outgoingRequests" :key="request.userId" cols="12">
               <FriendComponent
                 :avatar-index="request.avatar"
                 :name="request.userName"
                 variant="dismiss"
-                @dismiss="handleFriendAction('dismiss', request.userId, request.friendship_id)"
+                @dismiss="
+                  handleFriendAction('dismiss', request.userId, request.friendship_id, index)
+                "
               />
             </v-col>
           </v-row>
-        </div>
+        </v-sheet>
       </div>
 
       <!-- Search Results -->
       <div v-else>
         <!-- Existing Friends Section -->
-        <div v-if="existingFriendsResults.length > 0">
+        <div
+          v-if="searchResults.filter((result) => result.status === 'You are friends.').length > 0"
+        >
           <h3 class="section-title2 text-primaryBlue">
-            Existing Friends - {{ existingFriendsResults.length }}
+            Existing Friends -
+            {{ searchResults.filter((result) => result.status === 'You are friends.').length }}
           </h3>
           <v-row class="friend-scroll">
-            <v-col v-for="friend in existingFriendsResults" :key="friend.userId" cols="12">
+            <v-col
+              v-for="result in searchResults.filter(
+                (result) => result.status === 'You are friends.',
+              )"
+              :key="result.user_data.user_id"
+              cols="12"
+            >
               <FriendComponent
-                :avatar-index="friend.avatar"
-                :name="friend.userName"
+                :avatar-index="result.user_data.avatar"
+                :name="result.user_data.username"
                 variant="details"
               />
             </v-col>
@@ -266,13 +292,18 @@ onMounted(fetchFriendsData)
         </div>
 
         <!-- Other Users Section -->
-        <div v-if="filteredSearchResults.length > 0">
+        <div
+          v-if="searchResults.filter((result) => result.status !== 'You are friends.').length > 0"
+        >
           <h3 class="section-title2 text-primaryBlue">
-            Other Users - {{ filteredSearchResults.length }}
+            Other Users -
+            {{ searchResults.filter((result) => result.status !== 'You are friends.').length }}
           </h3>
           <v-row class="friend-scroll">
             <v-col
-              v-for="result in filteredSearchResults"
+              v-for="result in searchResults.filter(
+                (result) => result.status !== 'You are friends.',
+              )"
               :key="result.user_data.user_id"
               cols="12"
             >
@@ -295,6 +326,13 @@ onMounted(fetchFriendsData)
               />
             </v-col>
           </v-row>
+        </div>
+
+        <!-- No Results Message -->
+        <div v-if="searchQuery && searchResults.length === 0" class="text-center my-6">
+          <p class="text-primaryBlue font-italic">
+            No users found matching "{{ searchQuery }}" <br />Try a different search term
+          </p>
         </div>
       </div>
     </div>

@@ -98,6 +98,8 @@ def check_friendships(user_set, current_user):
         # Skip if this is the current user
         if user['user_id'] == current_user.user_id:
             continue
+        
+        # Check if current user is requester
         friendship = get_or_none(Friendship, requester=current_user, receiver=user['user_id'])
         if friendship:
             if friendship.status == friendship.PENDING:
@@ -106,10 +108,14 @@ def check_friendships(user_set, current_user):
             elif friendship.status == friendship.ACCEPTED:
                 list_out.append(
                     {'user_data': user, 'status': 'You are friends.'})
+        # Check if current user is receiver
         elif (friendship := get_or_none(Friendship, requester=user['user_id'], receiver=current_user)) is not None:
-            if friendship:
+            if friendship.status == friendship.PENDING:
                 list_out.append(
                     {'user_data': user, 'status': 'Pending friendship request.', 'friendship_id': friendship.id})
+            elif friendship.status == friendship.ACCEPTED:  # Add this condition
+                list_out.append(
+                    {'user_data': user, 'status': 'You are friends.'})
         else:
             list_out.append(
                 {'user_data': user, 'status': 'You are not friends.'})
