@@ -65,8 +65,8 @@ const handleApply = () => {
   <v-container fluid class="pa-0 d-flex flex-column" v-if="userStore.userData">
     <!-- Wave Banner in Both States -->
     <v-row v-if="!xs" class="header">
-      <WaveBanner imageSrc="/beach-header.jpg" />
-      <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
+      <WaveBanner imageSrc="/teambuilding-background.jpg" />
+      <img src="/teambuilding-background.jpg" alt="Ocean Beach" class="header-image" />
     </v-row>
 
     <!-- Main Profile View -->

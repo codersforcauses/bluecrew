@@ -1,10 +1,10 @@
 const avatarPaths = [
-  'whale.svg',
+  'octopus.svg',
   'turtle.svg',
   'starfish.svg',
-  'jellyfish.svg',
-  'clown-fish.svg',
-  'seal.svg',
+  'anglerfish.svg',
+  'walrus.svg',
+  'pufferfish.svg',
 ]
 
 export default avatarPaths

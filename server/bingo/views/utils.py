@@ -25,8 +25,8 @@ def check_access(current_user, target_user):
 
     # Check if `current_user` and `target_user` are friends.
     elif (current_user.is_authenticated and
-          (Friendship.objects.filter(requester=current_user, receiver=target_user).exists() or
-           Friendship.objects.filter(requester=target_user, receiver=current_user).exists())):
+          (Friendship.objects.filter(requester=current_user, receiver=target_user, status=Friendship.ACCEPTED).exists() or
+           Friendship.objects.filter(requester=target_user, receiver=current_user, status=Friendship.ACCEPTED).exists())):
         return target_user.visibility != 0
 
     # Public profiles (visibility=2) are accessible to everyone.

@@ -33,5 +33,8 @@ urlpatterns = [
     path('request-friendship/<int:user_id>/',
          friends_views.request_friendship, name='request_friendship'),
     path('user-search/', user_views.find_user, name='user_search'),
+    path('update-bingo-grid/', bingo_views.update_bingo_grid,
+         name='update-bingo-grid'),
     path('friends/all/', friends_views.get_all_friends_data, name='all_friends_data'),
+
 ]

@@ -7,7 +7,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from ..models import BingoGrid, TileInteraction
-from ..serializers import (BingoGridSerializer, ChallengeCompleteSerializer,)
+from ..serializers import (
+    BingoGridSerializer, ChallengeCompleteSerializer, UpdateBingoGridSerializer)
 from .utils import check_bingo
 
 
@@ -117,3 +118,20 @@ def complete_challenge(request):
     response.update(bingos)
 
     return Response(response, status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes((permissions.IsAdminUser, ))
+def update_bingo_grid(request):
+    serializer = UpdateBingoGridSerializer(data=request.data)
+    if serializer.is_valid():
+        old_grids = BingoGrid.objects.filter(is_active=True)
+        new_grid = serializer.create(serializer.validated_data)
+        for old_grid in old_grids:
+            old_grid.is_active = False
+            old_grid.save()
+        new_grid.is_active = True
+        new_grid.save()
+        return Response({"message": "Bingo grid successfully updated."}, status=status.HTTP_201_CREATED)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

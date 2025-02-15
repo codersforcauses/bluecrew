@@ -89,11 +89,12 @@ const searchUsers = async () => {
 }
 
 // Event handlers
+// First, add an index parameter to handleFriendAction
 const handleFriendAction = async (
   action: FriendAction,
   userId: number,
   friendshipId?: number,
-  arrayIndex?: number,
+  arrayIndex?: number, // New parameter
 ) => {
   try {
     let successMessage = ''

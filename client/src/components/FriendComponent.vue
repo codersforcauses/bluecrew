@@ -48,7 +48,7 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend', 
 
     <!-- Delete variant -->
     <div v-if="variant === 'delete'" class="delete-action">
-      <v-btn color="primaryPink" variant="flat" @click="showDialog = true" class="font-poppins">
+      <v-btn color="primaryGreen" variant="flat" @click="showDialog = true" class="font-poppins">
         Delete
       </v-btn>
 
@@ -68,7 +68,7 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend', 
               Cancel
             </v-btn>
             <v-btn
-              color="primaryPink"
+              color="primaryGreen"
               variant="flat"
               @click="emit('delete'), (showDialog = false)"
               class="font-poppins"
@@ -96,14 +96,14 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend', 
 
     <!-- Add Friend variant -->
     <div v-if="variant === 'addFriend'" class="add-friend-action">
-      <v-btn color="primaryPink" variant="flat" @click="emit('addFriend')" class="font-poppins">
+      <v-btn color="primaryGreen" variant="flat" @click="emit('addFriend')" class="font-poppins">
         Add Friend
       </v-btn>
     </div>
 
     <!-- Accept variant -->
     <div v-if="variant === 'accept'" class="accept-action">
-      <v-btn color="primaryPink" variant="flat" @click="emit('accept')" class="font-poppins">
+      <v-btn color="primaryGreen" variant="flat" @click="emit('accept')" class="font-poppins">
         Accept
       </v-btn>
     </div>

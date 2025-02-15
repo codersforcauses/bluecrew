@@ -26,16 +26,15 @@ const goToBingoPage = () => {
 <template>
   <v-container fluid class="fill-height pa-0 flex-column">
     <v-row v-if="!xs" class="header">
-      <WaveBanner imageSrc="/beach-header.jpg" />
-      <img src="/beach-header.jpg" alt="Ocean Beach" class="header-image" />
+      <WaveBanner imageSrc="/teambuilding-background.jpg" />
+      <img src="/teambuilding-background.jpg" alt="Ocean Beach" class="header-image" />
     </v-row>
     <v-row class="flex-grow-1 w-100" align="center">
       <v-col cols="12" sm="6" align-self="center">
-        <v-row align="center">
-          <v-col align="right"><img src="/bc-logo.png" alt="Blue Crew Logo" class="logo" /> </v-col>
-          <v-col align="left">
-            <img src="/oy-logo.png" alt="Ocean Youth Logo" class="logo"
-          /></v-col>
+        <v-row>
+          <v-col align="center"
+            ><img src="/blingo-logo.svg" alt="Blingo Logo" class="logo" />
+          </v-col>
         </v-row>
       </v-col>
 
@@ -68,7 +67,7 @@ const goToBingoPage = () => {
             <template v-else>
               <v-btn
                 id="register-button"
-                class="bg-primaryPink text-creamyWhite"
+                class="bg-primaryGreen text-creamyWhite"
                 rounded="xl"
                 size="x-large"
                 @click="openRegisterModal"
