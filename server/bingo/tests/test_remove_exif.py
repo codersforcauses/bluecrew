@@ -85,4 +85,3 @@ class ImageExifRemovalTest(TestCase):
             shutil.rmtree(TEST_DIR)
         except OSError:
             pass
-
