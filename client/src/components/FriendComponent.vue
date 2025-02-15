@@ -84,7 +84,7 @@ const handleUsernameClick = () => {
             <v-btn
               color="primaryGreen"
               variant="flat"
-              @click="(emit('delete'), (showDialog = false))"
+              @click="emit('delete'), (showDialog = false)"
               class="font-poppins"
             >
               Confirm
