@@ -11,6 +11,13 @@ import PreferenceView from '@/views/PreferenceView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import AdminView from '@/views/AdminView.vue'
 
+export const navigateToProfile = (username: string) => {
+  router.push({
+    name: 'user-profile', // name of the route we want to navigate to
+    query: { username },
+  })
+}
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [

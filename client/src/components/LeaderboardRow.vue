@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import avatarPaths from '@/utils/avatar'
+import { navigateToProfile } from '@/router'
 
-const props = defineProps<{
+defineProps<{
   rank: number
   avatarIndex: number
   name: string
@@ -9,12 +10,8 @@ const props = defineProps<{
   isHighlighted: boolean
 }>()
 
-const emit = defineEmits<{
-  'click-username': [username: string]
-}>()
-
-const handleUsernameClick = () => {
-  emit('click-username', props.name)
+const handleUsernameClick = (username: string) => {
+  navigateToProfile(username)
 }
 </script>
 
@@ -32,7 +29,10 @@ const handleUsernameClick = () => {
       cover
       :src="`/${avatarPaths[avatarIndex]}`"
     ></v-img>
-    <p class="me-auto font-weight-bold truncate-name username-link" @click="handleUsernameClick">
+    <p
+      class="me-auto font-weight-bold truncate-name username-link"
+      @click="handleUsernameClick(name)"
+    >
       {{ name }}
     </p>
     <p :class="[isHighlighted ? 'font-weight-bold' : '']" class="text-right points">

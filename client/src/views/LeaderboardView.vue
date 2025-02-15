@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import LeaderboardRow from '@/components/LeaderboardRow.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
-import { useRouter } from 'vue-router'
+import { navigateToProfile } from '@/router'
 import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useMessageStore } from '@/stores/message'
@@ -42,11 +42,6 @@ const transformEntry = (
   isHighlighted: highlight,
 })
 
-const router = useRouter()
-
-const navigateToProfile = (username: string) => {
-  router.push(`/profile?username=${username}`)
-}
 const fetchLeaderboard = async () => {
   try {
     isLoading.value = true
@@ -108,7 +103,6 @@ onMounted(() => {
               :name="currentUser.name"
               :points="currentUser.points"
               :is-highlighted="true"
-              @click-username="navigateToProfile"
             />
           </v-col>
         </v-row>
@@ -124,7 +118,6 @@ onMounted(() => {
             :name="row.name"
             :points="row.points"
             :is-highlighted="row.isHighlighted"
-            @click-username="navigateToProfile"
           />
         </v-col>
       </v-row>
