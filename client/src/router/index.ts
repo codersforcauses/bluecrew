@@ -9,6 +9,7 @@ import FriendView from '@/views/FriendView.vue'
 import BlingoView from '@/views/BlingoView.vue'
 import PreferenceView from '@/views/PreferenceView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import AdminView from '@/views/AdminView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,6 +50,12 @@ const router = createRouter({
       component: BlingoView,
     },
     {
+      path: '/admin',
+      name: 'admin',
+      component: AdminView,
+      meta: { requiresAuth: true, requiresAdmin: true },
+    },
+    {
       path: '/404',
       name: '404',
       component: () => import('@/views/404Error.vue'),
@@ -64,7 +71,10 @@ router.beforeEach((to, from) => {
   const userStore = useUserStore()
   const modalStore = useModalStore()
 
-  if (to.meta.requiresAuth && !userStore.isLoggedIn) {
+  if (
+    (to.meta.requiresAuth && !userStore.isLoggedIn) ||
+    (to.meta.requiresAdmin && !userStore.superUserLoggedIn)
+  ) {
     modalStore.openLogin()
     return { name: from.name }
   }
