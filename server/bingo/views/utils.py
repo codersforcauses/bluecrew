@@ -98,7 +98,6 @@ def check_friendships(user_set, current_user):
         # Skip if this is the current user
         if user['user_id'] == current_user.user_id:
             continue
-        
         # Check if current user is requester
         friendship = get_or_none(Friendship, requester=current_user, receiver=user['user_id'])
         if friendship:

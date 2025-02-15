@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import FriendComponent from '@/components/FriendComponent.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
 import server from '@/utils/server'
@@ -84,7 +84,7 @@ const searchUsers = async () => {
     searchResults.value = response.data
   } catch {
     searchResults.value = []
-    messageStore.showError('Failed to search users')
+    messageStore.showMessage('Error', 'Failed to search users', 'error')
   }
 }
 
@@ -138,7 +138,8 @@ const handleFriendAction = async (
 
     // Show success message
     messageStore.showMessage('Success', successMessage, 'success')
-  } catch (error) {
+  } catch {
+    // Remove the unused error parameter
     messageStore.showMessage(
       'Error',
       `Failed to ${action} friend${action === 'send' ? ' request' : ''}`,

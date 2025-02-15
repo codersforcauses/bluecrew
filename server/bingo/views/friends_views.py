@@ -121,18 +121,15 @@ def accept_friendship(request, friendship_id):
 def get_all_friends_data(request):
     """Get all friends data including current friends, incoming and outgoing requests in a single request.
     Requires authentication."""
-    
     # Get all friendships
     all_friendships = Friendship.objects.filter(
         Q(requester=request.user) | Q(receiver=request.user)
     )
-    
     # Get accepted friendships
     accepted_friendships = all_friendships.filter(status=Friendship.ACCEPTED)
     current_friends = []
     for friendship in accepted_friendships:
-        friend = (friendship.receiver if friendship.requester == request.user 
-                 else friendship.requester)
+        friend = (friendship.receiver if friendship.requester == request.user else friendship.requester)
         serializer = FriendshipUserSerializer(
             friend,
             context={'friendship': friendship}
