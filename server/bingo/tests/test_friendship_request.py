@@ -9,11 +9,11 @@ from django.core.exceptions import ObjectDoesNotExist
 class RequestFriendshipTest(TestCase):
     def setUp(self):
         self.user1 = User.objects.create_user(
-            username="user1", email="user1@example.com", password="password")
+            username="user1", email="user1@example.com", password="password", is_active=True)
         self.user2 = User.objects.create_user(
-            username="user2", email="user2@example.com", password="password")
+            username="user2", email="user2@example.com", password="password", is_active=True)
         self.user3 = User.objects.create_user(
-            username="user3", email="user3@example.com", password="password")
+            username="user3", email="user3@example.com", password="password", is_active=True)
         self.client = APIClient()
 
     def test_request_friendship_success(self):

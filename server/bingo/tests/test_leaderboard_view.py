@@ -6,11 +6,11 @@ from ..models import User
 class LeaderboardTest(TestCase):
     def setUp(self):
         self.user1 = User.objects.create_user(
-            username="user1", email="user1@example.com", password="password", total_points=1)
+            username="user1", email="user1@example.com", password="password", total_points=1, is_active=True)
         self.user2 = User.objects.create_user(
-            username="user2", email="user2@example.com", password="password", total_points=1)
+            username="user2", email="user2@example.com", password="password", total_points=1, is_active=True)
         self.user3 = User.objects.create_user(
-            username="user3", email="user3@example.com", password="password", total_points=3)
+            username="user3", email="user3@example.com", password="password", total_points=3, is_active=True)
 
         self.client = APIClient()
 
@@ -53,7 +53,7 @@ class LeaderboardTest(TestCase):
 
     def test_exclude_users(self):
         self.superuser = User.objects.create_user(
-            username="admin", email="admin@example.com", password="password", total_points=10, is_superuser=True)
+            username="admin", email="admin@example.com", password="password", total_points=10, is_superuser=True, is_active=True)
         self.inactive_user = User.objects.create_user(
             username="inactive", email="inactive@example.com", password='password', total_points=20, is_active=False)
 
