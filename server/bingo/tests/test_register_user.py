@@ -37,3 +37,11 @@ class RegisterUserTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 400)
+
+    def test_username_restriction(self):
+        # Test special characters not allowed in username.
+        response = self.client.post(
+            '/api/register/', {'username': '////@@!!', 'email': 'test@test.com',
+                               'first_name': 'larry', 'last_name': 'bird', 'password': 'Password!!@@1234'}
+        )
+        self.assertEqual(response.status_code, 400)

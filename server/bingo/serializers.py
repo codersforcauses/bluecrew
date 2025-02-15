@@ -34,6 +34,14 @@ class UserRegisterSerializer(serializers.ModelSerializer):
                 'Birth date cannot be in the future.')
         return value
 
+    def validate_username(self, value):
+        name = value.replace('_', '')
+        if not name.isalnum():
+            raise serializers.ValidationError(
+                'Usernames can only contain alphanumeric characters or "_".'
+            )
+        return value
+
     # Front end sends empty strings if form is empty, but serializer will interpret this a string.
     # Similarly, first_name and last_name are sent as empty string if the form is not filled.
     # We want to interpret this as no value given, not as a string.
