@@ -1,17 +1,22 @@
 <template>
-  <div>
+    <div class="d-flex justify-center align-center full-screen">
     <h2>Verifying your email...</h2>
   </div>
 </template>
 
+<style scoped>
+.full-screen {
+  height: 100vh;
+}
+</style>
+
 <script setup lang="ts">
 import { onMounted } from 'vue';
-
+import axios from 'axios';
 
 // use defineProps to receive the token from the router
 const props = defineProps<{ token?: string }>();
 
-/* REAL IMPLEMENTATION
 onMounted(async () => {
   if (!props.token) {
     alert('Invalid verification link.');
@@ -27,23 +32,6 @@ onMounted(async () => {
     console.error('Email verification failed:', error);
     alert('Email verification failed');
   }
-});
-*/
-
-// SIMULATION ONLY == DELETED SOON ==
-// by typing: http://localhost:3000/verify-email?token=test
-onMounted(() => {
-  console.log('Token from props:', props.token);
-
-  // Simulate successful email verification without backend
-  if (!props.token) {
-    alert('Invalid verification link. Simulating failure.');
-    return;
-  }
-
-  // Simulate success scenario directly
-  console.log('[SIMULATION] Email verified successfully with token:', props.token);
-  alert('Email verified successfully (simulated).');
 });
 
 </script>
