@@ -1,11 +1,14 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
-from ..models import User
+from ..models import TileInteraction, User
 from ..serializers import (UpdatePreferencesSerializer, UserProfileSerializer,
-                           UserRegisterSerializer, UserSearchSerializer)
-from .utils import check_friendships
+                           UserRegisterSerializer, UserSearchSerializer,
+                           ProfilePageSerializer, ProfilePageChallengeSerializer,
+                           ProfilePageTileSerializer)
+from .utils import check_friendships, check_access
 
 
 @api_view(['POST'])
@@ -64,3 +67,35 @@ def find_user(request):
     serializer = UserSearchSerializer(user_set, many=True)
     response = check_friendships(serializer.data, request.user)
     return Response(response, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def get_profile_page(request, username):
+    """
+    Gets all info from the profile page
+    Both user information and information about challenges completed
+    """
+    target_user = get_object_or_404(
+        User, username=username, is_active=True, is_superuser=False)
+
+    user_info = ProfilePageSerializer(target_user).data
+
+    if not check_access(request.user, target_user):
+        return Response({"user_info": user_info, "challenges": [], "permission": False}, status=status.HTTP_200_OK)
+
+    target_tiles = TileInteraction.objects.filter(user=target_user)
+    target_challenges = [list(tile.grid.challenges.all())[
+        tile.position] for tile in target_tiles]
+
+    tiles_data = ProfilePageTileSerializer(target_tiles, many=True).data
+    challenges_data = (ProfilePageChallengeSerializer(
+        target_challenges, many=True).data)
+    challenges_tiles_data = [{**tile_data, **challenge_data}
+                             for tile_data, challenge_data in zip(tiles_data, challenges_data)]
+
+    response_data = {
+        "user_info": user_info,
+        "challenges": challenges_tiles_data,
+        "permission": True
+    }
+    return Response(response_data, status=status.HTTP_200_OK)

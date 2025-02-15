@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useUserStore } from '@/stores/user'
 
 const server = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL,
+  baseURL: `${import.meta.env.VITE_BACKEND_URL}/api`,
   timeout: 8000,
 })
 
@@ -35,9 +35,12 @@ server.interceptors.response.use(
         const oldAccessToken = userStore.accessToken
 
         // Try to refresh token using HTTP request
-        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/token/refresh/`, {
-          refresh: userStore.refreshToken,
-        })
+        const response = await axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}/api/token/refresh/`,
+          {
+            refresh: userStore.refreshToken,
+          },
+        )
         // Update access token in store
         if (response.data.access) {
           userStore.accessToken = response.data.access
