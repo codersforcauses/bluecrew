@@ -2,9 +2,11 @@
 import { ref, computed } from 'vue'
 import FriendComponent from '@/components/FriendComponent.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
+import { useMessageStore } from '@/stores/message'
 
 // Track which subpage is currently active
 const currentSubpage = ref<'list' | 'incoming' | 'outgoing'>('list')
+const messageStore = useMessageStore()
 
 interface FriendEntry {
   id: number
@@ -12,7 +14,7 @@ interface FriendEntry {
   name: string
 }
 const handleDismiss = (id: number) => {
-  console.log('Dismiss friend request:', id)
+  messageStore.showMessage('Success', `Dismissed friend request from "${id}"`, 'success')
 }
 
 // Current friends list
@@ -71,23 +73,23 @@ const getUserVariant = (user: { status: string }) => {
 
 // Event handlers
 const handleAccept = (id: number) => {
-  console.log('Accept friend request:', id)
+  messageStore.showMessage('Success', `Accepted friend request from "${id}"`, 'success')
 }
 
 const handleReject = (id: number) => {
-  console.log('Reject friend request:', id)
+  messageStore.showMessage('Success', `Rejected friend request from "${id}"`, 'success')
 }
 
 const handleDelete = (id: number) => {
-  console.log('Delete friend:', id)
+  messageStore.showMessage('Success', `Deleted friend: "${id}"`, 'success')
 }
 
 const handledefault = (id: number) => {
-  console.log('View default:', id)
+  messageStore.showMessage('Success', `View default: "${id}"`, 'success')
 }
 
 const handleSend = (id: number) => {
-  console.log('Send friend request:', id)
+  messageStore.showMessage('Success', `Sent friend request to "${id}"`, 'success')
 }
 </script>
 
