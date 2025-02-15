@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import avatarPaths from '@/utils/avatar'
+import { navigateToProfile } from '@/router'
 
-const props = defineProps<{
+defineProps<{
   avatarIndex: number
   name: string
   variant?:
@@ -18,18 +19,10 @@ const props = defineProps<{
 }>()
 
 const showDialog = ref(false)
-const emit = defineEmits([
-  'accept',
-  'reject',
-  'dismiss',
-  'delete',
-  'addFriend',
-  'details',
-  'send',
-  'click-username',
-])
-const handleUsernameClick = () => {
-  emit('click-username', props.name)
+const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend', 'details', 'send'])
+
+const handleUsernameClick = (username: string) => {
+  navigateToProfile(username)
 }
 </script>
 
@@ -43,7 +36,10 @@ const handleUsernameClick = () => {
       cover
       :src="`/${avatarPaths[avatarIndex]}`"
     />
-    <p class="me-auto font-weight-bold truncate-name username-link" @click="handleUsernameClick">
+    <p
+      class="me-auto font-weight-bold truncate-name username-link"
+      @click="handleUsernameClick(name)"
+    >
       {{ name }}
     </p>
 
@@ -84,7 +80,7 @@ const handleUsernameClick = () => {
             <v-btn
               color="primaryGreen"
               variant="flat"
-              @click="emit('delete'), (showDialog = false)"
+              @click="(emit('delete'), (showDialog = false))"
               class="font-poppins"
             >
               Confirm

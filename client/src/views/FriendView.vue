@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue'
 import FriendComponent from '@/components/FriendComponent.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
-import { useRouter } from 'vue-router'
 
 // Track which subpage is currently active
 const currentSubpage = ref<'list' | 'incoming' | 'outgoing'>('list')
@@ -90,12 +89,6 @@ const handledefault = (id: number) => {
 const handleSend = (id: number) => {
   console.log('Send friend request:', id)
 }
-
-const router = useRouter()
-
-const navigateToProfile = (username: string) => {
-  router.push(`/profile?username=${username}`)
-}
 </script>
 
 <template>
@@ -157,7 +150,6 @@ const navigateToProfile = (username: string) => {
               :name="friend.name"
               variant="delete"
               @delete="handleDelete(friend.id)"
-              @click-username="navigateToProfile"
             />
           </v-col>
         </v-row>
@@ -173,7 +165,6 @@ const navigateToProfile = (username: string) => {
               variant="acceptReject"
               @accept="handleAccept(request.id)"
               @reject="handleReject(request.id)"
-              @click-username="navigateToProfile"
             />
           </v-col>
         </v-row>
@@ -188,7 +179,6 @@ const navigateToProfile = (username: string) => {
               :name="request.name"
               variant="dismiss"
               @dismiss="handleDismiss(request.id)"
-              @click-username="navigateToProfile"
             />
           </v-col>
         </v-row>
@@ -209,7 +199,6 @@ const navigateToProfile = (username: string) => {
               :name="result.name"
               variant="default"
               @default="handledefault(result.id)"
-              @click-username="navigateToProfile"
             />
           </v-col>
         </v-row>
@@ -228,7 +217,6 @@ const navigateToProfile = (username: string) => {
               :variant="getUserVariant(result)"
               @send="handleSend(result.id)"
               @accept="handleAccept(result.id)"
-              @click-username="navigateToProfile"
             />
           </v-col>
         </v-row>
