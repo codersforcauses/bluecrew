@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useModalStore } from '@/stores/modal'
+import type { RouteLocationNormalized } from 'vue-router'
 
 import LandingView from '@/views/LandingView.vue'
 import LeaderboardView from '@/views/LeaderboardView.vue'
@@ -19,6 +20,14 @@ const router = createRouter({
       component: LandingView,
     },
     {
+      path: '/profile',
+      name: 'user-profile',
+      component: ProfileView,
+      props: (route: RouteLocationNormalized) => ({
+        username: route.query.username as string | undefined,
+      }),
+    },
+    {
       path: '/friends',
       name: 'friends',
       component: FriendView,
@@ -34,11 +43,6 @@ const router = createRouter({
       path: '/leaderboard',
       name: 'leaderboard',
       component: LeaderboardView,
-    },
-    {
-      path: '/profile',
-      name: 'profile',
-      component: ProfileView,
     },
     {
       path: '/blingo',

@@ -195,9 +195,9 @@ const openLoginModal = () => {
           <template v-if="currentPage === 'register'">
             <div class="header">
               <button class="close-button" @click="closeDialog">
-                <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
+                <v-icon icon="mdi-close-circle-outline"></v-icon>
               </button>
-              <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
+              <img src="/blingo-logo.svg" alt="logo" class="logo" />
             </div>
 
             <strong class="text-primaryGreen">Create an account</strong>
@@ -209,7 +209,7 @@ const openLoginModal = () => {
               validate-on="blur"
             >
               <div v-for="(formField, index) in formFields" class="form-group" :key="index">
-                <label :for="formField.formAttribute" class="text-primaryPink">{{
+                <label :for="formField.formAttribute" class="text-primaryGreen">{{
                   formField.fieldName
                 }}</label>
                 <v-select
@@ -248,18 +248,20 @@ const openLoginModal = () => {
               </v-btn>
             </v-form>
 
-            <footer class="text-primaryPink">
+            <footer class="text-primaryGreen">
               Already have an account?
-              <a class="text-primaryPink" @click.prevent="openLoginModal">Sign In</a>
+              <a class="text-primaryGreen cursor-pointer" @click.prevent="openLoginModal"
+                >Sign In</a
+              >
             </footer>
           </template>
 
           <template v-if="currentPage === 'confirmation'">
             <div class="header">
               <button class="close-button" @click="closeDialog">
-                <v-icon icon="mdi-close-circle-outline" class="mr-3 mt-3"></v-icon>
+                <v-icon icon="mdi-close-circle-outline"></v-icon>
               </button>
-              <img src="/bc-logo.png" alt="logo" style="margin: 0 auto" />
+              <img src="/blingo-logo.svg" alt="Blingo Logo" class="logo" />
             </div>
             <h2 class="text-primaryGreen text-center">One More Step</h2>
             <p class="text-center">Please check your inbox for a link to verify your email.</p>
@@ -298,8 +300,8 @@ strong {
   width: 100%;
   display: flex;
   flex-direction: column;
-  font-size: 20px;
-  font-family: poppins;
+  font-size: 25px;
+  font-family: 'Lilita One', cursive;
   margin-bottom: 10px;
   align-items: center;
   font-weight: bold;
@@ -310,12 +312,13 @@ img {
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 10px;
+  margin-top: -30px;
   width: 100px;
 }
 
 label {
   font-weight: bold;
-  font-family: poppins;
+  font-family: 'Poppins';
   padding-bottom: 10px;
 }
 
@@ -338,8 +341,8 @@ button {
 }
 
 .close-button {
-  width: 0px;
-  height: 0px;
+  width: 40px;
+  height: 40px;
   margin-right: 0px;
   display: flex;
   align-self: flex-end;
@@ -350,15 +353,34 @@ button {
   padding: 0;
 }
 
+.close-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.close-button .v-icon {
+  font-size: 20px;
+  margin-top: 0;
+}
+
 footer {
   text-align: center;
-  font-family: poppins;
+  font-family: 'Poppins';
   font-weight: bold;
 }
 
 a {
   text-decoration: underline;
-  font-family: poppins;
+  font-family: 'Poppins';
   font-weight: bold;
+}
+
+.logo {
+  height: 100px;
+  width: 100%;
+}
+
+h2,
+p {
+  font-family: 'Poppins';
 }
 </style>
