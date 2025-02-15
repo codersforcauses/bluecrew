@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from .models import BingoGrid, Challenge, TileInteraction
@@ -102,10 +101,55 @@ class BingoGridSerializer(serializers.ModelSerializer):
         fields = ['grid_id', 'challenges']
 
 
-class UpdatePreferencesSerializer(ModelSerializer):
+class UpdatePreferencesSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["avatar", "bio", "visibility"]
+
+
+class ProfilePageChallengeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Challenge
+        fields = ["name", "description", "challenge_type",
+                  "points"]
+
+    def to_representation(self, instance):
+        # This ensures the field names match the TypeScript interface
+        data = super().to_representation(instance)
+        data["type"] = data.pop("challenge_type").capitalize()
+        data["title"] = data.pop("name")
+        return data
+
+
+class ProfilePageTileSerializer(serializers.ModelSerializer):
+    date_started = serializers.DateTimeField(format="%d/%m/%y %I:%M %p")
+    date_completed = serializers.DateTimeField(format="%d/%m/%y %I:%M %p")
+
+    class Meta:
+        model = TileInteraction
+        fields = ["image", "date_started", "date_completed", "completed"]
+
+    def to_representation(self, instance):
+        # This ensures the field names match the TypeScript interface
+        data = super().to_representation(instance)
+        data["finishDate"] = data.pop("date_completed")
+        data["startDate"] = data.pop("date_started")
+        return data
+
+
+class ProfilePageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name", "bio",
+                  "total_points", "avatar"]
+
+    def to_representation(self, instance):
+        # This ensures the field names match the TypeScript interface
+        data = super().to_representation(instance)
+        data["firstName"] = data.pop("first_name")
+        data["lastName"] = data.pop("last_name")
+        data["totalPoints"] = data.pop("total_points")
+        return data
 
 
 class ChallengeCompleteSerializer(serializers.ModelSerializer):
@@ -123,3 +167,15 @@ class UserSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['avatar', 'username', 'user_id']
+
+
+class UpdateBingoGridSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BingoGrid
+        fields = ('challenges', )
+
+    def validate_challenges(self, value):
+        if len(value) != 16 or len(set(value)) != 16:
+            raise serializers.ValidationError(
+                "You must provide the ids of exactly 16 distinct challenges.")
+        return value

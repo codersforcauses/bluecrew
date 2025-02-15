@@ -1,11 +1,10 @@
 import { defineStore } from 'pinia'
 import { useStorage, StorageSerializers } from '@vueuse/core'
 import { computed } from 'vue'
-import type { User } from '@/types/user'
+import type { BackendUser, BackendUserErrors, User } from '@/types/user'
 import server from '@/utils/server'
 import { isAxiosError } from 'axios'
 import router from '@/router'
-import { useMessageStore } from './message'
 
 export const useUserStore = defineStore('user', () => {
   const userData = useStorage<User | null>('userData', null, undefined, {
@@ -27,8 +26,11 @@ export const useUserStore = defineStore('user', () => {
       router.push('/')
     }
   }
-  const messageStore = useMessageStore()
-  const login = async (body: { username: string; password: string }) => {
+
+  const login = async (body: {
+    username: string
+    password: string
+  }): Promise<boolean | 'invalid'> => {
     try {
       const tokenResponse = await server.post('/token/', body)
       const { access, refresh } = tokenResponse.data
@@ -40,34 +42,25 @@ export const useUserStore = defineStore('user', () => {
       return true
     } catch (error) {
       if (isAxiosError(error)) {
-        messageStore.showMessage('Error', 'Login failed. Please try again.', 'error')
+        if (error.response?.status === 401) {
+          return 'invalid'
+        }
       } else {
-        messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
       }
       return false
     }
   }
 
-  const registerUser = async (body: {
-    username: string
-    email: string
-    first_name: string
-    last_name: string
-    birthdate: string
-    gender_identity: number
-    indigenous_identity: number
-    password: string
-  }) => {
+  const registerUser = async (body: BackendUser): Promise<boolean | BackendUserErrors> => {
     try {
       // API call to register using axios server instance
       await server.post('/register/', body)
-      messageStore.showMessage('Success', 'Registration successful', 'success')
       return true
     } catch (error) {
       if (isAxiosError(error)) {
-        messageStore.showMessage('Error', 'Registration failed.', 'error')
-      } else {
-        messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
+        if (error.response?.status === 400) {
+          return error.response.data as BackendUserErrors
+        }
       }
       return false
     }

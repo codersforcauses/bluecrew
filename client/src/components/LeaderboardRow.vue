@@ -11,7 +11,7 @@ defineProps<{
 
 <template>
   <div
-    :class="[isHighlighted ? 'bg-primaryPink' : 'bg-creamWhite text-primaryGrey']"
+    :class="[isHighlighted ? 'bg-primaryGreen' : 'bg-creamWhite text-primaryGrey']"
     class="leaderboard-row"
   >
     <p class="font-weight-bold">{{ rank }}</p>

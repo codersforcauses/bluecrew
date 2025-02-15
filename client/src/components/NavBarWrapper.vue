@@ -19,13 +19,20 @@ const truncatedUserName = computed(() => {
   return userName.value.length > 10 ? `${userName.value.slice(0, 10)}...` : userName.value
 })
 
-const pages: NavigationInfo[] = [
+const baseNavigationInfo: NavigationInfo[] = [
   { name: 'Home', routerName: 'landing', requireAuth: false },
   { name: 'Blingo', routerName: 'blingo', requireAuth: false },
   { name: 'Leaderboard', routerName: 'leaderboard', requireAuth: false },
   { name: 'Friends', routerName: 'friends', requireAuth: true },
   { name: 'Preferences', routerName: 'preferences', requireAuth: true },
 ]
+
+const pages = computed<NavigationInfo[]>(() => {
+  if (userStore.superUserLoggedIn) {
+    return [...baseNavigationInfo, { name: 'Admin', routerName: 'admin', requireAuth: true }]
+  }
+  return baseNavigationInfo
+})
 
 const handleAuth = async () => {
   if (isLoggedIn.value) {
