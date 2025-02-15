@@ -1,133 +1,34 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, resolveDirective } from 'vue'
 import { useDisplay } from 'vuetify'
 import { useUserStore } from '@/stores/user'
 import type { ChallengeInfo } from '@/types/challenge'
 import BingoTile from '@/components/BingoTile.vue'
 import ChallengeCard from '@/components/ChallengeCard.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
+import server from '@/utils/server'
 
 const { xs } = useDisplay()
 const userStore = useUserStore()
-
 const containerClass = computed(() => (!xs.value ? 'desktop-container' : 'mobile-container'))
 
-// Define all challenge info objects
-const challengeInfos = ref<ChallengeInfo[]>([
-  {
-    title: 'Watch an Ocean Documentary',
-    points: 200,
-    type: 'understand',
-    description:
-      'Here are some of our top picks! You can choose one of them or watch one of your own. Tell us what you thought and submit a picture.',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-])
+const challengeInfos = ref<ChallengeInfo[]>([])
+
+const fetchBingoGrid = () => {
+  server.get('/bingo-grid/').then((res) => {
+    res.data.challenges.forEach((challenge: any) => {
+      const chal: ChallengeInfo = {
+        title: challenge.name,
+        points: challenge.points,
+        type: challenge.challenge_type,
+        description: challenge.description,
+        status: userStore.isLoggedIn ? challenge.status : 'not started',
+      }
+      challengeInfos.value.push(chal)
+      console.log(challenge)
+    })
+  })
+}
 
 const selectedTile = ref<number | null>(null)
 const showChallengeCard = ref(false)
@@ -150,6 +51,10 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
     currentChallenge.value.status = newStatus
   }
 }
+
+onMounted(() => {
+  fetchBingoGrid()
+})
 </script>
 
 <template>
@@ -165,7 +70,7 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
               <!-- Header Section -->
               <div class="header-section desktop-header">
                 <h1 class="blingo-title text-primaryBlue">Blingo</h1>
-                <h2 class="blingo-subtitle text-primaryGreen">Connecting to the ocean</h2>
+                <h2 class="blingo-subtitle text-primaryGreen" h>Connecting to the ocean</h2>
               </div>
 
               <!-- Challenge Card -->
