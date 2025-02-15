@@ -2,7 +2,6 @@
 <script setup lang="ts">
 import LeaderboardRow from '@/components/LeaderboardRow.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
-import { navigateToProfile } from '@/router'
 import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useMessageStore } from '@/stores/message'
