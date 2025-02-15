@@ -131,12 +131,9 @@ const submitForm = async () => {
             ></v-text-field>
             <div class="mt-3">
               <a
-                class="text-lightBlue cursor-pointer"
+                class="text-subtitle-2 margin-left-adjust text-primaryGreen cursor-pointer"
                 @click.prevent="setCurrentPage('forgot-password')"
-              >
-                <p class="text-subtitle-2 margin-left-adjust text-primaryGreen">
-                  Forgot Username or Password?
-                </p>
+                >Forgot Username or Password?
               </a>
             </div>
             <v-btn
@@ -274,6 +271,8 @@ footer {
 
 a {
   text-decoration: underline;
+  font-family: 'Poppins';
+  font-weight: bold;
 }
 
 .logo {
