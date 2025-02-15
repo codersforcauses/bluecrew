@@ -56,6 +56,7 @@ const resetPassword = async () => {
   justify-content: center;
   align-items: center;
   height: 70vh;
+  overflow: hidden;
 }
 
 h2 {
