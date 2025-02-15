@@ -3,8 +3,11 @@ import { ref } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import { useDisplay } from 'vuetify'
 import type { ChallengeType, ChallengeStatus } from '@/types/challenge'
+import { useMessageStore } from '@/stores/message'
 
 const { mobile } = useDisplay()
+
+const messageStore = useMessageStore()
 
 // Define interface for task submission
 interface TaskSubmission {
@@ -77,7 +80,7 @@ const handleImageUpload = (event: Event) => {
 // Handle task finish
 const finish = () => {
   if (!taskSubmission.value.feedback && !taskSubmission.value.image) {
-    alert('Please provide feedback or upload an image')
+    messageStore.showMessage('Warning', 'Please provide feedback or upload an image', 'warning')
     return
   }
   emit('task-completed', taskSubmission.value)
