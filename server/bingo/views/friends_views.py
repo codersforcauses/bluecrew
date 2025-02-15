@@ -24,44 +24,6 @@ def delete_friendship(request, friendship_id):
     return Response({"message": "Friendship deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(['GET'])
-@permission_classes((permissions.IsAuthenticated, ))
-def get_friends(request):
-    friendships = Friendship.objects.filter(
-        status='accepted'
-    ).filter(
-        Q(requester=request.user) | Q(receiver=request.user)
-    )
-
-    friend_data = []
-    for friendship in friendships:
-        friend = (friendship.receiver if friendship.requester ==
-                  request.user else friendship.requester)
-        serializer = FriendshipUserSerializer(
-            friend,
-            context={'friendship': friendship}
-        )
-        friend_data.append(serializer.data)
-
-    return Response(friend_data, status=status.HTTP_200_OK)
-
-
-@api_view(['GET'])
-@permission_classes((permissions.IsAuthenticated, ))
-def get_outgoing_requests(request):
-    """Get all outgoing friend requests of the logged-in user.
-    Requires authentication."""
-    return get_friend_requests(request, is_outgoing=True)
-
-
-@api_view(['GET'])
-@permission_classes((permissions.IsAuthenticated, ))
-def get_incoming_requests(request):
-    """Get all incoming friend requests to the logged-in user.
-    Requires authentication."""
-    return get_friend_requests(request, is_outgoing=False)
-
-
 @api_view(['POST'])
 @permission_classes((permissions.IsAuthenticated, ))
 def request_friendship(request, user_id):

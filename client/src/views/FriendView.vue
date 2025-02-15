@@ -89,12 +89,11 @@ const searchUsers = async () => {
 }
 
 // Event handlers
-// First, add an index parameter to handleFriendAction
 const handleFriendAction = async (
   action: FriendAction,
   userId: number,
   friendshipId?: number,
-  arrayIndex?: number, // New parameter
+  arrayIndex?: number,
 ) => {
   try {
     let successMessage = ''
@@ -131,15 +130,12 @@ const handleFriendAction = async (
 
       case 'send':
         await server.post(`/request-friendship/${userId}/`)
-        await searchUsers() // Still need to refresh search results
         successMessage = 'Friend request sent!'
         break
     }
 
-    // Show success message
     messageStore.showMessage('Success', successMessage, 'success')
   } catch {
-    // Remove the unused error parameter
     messageStore.showMessage(
       'Error',
       `Failed to ${action} friend${action === 'send' ? ' request' : ''}`,

@@ -112,7 +112,7 @@ def check_friendships(user_set, current_user):
             if friendship.status == friendship.PENDING:
                 list_out.append(
                     {'user_data': user, 'status': 'Pending friendship request.', 'friendship_id': friendship.id})
-            elif friendship.status == friendship.ACCEPTED:  # Add this condition
+            elif friendship.status == friendship.ACCEPTED:
                 list_out.append(
                     {'user_data': user, 'status': 'You are friends.'})
         else:
