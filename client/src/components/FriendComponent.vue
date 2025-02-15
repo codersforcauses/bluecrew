@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import avatarPaths from '@/utils/avatar'
 
-defineProps<{
+const props = defineProps<{
   avatarIndex: number
   name: string
   variant?:
@@ -18,7 +18,19 @@ defineProps<{
 }>()
 
 const showDialog = ref(false)
-const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend', 'details', 'send'])
+const emit = defineEmits([
+  'accept',
+  'reject',
+  'dismiss',
+  'delete',
+  'addFriend',
+  'details',
+  'send',
+  'click-username',
+])
+const handleUsernameClick = () => {
+  emit('click-username', props.name)
+}
 </script>
 
 <template>
@@ -31,7 +43,9 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend', 
       cover
       :src="`/${avatarPaths[avatarIndex]}`"
     />
-    <p class="me-auto font-weight-bold truncate-name">{{ name }}</p>
+    <p class="me-auto font-weight-bold truncate-name username-link" @click="handleUsernameClick">
+      {{ name }}
+    </p>
 
     <!-- Accept/Reject variant -->
     <div v-if="variant === 'acceptReject'" class="acceptreject">
@@ -70,7 +84,7 @@ const emit = defineEmits(['accept', 'reject', 'dismiss', 'delete', 'addFriend', 
             <v-btn
               color="primaryGreen"
               variant="flat"
-              @click="emit('delete'), (showDialog = false)"
+              @click="(emit('delete'), (showDialog = false))"
               class="font-poppins"
             >
               Confirm
@@ -170,5 +184,13 @@ p {
 .font-poppins {
   font-family: 'Poppins', cursive !important;
   font-weight: bold !important;
+}
+
+.username-link {
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+    color: rgb(var(--v-theme-primaryBlue));
+  }
 }
 </style>
