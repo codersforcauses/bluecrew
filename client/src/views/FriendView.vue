@@ -1,4 +1,3 @@
-# FriendView.vue
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import FriendComponent from '@/components/FriendComponent.vue'
