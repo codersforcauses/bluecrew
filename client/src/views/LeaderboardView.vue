@@ -138,8 +138,7 @@ onMounted(() => {
 }
 
 .leaderboard-scroll {
-  max-height: 400px;
-  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .section-title {
