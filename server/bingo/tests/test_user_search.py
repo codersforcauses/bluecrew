@@ -9,17 +9,17 @@ class UserSearchTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.current_user = User.objects.create_user(
-            username='larrybird', email='lbird@celtics.com', password='ChampsHere123')
+            username='larrybird', email='lbird@celtics.com', password='ChampsHere123', is_active=True)
         self.url = reverse('user_search')
 
         self.user1 = User.objects.create_user(
-            username='lebronjames', email='lbj@lakers.com', password='AkronHammer123')
+            username='lebronjames', email='lbj@lakers.com', password='AkronHammer123', is_active=True)
         self.user2 = User.objects.create_user(
-            username='lebronjamesjr', email='bronny@lakers.com', password='password123')
+            username='lebronjamesjr', email='bronny@lakers.com', password='password123', is_active=True)
         self.user3 = User.objects.create_user(
-            username='lebronjamesfanpage', email='lbj@gmail.com', password='3-1comeback')
+            username='lebronjamesfanpage', email='lbj@gmail.com', password='3-1comeback', is_active=True)
         self.user4 = User.objects.create_user(
-            username='lbjking', email='lbj@cavs.com', password='forgottenAccount'
+            username='lbjking', email='lbj@cavs.com', password='forgottenAccount', is_active=True
         )
 
         self.friendship1 = Friendship.objects.create(
@@ -79,9 +79,9 @@ class UserSearchTest(TestCase):
     def test_exact_match_included(self):
         for i in range(15):
             User.objects.create_user(username=f'uniqueuname{i}',
-                                     password='Password123', email=f'user{i}@mail.com')
+                                     password='Password123', email=f'user{i}@mail.com', is_active=True)
         self.target_user = User.objects.create_user(
-            username='uniqueuname', password='Password123', email='target_user@mail.com')
+            username='uniqueuname', password='Password123', email='target_user@mail.com', is_active=True)
 
         self.client.force_authenticate(user=self.current_user)
         response = self.client.post(
