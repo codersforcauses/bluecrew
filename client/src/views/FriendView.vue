@@ -87,8 +87,9 @@ const searchUsers = async () => {
   } catch {
     searchResults.value = []
     messageStore.showMessage('Error', 'Failed to search users', 'error')
+  } finally {
+    searchResultsLoading.value = false
   }
-  searchResultsLoading.value = false
 }
 
 // Event handlers
