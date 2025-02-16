@@ -3,6 +3,10 @@ import { ref } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import { useDisplay } from 'vuetify'
 import type { ChallengeType, ChallengeStatus } from '@/types/challenge'
+import server from '@/utils/server'
+import type { AxiosError } from 'axios'
+import { useMessageStore } from '@/stores/message'
+import FormData from 'form-data'
 
 const { mobile } = useDisplay()
 
@@ -15,7 +19,7 @@ interface TaskSubmission {
 
 // Initialize modal store
 const modalStore = useModalStore()
-
+const messageStore = useMessageStore()
 // Initialize task submission state
 const taskSubmission = ref<TaskSubmission>({
   feedback: '',
@@ -45,6 +49,7 @@ const props = defineProps<{
   description: string
   status: ChallengeStatus
   isLoggedIn: boolean
+  position: number | null
 }>()
 
 // Handle opening login modal
@@ -62,7 +67,16 @@ const startTask = () => {
   if (!props.isLoggedIn) {
     return
   }
-  emit('status-change', 'started')
+  server
+    .post('/start-challenge/', { position: props.position })
+    .then(() => emit('status-change', 'started'))
+    .catch((error: AxiosError) => {
+      messageStore.showMessage(
+        'Error',
+        'Unexpected occured while attempting to start challenge.',
+        'error',
+      )
+    })
 }
 
 // Handle image upload
@@ -80,8 +94,29 @@ const finish = () => {
     alert('Please provide feedback or upload an image')
     return
   }
-  emit('task-completed', taskSubmission.value)
-  emit('status-change', 'completed')
+  let data = new FormData()
+  data.append('image', taskSubmission.value.image, taskSubmission.value.image?.name)
+  data.append('position', props.position)
+  data.append('consent', taskSubmission.value.canShareOnSocialMedia)
+  server
+    .patch('/complete-challenge/', data, {
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'multipart/form-data; boundary=${data._boundary}',
+      },
+    })
+    .then(() => {
+      emit('task-completed', taskSubmission.value)
+      emit('status-change', 'completed')
+      //   TODO consent field doesn't exist
+    })
+    .catch((error: AxiosError) =>
+      messageStore.showMessage(
+        'Error',
+        'Unexpected occured while attempting to complete challenge.',
+        'error',
+      ),
+    )
 }
 </script>
 
