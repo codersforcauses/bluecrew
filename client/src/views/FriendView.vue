@@ -34,6 +34,7 @@ const currentFriends = ref<FriendEntry[]>([])
 const incomingRequests = ref<FriendEntry[]>([])
 const outgoingRequests = ref<FriendEntry[]>([])
 const searchResults = ref<SearchResult[]>([])
+const searchResultsLoading = ref(false)
 const messageStore = useMessageStore()
 
 // Helpers
@@ -76,7 +77,7 @@ const searchUsers = async () => {
     searchResults.value = []
     return
   }
-
+  searchResultsLoading.value = true
   try {
     const response = await server.post<SearchResult[]>('/user-search/', {
       query_string: searchQuery.value,
@@ -86,6 +87,7 @@ const searchUsers = async () => {
     searchResults.value = []
     messageStore.showMessage('Error', 'Failed to search users', 'error')
   }
+  searchResultsLoading.value = false
 }
 
 // Event handlers
@@ -370,11 +372,17 @@ onMounted(fetchFriendsData)
         </div>
 
         <!-- No Results Message -->
-        <div v-if="searchQuery && searchResults.length === 0" class="text-center my-6">
-          <p class="text-primaryBlue font-italic">
-            No users found matching "{{ searchQuery }}" <br />Try a different search term
-          </p>
-        </div>
+        <template v-if="searchQuery && searchResults.length === 0">
+          <div v-if="searchResultsLoading" class="d-flex w-100 justify-center">
+            <v-progress-circular indeterminate color="primaryBlue" />
+          </div>
+
+          <div v-else class="text-center my-6">
+            <p class="text-primaryBlue font-italic">
+              No users found matching "{{ searchQuery }}" <br />Try a different search term
+            </p>
+          </div>
+        </template>
       </div>
     </div>
   </v-container>
