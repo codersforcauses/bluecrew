@@ -105,29 +105,25 @@ const handleFriendAction = async (
     switch (action) {
       case 'accept':
         await server.post(`/accept-friendship/${friendshipId}/`)
-        // Move friend from incomingRequests to currentFriends
-        if (arrayIndex !== undefined) {
-          if (updateSearchResults) {
-            searchResults.value[arrayIndex].status = 'You are friends.'
-            await fetchFriendsData()
-          } else {
-            const acceptedFriend = incomingRequests.value[arrayIndex]
-            incomingRequests.value.splice(arrayIndex, 1)
-            currentFriends.value.push(acceptedFriend)
-          }
+        if (updateSearchResults) {
+          searchResults.value[arrayIndex].status = 'You are friends.'
+          await fetchFriendsData()
+        } else {
+          // Move friend from incomingRequests to currentFriends
+          const acceptedFriend = incomingRequests.value[arrayIndex]
+          incomingRequests.value.splice(arrayIndex, 1)
+          currentFriends.value.push(acceptedFriend)
         }
         successMessage = 'Friend request accepted!'
         break
 
       case 'delete':
         await server.delete(`/delete-friendship/${friendshipId}/`)
-        if (arrayIndex !== undefined) {
-          if (updateSearchResults) {
-            searchResults.value[arrayIndex].status = 'You are not friends.'
-            await fetchFriendsData()
-          } else {
-            currentFriends.value.splice(arrayIndex, 1)
-          }
+        if (updateSearchResults) {
+          searchResults.value[arrayIndex].status = 'You are not friends.'
+          await fetchFriendsData()
+        } else {
+          currentFriends.value.splice(arrayIndex, 1)
         }
         successMessage = 'Friend removed'
         break
@@ -135,21 +131,19 @@ const handleFriendAction = async (
       case 'dismiss':
       case 'reject':
         await server.delete(`/delete-friendship/${friendshipId}/`)
-        if (arrayIndex !== undefined) {
-          if (updateSearchResults) {
-            searchResults.value[arrayIndex].status = 'You are not friends.'
-            await fetchFriendsData()
-          } else {
-            const array = action === 'dismiss' ? outgoingRequests : incomingRequests
-            array.value.splice(arrayIndex, 1)
-          }
+        if (updateSearchResults) {
+          searchResults.value[arrayIndex].status = 'You are not friends.'
+          await fetchFriendsData()
+        } else {
+          const array = action === 'dismiss' ? outgoingRequests : incomingRequests
+          array.value.splice(arrayIndex, 1)
         }
         successMessage = action === 'dismiss' ? 'Request cancelled' : 'Request rejected'
         break
 
       case 'send':
         await server.post(`/request-friendship/${userId}/`)
-        if (arrayIndex !== undefined && updateSearchResults) {
+        if (updateSearchResults) {
           searchResults.value[arrayIndex].status = 'You have requested friendship.'
           await fetchFriendsData()
         }
