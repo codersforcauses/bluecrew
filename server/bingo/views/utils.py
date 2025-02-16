@@ -2,9 +2,8 @@ from django.conf import settings
 import math
 from rest_framework import status
 from rest_framework.response import Response
-
 from ..models import TileInteraction, Friendship
-from ..serializers import (UserProfileSerializer,)
+from ..serializers import FriendshipUserSerializer
 
 
 def check_access(current_user, target_user):
@@ -96,8 +95,11 @@ def check_bingo(tile):
 def check_friendships(user_set, current_user):
     list_out = []
     for user in user_set:
-        friendship = get_or_none(
-            Friendship, requester=current_user, receiver=user['user_id'])
+        # Skip if this is the current user
+        if user['user_id'] == current_user.user_id:
+            continue
+        # Check if current user is requester
+        friendship = get_or_none(Friendship, requester=current_user, receiver=user['user_id'])
         if friendship:
             if friendship.status == friendship.PENDING:
                 list_out.append(
@@ -105,10 +107,14 @@ def check_friendships(user_set, current_user):
             elif friendship.status == friendship.ACCEPTED:
                 list_out.append(
                     {'user_data': user, 'status': 'You are friends.'})
+        # Check if current user is receiver
         elif (friendship := get_or_none(Friendship, requester=user['user_id'], receiver=current_user)) is not None:
-            if friendship:
+            if friendship.status == friendship.PENDING:
                 list_out.append(
                     {'user_data': user, 'status': 'Pending friendship request.', 'friendship_id': friendship.id})
+            elif friendship.status == friendship.ACCEPTED:
+                list_out.append(
+                    {'user_data': user, 'status': 'You are friends.'})
         else:
             list_out.append(
                 {'user_data': user, 'status': 'You are not friends.'})
@@ -133,8 +139,15 @@ def get_friend_requests(request, is_outgoing=True):
         'requester' if is_outgoing else 'receiver': request.user
     }
     friendships = Friendship.objects.filter(**filter_kwargs)
-    friend_users = [
-        getattr(friendship, 'receiver' if is_outgoing else 'requester') for friendship in friendships
-    ]
-    serializer = UserProfileSerializer(friend_users, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    # Prepare the response data
+    result = []
+    for friendship in friendships:
+        # Get the friend (either requester or receiver)
+        friend = getattr(friendship, 'receiver' if is_outgoing else 'requester')
+        # Create serializer with friendship context
+        serializer = FriendshipUserSerializer(
+            friend,
+            context={'friendship': friendship}
+        )
+        result.append(serializer.data)
+    return Response(result, status=status.HTTP_200_OK)

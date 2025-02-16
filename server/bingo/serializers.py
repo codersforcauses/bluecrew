@@ -187,3 +187,17 @@ class UpdateBingoGridSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "You must provide the ids of exactly 16 distinct challenges.")
         return value
+
+
+class FriendshipUserSerializer(serializers.ModelSerializer):
+    userId = serializers.IntegerField(source='user_id')
+    userName = serializers.CharField(source='username')
+    friendship_id = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['userId', 'userName', 'avatar', 'friendship_id']
+
+    def get_friendship_id(self, obj):
+        friendship = self.context.get('friendship')
+        return friendship.id if friendship else None
