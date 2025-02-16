@@ -92,6 +92,7 @@ const searchUsers = async () => {
 const handleFriendAction = async (
   action: FriendAction,
   userId: number,
+  updateSearchResults: boolean,
   friendshipId?: number,
   arrayIndex?: number,
 ) => {
@@ -103,9 +104,14 @@ const handleFriendAction = async (
         await server.post(`/accept-friendship/${friendshipId}/`)
         // Move friend from incomingRequests to currentFriends
         if (arrayIndex !== undefined) {
-          const acceptedFriend = incomingRequests.value[arrayIndex]
-          incomingRequests.value.splice(arrayIndex, 1)
-          currentFriends.value.push(acceptedFriend)
+          if (updateSearchResults) {
+            searchResults.value[arrayIndex].status = 'You are friends.'
+            await fetchFriendsData()
+          } else {
+            const acceptedFriend = incomingRequests.value[arrayIndex]
+            incomingRequests.value.splice(arrayIndex, 1)
+            currentFriends.value.push(acceptedFriend)
+          }
         }
         successMessage = 'Friend request accepted!'
         break
@@ -113,7 +119,12 @@ const handleFriendAction = async (
       case 'delete':
         await server.delete(`/delete-friendship/${friendshipId}/`)
         if (arrayIndex !== undefined) {
-          currentFriends.value.splice(arrayIndex, 1)
+          if (updateSearchResults) {
+            searchResults.value[arrayIndex].status = 'You are not friends.'
+            await fetchFriendsData()
+          } else {
+            currentFriends.value.splice(arrayIndex, 1)
+          }
         }
         successMessage = 'Friend removed'
         break
@@ -122,14 +133,22 @@ const handleFriendAction = async (
       case 'reject':
         await server.delete(`/delete-friendship/${friendshipId}/`)
         if (arrayIndex !== undefined) {
-          const array = action === 'dismiss' ? outgoingRequests : incomingRequests
-          array.value.splice(arrayIndex, 1)
+          if (updateSearchResults) {
+            searchResults.value[arrayIndex].status = 'You are not friends.'
+            await fetchFriendsData()
+          } else {
+            const array = action === 'dismiss' ? outgoingRequests : incomingRequests
+            array.value.splice(arrayIndex, 1)
+          }
         }
         successMessage = action === 'dismiss' ? 'Request cancelled' : 'Request rejected'
         break
 
       case 'send':
         await server.post(`/request-friendship/${userId}/`)
+        if (arrayIndex !== undefined && updateSearchResults) {
+          searchResults.value[arrayIndex].status = 'You have requested friendship.'
+        }
         successMessage = 'Friend request sent!'
         break
     }
@@ -206,7 +225,9 @@ onMounted(fetchFriendsData)
                 :avatar-index="friend.avatar"
                 :name="friend.userName"
                 variant="delete"
-                @delete="handleFriendAction('delete', friend.userId, friend.friendship_id, index)"
+                @delete="
+                  handleFriendAction('delete', friend.userId, false, friend.friendship_id, index)
+                "
               />
             </v-col>
           </v-row>
@@ -229,8 +250,12 @@ onMounted(fetchFriendsData)
                 :avatar-index="request.avatar"
                 :name="request.userName"
                 variant="acceptReject"
-                @accept="handleFriendAction('accept', request.userId, request.friendship_id, index)"
-                @reject="handleFriendAction('reject', request.userId, request.friendship_id, index)"
+                @accept="
+                  handleFriendAction('accept', request.userId, false, request.friendship_id, index)
+                "
+                @reject="
+                  handleFriendAction('reject', request.userId, false, request.friendship_id, index)
+                "
               />
             </v-col>
           </v-row>
@@ -254,7 +279,7 @@ onMounted(fetchFriendsData)
                 :name="request.userName"
                 variant="dismiss"
                 @dismiss="
-                  handleFriendAction('dismiss', request.userId, request.friendship_id, index)
+                  handleFriendAction('dismiss', request.userId, false, request.friendship_id, index)
                 "
               />
             </v-col>
@@ -299,7 +324,7 @@ onMounted(fetchFriendsData)
           </h3>
           <v-row class="friend-scroll">
             <v-col
-              v-for="result in searchResults.filter(
+              v-for="(result, index) in searchResults.filter(
                 (result) => result.status !== 'You are friends.',
               )"
               :key="result.user_data.user_id"
@@ -309,17 +334,35 @@ onMounted(fetchFriendsData)
                 :avatar-index="result.user_data.avatar"
                 :name="result.user_data.username"
                 :variant="getUserVariant(result.status)"
-                @send="handleFriendAction('send', result.user_data.user_id)"
+                @send="handleFriendAction('send', result.user_data.user_id, true, undefined, index)"
                 @accept="
-                  handleFriendAction('accept', result.user_data.user_id, result.friendship_id)
+                  handleFriendAction(
+                    'accept',
+                    result.user_data.user_id,
+                    true,
+                    result.friendship_id,
+                    index,
+                  )
                 "
                 @reject="
                   result.friendship_id &&
-                    handleFriendAction('reject', result.user_data.user_id, result.friendship_id)
+                    handleFriendAction(
+                      'reject',
+                      result.user_data.user_id,
+                      true,
+                      result.friendship_id,
+                      index,
+                    )
                 "
                 @dismiss="
                   result.friendship_id &&
-                    handleFriendAction('dismiss', result.user_data.user_id, result.friendship_id)
+                    handleFriendAction(
+                      'dismiss',
+                      result.user_data.user_id,
+                      true,
+                      result.friendship_id,
+                      index,
+                    )
                 "
               />
             </v-col>
