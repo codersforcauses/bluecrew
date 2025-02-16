@@ -209,7 +209,7 @@ class TileInteraction(models.Model):
     # The bingo grid that this interaction concerns
     grid = models.ForeignKey(BingoGrid, on_delete=models.CASCADE)
     # Optional description field for users to add notes about their interaction
-    description = models.CharField(max_length=500, blank=True)
+    description = models.TextField(max_length=500, blank=True)
 
     image = ResizedImageField(
         upload_to="",  # idk where we want to put this atm
