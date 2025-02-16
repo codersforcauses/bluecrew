@@ -2,7 +2,6 @@
 <script setup lang="ts">
 import LeaderboardRow from '@/components/LeaderboardRow.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
-
 import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useMessageStore } from '@/stores/message'
@@ -139,8 +138,7 @@ onMounted(() => {
 }
 
 .leaderboard-scroll {
-  max-height: 400px;
-  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .section-title {

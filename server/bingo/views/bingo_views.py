@@ -96,6 +96,9 @@ def complete_challenge(request):
     # Update consent and image fields.
     tile.consent = serializer.validated_data['consent']
     tile.image = serializer.validated_data['image']
+    # Add description if provided in the serializer data
+    if 'description' in serializer.validated_data:
+        tile.description = serializer.validated_data['description']
 
     # Points should only be awarded once.
     if tile.completed:
