@@ -78,6 +78,7 @@ const searchUsers = async () => {
     return
   }
   searchResultsLoading.value = true
+
   try {
     const response = await server.post<SearchResult[]>('/user-search/', {
       query_string: searchQuery.value,
@@ -183,29 +184,16 @@ onMounted(fetchFriendsData)
     </div>
 
     <div v-else>
-      <v-text-field
-        v-model="searchQuery"
-        prepend-inner-icon="mdi-magnify"
-        label="Search users"
-        class="mb-6 search-field text-center"
-        hide-default
-        single-line
-        variant="outlined"
-        color="primaryBlue"
-        bg-color="creamWhite"
-        clearable
-      />
+      <v-text-field v-model="searchQuery" prepend-inner-icon="mdi-magnify" label="Search users"
+        class="mb-6 search-field text-center" hide-default single-line variant="outlined" color="primaryBlue"
+        bg-color="creamWhite" clearable />
 
       <!-- Regular Content -->
       <div v-if="!searchQuery">
         <v-btn-group class="w-100 mb-6">
-          <v-btn
-            v-for="page in ['list', 'incoming', 'outgoing'] as const"
-            :key="page"
-            :color="currentSubpage === page ? 'primaryGreen' : 'primaryBlue'"
-            @click="currentSubpage = page"
-            class="flex-grow-1 text-caption text-sm-subtitle-2 font-poppins"
-          >
+          <v-btn v-for="page in ['list', 'incoming', 'outgoing'] as const" :key="page"
+            :color="currentSubpage === page ? 'primaryGreen' : 'primaryBlue'" @click="currentSubpage = page"
+            class="flex-grow-1 text-caption text-sm-subtitle-2 font-poppins">
             {{ page === 'list' ? 'Friend List' : page.charAt(0).toUpperCase() + page.slice(1) }}
           </v-btn>
         </v-btn-group>
@@ -223,14 +211,9 @@ onMounted(fetchFriendsData)
           </v-row>
           <v-row v-else class="friend-scroll">
             <v-col v-for="(friend, index) in currentFriends" :key="friend.userId" cols="12">
-              <FriendComponent
-                :avatar-index="friend.avatar"
-                :name="friend.userName"
-                variant="delete"
-                @delete="
-                  handleFriendAction('delete', friend.userId, false, friend.friendship_id, index)
-                "
-              />
+              <FriendComponent :avatar-index="friend.avatar" :name="friend.userName" variant="delete" @delete="
+                handleFriendAction('delete', friend.userId, false, friend.friendship_id, index)
+                " />
             </v-col>
           </v-row>
         </v-sheet>
@@ -248,17 +231,11 @@ onMounted(fetchFriendsData)
           </v-row>
           <v-row v-else class="friend-scroll">
             <v-col v-for="(request, index) in incomingRequests" :key="request.userId" cols="12">
-              <FriendComponent
-                :avatar-index="request.avatar"
-                :name="request.userName"
-                variant="acceptReject"
-                @accept="
-                  handleFriendAction('accept', request.userId, false, request.friendship_id, index)
-                "
-                @reject="
+              <FriendComponent :avatar-index="request.avatar" :name="request.userName" variant="acceptReject" @accept="
+                handleFriendAction('accept', request.userId, false, request.friendship_id, index)
+                " @reject="
                   handleFriendAction('reject', request.userId, false, request.friendship_id, index)
-                "
-              />
+                  " />
             </v-col>
           </v-row>
         </v-sheet>
@@ -276,14 +253,9 @@ onMounted(fetchFriendsData)
           </v-row>
           <v-row v-else class="friend-scroll">
             <v-col v-for="(request, index) in outgoingRequests" :key="request.userId" cols="12">
-              <FriendComponent
-                :avatar-index="request.avatar"
-                :name="request.userName"
-                variant="dismiss"
-                @dismiss="
-                  handleFriendAction('dismiss', request.userId, false, request.friendship_id, index)
-                "
-              />
+              <FriendComponent :avatar-index="request.avatar" :name="request.userName" variant="dismiss" @dismiss="
+                handleFriendAction('dismiss', request.userId, false, request.friendship_id, index)
+                " />
             </v-col>
           </v-row>
         </v-sheet>
@@ -292,52 +264,34 @@ onMounted(fetchFriendsData)
       <!-- Search Results -->
       <div v-else>
         <!-- Existing Friends Section -->
-        <div
-          v-if="searchResults.filter((result) => result.status === 'You are friends.').length > 0"
-        >
+        <div v-if="searchResults.filter((result) => result.status === 'You are friends.').length > 0">
           <h3 class="section-title2 text-primaryBlue">
             Existing Friends -
             {{ searchResults.filter((result) => result.status === 'You are friends.').length }}
           </h3>
           <v-row class="friend-scroll">
-            <v-col
-              v-for="result in searchResults.filter(
-                (result) => result.status === 'You are friends.',
-              )"
-              :key="result.user_data.user_id"
-              cols="12"
-            >
-              <FriendComponent
-                :avatar-index="result.user_data.avatar"
-                :name="result.user_data.username"
-                variant="details"
-              />
+            <v-col v-for="result in searchResults.filter(
+              (result) => result.status === 'You are friends.',
+            )" :key="result.user_data.user_id" cols="12">
+              <FriendComponent :avatar-index="result.user_data.avatar" :name="result.user_data.username"
+                variant="details" />
             </v-col>
           </v-row>
         </div>
 
         <!-- Other Users Section -->
-        <div
-          v-if="searchResults.filter((result) => result.status !== 'You are friends.').length > 0"
-        >
+        <div v-if="searchResults.filter((result) => result.status !== 'You are friends.').length > 0">
           <h3 class="section-title2 text-primaryBlue">
             Other Users -
             {{ searchResults.filter((result) => result.status !== 'You are friends.').length }}
           </h3>
           <v-row class="friend-scroll">
-            <v-col
-              v-for="(result, index) in searchResults.filter(
-                (result) => result.status !== 'You are friends.',
-              )"
-              :key="result.user_data.user_id"
-              cols="12"
-            >
-              <FriendComponent
-                :avatar-index="result.user_data.avatar"
-                :name="result.user_data.username"
+            <v-col v-for="(result, index) in searchResults.filter(
+              (result) => result.status !== 'You are friends.',
+            )" :key="result.user_data.user_id" cols="12">
+              <FriendComponent :avatar-index="result.user_data.avatar" :name="result.user_data.username"
                 :variant="getUserVariant(result.status)"
-                @send="handleFriendAction('send', result.user_data.user_id, true, undefined, index)"
-                @accept="
+                @send="handleFriendAction('send', result.user_data.user_id, true, undefined, index)" @accept="
                   handleFriendAction(
                     'accept',
                     result.user_data.user_id,
@@ -345,28 +299,25 @@ onMounted(fetchFriendsData)
                     result.friendship_id,
                     index,
                   )
-                "
-                @reject="
+                  " @reject="
                   result.friendship_id &&
-                    handleFriendAction(
-                      'reject',
-                      result.user_data.user_id,
-                      true,
-                      result.friendship_id,
-                      index,
-                    )
-                "
-                @dismiss="
+                  handleFriendAction(
+                    'reject',
+                    result.user_data.user_id,
+                    true,
+                    result.friendship_id,
+                    index,
+                  )
+                  " @dismiss="
                   result.friendship_id &&
-                    handleFriendAction(
-                      'dismiss',
-                      result.user_data.user_id,
-                      true,
-                      result.friendship_id,
-                      index,
-                    )
-                "
-              />
+                  handleFriendAction(
+                    'dismiss',
+                    result.user_data.user_id,
+                    true,
+                    result.friendship_id,
+                    index,
+                  )
+                  " />
             </v-col>
           </v-row>
         </div>
