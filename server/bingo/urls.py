@@ -18,11 +18,6 @@ urlpatterns = [
     path('delete-friendship/<int:friendship_id>/',
          friends_views.delete_friendship, name='delete_friendship'),
     path('start-challenge/', bingo_views.start_challenge, name="start_challenge"),
-    path('friends/', friends_views.get_friends, name='friend_list'),
-    path('friends/requests/outgoing/',
-         friends_views.get_outgoing_requests, name='outgoing_requests'),
-    path('friends/requests/incoming/',
-         friends_views.get_incoming_requests, name='incoming_requests'),
     path('bingo-grid/', bingo_views.get_bingo_grid, name='get_bingo_grid'),
     path('accept-friendship/<int:friendship_id>/',
          friends_views.accept_friendship, name='accept_friendship'),
@@ -35,4 +30,6 @@ urlpatterns = [
     path('user-search/', user_views.find_user, name='user_search'),
     path('update-bingo-grid/', bingo_views.update_bingo_grid,
          name='update-bingo-grid'),
+    path('friends/all/', friends_views.get_all_friends_data, name='all_friends_data'),
+
 ]
