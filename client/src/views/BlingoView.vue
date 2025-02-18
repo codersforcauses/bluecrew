@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, resolveDirective } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useDisplay } from 'vuetify'
 import { useUserStore } from '@/stores/user'
-import type { ChallengeInfo } from '@/types/challenge'
+import type { ChallengeInfo, ChallengeInfoAPI } from '@/types/challenge'
 import BingoTile from '@/components/BingoTile.vue'
 import ChallengeCard from '@/components/ChallengeCard.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
 import server from '@/utils/server'
-import type { AxiosError } from 'axios'
 import { useMessageStore } from '@/stores/message'
 
 const { xs } = useDisplay()
@@ -21,7 +20,7 @@ const fetchBingoGrid = () => {
   server
     .get('/bingo-grid/')
     .then((res) => {
-      res.data.challenges.forEach((challenge: any) => {
+      res.data.challenges.forEach((challenge: ChallengeInfoAPI) => {
         const chal: ChallengeInfo = {
           title: challenge.name,
           points: challenge.points,
@@ -32,7 +31,7 @@ const fetchBingoGrid = () => {
         challengeInfos.value.push(chal)
       })
     })
-    .catch((error: AxiosError) => {
+    .catch(() => {
       messageStore.showMessage('Error', 'Unexpected occured while fetching challenges.', 'error')
     })
 }

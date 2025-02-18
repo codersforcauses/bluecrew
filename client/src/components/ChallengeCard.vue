@@ -4,13 +4,10 @@ import { useModalStore } from '@/stores/modal'
 import { useDisplay } from 'vuetify'
 import type { ChallengeType, ChallengeStatus } from '@/types/challenge'
 import server from '@/utils/server'
-import type { AxiosError } from 'axios'
 import { useMessageStore } from '@/stores/message'
 import FormData from 'form-data'
 
 const { mobile } = useDisplay()
-
-const messageStore = useMessageStore()
 
 // Define interface for task submission
 interface TaskSubmission {
@@ -72,7 +69,7 @@ const startTask = () => {
   server
     .post('/start-challenge/', { position: props.position })
     .then(() => emit('status-change', 'started'))
-    .catch((error: AxiosError) => {
+    .catch(() => {
       messageStore.showMessage(
         'Error',
         'Unexpected occured while attempting to start challenge.',
@@ -96,7 +93,7 @@ const finish = () => {
     messageStore.showMessage('Warning', 'Please provide feedback or upload an image', 'warning')
     return
   }
-  let data = new FormData()
+  const data = new FormData()
   data.append('image', taskSubmission.value.image, taskSubmission.value.image?.name)
   data.append('position', props.position)
   data.append('consent', taskSubmission.value.canShareOnSocialMedia)
@@ -112,7 +109,7 @@ const finish = () => {
       emit('status-change', 'completed')
       //   TODO consent field doesn't exist
     })
-    .catch((error: AxiosError) =>
+    .catch(() =>
       messageStore.showMessage(
         'Error',
         'Unexpected occured while attempting to complete challenge.',
