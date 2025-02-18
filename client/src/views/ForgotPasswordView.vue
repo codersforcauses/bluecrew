@@ -1,30 +1,30 @@
 <script setup lang="ts">
-import { defineProps, ref } from 'vue';
+import { defineProps, ref } from 'vue'
 import { useMessageStore } from '@/stores/message'
-import axios from 'axios';
+import axios from 'axios'
 
-const props = defineProps<{ token?: string }>(); // receive token as a prop
+const props = defineProps<{ token?: string }>() // receive token as a prop
 const messageStore = useMessageStore()
-const password = ref('');
-const confirmPassword = ref('');
+const password = ref('')
+const confirmPassword = ref('')
 
 const resetPassword = async () => {
   if (password.value !== confirmPassword.value) {
-    messageStore.showMessage('Error', 'Passwords do not match.', 'error');
-    return;
+    messageStore.showMessage('Error', 'Passwords do not match.', 'error')
+    return
   }
 
   try {
     await axios.post('/api/reset-password', {
       token: props.token, // using the prop instead of useRoute
       password: password.value,
-    });
-   messageStore.showMessage('Success', 'Password has been reset', 'success');
+    })
+    messageStore.showMessage('Success', 'Password has been reset', 'success')
   } catch (error) {
-    console.error('Password reset failed:', error);
-    messageStore.showMessage('Error', 'Failed to reset password. Please try again.', 'error');
+    console.error('Password reset failed:', error)
+    messageStore.showMessage('Error', 'Failed to reset password. Please try again.', 'error')
   }
-};
+}
 </script>
 <template>
   <div class="reset-password-container">
@@ -34,21 +34,42 @@ const resetPassword = async () => {
 
       <div class="input-group">
         <label class="text-primaryGreen" for="password">New Password</label>
-        <v-text-field class="mt-2" bg-color="primaryBrown" id="password" v-model="password" type="password" placeholder="Enter new password" required />
+        <v-text-field
+          class="mt-2"
+          bg-color="primaryBrown"
+          id="password"
+          v-model="password"
+          type="password"
+          placeholder="Enter new password"
+          required
+        />
       </div>
 
       <div class="input-group">
         <label class="text-primaryGreen" for="confirmPassword">Confirm Password</label>
-        <v-text-field class="mt-2" bg-color="primaryBrown" id="confirmPassword" v-model="confirmPassword" type="password" placeholder="Confirm new password" required />
+        <v-text-field
+          class="mt-2"
+          bg-color="primaryBrown"
+          id="confirmPassword"
+          v-model="confirmPassword"
+          type="password"
+          placeholder="Confirm new password"
+          required
+        />
       </div>
-      
-      <v-btn class="d-flex justify-center mt-8 w-50 mx-auto" color="primaryBlue" height="50px" font-family="Lilita One, cursive" rounded @click="resetPassword">Reset Password</v-btn>
 
+      <v-btn
+        class="d-flex justify-center mt-8 w-50 mx-auto"
+        color="primaryBlue"
+        height="50px"
+        font-family="Lilita One, cursive"
+        rounded
+        @click="resetPassword"
+        >Reset Password</v-btn
+      >
     </div>
   </div>
 </template>
-
-
 
 <style scoped>
 .reset-password-container {
@@ -60,12 +81,12 @@ const resetPassword = async () => {
 }
 
 h2 {
-  font-family: "Lilita One", cursive;
-  font-size: 40px
+  font-family: 'Lilita One', cursive;
+  font-size: 40px;
 }
 
 p {
-  font-family: "Poppins";
+  font-family: 'Poppins';
   font-size: 18px;
   font-weight: bold;
 }
@@ -87,13 +108,13 @@ p {
 
 .input-group {
   text-align: left;
-  font-family: "Poppins";
+  font-family: 'Poppins';
   font-size: 18px;
   font-weight: bold;
 }
 
 .message {
-  font-family: "Poppins";
+  font-family: 'Poppins';
   font-size: 18px;
   font-weight: bold;
   color: red;

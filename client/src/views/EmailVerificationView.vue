@@ -1,35 +1,34 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import axios from 'axios';
-import { useMessageStore } from '@/stores/message';
-import { useRouter } from 'vue-router';
+import { onMounted } from 'vue'
+import axios from 'axios'
+import { useMessageStore } from '@/stores/message'
+import { useRouter } from 'vue-router'
 
 // use defineProps to receive the token from the router
-const props = defineProps<{ token?: string }>();
+const props = defineProps<{ token?: string }>()
 const messageStore = useMessageStore()
-const router = useRouter();
+const router = useRouter()
 
 const goToHomePage = () => {
-  router.push({ path: '/' });
+  router.push({ path: '/' })
 }
 
 onMounted(async () => {
   if (!props.token) {
-    messageStore.showMessage('Error', 'Invalid verification link.', 'error');
-    return;
+    messageStore.showMessage('Error', 'Invalid verification link.', 'error')
+    return
   }
 
   try {
     await axios.post('/api/verify-email', {
       token: props.token,
-    });
-    messageStore.showMessage('Success', 'Email verified successfully', 'success');
+    })
+    messageStore.showMessage('Success', 'Email verified successfully', 'success')
   } catch (error) {
-    console.error('Email verification failed:', error);
-    messageStore.showMessage('Error', 'Invalid verification link.', 'error');
+    console.error('Email verification failed:', error)
+    messageStore.showMessage('Error', 'Invalid verification link.', 'error')
   }
-});
-
+})
 </script>
 
 <template>
@@ -54,5 +53,3 @@ onMounted(async () => {
   color: #0056b3;
 }
 </style>
-
-

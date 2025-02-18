@@ -79,8 +79,8 @@ const router = createRouter({
     {
       path: '/verify-email',
       component: EmailVerificationView,
-      props: route => ({ token: route.query.token })
-    }    
+      props: (route) => ({ token: route.query.token }),
+    },
   ],
 })
 
