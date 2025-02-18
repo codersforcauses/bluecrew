@@ -10,6 +10,8 @@ import FormData from 'form-data'
 
 const { mobile } = useDisplay()
 
+const messageStore = useMessageStore()
+
 // Define interface for task submission
 interface TaskSubmission {
   feedback: string
@@ -91,7 +93,7 @@ const handleImageUpload = (event: Event) => {
 // Handle task finish
 const finish = () => {
   if (!taskSubmission.value.feedback && !taskSubmission.value.image) {
-    alert('Please provide feedback or upload an image')
+    messageStore.showMessage('Warning', 'Please provide feedback or upload an image', 'warning')
     return
   }
   let data = new FormData()
