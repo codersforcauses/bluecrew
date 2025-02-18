@@ -97,6 +97,7 @@ const finish = () => {
   data.append('image', taskSubmission.value.image, taskSubmission.value.image?.name)
   data.append('position', props.position)
   data.append('consent', taskSubmission.value.canShareOnSocialMedia)
+  data.append('description', taskSubmission.value.feedback)
   server
     .patch('/complete-challenge/', data, {
       headers: {
@@ -107,6 +108,9 @@ const finish = () => {
     .then(() => {
       emit('task-completed', taskSubmission.value)
       emit('status-change', 'completed')
+      taskSubmission.value.feedback = ''
+      taskSubmission.value.image = null
+      taskSubmission.value.canShareOnSocialMedia = false
       //   TODO consent field doesn't exist
     })
     .catch(() =>
