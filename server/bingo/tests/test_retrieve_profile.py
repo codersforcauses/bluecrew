@@ -56,8 +56,7 @@ class ProfilePageViewTestCase(TestCase):
             bio='Test bio',
             visibility=visibility,
             total_points=15,
-            avatar=avatar,
-            is_active=True
+            avatar=avatar
         )
 
     def _create_challenges(self, count):
