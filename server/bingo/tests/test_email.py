@@ -43,6 +43,7 @@ class TestEmailVerification(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL)
+        self.assertEqual(mail.outbox[0].recipients()[0], self.user.email)
 
         id_parser = FindHREFByID("verify_link")
         id_parser.feed(mail.outbox[0].body)
@@ -122,6 +123,7 @@ class TestPasswordReset(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].from_email, settings.ACCOUNTS_EMAIL)
+        self.assertEqual(mail.outbox[0].recipients()[0], self.user.email)
 
         id_parser = FindHREFByID("reset_link")
         id_parser.feed(mail.outbox[0].body)

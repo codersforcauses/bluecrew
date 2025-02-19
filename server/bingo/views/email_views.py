@@ -19,7 +19,7 @@ from smtplib import SMTPException, SMTPSenderRefused
 @api_view(['POST'])
 def request_email_verification(request):
     try:
-        email = request.POST['email']
+        email = request.data['email']
         user = User.objects.get(email=email)
     except (ObjectDoesNotExist, KeyError):
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -37,7 +37,7 @@ def request_email_verification(request):
         "Bingo Email Verification",
         content,
         settings.ACCOUNTS_EMAIL,
-        list(email)
+        [email]
     )
     message.content_subtype = "html"
     try:
@@ -55,8 +55,8 @@ def confirm_email(request):
     success_path = settings.FRONTEND_URL
 
     try:
-        uid64 = request.GET["uid64"]
-        token = request.GET["token"]
+        uid64 = request.data["uid64"]
+        token = request.data["token"]
         uid = force_str(urlsafe_base64_decode(uid64))
     except (KeyError, ValueError):
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -74,7 +74,7 @@ def confirm_email(request):
 @api_view(["POST"])
 def request_password_reset(request):
     try:
-        email = request.POST['email']
+        email = request.data['email']
         user = User.objects.get(email=email)
     except (ObjectDoesNotExist, KeyError):
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -82,7 +82,7 @@ def request_password_reset(request):
     token = default_token_generator.make_token(user)
     encoded_user = urlsafe_base64_encode(force_bytes(user.pk))
     # TODO Replace with link to the actual reset form
-    url = request.build_absolute_uri(f"{settings.FRONTEND_URL}/{"reset_path"}/?uid64={encoded_user}&token={token}")
+    url = request.build_absolute_uri(f"{settings.FRONTEND_URL}/forgot-password/?uid64={encoded_user}&token={token}")
     content = render_to_string(
         "password_reset.html",
         context={"url": url}
@@ -91,7 +91,7 @@ def request_password_reset(request):
         "Bingo Password Reset",
         content,
         settings.ACCOUNTS_EMAIL,
-        list(email)
+        [email]
     )
     message.content_subtype = "html"
     try:
@@ -111,13 +111,11 @@ def reset_password(request):
         token = request.data["token"]
         password = request.data["password"]
         uid = force_str(urlsafe_base64_decode(uid64))
+        validate_password(password)
     except (KeyError, ValueError):
         return Response(status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        validate_password(password)
-    except ValidationError:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+    except ValidationError as password_errors:
+        return Response(str(password_errors), status=status.HTTP_400_BAD_REQUEST)
 
     user = get_object_or_404(User, user_id=uid)
     if not default_token_generator.check_token(user, token):
