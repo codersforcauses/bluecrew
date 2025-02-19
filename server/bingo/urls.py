@@ -19,8 +19,8 @@ urlpatterns = [
     path('request-friendship/<int:user_id>/', friends_views.request_friendship, name='request_friendship'),
     path('user-search/', user_views.find_user, name='user_search'),
     path('update-bingo-grid/', bingo_views.update_bingo_grid, name='update-bingo-grid'),
-    path("email-validation", email_views.request_email_verification, name='request_verification'),
-    path("activate", email_views.confirm_email, name="confirm_email"),
-    path("request-reset", email_views.request_password_reset, name="request_password_reset"),
-    path("reset-passoword", email_views.reset_password, name="reset_password"),
+    path("email-validation/", email_views.request_email_verification, name='request_verification'),
+    path("activate/", email_views.confirm_email, name="confirm_email"),
+    path("request-reset/", email_views.request_password_reset, name="request_password_reset"),
+    path("reset-passoword/", email_views.reset_password, name="reset_password"),
 ]
