@@ -10,3 +10,11 @@ export interface ChallengeInfo {
   description: string
   status: ChallengeStatus
 }
+
+export interface ChallengeInfoAPI {
+  name: string
+  points: number
+  challenge_type: ChallengeType
+  description: string
+  status: ChallengeStatus
+}
