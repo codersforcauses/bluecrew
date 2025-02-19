@@ -8,8 +8,13 @@ from django.utils import timezone
 from PIL import Image
 from io import BytesIO
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
+import shutil
+
+TEST_DIR = 'test_data'
 
 
+@override_settings(MEDIA_ROOT=(TEST_DIR + '/media'))
 class ChallengeCompleteTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -128,6 +133,10 @@ class ChallengeCompleteTest(TestCase):
         challenge_points = self.challenges[data["position"]].points
         response = self.client.patch(self.url, data, format="multipart")
 
+        tile = self.tiles[3]
+        tile.refresh_from_db()
+        self.image_path = tile.image.path
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data["challenge_points"], challenge_points)
@@ -153,6 +162,10 @@ class ChallengeCompleteTest(TestCase):
         }
         challenge_points = self.challenges[data["position"]].points
         response = self.client.patch(self.url, data, format="multipart")
+
+        tile = self.tiles[13]
+        tile.refresh_from_db()
+        self.image_path = tile.image.path
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -180,6 +193,10 @@ class ChallengeCompleteTest(TestCase):
         challenge_points = self.challenges[data["position"]].points
         response = self.client.patch(self.url, data, format="multipart")
 
+        tile = self.tiles[12]
+        tile.refresh_from_db()
+        self.image_path = tile.image.path
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data["challenge_points"], challenge_points)
@@ -205,6 +222,10 @@ class ChallengeCompleteTest(TestCase):
         }
         challenge_points = self.challenges[data["position"]].points
         response = self.client.patch(self.url, data, format="multipart")
+
+        tile = self.tiles[15]
+        tile.refresh_from_db()
+        self.image_path = tile.image.path
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -239,6 +260,10 @@ class ChallengeCompleteTest(TestCase):
         }
         challenge_points = self.challenges[data["position"]].points
         response = self.client.patch(self.url, data, format="multipart")
+
+        tile = self.tiles[6]
+        tile.refresh_from_db()
+        self.image_path = tile.image.path
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -279,6 +304,10 @@ class ChallengeCompleteTest(TestCase):
         challenge_points = self.challenges[data["position"]].points
         response = self.client.patch(self.url, data, format="multipart")
 
+        tile = self.tiles[6]
+        tile.refresh_from_db()
+        self.image_path = tile.image.path
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data["challenge_points"], challenge_points)
@@ -297,8 +326,18 @@ class ChallengeCompleteTest(TestCase):
             "consent": True,
             "image": self.image
         }
-
         response = self.client.patch(self.url, data, format="multipart")
+
+        tile = self.tiles[6]
+        tile.refresh_from_db()
+        self.image_path = tile.image.path
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.tiles[6].refresh_from_db()
         self.assertTrue(self.tiles[6].consent)
+
+    def tearDown(self):
+        try:
+            shutil.rmtree(TEST_DIR)
+        except OSError:
+            pass
