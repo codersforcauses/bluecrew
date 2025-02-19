@@ -22,5 +22,5 @@ urlpatterns = [
     path("email-validation/", email_views.request_email_verification, name='request_verification'),
     path("activate/", email_views.confirm_email, name="confirm_email"),
     path("request-reset/", email_views.request_password_reset, name="request_password_reset"),
-    path("reset-passoword/", email_views.reset_password, name="reset_password"),
+    path("reset-password/", email_views.reset_password, name="reset_password"),
 ]

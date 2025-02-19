@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -12,7 +12,6 @@ from django.utils.encoding import force_bytes, force_str
 from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.password_validation import validate_password
-from django.urls import reverse
 from smtplib import SMTPException, SMTPSenderRefused
 
 
@@ -28,7 +27,7 @@ def request_email_verification(request):
         return Response(status=status.HTTP_400_BAD_REQUEST)
     encoded_user = urlsafe_base64_encode(force_bytes(user.pk))
     token = email_verification_token_generator.make_token(user)
-    url = request.build_absolute_uri(f"{reverse("confirm_email")}?uid64={encoded_user}&token={token}")
+    url = f"{settings.FRONTEND_URL}/verify-email?uid64={encoded_user}&token={token}"
     content = render_to_string(
         "verification.html",
         context={"url": url}
@@ -50,10 +49,8 @@ def request_email_verification(request):
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(["GET"])
+@api_view(["POST"])
 def confirm_email(request):
-    success_path = settings.FRONTEND_URL
-
     try:
         uid64 = request.data["uid64"]
         token = request.data["token"]
@@ -63,12 +60,12 @@ def confirm_email(request):
 
     user = get_object_or_404(User, user_id=uid)
     if user.is_active:
-        return redirect(success_path)
+        return Response(status=status.HTTP_200_OK)
     if not email_verification_token_generator.check_token(user, token):
         return Response(status=status.HTTP_404_NOT_FOUND)
     user.is_active = True
     user.save()
-    return redirect(success_path)
+    return Response(status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
@@ -81,8 +78,7 @@ def request_password_reset(request):
 
     token = default_token_generator.make_token(user)
     encoded_user = urlsafe_base64_encode(force_bytes(user.pk))
-    # TODO Replace with link to the actual reset form
-    url = request.build_absolute_uri(f"{settings.FRONTEND_URL}/forgot-password/?uid64={encoded_user}&token={token}")
+    url = f"{settings.FRONTEND_URL}/forgot-password/?uid64={encoded_user}&token={token}"
     content = render_to_string(
         "password_reset.html",
         context={"url": url}

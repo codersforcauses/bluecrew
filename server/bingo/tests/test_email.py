@@ -50,10 +50,12 @@ class TestEmailVerification(TestCase):
         url = id_parser.href
         self.assertNotEqual(url, None, "Link was not found in email content")
 
-        path = url.split("testserver")[1]
+        query = parse_qs(urlparse(url).query)
+        self.assertIn("uid64", query.keys())
+        self.assertIn("token", query.keys())
 
-        response = self.client.get(path)
-        self.assertEqual(response.status_code, 302)
+        response = self.client.post(reverse("confirm_email"), query)
+        self.assertEqual(response.status_code, 200)
         self.user.refresh_from_db()
         self.assertTrue(self.user.is_active)
 
@@ -74,28 +76,29 @@ class TestEmailVerification(TestCase):
         self.client.post(reverse("request_verification"), {"email": self.user.email})
         id_parser = FindHREFByID("verify_link")
         id_parser.feed(mail.outbox[0].body)
-        path = id_parser.href.split("testserver")[1]
-        response = self.client.get(path)
-        self.assertEqual(response.status_code, 302)
-        response = self.client.get(path)
-        self.assertEqual(response.status_code, 302)
+        url = id_parser.href
+        query = parse_qs(urlparse(url).query)
+        response = self.client.post(reverse("confirm_email"), query)
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(reverse("confirm_email"), query)
+        self.assertEqual(response.status_code, 200)
 
     def test_invalid_UID(self):
-        response = self.client.get(
+        response = self.client.post(
             reverse("confirm_email"),
             {"uid64": "0", "token": "4"}
         )
         self.assertEqual(response.status_code, 400)
 
     def test_unused_UID(self):
-        response = self.client.get(
+        response = self.client.post(
             reverse("confirm_email"),
             {"uid64": urlsafe_base64_encode(force_bytes(self.user.pk+1)), "token": "4"}
         )
         self.assertEqual(response.status_code, 404)
 
     def test_invalid_token(self):
-        response = self.client.get(
+        response = self.client.post(
             reverse("confirm_email"),
             {"uid64": urlsafe_base64_encode(force_bytes(self.user.pk)), "token": "42"}
         )
