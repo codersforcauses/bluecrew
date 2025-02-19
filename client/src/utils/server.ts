@@ -28,18 +28,26 @@ server.interceptors.response.use(
   async (error: AxiosError & { config: { token_refreshed?: boolean } }) => {
     const userStore = useUserStore()
     if (error.response?.status === 401 && userStore.refreshToken && !error.config.token_refreshed) {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/token/refresh/`, {
-        refresh: userStore.refreshToken,
-      })
-      // Update access token in store
-      if (response.data.access) {
-        userStore.accessToken = response.data.access
-        // Mark the token as already refreshed
-        // The importance of this is that it avoids an infinite loop of refresh attemps if
-        // the refresh endpoint is broken yet keeps returning a 401 status code
-        error.config.token_refreshed = true
-        return server(error.config)
-      } else {
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}/api/token/refresh/`,
+          {
+            refresh: userStore.refreshToken,
+          },
+        )
+        // Update access token in store
+        if (response.data.access) {
+          userStore.accessToken = response.data.access
+          // Mark the token as already refreshed
+          // The importance of this is that it avoids an infinite loop of refresh attemps if
+          // the refresh endpoint is broken yet keeps returning a 401 status code
+          error.config.token_refreshed = true
+          return server(error.config)
+        }
+        // if the response doesn't contain an access token for some reason, then logout
+        userStore.logout()
+      } catch {
+        // This will run if the call to the token endpoint is unsucessful (meaning the refresh token is invalid, so a login is required)
         userStore.logout()
       }
     }
