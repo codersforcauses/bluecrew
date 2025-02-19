@@ -90,7 +90,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     avatar = models.IntegerField(default=0, choices=map(
         lambda i: (i, f"Avatar {i}"), range(6)))
 
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
 
     objects = UserManager()
 

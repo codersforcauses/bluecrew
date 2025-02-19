@@ -31,7 +31,8 @@ class TestEmailVerification(TestCase):
             first_name="Jane",
             last_name="Doe",
             email="janedoe@example.com",
-            birthdate=date(1, 1, 1)
+            birthdate=date(1, 1, 1),
+            is_active=False
         )
 
     def test_request_verification(self):

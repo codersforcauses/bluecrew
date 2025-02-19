@@ -19,7 +19,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
+        validated_data.pop("is_active", None)
         user = User.objects.create_user(
+            is_active=False,
             **validated_data
         )
         return user
