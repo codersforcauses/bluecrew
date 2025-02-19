@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { useUserStore } from '@/stores/user'
 
 const server = axios.create({
@@ -25,34 +25,21 @@ server.interceptors.response.use(
   (response) => {
     return response
   },
-  async (error) => {
+  async (error: AxiosError & { config: { token_refreshed?: boolean } }) => {
     const userStore = useUserStore()
-
-    // Handle 401 error
-    if (error.response?.status === 401 && userStore.refreshToken) {
-      try {
-        // Store old token
-        const oldAccessToken = userStore.accessToken
-
-        // Try to refresh token using HTTP request
-        const response = await axios.post(
-          `${import.meta.env.VITE_BACKEND_URL}/api/token/refresh/`,
-          {
-            refresh: userStore.refreshToken,
-          },
-        )
-        // Update access token in store
-        if (response.data.access) {
-          userStore.accessToken = response.data.access
-          // If new token obtained, retry original request
-          if (userStore.accessToken !== oldAccessToken) {
-            const config = error.config
-            config.headers.Authorization = `Bearer ${userStore.accessToken}`
-            return server(config)
-          }
-        }
-      } catch {
-        // Refresh token expired, need to login again
+    if (error.response?.status === 401 && userStore.refreshToken && !error.config.token_refreshed) {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/token/refresh/`, {
+        refresh: userStore.refreshToken,
+      })
+      // Update access token in store
+      if (response.data.access) {
+        userStore.accessToken = response.data.access
+        // Mark the token as already refreshed
+        // The importance of this is that it avoids an infinite loop of refresh attemps if
+        // the refresh endpoint is broken yet keeps returning a 401 status code
+        error.config.token_refreshed = true
+        return server(error.config)
+      } else {
         userStore.logout()
       }
     }
