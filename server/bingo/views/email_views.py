@@ -12,7 +12,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.password_validation import validate_password
-from smtplib import SMTPException, SMTPSenderRefused
+from smtplib import SMTPException, SMTPRecipientsRefused
 
 
 @api_view(['POST'])
@@ -20,11 +20,13 @@ def request_email_verification(request):
     try:
         email = request.data['email']
         user = User.objects.get(email=email)
-    except (ObjectDoesNotExist, KeyError):
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+    except ObjectDoesNotExist:
+        return Response("No user with this email.", status=status.HTTP_400_BAD_REQUEST)
+    except KeyError:
+        return Response("No email provided.", status=status.HTTP_400_BAD_REQUEST)
 
     if user.is_active:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response("User already active.", status=status.HTTP_400_BAD_REQUEST)
     encoded_user = urlsafe_base64_encode(force_bytes(user.pk))
     token = email_verification_token_generator.make_token(user)
     url = f"{settings.FRONTEND_URL}/verify-email?uid64={encoded_user}&token={token}"
@@ -41,10 +43,10 @@ def request_email_verification(request):
     message.content_subtype = "html"
     try:
         message.send(fail_silently=False)
-    except SMTPSenderRefused:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+    except SMTPRecipientsRefused:
+        return Response("Provided address refused to accept email.", status=status.HTTP_400_BAD_REQUEST)
     except SMTPException:
-        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response("The email backend failed.", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(status=status.HTTP_200_OK)
 
@@ -56,13 +58,13 @@ def confirm_email(request):
         token = request.data["token"]
         uid = force_str(urlsafe_base64_decode(uid64))
     except (KeyError, ValueError):
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response("User ID or token was missing or invalid", status=status.HTTP_400_BAD_REQUEST)
 
     user = get_object_or_404(User, user_id=uid)
     if user.is_active:
         return Response(status=status.HTTP_200_OK)
     if not email_verification_token_generator.check_token(user, token):
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response("Token invalid", status=status.HTTP_404_NOT_FOUND)
     user.is_active = True
     user.save()
     return Response(status=status.HTTP_200_OK)
@@ -73,8 +75,10 @@ def request_password_reset(request):
     try:
         email = request.data['email']
         user = User.objects.get(email=email)
-    except (ObjectDoesNotExist, KeyError):
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+    except ObjectDoesNotExist:
+        return Response("No user with this email.", status=status.HTTP_400_BAD_REQUEST)
+    except KeyError:
+        return Response("No email provided.", status=status.HTTP_400_BAD_REQUEST)
 
     token = default_token_generator.make_token(user)
     encoded_user = urlsafe_base64_encode(force_bytes(user.pk))
@@ -92,10 +96,10 @@ def request_password_reset(request):
     message.content_subtype = "html"
     try:
         message.send(fail_silently=False)
-    except SMTPSenderRefused:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+    except SMTPRecipientsRefused:
+        return Response("Provided address refused to accept email.", status=status.HTTP_400_BAD_REQUEST)
     except SMTPException:
-        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response("The email backend failed.", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(status=status.HTTP_200_OK)
 
@@ -108,14 +112,16 @@ def reset_password(request):
         password = request.data["password"]
         uid = force_str(urlsafe_base64_decode(uid64))
         validate_password(password)
-    except (KeyError, ValueError):
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+    except KeyError:
+        return Response("User ID, token, or password missing.", status=status.HTTP_400_BAD_REQUEST)
+    except ValueError:
+        return Response("User ID invalid.", status=status.HTTP_400_BAD_REQUEST)
     except ValidationError as password_errors:
         return Response(str(password_errors), status=status.HTTP_400_BAD_REQUEST)
 
     user = get_object_or_404(User, user_id=uid)
     if not default_token_generator.check_token(user, token):
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response("Token invalid", status=status.HTTP_404_NOT_FOUND)
 
     user.set_password(password)
     user.save()
