@@ -96,6 +96,7 @@ jobs:
           POSTGRES_PASSWORD: password
           POSTGRES_PORT: 5432
           EMAIL_PORT: 1025
+          ACCOUNTS_EMAIL: no-reply@test.com
           FRONTEND_URL: http://localhost:3000
           GITHUB_ACTION: true
         run: |
