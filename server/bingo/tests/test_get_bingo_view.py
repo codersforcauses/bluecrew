@@ -59,8 +59,8 @@ class GetBingoGridTest(TestCase):
 
         bingo_grid = self.client.get(reverse('get_bingo_grid'))
         self.assertEqual(
-            bingo_grid.data['challenges'][self.completed_challenge.position]['status'], "Completed")
+            bingo_grid.data['challenges'][self.completed_challenge.position]['status'], "completed")
         self.assertEqual(
-            bingo_grid.data['challenges'][self.started_challenge.position]['status'], "Started")
+            bingo_grid.data['challenges'][self.started_challenge.position]['status'], "started")
         self.assertEqual(
-            bingo_grid.data['challenges'][15]['status'], "Not Started")
+            bingo_grid.data['challenges'][15]['status'], "not started")

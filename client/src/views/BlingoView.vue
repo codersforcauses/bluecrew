@@ -1,133 +1,43 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useDisplay } from 'vuetify'
 import { useUserStore } from '@/stores/user'
-import type { ChallengeInfo } from '@/types/challenge'
+import type { ChallengeInfo, ChallengeInfoAPI } from '@/types/challenge'
 import BingoTile from '@/components/BingoTile.vue'
 import ChallengeCard from '@/components/ChallengeCard.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
+import server from '@/utils/server'
+import { useMessageStore } from '@/stores/message'
 
 const { xs } = useDisplay()
 const userStore = useUserStore()
-
 const containerClass = computed(() => (!xs.value ? 'desktop-container' : 'mobile-container'))
+const isLoading = ref(true)
 
-// Define all challenge info objects
-const challengeInfos = ref<ChallengeInfo[]>([
-  {
-    title: 'Watch an Ocean Documentary',
-    points: 200,
-    type: 'understand',
-    description:
-      'Here are some of our top picks! You can choose one of them or watch one of your own. Tell us what you thought and submit a picture.',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-  {
-    title: 'Ocean Challenge',
-    points: 100,
-    type: 'connect',
-    description: 'placeholder text',
-    status: 'not started',
-  },
-])
+const challengeInfos = ref<ChallengeInfo[]>([])
+const messageStore = useMessageStore()
+
+const fetchBingoGrid = async () => {
+  isLoading.value = true
+  server
+    .get('/bingo-grid/')
+    .then((res) => {
+      challengeInfos.value = res.data.challenges.map((item: ChallengeInfoAPI): ChallengeInfo => {
+        const chal = {
+          title: item.name,
+          points: item.points,
+          type: item.challenge_type,
+          description: item.description,
+          status: userStore.isLoggedIn ? item.status : 'not started',
+        }
+        return chal
+      })
+      isLoading.value = false
+    })
+    .catch(() => {
+      messageStore.showMessage('Error', 'Unexpected occured while fetching challenges.', 'error')
+    })
+}
 
 const selectedTile = ref<number | null>(null)
 const showChallengeCard = ref(false)
@@ -150,12 +60,15 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
     currentChallenge.value.status = newStatus
   }
 }
+
+onMounted(() => {
+  fetchBingoGrid()
+})
 </script>
 
 <template>
   <div class="main-container">
     <WaveBanner imageSrc="/homepage-scaled.jpg" />
-
     <div :class="['content-wrapper', containerClass]">
       <!-- Desktop Version -->
       <template v-if="!xs">
@@ -169,15 +82,18 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
               </div>
 
               <!-- Challenge Card -->
-              <div v-if="showChallengeCard" class="challenge-card-container desktop-challenge-card">
+              <div
+                v-if="showChallengeCard && selectedTile !== null"
+                class="challenge-card-container desktop-challenge-card"
+              >
                 <ChallengeCard
                   v-bind="currentChallenge"
+                  :position="selectedTile"
                   :is-logged-in="userStore.isLoggedIn"
                   @close="handleCloseChallenge"
                   @status-change="handleStatusChange"
                 />
               </div>
-
               <!-- Learn More Section (Only for Desktop) -->
               <div class="learn-more-section text-primaryGreen">
                 <p class="learn-more-title">Want to learn more?</p>
@@ -195,21 +111,29 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
             </div>
 
             <!-- Game Grid -->
-            <div class="game-grid desktop-game-grid">
-              <div class="mobile-grid-container">
-                <div class="grid-content">
-                  <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
-                    <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
-                      <BingoTile
-                        v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
-                        :selected="selectedTile === (row - 1) * 4 + (col - 1)"
-                        @click="handleTileClick((row - 1) * 4 + (col - 1))"
-                      />
+            <v-container>
+              <div v-if="isLoading" class="text-center pa-4">
+                <v-progress-circular indeterminate color="primaryBlue" />
+              </div>
+
+              <template v-else>
+                <div class="game-grid desktop-game-grid">
+                  <div class="mobile-grid-container">
+                    <div class="grid-content">
+                      <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
+                        <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
+                          <BingoTile
+                            v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
+                            :selected="selectedTile === (row - 1) * 4 + (col - 1)"
+                            @click="handleTileClick((row - 1) * 4 + (col - 1))"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </template>
+            </v-container>
           </div>
         </div>
       </template>
@@ -222,29 +146,37 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
             <h1 class="blingo-title text-primaryBlue">Blingo</h1>
             <h2 class="blingo-subtitle text-primaryGreen">Connecting to the ocean</h2>
           </div>
+          <v-container>
+            <div v-if="isLoading" class="text-center pa-4">
+              <v-progress-circular indeterminate color="primaryBlue" />
+            </div>
 
-          <!-- Game Grid -->
-          <div class="mobile-game-container">
-            <div class="mobile-grid-container">
-              <div class="grid-content">
-                <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
-                  <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
-                    <BingoTile
-                      v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
-                      :selected="selectedTile === (row - 1) * 4 + (col - 1)"
-                      @click="handleTileClick((row - 1) * 4 + (col - 1))"
-                    />
+            <template v-else>
+              <!-- Game Grid -->
+              <div class="mobile-game-container">
+                <div class="mobile-grid-container">
+                  <div class="grid-content">
+                    <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
+                      <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
+                        <BingoTile
+                          v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
+                          :selected="selectedTile === (row - 1) * 4 + (col - 1)"
+                          @click="handleTileClick((row - 1) * 4 + (col - 1))"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </template>
+          </v-container>
         </div>
 
         <!-- Challenge Card -->
-        <div v-if="showChallengeCard" class="challenge-card-overlay">
+        <div v-if="showChallengeCard && selectedTile !== null" class="challenge-card-overlay">
           <ChallengeCard
             v-bind="currentChallenge"
+            :position="selectedTile"
             :is-logged-in="userStore.isLoggedIn"
             @close="handleCloseChallenge"
             @status-change="handleStatusChange"
