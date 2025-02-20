@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { defineProps, onMounted } from 'vue'
 import axios from 'axios'
 import { useMessageStore } from '@/stores/message'
 import { useRouter } from 'vue-router'
 
-const props = defineProps<{ token?: string }>()
+const props = defineProps<{ token?: string; uid?: string }>()
 const messageStore = useMessageStore()
 const router = useRouter()
 
@@ -13,7 +13,7 @@ const goToHomePage = () => {
 }
 
 onMounted(async () => {
-  if (!props.token) {
+  if (!props.token || !props.uid) {
     messageStore.showMessage('Error', 'Invalid verification link.', 'error')
     return
   }
@@ -21,6 +21,7 @@ onMounted(async () => {
   try {
     await axios.post('/api/verify-email/', {
       token: props.token,
+      uid64: props.uid,
     })
     messageStore.showMessage('Success', 'Email verified successfully', 'success')
   } catch {

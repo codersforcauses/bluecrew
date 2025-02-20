@@ -3,7 +3,7 @@ import { defineProps, ref } from 'vue'
 import { useMessageStore } from '@/stores/message'
 import axios from 'axios'
 
-const props = defineProps<{ token?: string }>()
+const props = defineProps<{ token?: string; uid?: string }>()
 const messageStore = useMessageStore()
 const password = ref('')
 const confirmPassword = ref('')
@@ -17,6 +17,7 @@ const resetPassword = async () => {
   try {
     await axios.post('/api/reset-password/', {
       token: props.token,
+      uid64: props.uid,
       password: password.value,
     })
     messageStore.showMessage('Success', 'Password has been reset', 'success')
