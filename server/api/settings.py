@@ -100,7 +100,7 @@ ROOT_URLCONF = "api.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": ["bingo/templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -149,6 +149,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Email address to send account management emails
+ACCOUNTS_EMAIL = os.environ.get("ACCOUNTS_EMAIL")
+
+# TODO: Replace with actual backend
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/

@@ -112,13 +112,13 @@ def complete_challenge(request):
     challenge.total_completions += 1
     challenge.save()
 
-    user = request.user
-    user.total_points += challenge.points
-    user.save()
-
     bingos = check_bingo(tile)
     response = {'challenge_points': challenge.points}
     response.update(bingos)
+
+    user = request.user
+    user.total_points += challenge.points + bingos['bingo_points']
+    user.save()
 
     return Response(response, status.HTTP_200_OK)
 

@@ -9,15 +9,13 @@ defineProps<Challenge>()
 </script>
 <template>
   <v-card class="pa-4 mb-2 bg-primaryBrown challenge-row" outlined>
-    <v-card-title class="d-flex justify-space-between align-center">
-      <div>
-        <span class="font-weight-bold text-h6">{{ title }}</span>
-        <span class="subtitle ml-2 text-subtitle-2">{{ type }}</span>
+    <div class="d-flex flex-wrap justify-left align-center">
+      <p class="ml-4 font-weight-bold text-h6">{{ title }}</p>
+      <div class="d-flex flex-grow-1 justify-space-between mr-5 ml-2">
+        <p class="subtitle ml-2 text-subtitle-2">{{ type }}</p>
+        <p class="text-body-1 font-weight-bold">{{ points }}pts</p>
       </div>
-      <div class="d-flex flex-column">
-        <span class="ml-auto pr-5 text-body-1 font-weight-bold">{{ points }}pts</span>
-      </div>
-    </v-card-title>
+    </div>
 
     <div class="d-flex flex-column">
       <v-card-text class="d-flex justify-space-between align-center">
