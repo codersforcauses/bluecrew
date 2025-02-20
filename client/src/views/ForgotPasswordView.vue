@@ -20,8 +20,7 @@ const resetPassword = async () => {
       password: password.value,
     })
     messageStore.showMessage('Success', 'Password has been reset', 'success')
-  } catch (error) {
-    console.error('Password reset failed:', error)
+  } catch { 
     messageStore.showMessage('Error', 'Failed to reset password. Please try again.', 'error')
   }
 }

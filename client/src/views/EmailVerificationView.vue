@@ -23,8 +23,7 @@ onMounted(async () => {
       token: props.token,
     })
     messageStore.showMessage('Success', 'Email verified successfully', 'success')
-  } catch (error) {
-    console.error('Email verification failed:', error)
+  } catch {
     messageStore.showMessage('Error', 'Invalid verification link.', 'error')
   }
 })
