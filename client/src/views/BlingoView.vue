@@ -12,24 +12,27 @@ import { useMessageStore } from '@/stores/message'
 const { xs } = useDisplay()
 const userStore = useUserStore()
 const containerClass = computed(() => (!xs.value ? 'desktop-container' : 'mobile-container'))
+const isLoading = ref(true)
 
 const challengeInfos = ref<ChallengeInfo[]>([])
 const messageStore = useMessageStore()
 
-const fetchBingoGrid = () => {
+const fetchBingoGrid = async () => {
+  isLoading.value = true
   server
     .get('/bingo-grid/')
     .then((res) => {
-      res.data.challenges.forEach((challenge: ChallengeInfoAPI) => {
-        const chal: ChallengeInfo = {
-          title: challenge.name,
-          points: challenge.points,
-          type: challenge.challenge_type,
-          description: challenge.description,
-          status: userStore.isLoggedIn ? challenge.status : 'not started',
+      challengeInfos.value = res.data.challenges.map((item: ChallengeInfoAPI): ChallengeInfo => {
+        const chal = {
+          title: item.name,
+          points: item.points,
+          type: item.challenge_type,
+          description: item.description,
+          status: userStore.isLoggedIn ? item.status : 'not started',
         }
-        challengeInfos.value.push(chal)
+        return chal
       })
+      isLoading.value = false
     })
     .catch(() => {
       messageStore.showMessage('Error', 'Unexpected occured while fetching challenges.', 'error')
@@ -66,7 +69,6 @@ onMounted(() => {
 <template>
   <div class="main-container">
     <WaveBanner imageSrc="/homepage-scaled.jpg" />
-
     <div :class="['content-wrapper', containerClass]">
       <!-- Desktop Version -->
       <template v-if="!xs">
@@ -76,20 +78,22 @@ onMounted(() => {
               <!-- Header Section -->
               <div class="header-section desktop-header">
                 <h1 class="blingo-title text-primaryBlue">Blingo</h1>
-                <h2 class="blingo-subtitle text-primaryGreen" h>Connecting to the ocean</h2>
+                <h2 class="blingo-subtitle text-primaryGreen">Connecting to the ocean</h2>
               </div>
 
               <!-- Challenge Card -->
-              <div v-if="showChallengeCard" class="challenge-card-container desktop-challenge-card">
+              <div
+                v-if="showChallengeCard && selectedTile !== null"
+                class="challenge-card-container desktop-challenge-card"
+              >
                 <ChallengeCard
                   v-bind="currentChallenge"
-                  v-bind:position="selectedTile"
+                  :position="selectedTile"
                   :is-logged-in="userStore.isLoggedIn"
                   @close="handleCloseChallenge"
                   @status-change="handleStatusChange"
                 />
               </div>
-
               <!-- Learn More Section (Only for Desktop) -->
               <div class="learn-more-section text-primaryGreen">
                 <p class="learn-more-title">Want to learn more?</p>
@@ -107,21 +111,29 @@ onMounted(() => {
             </div>
 
             <!-- Game Grid -->
-            <div class="game-grid desktop-game-grid">
-              <div class="mobile-grid-container">
-                <div class="grid-content">
-                  <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
-                    <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
-                      <BingoTile
-                        v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
-                        :selected="selectedTile === (row - 1) * 4 + (col - 1)"
-                        @click="handleTileClick((row - 1) * 4 + (col - 1))"
-                      />
+            <v-container>
+              <div v-if="isLoading" class="text-center pa-4">
+                <v-progress-circular indeterminate color="primaryBlue" />
+              </div>
+
+              <template v-else>
+                <div class="game-grid desktop-game-grid">
+                  <div class="mobile-grid-container">
+                    <div class="grid-content">
+                      <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
+                        <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
+                          <BingoTile
+                            v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
+                            :selected="selectedTile === (row - 1) * 4 + (col - 1)"
+                            @click="handleTileClick((row - 1) * 4 + (col - 1))"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </template>
+            </v-container>
           </div>
         </div>
       </template>
@@ -134,30 +146,37 @@ onMounted(() => {
             <h1 class="blingo-title text-primaryBlue">Blingo</h1>
             <h2 class="blingo-subtitle text-primaryGreen">Connecting to the ocean</h2>
           </div>
+          <v-container>
+            <div v-if="isLoading" class="text-center pa-4">
+              <v-progress-circular indeterminate color="primaryBlue" />
+            </div>
 
-          <!-- Game Grid -->
-          <div class="mobile-game-container">
-            <div class="mobile-grid-container">
-              <div class="grid-content">
-                <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
-                  <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
-                    <BingoTile
-                      v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
-                      :selected="selectedTile === (row - 1) * 4 + (col - 1)"
-                      @click="handleTileClick((row - 1) * 4 + (col - 1))"
-                    />
+            <template v-else>
+              <!-- Game Grid -->
+              <div class="mobile-game-container">
+                <div class="mobile-grid-container">
+                  <div class="grid-content">
+                    <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
+                      <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
+                        <BingoTile
+                          v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
+                          :selected="selectedTile === (row - 1) * 4 + (col - 1)"
+                          @click="handleTileClick((row - 1) * 4 + (col - 1))"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </template>
+          </v-container>
         </div>
 
         <!-- Challenge Card -->
-        <div v-if="showChallengeCard" class="challenge-card-overlay">
+        <div v-if="showChallengeCard && selectedTile !== null" class="challenge-card-overlay">
           <ChallengeCard
             v-bind="currentChallenge"
-            v-bind:position="selectedTile"
+            :position="selectedTile"
             :is-logged-in="userStore.isLoggedIn"
             @close="handleCloseChallenge"
             @status-change="handleStatusChange"

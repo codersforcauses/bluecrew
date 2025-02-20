@@ -48,7 +48,7 @@ const props = defineProps<{
   description: string
   status: ChallengeStatus
   isLoggedIn: boolean
-  position: number | null
+  position: number
 }>()
 
 // Handle opening login modal
