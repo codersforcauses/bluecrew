@@ -73,7 +73,6 @@ class ImageExifRemovalTest(TestCase):
 
         self.tile.refresh_from_db()
         img_data = self.tile.image.read()
-        self.image_path = self.tile.image.path
 
         img = Image.open(BytesIO(img_data))
         exif_after = img._getexif()

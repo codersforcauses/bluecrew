@@ -97,10 +97,6 @@ class ChallengeCompleteTest(TestCase):
         }
         response = self.client.patch(self.url, data, format="multipart")
 
-        tile = self.tiles[3]
-        tile.refresh_from_db()
-        self.image_path = tile.image.path
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data["challenge_points"], self.challenges[data["position"]].points)
@@ -123,10 +119,6 @@ class ChallengeCompleteTest(TestCase):
             "image": self.image
         }
         response = self.client.patch(self.url, data, format="multipart")
-
-        tile = self.tiles[13]
-        tile.refresh_from_db()
-        self.image_path = tile.image.path
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -151,10 +143,6 @@ class ChallengeCompleteTest(TestCase):
         }
         response = self.client.patch(self.url, data, format="multipart")
 
-        tile = self.tiles[12]
-        tile.refresh_from_db()
-        self.image_path = tile.image.path
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data["challenge_points"], self.challenges[data["position"]].points)
@@ -177,10 +165,6 @@ class ChallengeCompleteTest(TestCase):
             "image": self.image
         }
         response = self.client.patch(self.url, data, format="multipart")
-
-        tile = self.tiles[15]
-        tile.refresh_from_db()
-        self.image_path = tile.image.path
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -212,10 +196,6 @@ class ChallengeCompleteTest(TestCase):
             "image": self.image
         }
         response = self.client.patch(self.url, data, format="multipart")
-
-        tile = self.tiles[6]
-        tile.refresh_from_db()
-        self.image_path = tile.image.path
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -253,10 +233,6 @@ class ChallengeCompleteTest(TestCase):
         }
         response = self.client.patch(self.url, data, format="multipart")
 
-        tile = self.tiles[6]
-        tile.refresh_from_db()
-        self.image_path = tile.image.path
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data["challenge_points"], self.challenges[data["position"]].points)
@@ -274,10 +250,6 @@ class ChallengeCompleteTest(TestCase):
             "image": self.image
         }
         response = self.client.patch(self.url, data, format="multipart")
-
-        tile = self.tiles[6]
-        tile.refresh_from_db()
-        self.image_path = tile.image.path
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.tiles[6].refresh_from_db()
