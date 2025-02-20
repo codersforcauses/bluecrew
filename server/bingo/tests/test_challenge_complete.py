@@ -8,8 +8,13 @@ from django.utils import timezone
 from PIL import Image
 from io import BytesIO
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
+import shutil
+
+TEST_DIR = 'test_data'
 
 
+@override_settings(MEDIA_ROOT=(TEST_DIR + '/media'))
 class ChallengeCompleteTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -297,8 +302,14 @@ class ChallengeCompleteTest(TestCase):
             "consent": True,
             "image": self.image
         }
-
         response = self.client.patch(self.url, data, format="multipart")
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.tiles[6].refresh_from_db()
         self.assertTrue(self.tiles[6].consent)
+
+    def tearDown(self):
+        try:
+            shutil.rmtree(TEST_DIR)
+        except OSError:
+            pass

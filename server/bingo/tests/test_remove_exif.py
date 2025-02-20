@@ -7,8 +7,13 @@ from io import BytesIO
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
+from django.test import override_settings
+import shutil
+
+TEST_DIR = 'test_data'
 
 
+@override_settings(MEDIA_ROOT=(TEST_DIR + '/media'))
 class ImageExifRemovalTest(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="testuser")
@@ -73,3 +78,9 @@ class ImageExifRemovalTest(TestCase):
         exif_after = img._getexif()
 
         self.assertIsNone(exif_after)
+
+    def tearDown(self):
+        try:
+            shutil.rmtree(TEST_DIR)
+        except OSError:
+            pass
