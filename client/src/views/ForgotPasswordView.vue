@@ -1,74 +1,99 @@
 <script setup lang="ts">
-import { defineProps, ref } from 'vue'
+import { defineProps, onMounted, ref } from 'vue'
 import { useMessageStore } from '@/stores/message'
-import axios from 'axios'
+import { useUserStore } from '@/stores/user'
 
 const props = defineProps<{ token?: string; uid?: string }>()
 const messageStore = useMessageStore()
+const userStore = useUserStore()
+const isValid = ref(false)
 const password = ref('')
 const confirmPassword = ref('')
+const loading = ref(false)
+const passwordErrors = ref('')
+const required = (value: string) => !!value || 'Required.'
+const passwordsMatch = (value: string) => value === password.value || 'Passwords do not match.'
+const paramsInvalid = ref(false)
 
 const resetPassword = async () => {
-  if (password.value !== confirmPassword.value) {
-    messageStore.showMessage('Error', 'Passwords do not match.', 'error')
-    return
-  }
-
-  try {
-    await axios.post('/api/reset-password/', {
-      token: props.token,
-      uid64: props.uid,
-      password: password.value,
-    })
-    messageStore.showMessage('Success', 'Password has been reset', 'success')
-  } catch {
-    messageStore.showMessage('Error', 'Failed to reset password. Please try again.', 'error')
+  if (props.token && props.uid) {
+    loading.value = true
+    const resetResult = await userStore.resetPassword(password.value, props.uid, props.token)
+    if (resetResult === true) {
+      messageStore.showMessage('Success', 'Password has been reset', 'success')
+    } else if (resetResult === false) {
+      messageStore.showMessage(
+        'Error',
+        'An unexpected error occurred while trying to reset your password.',
+        'error',
+      )
+    } else if (resetResult === 'invalid link') {
+      paramsInvalid.value = true
+      messageStore.showMessage('Error', 'Invalid password reset link', 'error')
+    } else {
+      passwordErrors.value = resetResult[0]
+    }
+    loading.value = false
   }
 }
+
+onMounted(() => {
+  if (!props.token || !props.uid) {
+    paramsInvalid.value = true
+    messageStore.showMessage('Error', 'Invalid password reset link', 'error')
+  }
+})
 </script>
 <template>
   <div class="reset-password-container">
     <div class="reset-password">
       <h2 class="text-primaryGreen">Reset Password</h2>
       <p class="text-primaryGreen">Enter your new password below.</p>
+      <v-form v-model="isValid" @submit.prevent="resetPassword" validate-on="blur">
+        <div class="input-group">
+          <label class="text-primaryGreen" for="password">New Password</label>
+          <v-text-field
+            class="mt-2"
+            bg-color="primaryBrown"
+            id="password"
+            v-model="password"
+            type="password"
+            placeholder="Enter new password"
+            variant="outlined"
+            :rules="[required]"
+            :error-messages="passwordErrors"
+            @focus="passwordErrors = ''"
+            clearable
+          />
+        </div>
 
-      <div class="input-group">
-        <label class="text-primaryGreen" for="password">New Password</label>
-        <v-text-field
-          class="mt-2"
-          bg-color="primaryBrown"
-          id="password"
-          v-model="password"
-          type="password"
-          placeholder="Enter new password"
-          required
-          variant="outlined"
-        />
-      </div>
+        <div class="input-group">
+          <label class="text-primaryGreen" for="confirmPassword">Confirm Password</label>
+          <v-text-field
+            class="mt-2"
+            bg-color="primaryBrown"
+            id="confirmPassword"
+            v-model="confirmPassword"
+            type="password"
+            placeholder="Confirm new password"
+            :rules="[required, passwordsMatch]"
+            variant="outlined"
+            clearable
+          />
+        </div>
 
-      <div class="input-group">
-        <label class="text-primaryGreen" for="confirmPassword">Confirm Password</label>
-        <v-text-field
-          class="mt-2"
-          bg-color="primaryBrown"
-          id="confirmPassword"
-          v-model="confirmPassword"
-          type="password"
-          placeholder="Confirm new password"
-          required
-          variant="outlined"
-        />
-      </div>
-
-      <v-btn
-        class="d-flex justify-center mt-8 w-50 mx-auto"
-        color="primaryBlue"
-        height="50px"
-        font-family="Lilita One, cursive"
-        rounded
-        @click="resetPassword"
-        >Reset Password</v-btn
-      >
+        <v-btn
+          class="d-flex justify-center mt-8 w-50 mx-auto"
+          color="primaryBlue"
+          height="50px"
+          font-family="Lilita One, cursive"
+          rounded
+          type="submit"
+          :disabled="!isValid || paramsInvalid"
+          :loading="loading"
+          >Reset Password</v-btn
+        >
+      </v-form>
     </div>
   </div>
 </template>
@@ -78,7 +103,7 @@ const resetPassword = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 70vh;
+  height: 100%;
   overflow: hidden;
 }
 
@@ -105,7 +130,8 @@ p {
 .reset-password .input-group,
 .reset-password .v-btn,
 .reset-password .message {
-  margin-bottom: 20px; /* Adjust the spacing as needed */
+  margin-bottom: 20px;
+  /* Adjust the spacing as needed */
 }
 
 .input-group {

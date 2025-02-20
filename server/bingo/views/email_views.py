@@ -13,6 +13,7 @@ from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.password_validation import validate_password
 from smtplib import SMTPException, SMTPRecipientsRefused
+from django.utils.safestring import mark_safe
 
 
 @api_view(['POST'])
@@ -26,10 +27,11 @@ def request_email_verification(request):
         return Response("No email provided.", status=status.HTTP_400_BAD_REQUEST)
 
     if user.is_active:
-        return Response("User already active.", status=status.HTTP_400_BAD_REQUEST)
+        return Response("User already has verified email.", status=status.HTTP_400_BAD_REQUEST)
     encoded_user = urlsafe_base64_encode(force_bytes(user.pk))
     token = email_verification_token_generator.make_token(user)
-    url = f"{settings.FRONTEND_URL}/verify-email?uid64={encoded_user}&token={token}"
+    url = mark_safe(
+        f"{settings.FRONTEND_URL}/verify-email?uid64={encoded_user}&token={token}")
     content = render_to_string(
         "verification.html",
         context={"url": url}
@@ -62,7 +64,7 @@ def confirm_email(request):
 
     user = get_object_or_404(User, user_id=uid)
     if user.is_active:
-        return Response(status=status.HTTP_200_OK)
+        return Response("User already has verified email.", status=status.HTTP_200_OK)
     if not email_verification_token_generator.check_token(user, token):
         return Response("Token invalid", status=status.HTTP_404_NOT_FOUND)
     user.is_active = True
@@ -82,7 +84,8 @@ def request_password_reset(request):
 
     token = default_token_generator.make_token(user)
     encoded_user = urlsafe_base64_encode(force_bytes(user.pk))
-    url = f"{settings.FRONTEND_URL}/forgot-password/?uid64={encoded_user}&token={token}"
+    url = mark_safe(
+        f"{settings.FRONTEND_URL}/forgot-password/?uid64={encoded_user}&token={token}")
     content = render_to_string(
         "password_reset.html",
         context={"url": url}
@@ -107,7 +110,7 @@ def request_password_reset(request):
 @api_view(["POST"])
 def reset_password(request):
     try:
-        uid64 = request.data["uid"]
+        uid64 = request.data["uid64"]
         token = request.data["token"]
         password = request.data["password"]
         uid = force_str(urlsafe_base64_decode(uid64))
@@ -117,7 +120,7 @@ def reset_password(request):
     except ValueError:
         return Response("User ID invalid.", status=status.HTTP_400_BAD_REQUEST)
     except ValidationError as password_errors:
-        return Response(str(password_errors), status=status.HTTP_400_BAD_REQUEST)
+        return Response(password_errors, status=status.HTTP_400_BAD_REQUEST)
 
     user = get_object_or_404(User, user_id=uid)
     if not default_token_generator.check_token(user, token):

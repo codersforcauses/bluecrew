@@ -13,6 +13,7 @@ const messageStore = useMessageStore()
 const username = ref('')
 const password = ref('')
 const email = ref('')
+const emailError = ref('')
 const valid = ref(false)
 const loading = ref(false)
 
@@ -57,6 +58,18 @@ const submitForm = async () => {
     errorMessage.value = 'No user with the given username and password was found.'
   }
   loading.value = false
+}
+
+const requestPasswordReset = async () => {
+  const resetResult = await userStore.requestPasswordReset(email.value)
+  if (resetResult === true) {
+    messageStore.showMessage('Success', 'Reset link sent', 'success')
+    closeDialog()
+  } else if (resetResult === false) {
+    messageStore.showMessage('Error', 'An unexpected error occured.', 'error')
+  } else {
+    emailError.value = resetResult
+  }
 }
 </script>
 
@@ -174,9 +187,11 @@ const submitForm = async () => {
             hide-details="auto"
             required
             outlined
-            class="bg-primaryBrown"
+            bg-color="primaryBrown"
             variant="outlined"
-          ></v-text-field>
+            :error-messages="emailError"
+            @focus="emailError = ''"
+          />
 
           <v-btn
             class="d-flex justify-center mt-8 w-50 mx-auto"
@@ -184,6 +199,7 @@ const submitForm = async () => {
             :style="{ height: '50px' }"
             rounded
             elevation="12"
+            @click="requestPasswordReset"
           >
             Send Email
           </v-btn>
