@@ -31,11 +31,9 @@ onMounted(async () => {
 </script>
 
 <template>
-   <div class="d-flex justify-center align-center full-screen flex-column">
+  <div class="d-flex justify-center align-center full-screen flex-column">
     <h2>Verifying your email.</h2>
-    <v-btn class="mt-3" color="primaryBlue" @click="goToHomePage">
-      Go to Homepage
-    </v-btn>
+    <v-btn class="mt-3" color="primaryBlue" @click="goToHomePage"> Go to Homepage </v-btn>
   </div>
 </template>
 
