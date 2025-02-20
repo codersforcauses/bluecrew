@@ -3,7 +3,7 @@ import { defineProps, ref } from 'vue'
 import { useMessageStore } from '@/stores/message'
 import axios from 'axios'
 
-const props = defineProps<{ token?: string }>() // receive token as a prop
+const props = defineProps<{ token?: string }>()
 const messageStore = useMessageStore()
 const password = ref('')
 const confirmPassword = ref('')
@@ -15,8 +15,8 @@ const resetPassword = async () => {
   }
 
   try {
-    await axios.post('/api/reset-password', {
-      token: props.token, // using the prop instead of useRoute
+    await axios.post('/api/reset-password/', {
+      token: props.token,
       password: password.value,
     })
     messageStore.showMessage('Success', 'Password has been reset', 'success')
@@ -42,6 +42,7 @@ const resetPassword = async () => {
           type="password"
           placeholder="Enter new password"
           required
+          variant="outlined"
         />
       </div>
 
@@ -55,6 +56,7 @@ const resetPassword = async () => {
           type="password"
           placeholder="Confirm new password"
           required
+          variant="outlined"
         />
       </div>
 

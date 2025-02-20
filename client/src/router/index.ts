@@ -75,11 +75,13 @@ const router = createRouter({
       path: '/forgot-password',
       name: 'forgotPassword',
       component: ForgotPasswordView,
+      props: (route) => ({ token: route.query.token, uid: route.query.uid64 }),
     },
     {
       path: '/verify-email',
+      name: 'verifyEmail',
       component: EmailVerificationView,
-      props: (route) => ({ token: route.query.token }),
+      props: (route) => ({ token: route.query.token, uid: route.query.uid64 }),
     },
   ],
 })
