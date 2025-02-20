@@ -92,11 +92,11 @@ const submitForm = async () => {
       <template v-if="currentPage === 'login'">
         <v-card-subtitle class="text-center subtitle mt-2 text-primaryGreen">
           <strong>
-            <h3><b>Welcome Back</b></h3>
+            <h3 style="font-family: 'Lilita One', cursive"><b>Welcome Back</b></h3>
           </strong>
         </v-card-subtitle>
         <v-card-text>
-          <p class="text-center subtitle mb-4 text-primaryGreen">
+          <p class="text-center mb-4 text-primaryGreen" style="font-family: 'Lilita One', cursive">
             <b>Login to your existing account</b>
           </p>
           <v-form v-model="valid" validate-on="blur" @submit.prevent="submitForm">
@@ -267,6 +267,7 @@ footer {
 .subtitle {
   font-weight: bold;
   opacity: 1;
+  font-size: 16px;
 }
 
 a {
