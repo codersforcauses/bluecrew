@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { defineProps, onMounted } from 'vue'
-import axios from 'axios'
+import { defineProps, onMounted, ref } from 'vue'
 import { useMessageStore } from '@/stores/message'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
 
 const props = defineProps<{ token?: string; uid?: string }>()
 const messageStore = useMessageStore()
+const userStore = useUserStore()
 const router = useRouter()
+const text = ref('Verifying your email...')
 
 const goToHomePage = () => {
   router.push({ path: '/' })
@@ -18,21 +20,20 @@ onMounted(async () => {
     return
   }
 
-  try {
-    await axios.post('/api/verify-email/', {
-      token: props.token,
-      uid64: props.uid,
-    })
+  const verificationResult = await userStore.verifyEmail(props.uid, props.token)
+  if (verificationResult) {
+    text.value = 'Email Verified!'
     messageStore.showMessage('Success', 'Email verified successfully', 'success')
-  } catch {
+  } else {
+    text.value = 'Invalid verification link.'
     messageStore.showMessage('Error', 'Invalid verification link.', 'error')
   }
 })
 </script>
 
 <template>
-  <div class="d-flex justify-center align-center full-screen flex-column">
-    <h2>Verifying your email.</h2>
+  <div class="d-flex justify-center align-center h-100 flex-column">
+    <h2>{{ text }}</h2>
     <v-btn class="mt-3" color="primaryBlue" @click="goToHomePage"> Go to Homepage </v-btn>
   </div>
 </template>
