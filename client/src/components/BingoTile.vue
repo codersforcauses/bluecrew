@@ -156,6 +156,13 @@ const iconBackground = computed(() => {
   margin-bottom: 0.5rem;
 }
 
+.icon.light {
+  filter: invert();
+}
+.icon.dark {
+  filter: contrast(100%) brightness(0%);
+}
+
 @media (max-width: 600px) {
   .outer-tile {
     width: 120px;
