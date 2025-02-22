@@ -158,12 +158,12 @@ onMounted(() => {
                             v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
                             :selected="selectedTile === (row - 1) * 4 + (col - 1)"
                             :isBingo="
-                          bingoRows[row - 1] ||
-                          bingoCols[col - 1] ||
-                          (row === col && bingoDiagonal[0]) ||
-                          (row + col === 5 && bingoDiagonal[1])
-                        "
-                        @click="handleTileClick((row - 1) * 4 + (col - 1))"
+                              bingoRows[row - 1] ||
+                              bingoCols[col - 1] ||
+                              (row === col && bingoDiagonal[0]) ||
+                              (row + col === 5 && bingoDiagonal[1])
+                            "
+                            @click="handleTileClick((row - 1) * 4 + (col - 1))"
                           />
                         </div>
                       </div>
@@ -200,12 +200,12 @@ onMounted(() => {
                           v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
                           :selected="selectedTile === (row - 1) * 4 + (col - 1)"
                           :isBingo="
-                        bingoRows[row - 1] ||
-                        bingoCols[col - 1] ||
-                        (row === col && bingoDiagonal[0]) ||
-                        (row + col === 5 && bingoDiagonal[1])
-                      "
-                      @click="handleTileClick((row - 1) * 4 + (col - 1))"
+                            bingoRows[row - 1] ||
+                            bingoCols[col - 1] ||
+                            (row === col && bingoDiagonal[0]) ||
+                            (row + col === 5 && bingoDiagonal[1])
+                          "
+                          @click="handleTileClick((row - 1) * 4 + (col - 1))"
                         />
                       </div>
                     </div>

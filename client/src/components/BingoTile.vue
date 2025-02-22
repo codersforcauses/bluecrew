@@ -104,7 +104,6 @@ watch(
   }
 }
 
-/* Bingo Hightlight Section */
 .bingo-highlight {
   box-shadow: 0 0 15px 6px rgba(0, 255, 255, 0.6);
   border: 2px solid rgba(0, 255, 255, 0.8);
