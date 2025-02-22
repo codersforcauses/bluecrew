@@ -7,18 +7,22 @@ const props = defineProps<{
   title: string
   status: ChallengeStatus
   selected: boolean
+  isBingo: boolean
 }>()
 
 const isExploding = ref(false)
 
-watch(() => props.status, (newStatus) => {
-  if (newStatus === 'completed') {
-    isExploding.value = true
-    setTimeout(() => {
-      isExploding.value = false
-    }, 500) 
-  }
-})
+watch(
+  () => props.status,
+  (newStatus) => {
+    if (newStatus === 'completed') {
+      isExploding.value = true
+      setTimeout(() => {
+        isExploding.value = false
+      }, 500)
+    }
+  },
+)
 
 // Compute icon based on challenge type
 const icon = computed(() => {
@@ -32,11 +36,8 @@ const icon = computed(() => {
   }
 })
 
-// Compute background color based on status
 const backgroundColour = computed(() => {
   switch (props.status) {
-    case 'bingo':
-      return 'bg-gold'
     case 'started':
       return 'bg-primaryGreen'
     case 'completed':
@@ -56,26 +57,28 @@ const textColour = computed(() => {
   }
 })
 
-// Compute icon background based on background color
-const iconBackground = computed(() => {
-  switch (backgroundColour.value) {
-    case 'bg-creamWhite':
-      return 'dark'
-    default:
-      return 'light'
-  }
-})
+watch(
+  () => props.isBingo,
+  (newVal) => {
+    console.log('Bingo status updated:', newVal)
+  },
+)
 </script>
 
 <template>
   <transition name="explode">
     <div
       v-if="!isExploding"
-      :class="[backgroundColour, textColour, selected ? 'border-selected' : 'border-subtle']"
+      :class="[
+        backgroundColour,
+        textColour,
+        selected ? 'border-selected' : 'border-subtle',
+        isBingo ? 'bingo-highlight' : '',
+      ]"
       class="outer-tile rounded-lg d-flex flex-column align-center cursor-pointer"
       :title="title"
     >
-      <v-img class="icon" :class="iconBackground" :src="icon" />
+      <v-img class="icon" :src="icon" />
       <p class="tile-text text-center font-weight-bold">{{ title }}</p>
     </div>
   </transition>
@@ -101,7 +104,12 @@ const iconBackground = computed(() => {
   }
 }
 
-/* Main tile container with fixed dimensions */
+/* Bingo Hightlight Section */
+.bingo-highlight {
+  box-shadow: 0 0 15px 6px rgba(0, 255, 255, 0.6);
+  border: 2px solid rgba(0, 255, 255, 0.8);
+}
+
 .outer-tile {
   padding: 0.5rem;
   width: 150px;
@@ -116,7 +124,6 @@ const iconBackground = computed(() => {
   position: relative;
 }
 
-/* Border styles for tile states */
 .border-subtle {
   border: #4f4f4f 0.05rem solid;
 }
@@ -126,10 +133,8 @@ const iconBackground = computed(() => {
   box-shadow: 0.1rem 0.1rem 0.2rem 0.1rem #4f4f4f;
 }
 
-/* Text styling with overflow handling and hover effect */
 .tile-text {
   font-size: 0.9rem;
-  /* Increased from 0.6rem */
   line-height: 1.3;
   white-space: nowrap;
   overflow: hidden;
@@ -143,7 +148,6 @@ const iconBackground = computed(() => {
   z-index: 1;
 }
 
-/* Icon styling */
 .icon {
   width: 40%;
   height: 40%;
@@ -151,15 +155,6 @@ const iconBackground = computed(() => {
   margin-bottom: 0.5rem;
 }
 
-.icon.light {
-  filter: invert();
-}
-
-.icon.dark {
-  filter: contrast(100%) brightness(0%);
-}
-
-/* Mobile responsive styles */
 @media (max-width: 600px) {
   .outer-tile {
     width: 120px;
@@ -171,7 +166,6 @@ const iconBackground = computed(() => {
 
   .tile-text {
     font-size: 0.75rem;
-    /* Increased from 0.5rem */
     margin-top: 0.4rem;
   }
 

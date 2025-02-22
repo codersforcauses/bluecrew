@@ -11,6 +11,7 @@ const { xs } = useDisplay()
 const userStore = useUserStore()
 
 const containerClass = computed(() => (!xs.value ? 'desktop-container' : 'mobile-container'))
+const gridSize = 4
 
 // Define all challenge info objects
 const challengeInfos = ref<ChallengeInfo[]>([
@@ -129,6 +130,36 @@ const challengeInfos = ref<ChallengeInfo[]>([
   },
 ])
 
+const bingoRows = ref<boolean[]>(Array(gridSize).fill(false))
+const bingoCols = ref<boolean[]>(Array(gridSize).fill(false))
+const bingoDiagonal = ref<boolean[]>([false, false]) // [↘, ↙]
+
+const checkBingo = () => {
+  for (let i = 0; i < gridSize; i++) {
+    if (
+      challengeInfos.value
+        .slice(i * gridSize, (i + 1) * gridSize)
+        .every((tile) => tile.status === 'completed')
+    ) {
+      bingoRows.value[i] = true
+    }
+    if (
+      challengeInfos.value
+        .filter((_, index) => index % gridSize === i)
+        .every((tile) => tile.status === 'completed')
+    ) {
+      bingoCols.value[i] = true
+    }
+  }
+
+  if ([0, 5, 10, 15].every((i) => challengeInfos.value[i].status === 'completed')) {
+    bingoDiagonal.value[0] = true // ↘
+  }
+  if ([3, 6, 9, 12].every((i) => challengeInfos.value[i].status === 'completed')) {
+    bingoDiagonal.value[1] = true // ↙
+  }
+}
+
 const selectedTile = ref<number | null>(null)
 const showChallengeCard = ref(false)
 const currentChallenge = ref<ChallengeInfo>(challengeInfos.value[0])
@@ -148,6 +179,7 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
   if (selectedTile.value !== null) {
     challengeInfos.value[selectedTile.value].status = newStatus
     currentChallenge.value.status = newStatus
+    checkBingo()
   }
 }
 </script>
@@ -203,6 +235,12 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
                       <BingoTile
                         v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
                         :selected="selectedTile === (row - 1) * 4 + (col - 1)"
+                        :isBingo="
+                          bingoRows[row - 1] ||
+                          bingoCols[col - 1] ||
+                          (row === col && bingoDiagonal[0]) ||
+                          (row + col === 5 && bingoDiagonal[1])
+                        "
                         @click="handleTileClick((row - 1) * 4 + (col - 1))"
                       />
                     </div>
@@ -232,6 +270,12 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
                     <BingoTile
                       v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
                       :selected="selectedTile === (row - 1) * 4 + (col - 1)"
+                      :isBingo="
+                        bingoRows[row - 1] ||
+                        bingoCols[col - 1] ||
+                        (row === col && bingoDiagonal[0]) ||
+                        (row + col === 5 && bingoDiagonal[1])
+                      "
                       @click="handleTileClick((row - 1) * 4 + (col - 1))"
                     />
                   </div>
@@ -256,6 +300,20 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
 </template>
 
 <style scoped>
+/* Bingo Glow */
+.bingo-glow {
+  animation: bingo-glow 1s infinite alternate;
+}
+
+@keyframes bingo-glow {
+  0% {
+    box-shadow: 0 0 10px rgba(255, 223, 0, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(255, 223, 0, 1);
+  }
+}
+
 /* Main container */
 .main-container {
   display: flex;
