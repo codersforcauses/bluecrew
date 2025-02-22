@@ -11,7 +11,7 @@ const { mobile } = useDisplay()
 
 // Define interface for task submission
 interface TaskSubmission {
-  feedback: string
+  description: string
   image: File | null
   canShareOnSocialMedia: boolean
 }
@@ -21,7 +21,7 @@ const modalStore = useModalStore()
 const messageStore = useMessageStore()
 // Initialize task submission state
 const taskSubmission = ref<TaskSubmission>({
-  feedback: '',
+  description: '',
   image: null,
   canShareOnSocialMedia: false,
 })
@@ -89,15 +89,15 @@ const handleImageUpload = (event: Event) => {
 
 // Handle task finish
 const finish = () => {
-  if (!taskSubmission.value.feedback && !taskSubmission.value.image) {
-    messageStore.showMessage('Warning', 'Please provide feedback or upload an image', 'warning')
+  if (!taskSubmission.value.description && !taskSubmission.value.image) {
+    messageStore.showMessage('Warning', 'Please provide description or upload an image', 'warning')
     return
   }
   const data = new FormData()
   data.append('image', taskSubmission.value.image, taskSubmission.value.image?.name)
   data.append('position', props.position)
   data.append('consent', taskSubmission.value.canShareOnSocialMedia)
-  data.append('description', taskSubmission.value.feedback)
+  data.append('description', taskSubmission.value.description)
   server
     .patch('/complete-challenge/', data, {
       headers: {
@@ -108,7 +108,7 @@ const finish = () => {
     .then(() => {
       emit('task-completed', taskSubmission.value)
       emit('status-change', 'completed')
-      taskSubmission.value.feedback = ''
+      taskSubmission.value.description = ''
       taskSubmission.value.image = null
       taskSubmission.value.canShareOnSocialMedia = false
       //   TODO consent field doesn't exist
@@ -155,15 +155,15 @@ const finish = () => {
       <template v-else-if="status === 'started'">
         <div class="description">
           <div class="submission-area">
-            <v-textarea v-model="taskSubmission.feedback" placeholder="Feedback" class="custom-textarea" variant="plain"
-              no-resize />
+            <v-textarea v-model="taskSubmission.description" placeholder="Description" class="custom-textarea"
+              variant="plain" no-resize />
             <div class="d-flex">
               <div v-if="taskSubmission.image" class="mb-2 ml-2 file-preview">
                 <img src="/FileIcon.svg" alt="File icon" class="file-icon" />
                 <p class="file-name">{{ taskSubmission.image.name }}</p>
               </div>
               <v-spacer />
-              <div class="mx-2 mt-8">
+              <div class="mx-2 mt-6">
                 <input type="file" id="file" @change="handleImageUpload" class="hidden-input" accept="image/*" />
                 <label for="file">
                   <img src="/Upload.svg" alt="Upload icon" class="upload-icon" />
