@@ -144,7 +144,18 @@ const submitForm = async () => {
   }
   const registrationResult = await userStore.registerUser(body)
   if (registrationResult === true) {
-    setCurrentPage('confirmation')
+    const verificationResult = await userStore.requestEmailVerification(formData.value.email)
+    if (verificationResult === true) {
+      setCurrentPage('confirmation')
+    } else if (verificationResult === false) {
+      messageStore.showMessage(
+        'Error',
+        'An unexpected error occured while attempting to verify your email',
+        'error',
+      )
+    } else {
+      messageStore.showMessage('Error', verificationResult, 'warning')
+    }
   } else if (registrationResult === false) {
     messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
   } else {

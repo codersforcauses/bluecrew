@@ -3,6 +3,9 @@ import { ref } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import { useDisplay } from 'vuetify'
 import type { ChallengeType, ChallengeStatus } from '@/types/challenge'
+import server from '@/utils/server'
+import { useMessageStore } from '@/stores/message'
+import FormData from 'form-data'
 
 const { mobile } = useDisplay()
 
@@ -15,7 +18,7 @@ interface TaskSubmission {
 
 // Initialize modal store
 const modalStore = useModalStore()
-
+const messageStore = useMessageStore()
 // Initialize task submission state
 const taskSubmission = ref<TaskSubmission>({
   feedback: '',
@@ -45,6 +48,7 @@ const props = defineProps<{
   description: string
   status: ChallengeStatus
   isLoggedIn: boolean
+  position: number
 }>()
 
 // Handle opening login modal
@@ -62,7 +66,16 @@ const startTask = () => {
   if (!props.isLoggedIn) {
     return
   }
-  emit('status-change', 'started')
+  server
+    .post('/start-challenge/', { position: props.position })
+    .then(() => emit('status-change', 'started'))
+    .catch(() => {
+      messageStore.showMessage(
+        'Error',
+        'Unexpected occured while attempting to start challenge.',
+        'error',
+      )
+    })
 }
 
 // Handle image upload
@@ -77,11 +90,36 @@ const handleImageUpload = (event: Event) => {
 // Handle task finish
 const finish = () => {
   if (!taskSubmission.value.feedback && !taskSubmission.value.image) {
-    alert('Please provide feedback or upload an image')
+    messageStore.showMessage('Warning', 'Please provide feedback or upload an image', 'warning')
     return
   }
-  emit('task-completed', taskSubmission.value)
-  emit('status-change', 'completed')
+  const data = new FormData()
+  data.append('image', taskSubmission.value.image, taskSubmission.value.image?.name)
+  data.append('position', props.position)
+  data.append('consent', taskSubmission.value.canShareOnSocialMedia)
+  data.append('description', taskSubmission.value.feedback)
+  server
+    .patch('/complete-challenge/', data, {
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'multipart/form-data; boundary=${data._boundary}',
+      },
+    })
+    .then(() => {
+      emit('task-completed', taskSubmission.value)
+      emit('status-change', 'completed')
+      taskSubmission.value.feedback = ''
+      taskSubmission.value.image = null
+      taskSubmission.value.canShareOnSocialMedia = false
+      //   TODO consent field doesn't exist
+    })
+    .catch(() =>
+      messageStore.showMessage(
+        'Error',
+        'Unexpected occured while attempting to complete challenge.',
+        'error',
+      ),
+    )
 }
 </script>
 

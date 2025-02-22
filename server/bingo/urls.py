@@ -1,11 +1,6 @@
 from django.urls import path
-
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
-from bingo.views import (bingo_views, friends_views, leaderboard_views,
-                         user_views,)
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from bingo.views import bingo_views, friends_views, leaderboard_views, user_views, email_views
 
 urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -18,11 +13,8 @@ urlpatterns = [
     path('delete-friendship/<int:friendship_id>/',
          friends_views.delete_friendship, name='delete_friendship'),
     path('start-challenge/', bingo_views.start_challenge, name="start_challenge"),
-    path('friends/', friends_views.get_friends, name='friend_list'),
-    path('friends/requests/outgoing/',
-         friends_views.get_outgoing_requests, name='outgoing_requests'),
-    path('friends/requests/incoming/',
-         friends_views.get_incoming_requests, name='incoming_requests'),
+    path('friends/all/', friends_views.get_all_friends_data,
+         name='all_friends_data'),
     path('bingo-grid/', bingo_views.get_bingo_grid, name='get_bingo_grid'),
     path('accept-friendship/<int:friendship_id>/',
          friends_views.accept_friendship, name='accept_friendship'),
@@ -35,4 +27,10 @@ urlpatterns = [
     path('user-search/', user_views.find_user, name='user_search'),
     path('update-bingo-grid/', bingo_views.update_bingo_grid,
          name='update-bingo-grid'),
+    path("email-validation/", email_views.request_email_verification,
+         name='request_verification'),
+    path("activate/", email_views.confirm_email, name="confirm_email"),
+    path("request-reset/", email_views.request_password_reset,
+         name="request_password_reset"),
+    path("reset-password/", email_views.reset_password, name="reset_password"),
 ]

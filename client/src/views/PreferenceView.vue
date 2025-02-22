@@ -45,7 +45,7 @@ const handleApply = () => {
       nonNullUser.bio = bio.value
       nonNullUser.visibility = visibility.value
       isEditing.value = false
-      alert('Preferences successfully changed!')
+      messageStore.showMessage('Success', 'Preferences successfully changed!', 'success')
     })
     .catch((error: AxiosError) => {
       if (

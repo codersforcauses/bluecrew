@@ -52,66 +52,53 @@ class FriendViewsTest(TestCase):
             status='pending'
         )
 
-    def test_get_friends_authenticated(self):
-        """Test getting friends list when authenticated"""
+    def test_get_all_friends_data_authenticated(self):
+        """Test getting all friends data when authenticated"""
         self.client.force_authenticate(user=self.user1)
-        response = self.client.get(reverse('friend_list'))
+        response = self.client.get(reverse('all_friends_data'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['userName'], 'user2')
+        # Check structure of response
+        self.assertIn('current_friends', response.data)
+        self.assertIn('incoming_requests', response.data)
+        self.assertIn('outgoing_requests', response.data)
+        # Check counts
+        self.assertEqual(len(response.data['current_friends']), 1)
+        self.assertEqual(len(response.data['incoming_requests']), 1)
+        self.assertEqual(len(response.data['outgoing_requests']), 1)
+        # Check specific data
+        self.assertEqual(response.data['current_friends'][0]['userName'], 'user2')
+        self.assertEqual(response.data['incoming_requests'][0]['userName'], 'user4')
+        self.assertEqual(response.data['outgoing_requests'][0]['userName'], 'user3')
 
-    def test_get_friends_unauthenticated(self):
-        """Test getting friends list when not authenticated"""
-        response = self.client.get(reverse('friend_list'))
+    def test_get_all_friends_data_unauthenticated(self):
+        """Test getting all friends data when not authenticated"""
+        response = self.client.get(reverse('all_friends_data'))
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_get_outgoing_requests_authenticated(self):
-        """Test getting outgoing friend requests when authenticated"""
-        self.client.force_authenticate(user=self.user1)
-        response = self.client.get(reverse('outgoing_requests'))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['userName'], 'user3')
-
-    def test_get_outgoing_requests_unauthenticated(self):
-        """Test getting outgoing requests when not authenticated"""
-        response = self.client.get(reverse('outgoing_requests'))
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_get_incoming_requests_authenticated(self):
-        """Test getting incoming friend requests when authenticated"""
-        self.client.force_authenticate(user=self.user1)
-        response = self.client.get(reverse('incoming_requests'))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['userName'], 'user4')
-
-    def test_get_incoming_requests_unauthenticated(self):
-        """Test getting incoming requests when not authenticated"""
-        response = self.client.get(reverse('incoming_requests'))
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_no_friends(self):
-        """Test getting friends list when user has no friends"""
+    def test_no_friends_or_requests(self):
+        """Test getting all friends data when user has no friends or requests"""
         lonely_user = User.objects.create_user(
             username="lonely",
             password="testpass123",
             email="lonely@example.com"
         )
         self.client.force_authenticate(user=lonely_user)
-        response = self.client.get(reverse('friend_list'))
+        response = self.client.get(reverse('all_friends_data'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 0)
+        self.assertEqual(len(response.data['current_friends']), 0)
+        self.assertEqual(len(response.data['incoming_requests']), 0)
+        self.assertEqual(len(response.data['outgoing_requests']), 0)
 
-    def test_friend_list_method_not_allowed(self):
-        """Test that only GET method is allowed for friends list"""
+    def test_method_not_allowed(self):
+        """Test that only GET method is allowed"""
         self.client.force_authenticate(user=self.user1)
-        response = self.client.post(reverse('friend_list'), {})
-        self.assertEqual(response.status_code,
-                         status.HTTP_405_METHOD_NOT_ALLOWED)
-        response = self.client.put(reverse('friend_list'), {})
-        self.assertEqual(response.status_code,
-                         status.HTTP_405_METHOD_NOT_ALLOWED)
-        response = self.client.delete(reverse('friend_list'))
-        self.assertEqual(response.status_code,
-                         status.HTTP_405_METHOD_NOT_ALLOWED)
+        url = reverse('all_friends_data')
+
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+        response = self.client.put(url)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
