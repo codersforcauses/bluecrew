@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useModalStore } from '@/stores/modal'
-import { useDisplay } from 'vuetify'
 import type { ChallengeType, ChallengeStatus } from '@/types/challenge'
 import server from '@/utils/server'
 import { useMessageStore } from '@/stores/message'
 import FormData from 'form-data'
-
-const { mobile } = useDisplay()
 
 // Define interface for task submission
 interface TaskSubmission {
@@ -124,8 +121,7 @@ const finish = () => {
 </script>
 
 <template>
-  <div :class="['challenge-card-wrapper', { mobile: mobile }]">
-    <div v-if="mobile" class="overlay"></div>
+  <div :class="['challenge-card-wrapper']">
     <v-card color="primaryBlue" rounded class="challenge-card">
       <div class="header">
         <div class="headerIcon" style="display: flex; flex-direction: column">
@@ -193,35 +189,7 @@ const finish = () => {
 
 <style scoped>
 /* Card wrapper base styles */
-.challenge-card-wrapper {
-  width: 100%;
-  margin: 1rem 0;
-}
 
-/* Mobile specific styles */
-.challenge-card-wrapper.mobile {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 1rem;
-}
-
-/* Overlay only shows on mobile */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: -1;
-}
 
 /* Main card container */
 .challenge-card {
@@ -235,10 +203,6 @@ const finish = () => {
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
-}
-
-.mobile .challenge-card {
-  z-index: 1001;
 }
 
 /* Header section styles */
