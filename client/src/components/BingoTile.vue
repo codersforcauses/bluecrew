@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import type { ChallengeType, ChallengeStatus } from '@/types/challenge'
 
 const props = defineProps<{
@@ -8,6 +8,17 @@ const props = defineProps<{
   status: ChallengeStatus
   selected: boolean
 }>()
+
+const isExploding = ref(false)
+
+watch(() => props.status, (newStatus) => {
+  if (newStatus === 'completed') {
+    isExploding.value = true
+    setTimeout(() => {
+      isExploding.value = false
+    }, 500) 
+  }
+})
 
 // Compute icon based on challenge type
 const icon = computed(() => {
@@ -24,6 +35,8 @@ const icon = computed(() => {
 // Compute background color based on status
 const backgroundColour = computed(() => {
   switch (props.status) {
+    case 'bingo':
+      return 'bg-gold'
     case 'started':
       return 'bg-primaryGreen'
     case 'completed':
@@ -55,19 +68,39 @@ const iconBackground = computed(() => {
 </script>
 
 <template>
-  <div
-    :class="[backgroundColour, textColour, selected ? 'border-selected' : 'border-subtle']"
-    class="outer-tile rounded-lg d-flex flex-column align-center cursor-pointer"
-    :title="title"
-  >
-    <v-img class="icon" :class="iconBackground" :src="icon" />
-    <p class="tile-text text-center font-weight-bold">
-      {{ title }}
-    </p>
-  </div>
+  <transition name="explode">
+    <div
+      v-if="!isExploding"
+      :class="[backgroundColour, textColour, selected ? 'border-selected' : 'border-subtle']"
+      class="outer-tile rounded-lg d-flex flex-column align-center cursor-pointer"
+      :title="title"
+    >
+      <v-img class="icon" :class="iconBackground" :src="icon" />
+      <p class="tile-text text-center font-weight-bold">{{ title }}</p>
+    </div>
+  </transition>
 </template>
 
 <style scoped>
+.explode-enter-active {
+  animation: explode 0.5s ease-out forwards;
+}
+
+@keyframes explode {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
 /* Main tile container with fixed dimensions */
 .outer-tile {
   padding: 0.5rem;
