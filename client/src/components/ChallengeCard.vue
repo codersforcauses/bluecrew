@@ -142,6 +142,8 @@ const finish = () => {
         <div class="points">{{ points }} Points</div>
       </v-card-subtitle>
 
+      <v-checkbox label="I consent for my submission to be posted on social media"></v-checkbox>
+
       <template v-if="status === 'not started'">
         <div class="description">
           <v-card-text>{{ description }}</v-card-text>
