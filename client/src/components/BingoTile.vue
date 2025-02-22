@@ -57,12 +57,14 @@ const textColour = computed(() => {
   }
 })
 
-watch(
-  () => props.isBingo,
-  (newVal) => {
-    console.log('Bingo status updated:', newVal)
-  },
-)
+const iconBackground = computed(() => {
+  switch (backgroundColour.value) {
+    case 'bg-creamWhite':
+      return 'dark'
+    default:
+      return 'light'
+  }
+})
 </script>
 
 <template>
@@ -78,7 +80,7 @@ watch(
       class="outer-tile rounded-lg d-flex flex-column align-center cursor-pointer"
       :title="title"
     >
-      <v-img class="icon" :src="icon" />
+      <v-img class="icon" :class="iconBackground" :src="icon" />
       <p class="tile-text text-center font-weight-bold">{{ title }}</p>
     </div>
   </transition>
