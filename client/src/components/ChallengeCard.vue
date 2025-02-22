@@ -155,24 +155,22 @@ const finish = () => {
       <template v-else-if="status === 'started'">
         <div class="description">
           <div class="submission-area">
-            <v-textarea
-              v-model="taskSubmission.feedback"
-              placeholder="Feedback"
-              class="custom-textarea"
-              variant="plain"
-            ></v-textarea>
-
-            <div class="file-preview" v-if="taskSubmission.image">
-              <img src="/FileIcon.svg" alt="File icon" class="file-icon" />
-              <span class="file-name">{{ taskSubmission.image.name }}</span>
+            <v-textarea v-model="taskSubmission.feedback" placeholder="Feedback" class="custom-textarea" variant="plain"
+              no-resize />
+            <div class="d-flex">
+              <div v-if="taskSubmission.image" class="mb-2 ml-2 file-preview">
+                <img src="/FileIcon.svg" alt="File icon" class="file-icon" />
+                <p class="file-name">{{ taskSubmission.image.name }}</p>
+              </div>
+              <v-spacer />
+              <div class="mx-2 mt-8">
+                <input type="file" id="file" @change="handleImageUpload" class="hidden-input" accept="image/*" />
+                <label for="file">
+                  <img src="/Upload.svg" alt="Upload icon" class="upload-icon" />
+                </label>
+              </div>
             </div>
 
-            <div class="upload-button-wrapper">
-              <input type="file" id="file" @change="handleImageUpload" class="hidden-input" />
-              <label for="file">
-                <img src="/Upload.svg" alt="Upload icon" class="upload-icon" />
-              </label>
-            </div>
           </div>
 
           <div class="button-container">
@@ -301,7 +299,6 @@ const finish = () => {
 }
 
 .description {
-  text-align: center;
   margin: 0;
   padding: 0 16px;
   width: 100%;
@@ -321,8 +318,8 @@ const finish = () => {
 .action-button {
   font-family: 'Poppins', sans-serif;
   border-radius: 50px;
-  background-color: #007d85 !important;
-  color: white !important;
+  background-color: rgb(var(--v-theme-primaryGreen));
+  color: white;
   min-width: 180px;
   height: 50px;
   font-size: 18px;
@@ -335,7 +332,7 @@ const finish = () => {
 }
 
 .action-button.completed-btn {
-  background-color: #3fbee0 !important;
+  background-color: rgb(var(--v-theme-lightBlue));
 }
 
 /* Submission area styles */
@@ -360,7 +357,7 @@ const finish = () => {
   min-height: 120px;
   color: rgb(var(--v-theme-primaryBlue));
   width: 100%;
-  resize: none;
+
   overflow-y: auto;
   font-family: 'Poppins', sans-serif;
 }
@@ -375,8 +372,8 @@ const finish = () => {
 
 /* Upload section styles */
 .upload-icon {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
 }
 
@@ -388,16 +385,6 @@ const finish = () => {
   display: none;
 }
 
-.file-preview {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-}
-
 .file-icon {
   width: 32px;
   height: 32px;
@@ -406,18 +393,14 @@ const finish = () => {
 .file-name {
   color: rgb(var(--v-theme-primaryBlue));
   font-size: 12px;
-  text-align: center;
   white-space: nowrap;
-  max-width: 84px;
   overflow: hidden;
   text-overflow: ellipsis;
   font-family: 'Poppins', sans-serif;
 }
 
-.upload-button-wrapper {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
+.file-preview {
+  min-width: 0;
 }
 
 /* Mobile responsive styles */
@@ -483,29 +466,8 @@ const finish = () => {
     font-size: 14px;
   }
 
-  .file-preview {
-    bottom: 16px;
-    left: 16px;
-  }
-
-  .file-icon {
-    width: 28px;
-    height: 28px;
-  }
-
   .file-name {
     font-size: 11px;
-    max-width: 42px;
-  }
-
-  .upload-button-wrapper {
-    bottom: 16px;
-    right: 16px;
-  }
-
-  .upload-icon {
-    width: 28px;
-    height: 28px;
   }
 
   .action-button {
