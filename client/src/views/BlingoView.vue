@@ -82,10 +82,17 @@ onMounted(() => {
               </div>
 
               <!-- Challenge Card -->
-              <div v-if="showChallengeCard && selectedTile !== null"
-                class="challenge-card-container desktop-challenge-card">
-                <ChallengeCard v-bind="currentChallenge" :position="selectedTile" :is-logged-in="userStore.isLoggedIn"
-                  @close="handleCloseChallenge" @status-change="handleStatusChange" />
+              <div
+                v-if="showChallengeCard && selectedTile !== null"
+                class="challenge-card-container desktop-challenge-card"
+              >
+                <ChallengeCard
+                  v-bind="currentChallenge"
+                  :position="selectedTile"
+                  :is-logged-in="userStore.isLoggedIn"
+                  @close="handleCloseChallenge"
+                  @status-change="handleStatusChange"
+                />
               </div>
               <!-- Learn More Section (Only for Desktop) -->
               <div class="learn-more-section text-primaryGreen">
@@ -96,7 +103,9 @@ onMounted(() => {
                 </p>
                 <p class="learn-more-text mb-0">
                   and
-                  <a href="https://www.oceanyouth.org/" class="text-link">https://www.oceanyouth.org/</a>
+                  <a href="https://www.oceanyouth.org/" class="text-link"
+                    >https://www.oceanyouth.org/</a
+                  >
                 </p>
               </div>
             </div>
@@ -113,9 +122,11 @@ onMounted(() => {
                     <div class="grid-content">
                       <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
                         <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
-                          <BingoTile v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
+                          <BingoTile
+                            v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
                             :selected="selectedTile === (row - 1) * 4 + (col - 1)"
-                            @click="handleTileClick((row - 1) * 4 + (col - 1))" />
+                            @click="handleTileClick((row - 1) * 4 + (col - 1))"
+                          />
                         </div>
                       </div>
                     </div>
@@ -147,9 +158,11 @@ onMounted(() => {
                   <div class="grid-content">
                     <div class="grid-row" v-for="row in 4" :key="`row-${row}`">
                       <div v-for="col in 4" :key="`tile-${row}-${col}`" class="tile-wrapper">
-                        <BingoTile v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
+                        <BingoTile
+                          v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
                           :selected="selectedTile === (row - 1) * 4 + (col - 1)"
-                          @click="handleTileClick((row - 1) * 4 + (col - 1))" />
+                          @click="handleTileClick((row - 1) * 4 + (col - 1))"
+                        />
                       </div>
                     </div>
                   </div>
@@ -160,10 +173,19 @@ onMounted(() => {
         </div>
 
         <!-- Challenge Card -->
-        <v-dialog v-model="showChallengeCard" v-if="showChallengeCard && selectedTile !== null"
-          transition="dialog-bottom-transition" class="challenge-card-overlay">
-          <ChallengeCard v-bind="currentChallenge" :position="selectedTile" :is-logged-in="userStore.isLoggedIn"
-            @close="handleCloseChallenge" @status-change="handleStatusChange" />
+        <v-dialog
+          v-model="showChallengeCard"
+          v-if="showChallengeCard && selectedTile !== null"
+          transition="dialog-bottom-transition"
+          class="challenge-card-overlay"
+        >
+          <ChallengeCard
+            v-bind="currentChallenge"
+            :position="selectedTile"
+            :is-logged-in="userStore.isLoggedIn"
+            @close="handleCloseChallenge"
+            @status-change="handleStatusChange"
+          />
         </v-dialog>
       </template>
     </div>

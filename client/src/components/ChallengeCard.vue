@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import type { ChallengeType, ChallengeStatus } from '@/types/challenge'
 import server from '@/utils/server'
 import { useMessageStore } from '@/stores/message'
 import FormData from 'form-data'
+import type { AxiosError } from 'axios'
 
 // Define interface for task submission
 interface TaskSubmission {
@@ -22,6 +23,9 @@ const taskSubmission = ref<TaskSubmission>({
   image: null,
   canShareOnSocialMedia: false,
 })
+const maxLength = (value: string) =>
+  value.length <= 500 || 'The description can be at must 500 characters.'
+const finishButtonDisabled = computed(() => maxLength(taskSubmission.value.description) !== true)
 
 // Define emits for component events
 const emit = defineEmits<{
@@ -86,8 +90,12 @@ const handleImageUpload = (event: Event) => {
 
 // Handle task finish
 const finish = () => {
-  if (!taskSubmission.value.description && !taskSubmission.value.image) {
-    messageStore.showMessage('Warning', 'Please provide description or upload an image', 'warning')
+  if (!taskSubmission.value.image) {
+    messageStore.showMessage('Warning', 'You must upload an image', 'warning')
+    return
+  }
+  if (maxLength(taskSubmission.value.description) !== true) {
+    // don't allow submission if description is too long
     return
   }
   const data = new FormData()
@@ -110,13 +118,27 @@ const finish = () => {
       taskSubmission.value.canShareOnSocialMedia = false
       //   TODO consent field doesn't exist
     })
-    .catch(() =>
-      messageStore.showMessage(
-        'Error',
-        'Unexpected occured while attempting to complete challenge.',
-        'error',
-      ),
-    )
+    .catch((error: AxiosError) => {
+      let unhandled = true
+      if (error.response?.status === 400) {
+        const validationErrors = error.response?.data as { image?: [string, ...string[]] }
+        if (validationErrors.image) {
+          unhandled = false
+          if (validationErrors.image[0].startsWith('Upload a valid image')) {
+            messageStore.showMessage('Invalid Image', 'Please upload an image file.', 'warning')
+          } else {
+            messageStore.showMessage('Invalid Image', validationErrors.image[0], 'warning')
+          }
+        }
+      }
+      if (unhandled) {
+        messageStore.showMessage(
+          'Error',
+          'Unexpected occured while attempting to complete challenge.',
+          'error',
+        )
+      }
+    })
 }
 </script>
 
@@ -151,8 +173,14 @@ const finish = () => {
       <template v-else-if="status === 'started'">
         <div class="description">
           <div class="submission-area">
-            <v-textarea v-model="taskSubmission.description" placeholder="Description" class="custom-textarea"
-              variant="plain" no-resize />
+            <v-textarea
+              v-model="taskSubmission.description"
+              placeholder="Description"
+              class="custom-textarea"
+              variant="plain"
+              no-resize
+              :rules="[maxLength]"
+            />
             <div class="d-flex">
               <div v-if="taskSubmission.image" class="mb-2 ml-2 file-preview">
                 <img src="/FileIcon.svg" alt="File icon" class="file-icon" />
@@ -160,17 +188,24 @@ const finish = () => {
               </div>
               <v-spacer />
               <div class="mx-2 mt-6">
-                <input type="file" id="file" @change="handleImageUpload" class="hidden-input" accept="image/*" />
+                <input
+                  type="file"
+                  id="file"
+                  @change="handleImageUpload"
+                  class="hidden-input"
+                  accept="image/*"
+                />
                 <label for="file">
                   <img src="/Upload.svg" alt="Upload icon" class="upload-icon" />
                 </label>
               </div>
             </div>
-
           </div>
 
           <div class="button-container">
-            <v-btn @click="finish" class="action-button">Finish</v-btn>
+            <v-btn @click="finish" class="action-button" :disabled="finishButtonDisabled"
+              >Finish</v-btn
+            >
           </div>
         </div>
       </template>
@@ -189,7 +224,6 @@ const finish = () => {
 
 <style scoped>
 /* Card wrapper base styles */
-
 
 /* Main card container */
 .challenge-card {
