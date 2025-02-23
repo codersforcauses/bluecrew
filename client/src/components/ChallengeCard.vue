@@ -94,6 +94,10 @@ const finish = () => {
     messageStore.showMessage('Warning', 'You must upload an image', 'warning')
     return
   }
+  if (taskSubmission.value.image.size >= 5 * 1024 * 1024) {
+    messageStore.showMessage('Warning', 'Uploaded images can be at most 5MB', 'warning')
+    return
+  }
   if (maxLength(taskSubmission.value.description) !== true) {
     // don't allow submission if description is too long
     return
