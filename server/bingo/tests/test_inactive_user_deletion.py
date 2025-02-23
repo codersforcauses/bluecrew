@@ -1,5 +1,4 @@
 from django.test import TestCase
-from django.core.management import call_command
 from bingo.models import User
 from freezegun import freeze_time
 from django.utils import timezone
