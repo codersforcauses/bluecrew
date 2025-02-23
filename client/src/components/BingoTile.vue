@@ -138,7 +138,6 @@ const iconBackground = computed(() => {
 
   .tile-text {
     font-size: 0.75rem;
-    /* Increased from 0.5rem */
     margin-top: 0.4rem;
   }
 
@@ -146,6 +145,36 @@ const iconBackground = computed(() => {
     width: 35%;
     height: 35%;
     margin-bottom: 0.4rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .outer-tile {
+    width: 100px;
+    height: 100px;
+    min-width: 100px;
+    min-height: 100px;
+    padding: 0.3rem;
+  }
+
+  .tile-text {
+    font-size: 0.6rem;
+    margin-top: 0.3rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .outer-tile {
+    width: 80px;
+    height: 80px;
+    min-width: 80px;
+    min-height: 80px;
+    padding: 0.2rem;
+  }
+
+  .tile-text {
+    font-size: 0.5rem;
+    margin-top: 0.2rem;
   }
 }
 </style>

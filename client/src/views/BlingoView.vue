@@ -77,16 +77,29 @@ onMounted(() => {
 
         <!-- Challenge Card -->
         <template v-if="mdAndDown">
-          <v-dialog v-model="showChallengeCard" v-if="showChallengeCard && selectedTile !== null"
-            transition="dialog-bottom-transition">
-            <ChallengeCard v-bind="currentChallenge" :position="selectedTile" :is-logged-in="userStore.isLoggedIn"
-              @close="handleCloseChallenge" @status-change="handleStatusChange" />
+          <v-dialog
+            v-model="showChallengeCard"
+            v-if="showChallengeCard && selectedTile !== null"
+            transition="dialog-bottom-transition"
+          >
+            <ChallengeCard
+              v-bind="currentChallenge"
+              :position="selectedTile"
+              :is-logged-in="userStore.isLoggedIn"
+              @close="handleCloseChallenge"
+              @status-change="handleStatusChange"
+            />
           </v-dialog>
         </template>
         <template v-else>
           <div v-if="showChallengeCard && selectedTile !== null" class="challenge-card-container">
-            <ChallengeCard v-bind="currentChallenge" :position="selectedTile" :is-logged-in="userStore.isLoggedIn"
-              @close="handleCloseChallenge" @status-change="handleStatusChange" />
+            <ChallengeCard
+              v-bind="currentChallenge"
+              :position="selectedTile"
+              :is-logged-in="userStore.isLoggedIn"
+              @close="handleCloseChallenge"
+              @status-change="handleStatusChange"
+            />
           </div>
         </template>
 
@@ -113,9 +126,13 @@ onMounted(() => {
         <template v-else>
           <div class="grid-content">
             <div class="d-flex justify-center" v-for="row in 4" :key="`row-${row}`">
-              <BingoTile v-for="col in 4" :key="`tile-${row}-${col}`" v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
+              <BingoTile
+                v-for="col in 4"
+                :key="`tile-${row}-${col}`"
+                v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
                 :selected="selectedTile === (row - 1) * 4 + (col - 1)"
-                @click="handleTileClick((row - 1) * 4 + (col - 1))" />
+                @click="handleTileClick((row - 1) * 4 + (col - 1))"
+              />
             </div>
           </div>
         </template>
@@ -162,31 +179,5 @@ onMounted(() => {
   font-weight: bold;
   margin: 0.5rem 0;
   font-size: 1rem;
-}
-
-@media (max-width: 480px) {
-
-  .grid-content {
-    transform: scale(0.8);
-  }
-}
-
-@media (max-width: 400px) {
-
-  .grid-content {
-    transform: scale(0.7);
-  }
-}
-
-@media (max-width: 350px) {
-  .grid-content {
-    transform: scale(0.65);
-  }
-}
-
-@media (max-width: 300px) {
-  .grid-content {
-    transform: scale(0.6);
-  }
 }
 </style>
