@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import type { ChallengeType, ChallengeStatus } from '@/types/challenge'
 
 const props = defineProps<{
@@ -7,7 +7,35 @@ const props = defineProps<{
   title: string
   status: ChallengeStatus
   selected: boolean
+  isBingo: boolean
 }>()
+
+const isExploding = ref(false)
+const isFlashing = ref(false)
+
+watch(
+  () => props.isBingo,
+  (newBingo) => {
+    if (newBingo) {
+      isFlashing.value = true
+      setTimeout(() => {
+        isFlashing.value = false
+      }, 1500)
+    }
+  },
+)
+
+watch(
+  () => props.status,
+  (newStatus) => {
+    if (newStatus === 'completed') {
+      isExploding.value = true
+      setTimeout(() => {
+        isExploding.value = false
+      }, 500)
+    }
+  },
+)
 
 // Compute icon based on challenge type
 const icon = computed(() => {
@@ -21,7 +49,6 @@ const icon = computed(() => {
   }
 })
 
-// Compute background color based on status
 const backgroundColour = computed(() => {
   switch (props.status) {
     case 'started':
@@ -43,7 +70,6 @@ const textColour = computed(() => {
   }
 })
 
-// Compute icon background based on background color
 const iconBackground = computed(() => {
   switch (backgroundColour.value) {
     case 'bg-creamWhite':
@@ -55,20 +81,67 @@ const iconBackground = computed(() => {
 </script>
 
 <template>
-  <div
-    :class="[backgroundColour, textColour, selected ? 'border-selected' : 'border-subtle']"
-    class="outer-tile rounded-lg d-flex flex-column align-center cursor-pointer"
-    :title="title"
-  >
-    <v-img class="icon" :class="iconBackground" :src="icon" />
-    <p class="tile-text text-center font-weight-bold">
-      {{ title }}
-    </p>
-  </div>
+  <transition name="explode">
+    <div
+      v-if="!isExploding"
+      :class="[
+        backgroundColour,
+        textColour,
+        selected ? 'border-selected' : 'border-subtle',
+        isBingo ? 'bingo-highlight' : '',
+      ]"
+      class="outer-tile rounded-lg d-flex flex-column align-center cursor-pointer"
+      :title="title"
+    >
+      <v-img class="icon" :class="iconBackground" :src="icon" />
+      <p class="tile-text text-center font-weight-bold">{{ title }}</p>
+    </div>
+  </transition>
 </template>
 
 <style scoped>
-/* Main tile container with fixed dimensions */
+.explode-enter-active {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center;
+  animation: explode 0.5s ease-out forwards;
+}
+
+@keyframes explode {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes bingo-flash {
+  0% {
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+  }
+  50% {
+    opacity: 0.5;
+    box-shadow: 0 0 20px rgba(255, 255, 0, 1);
+  }
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+  }
+}
+
+.bingo-highlight {
+  animation: bingo-flash 1s ease-in-out infinite;
+}
+
 .outer-tile {
   padding: 0.5rem;
   width: 150px;
@@ -81,9 +154,9 @@ const iconBackground = computed(() => {
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
 }
 
-/* Border styles for tile states */
 .border-subtle {
   border: #4f4f4f 0.05rem solid;
 }
@@ -93,10 +166,8 @@ const iconBackground = computed(() => {
   box-shadow: 0.1rem 0.1rem 0.2rem 0.1rem #4f4f4f;
 }
 
-/* Text styling with overflow handling and hover effect */
 .tile-text {
   font-size: 0.9rem;
-  /* Increased from 0.6rem */
   line-height: 1.3;
   white-space: nowrap;
   overflow: hidden;
@@ -110,7 +181,6 @@ const iconBackground = computed(() => {
   z-index: 1;
 }
 
-/* Icon styling */
 .icon {
   width: 40%;
   height: 40%;
@@ -121,12 +191,10 @@ const iconBackground = computed(() => {
 .icon.light {
   filter: invert();
 }
-
 .icon.dark {
   filter: contrast(100%) brightness(0%);
 }
 
-/* Mobile responsive styles */
 @media (max-width: 600px) {
   .outer-tile {
     width: 120px;
