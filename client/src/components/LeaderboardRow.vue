@@ -16,23 +16,11 @@ const handleUsernameClick = (username: string) => {
 </script>
 
 <template>
-  <div
-    :class="[isHighlighted ? 'bg-primaryGreen' : 'bg-creamWhite text-primaryGrey']"
-    class="leaderboard-row"
-  >
+  <div :class="[isHighlighted ? 'bg-primaryGreen' : 'bg-creamWhite text-primaryGrey']" class="leaderboard-row">
     <p class="font-weight-bold">{{ rank }}</p>
-    <v-img
-      class="rounded-circle"
-      max-height="32"
-      max-width="32"
-      min-width="32"
-      cover
-      :src="`/${avatarPaths[avatarIndex]}`"
-    ></v-img>
-    <p
-      class="me-auto font-weight-bold truncate-name username-link"
-      @click="handleUsernameClick(name)"
-    >
+    <v-img class="rounded-circle" max-height="32" max-width="32" min-width="32" cover
+      :src="`/${avatarPaths[avatarIndex]}`" />
+    <p class="me-auto font-weight-bold truncate-name username-link" @click="handleUsernameClick(name)">
       {{ name }}
     </p>
     <p :class="[isHighlighted ? 'font-weight-bold' : '']" class="text-right points">
@@ -65,6 +53,7 @@ const handleUsernameClick = (username: string) => {
 
 .username-link {
   cursor: pointer;
+
   &:hover {
     text-decoration: underline;
     color: rgb(var(--v-theme-primaryBlue));

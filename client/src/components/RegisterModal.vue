@@ -163,13 +163,13 @@ const submitForm = async () => {
       serverName: keyof BackendUser
       clientName: keyof UserRegistrationForm
     }> = [
-      { serverName: 'username', clientName: 'username' },
-      { serverName: 'first_name', clientName: 'firstName' },
-      { serverName: 'last_name', clientName: 'lastName' },
-      { serverName: 'email', clientName: 'email' },
-      { serverName: 'birthdate', clientName: 'dateOfBirth' },
-      { serverName: 'password', clientName: 'password' },
-    ]
+        { serverName: 'username', clientName: 'username' },
+        { serverName: 'first_name', clientName: 'firstName' },
+        { serverName: 'last_name', clientName: 'lastName' },
+        { serverName: 'email', clientName: 'email' },
+        { serverName: 'birthdate', clientName: 'dateOfBirth' },
+        { serverName: 'password', clientName: 'password' },
+      ]
     nameMapping.forEach(({ serverName, clientName }) => {
       if (registrationResult[serverName]) {
         const errorFromServer = registrationResult[serverName][0]
@@ -194,96 +194,56 @@ const openLoginModal = () => {
 
 <template>
   <div>
-    <v-dialog
-      v-model="isDialogVisible"
-      :max-width="xs ? '100%' : '500px'"
-      :fullscreen="xs"
-      scrollable
-      persistent
-    >
+    <v-dialog v-model="isDialogVisible" :max-width="xs ? '100%' : '500px'" :fullscreen="xs" scrollable persistent>
       <v-card>
         <v-card-text style="height: auto; overflow-y: auto">
           <template v-if="currentPage === 'register'">
             <div class="header">
               <button class="close-button" @click="closeDialog">
-                <v-icon icon="mdi-close-circle-outline"></v-icon>
+                <v-icon icon="mdi-close-circle-outline" />
               </button>
               <img src="/blingo-logo.svg" alt="logo" class="logo" />
             </div>
 
             <strong class="text-primaryGreen">Create an account</strong>
 
-            <v-form
-              v-model="valid"
-              class="register-form"
-              @submit.prevent="submitForm"
-              validate-on="blur"
-            >
+            <v-form v-model="valid" class="register-form" @submit.prevent="submitForm" validate-on="blur">
               <div v-for="(formField, index) in formFields" class="form-group" :key="index">
                 <label :for="formField.formAttribute" class="text-primaryGreen">{{
                   formField.fieldName
-                }}</label>
-                <v-select
-                  v-if="formField.dropDownItems"
-                  hide-details="auto"
-                  :placeholder="formField.fieldPlaceholder"
-                  v-model="formData[formField.formAttribute]"
-                  bg-color="primaryBrown"
-                  variant="outlined"
-                  :items="formField.dropDownItems"
-                />
-                <v-text-field
-                  v-else
-                  hide-details="auto"
-                  :placeholder="formField.fieldPlaceholder"
-                  v-model="formData[formField.formAttribute]"
-                  bg-color="primaryBrown"
-                  variant="outlined"
-                  :type="formField.fieldType"
-                  :rules="getRules(formField.fieldType)"
+                  }}</label>
+                <v-select v-if="formField.dropDownItems" hide-details="auto" :placeholder="formField.fieldPlaceholder"
+                  v-model="formData[formField.formAttribute]" bg-color="primaryBrown" variant="outlined"
+                  :items="formField.dropDownItems" />
+                <v-text-field v-else hide-details="auto" :placeholder="formField.fieldPlaceholder"
+                  v-model="formData[formField.formAttribute]" bg-color="primaryBrown" variant="outlined"
+                  :type="formField.fieldType" :rules="getRules(formField.fieldType)"
                   :error-messages="formServerErrors[formField.formAttribute]"
-                  @focus="formServerErrors[formField.formAttribute] = ''"
-                />
+                  @focus="formServerErrors[formField.formAttribute] = ''" />
               </div>
-              <v-btn
-                class="d-flex justify-center mt-4 w-50 mx-auto"
-                color="primaryBlue"
-                :style="{ height: '50px' }"
-                rounded
-                :disabled="!valid"
-                :loading="loading"
-                elevation="12"
-                type="submit"
-              >
+              <v-btn class="d-flex justify-center mt-4 w-50 mx-auto" color="primaryBlue" :style="{ height: '50px' }"
+                rounded :disabled="!valid" :loading="loading" elevation="12" type="submit">
                 Sign Up
               </v-btn>
             </v-form>
 
             <footer class="text-primaryGreen">
               Already have an account?
-              <a class="text-primaryGreen cursor-pointer" @click.prevent="openLoginModal"
-                >Sign In</a
-              >
+              <a class="text-primaryGreen cursor-pointer" @click.prevent="openLoginModal">Sign In</a>
             </footer>
           </template>
 
           <template v-if="currentPage === 'confirmation'">
             <div class="header">
               <button class="close-button" @click="closeDialog">
-                <v-icon icon="mdi-close-circle-outline"></v-icon>
+                <v-icon icon="mdi-close-circle-outline" />
               </button>
               <img src="/blingo-logo.svg" alt="Blingo Logo" class="logo" />
             </div>
             <h2 class="text-primaryGreen text-center">One More Step</h2>
             <p class="text-center">Please check your inbox for a link to verify your email.</p>
-            <v-btn
-              class="d-flex justify-center mt-4 w-50 mx-auto"
-              color="primaryBlue"
-              :style="{ height: '50px' }"
-              rounded
-              elevation="12"
-              @click="closeDialog"
-            >
+            <v-btn class="d-flex justify-center mt-4 w-50 mx-auto" color="primaryBlue" :style="{ height: '50px' }"
+              rounded elevation="12" @click="closeDialog">
               Close
             </v-btn>
           </template>

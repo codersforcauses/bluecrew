@@ -163,7 +163,7 @@ const finish = () => {
         <div class="header-content">
           <v-card-title>{{ title }}</v-card-title>
         </div>
-        <v-icon icon="mdi-close-circle-outline" @click="closeCard"></v-icon>
+        <v-icon icon="mdi-close-circle-outline" @click="closeCard" />
       </div>
 
       <v-card-subtitle style="font-weight: bold">
@@ -175,28 +175,18 @@ const finish = () => {
           <v-card-text>{{ description }}</v-card-text>
         </div>
         <div class="button-container">
-          <v-btn v-if="!isLoggedIn" @click="openLoginModal" class="action-button bg-primaryGreen"
-            >Login</v-btn
-          >
+          <v-btn v-if="!isLoggedIn" @click="openLoginModal" class="action-button bg-primaryGreen">Login</v-btn>
           <v-btn v-else @click="startTask" class="action-button bg-primaryGreen">Start</v-btn>
         </div>
       </template>
 
       <template v-else-if="status === 'started'">
         <div class="description">
-          <v-checkbox
-            v-model="taskSubmission.canShareOnSocialMedia"
-            label="I consent for my submission to be posted on social media"
-          />
+          <v-checkbox v-model="taskSubmission.canShareOnSocialMedia" hide-details
+            label="I consent for my submission to be posted on social media" />
           <div class="submission-area">
-            <v-textarea
-              v-model="taskSubmission.description"
-              placeholder="Description"
-              class="custom-textarea"
-              variant="plain"
-              no-resize
-              :rules="[maxLength]"
-            />
+            <v-textarea v-model="taskSubmission.description" placeholder="Description" class="custom-textarea"
+              variant="plain" no-resize :rules="[maxLength]" />
             <div class="d-flex">
               <div v-if="taskSubmission.image" class="mb-2 ml-2 file-preview">
                 <img src="/FileIcon.svg" alt="File icon" class="file-icon" />
@@ -204,13 +194,7 @@ const finish = () => {
               </div>
               <v-spacer />
               <div class="mx-2 mt-6">
-                <input
-                  type="file"
-                  id="file"
-                  @change="handleImageUpload"
-                  class="hidden-input"
-                  accept="image/*"
-                />
+                <input type="file" id="file" @change="handleImageUpload" class="hidden-input" accept="image/*" />
                 <label for="file">
                   <img src="/Upload.svg" alt="Upload icon" class="upload-icon" />
                 </label>
@@ -219,12 +203,7 @@ const finish = () => {
           </div>
 
           <div class="button-container">
-            <v-btn
-              @click="finish"
-              class="action-button bg-primaryGreen"
-              :disabled="finishButtonDisabled"
-              >Finish</v-btn
-            >
+            <v-btn @click="finish" class="action-button bg-primaryGreen" :disabled="finishButtonDisabled">Finish</v-btn>
           </div>
         </div>
       </template>
@@ -234,9 +213,7 @@ const finish = () => {
           <v-card-text>{{ description }}</v-card-text>
         </div>
         <div class="button-container">
-          <v-btn @click="closeCard" class="action-button" color="lightBlue" text-color="white"
-            >Completed</v-btn
-          >
+          <v-btn @click="closeCard" class="action-button" color="lightBlue" text-color="white">Completed</v-btn>
         </div>
       </template>
     </v-card>

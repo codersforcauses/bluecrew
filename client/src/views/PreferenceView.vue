@@ -76,14 +76,8 @@ const handleApply = () => {
         <v-col cols="12" class="d-flex flex-column">
           <!-- Avatar and Name Section -->
           <div class="d-flex align-start mb-4">
-            <v-img
-              class="rounded-circle"
-              max-height="96"
-              max-width="96"
-              min-width="96"
-              contain
-              :src="avatarPaths[userStore.userData.avatar]"
-            ></v-img>
+            <v-img class="rounded-circle" max-height="96" max-width="96" min-width="96" contain
+              :src="avatarPaths[userStore.userData.avatar]" />
           </div>
         </v-col>
       </v-row>
@@ -105,12 +99,7 @@ const handleApply = () => {
           <p class="text-h6 font-weight-bold mb-2">Edit Profile (Avatar, Bio & Visibility)</p>
         </v-col>
         <v-col cols="12 mb-4">
-          <v-btn
-            class="bg-primaryBlue mb-4"
-            prepend-icon="mdi-pencil"
-            :block="xs"
-            @click="handleEditClick"
-          >
+          <v-btn class="bg-primaryBlue mb-4" prepend-icon="mdi-pencil" :block="xs" @click="handleEditClick">
             Edit Profile
           </v-btn>
         </v-col>
@@ -127,18 +116,10 @@ const handleApply = () => {
               <v-col cols="12">
                 <p class="text-h6 font-weight-bold mb-4">Avatar</p>
                 <div class="d-flex flex-wrap gap-4 justify-center">
-                  <v-img
-                    v-for="(avatar, index) in avatarPaths"
-                    :key="index"
-                    :src="avatar"
-                    max-height="96"
-                    max-width="96"
-                    min-width="96"
-                    contain
-                    class="rounded-circle cursor-pointer"
+                  <v-img v-for="(avatar, index) in avatarPaths" :key="index" :src="avatar" max-height="96"
+                    max-width="96" min-width="96" contain class="rounded-circle cursor-pointer"
                     :class="{ 'border-primary': selectedAvatar === index }"
-                    @click="selectedAvatar = index as 0 | 1 | 2 | 3 | 4 | 5"
-                  />
+                    @click="selectedAvatar = index as 0 | 1 | 2 | 3 | 4 | 5" />
                 </div>
               </v-col>
             </v-row>
@@ -147,14 +128,8 @@ const handleApply = () => {
             <v-row>
               <v-col cols="12">
                 <p class="text-h6 font-weight-bold mb-4">Bio</p>
-                <v-textarea
-                  v-model="bio"
-                  :error-messages="bioError"
-                  placeholder="Tell us about yourself!"
-                  variant="outlined"
-                  @focus="bioError = ''"
-                  bg-color="rgb(var(--v-theme-primaryBrown))"
-                ></v-textarea>
+                <v-textarea v-model="bio" :error-messages="bioError" placeholder="Tell us about yourself!"
+                  variant="outlined" @focus="bioError = ''" bg-color="rgb(var(--v-theme-primaryBrown))" />
               </v-col>
             </v-row>
 
@@ -163,13 +138,9 @@ const handleApply = () => {
               <v-col cols="12">
                 <p class="text-h6 font-weight-bold mb-4 justify-center">Visibility</p>
                 <v-item-group mandatory class="d-flex flex-column" v-model="visibility">
-                  <v-btn
-                    v-for="(option, index) in visOptions"
-                    :key="option"
-                    :class="['mb-2', visibility === index ? 'bg-primaryGreen' : 'bg-primaryBrown']"
-                    variant="outlined"
-                    @click="visibility = index as 0 | 1 | 2"
-                  >
+                  <v-btn v-for="(option, index) in visOptions" :key="option"
+                    :class="['mb-2', visibility === index ? 'bg-primaryGreen' : 'bg-primaryBrown']" variant="outlined"
+                    @click="visibility = index as 0 | 1 | 2">
                     {{ option }}
                   </v-btn>
                 </v-item-group>
@@ -180,24 +151,12 @@ const handleApply = () => {
           <v-col :cols="xs ? 12 : 3">
             <v-row>
               <v-col cols="12">
-                <v-btn
-                  class="d-flex"
-                  prepend-icon="mdi-content-save"
-                  color="primaryBlue"
-                  block
-                  @click="handleApply"
-                >
+                <v-btn class="d-flex" prepend-icon="mdi-content-save" color="primaryBlue" block @click="handleApply">
                   Apply
                 </v-btn>
               </v-col>
               <v-col cols="12">
-                <v-btn
-                  class="d-flex"
-                  prepend-icon="mdi-close"
-                  variant="outlined"
-                  block
-                  @click="handleCancel"
-                >
+                <v-btn class="d-flex" prepend-icon="mdi-close" variant="outlined" block @click="handleCancel">
                   Cancel
                 </v-btn>
               </v-col>
