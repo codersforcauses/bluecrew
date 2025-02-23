@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "bingo",
     "sortedm2m",
+    "django_q"
 ]
 
 MIDDLEWARE = [
@@ -130,6 +131,13 @@ DATABASES = {
     }
 }
 
+Q_CLUSTER = {
+    'name': 'DjangORM',
+    'workers': 1,
+    'timeout': 90,
+    'retry': 120,
+    'orm': 'default'
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
