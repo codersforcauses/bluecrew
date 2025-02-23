@@ -28,7 +28,7 @@ const handleUsernameClick = (username: string) => {
       min-width="32"
       cover
       :src="`/${avatarPaths[avatarIndex]}`"
-    ></v-img>
+    />
     <p
       class="me-auto font-weight-bold truncate-name username-link"
       @click="handleUsernameClick(name)"
@@ -65,6 +65,7 @@ const handleUsernameClick = (username: string) => {
 
 .username-link {
   cursor: pointer;
+
   &:hover {
     text-decoration: underline;
     color: rgb(var(--v-theme-primaryBlue));

@@ -120,7 +120,6 @@ const finish = () => {
       taskSubmission.value.description = ''
       taskSubmission.value.image = null
       taskSubmission.value.canShareOnSocialMedia = false
-      //   TODO consent field doesn't exist
     })
     .catch((error: AxiosError) => {
       let unhandled = true
@@ -164,7 +163,7 @@ const finish = () => {
         <div class="header-content">
           <v-card-title>{{ title }}</v-card-title>
         </div>
-        <v-icon icon="mdi-close-circle-outline" @click="closeCard"></v-icon>
+        <v-icon icon="mdi-close-circle-outline" @click="closeCard" />
       </div>
 
       <v-card-subtitle style="font-weight: bold">
@@ -185,6 +184,11 @@ const finish = () => {
 
       <template v-else-if="status === 'started'">
         <div class="description">
+          <v-checkbox
+            v-model="taskSubmission.canShareOnSocialMedia"
+            hide-details
+            label="I consent for my submission to be posted on social media"
+          />
           <div class="submission-area">
             <v-textarea
               v-model="taskSubmission.description"

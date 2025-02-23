@@ -83,7 +83,7 @@ const handleApply = () => {
               min-width="96"
               contain
               :src="avatarPaths[userStore.userData.avatar]"
-            ></v-img>
+            />
           </div>
         </v-col>
       </v-row>
@@ -154,7 +154,7 @@ const handleApply = () => {
                   variant="outlined"
                   @focus="bioError = ''"
                   bg-color="rgb(var(--v-theme-primaryBrown))"
-                ></v-textarea>
+                />
               </v-col>
             </v-row>
 
