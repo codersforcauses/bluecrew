@@ -134,6 +134,13 @@ const finish = () => {
             messageStore.showMessage('Invalid Image', validationErrors.image[0], 'warning')
           }
         }
+      } else if (error.response?.status === 413) {
+        unhandled = false
+        messageStore.showMessage(
+          'Invalid Image',
+          'The image you uploaded is too large. Please upload an image less than 5MB.',
+          'warning',
+        )
       }
       if (unhandled) {
         messageStore.showMessage(
@@ -169,7 +176,9 @@ const finish = () => {
           <v-card-text>{{ description }}</v-card-text>
         </div>
         <div class="button-container">
-          <v-btn v-if="!isLoggedIn" @click="openLoginModal" class="action-button">Login</v-btn>
+          <v-btn v-if="!isLoggedIn" @click="openLoginModal" class="action-button bg-primaryGreen"
+            >Login</v-btn
+          >
           <v-btn v-else @click="startTask" class="action-button bg-primaryGreen">Start</v-btn>
         </div>
       </template>
