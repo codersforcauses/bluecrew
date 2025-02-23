@@ -76,32 +76,20 @@ onMounted(() => {
         </div>
 
         <!-- Challenge Card -->
-        <template v-if="mdAndDown">
-          <v-dialog
-            v-model="showChallengeCard"
-            v-if="showChallengeCard && selectedTile !== null"
-            transition="dialog-bottom-transition"
-          >
-            <ChallengeCard
-              v-bind="currentChallenge"
-              :position="selectedTile"
-              :is-logged-in="userStore.isLoggedIn"
-              @close="handleCloseChallenge"
-              @status-change="handleStatusChange"
-            />
-          </v-dialog>
-        </template>
-        <template v-else>
-          <div v-if="showChallengeCard && selectedTile !== null" class="challenge-card-container">
-            <ChallengeCard
-              v-bind="currentChallenge"
-              :position="selectedTile"
-              :is-logged-in="userStore.isLoggedIn"
-              @close="handleCloseChallenge"
-              @status-change="handleStatusChange"
-            />
-          </div>
-        </template>
+        <component
+          :is="mdAndDown ? 'v-dialog' : 'div'"
+          v-model="showChallengeCard"
+          v-if="showChallengeCard && selectedTile !== null"
+          transition="dialog-bottom-transition"
+        >
+          <ChallengeCard
+            v-bind="currentChallenge"
+            :position="selectedTile"
+            :is-logged-in="userStore.isLoggedIn"
+            @close="handleCloseChallenge"
+            @status-change="handleStatusChange"
+          />
+        </component>
 
         <!-- Learn More Section (Only for Desktop) -->
         <div class="text-center text-primaryGreen mt-8" v-if="!mdAndDown">
