@@ -47,6 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     bio = models.CharField(max_length=300, blank=True)
     total_points = models.IntegerField(default=0)
     birthdate = models.DateField(default=date(2000, 1, 1))
+    created_at = models.DateTimeField(auto_now_add=True)
 
     email = models.EmailField(
         max_length=320,
