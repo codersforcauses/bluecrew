@@ -11,6 +11,19 @@ const props = defineProps<{
 }>()
 
 const isExploding = ref(false)
+const isFlashing = ref(false)
+
+watch(
+  () => props.isBingo,
+  (newBingo) => {
+    if (newBingo) {
+      isFlashing.value = true
+      setTimeout(() => {
+        isFlashing.value = false
+      }, 1500)
+    }
+  },
+)
 
 watch(
   () => props.status,
@@ -88,27 +101,45 @@ const iconBackground = computed(() => {
 
 <style scoped>
 .explode-enter-active {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center;
   animation: explode 0.5s ease-out forwards;
 }
 
 @keyframes explode {
   0% {
-    transform: scale(1);
+    transform: translate(-50%, -50%) scale(1);
     opacity: 1;
   }
   50% {
-    transform: scale(1.5);
+    transform: translate(-50%, -50%) scale(1.5);
     opacity: 0.5;
   }
   100% {
-    transform: scale(2);
+    transform: translate(-50%, -50%) scale(2);
     opacity: 0;
   }
 }
 
+@keyframes bingo-flash {
+  0% {
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+  }
+  50% {
+    opacity: 0.5;
+    box-shadow: 0 0 20px rgba(255, 255, 0, 1);
+  }
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+  }
+}
+
 .bingo-highlight {
-  box-shadow: 0 0 15px 6px rgba(0, 255, 255, 0.6);
-  border: 2px solid rgba(0, 255, 255, 0.8);
+  animation: bingo-flash 1s ease-in-out infinite;
 }
 
 .outer-tile {
@@ -123,6 +154,7 @@ const iconBackground = computed(() => {
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
 }
 
 .border-subtle {
