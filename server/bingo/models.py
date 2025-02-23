@@ -200,6 +200,13 @@ class BingoGrid(models.Model):
         return f"BingoGrid #{self.grid_id} (Active: {self.is_active})"
 
 
+def file_size(value):
+    limit = 5 * 1024 * 1024
+    if value.size > limit:
+        raise ValidationError(
+            'Please upload an image with size less than 5MB.')
+
+
 class TileInteraction(models.Model):
     # A model to represent a user's interaction with a challenge in a specific bingo grid.
 
@@ -212,9 +219,10 @@ class TileInteraction(models.Model):
     description = models.TextField(max_length=500, blank=True)
 
     image = ResizedImageField(
-        upload_to="",  # idk where we want to put this atm
+        upload_to="",
         blank=True,
-        keep_meta=False
+        keep_meta=False,
+        validators=[file_size]
     )
 
     completed = models.BooleanField(default=False)
