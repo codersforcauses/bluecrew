@@ -166,21 +166,15 @@ const finish = () => {
         </div>
         <div class="button-container">
           <v-btn v-if="!isLoggedIn" @click="openLoginModal" class="action-button">Login</v-btn>
-          <v-btn v-else @click="startTask" class="action-button">Start</v-btn>
+          <v-btn v-else @click="startTask" class="action-button bg-primaryGreen">Start</v-btn>
         </div>
       </template>
 
       <template v-else-if="status === 'started'">
         <div class="description">
           <div class="submission-area">
-            <v-textarea
-              v-model="taskSubmission.description"
-              placeholder="Description"
-              class="custom-textarea"
-              variant="plain"
-              no-resize
-              :rules="[maxLength]"
-            />
+            <v-textarea v-model="taskSubmission.description" placeholder="Description" class="custom-textarea"
+              variant="plain" no-resize :rules="[maxLength]" />
             <div class="d-flex">
               <div v-if="taskSubmission.image" class="mb-2 ml-2 file-preview">
                 <img src="/FileIcon.svg" alt="File icon" class="file-icon" />
@@ -188,13 +182,7 @@ const finish = () => {
               </div>
               <v-spacer />
               <div class="mx-2 mt-6">
-                <input
-                  type="file"
-                  id="file"
-                  @change="handleImageUpload"
-                  class="hidden-input"
-                  accept="image/*"
-                />
+                <input type="file" id="file" @change="handleImageUpload" class="hidden-input" accept="image/*" />
                 <label for="file">
                   <img src="/Upload.svg" alt="Upload icon" class="upload-icon" />
                 </label>
@@ -203,9 +191,7 @@ const finish = () => {
           </div>
 
           <div class="button-container">
-            <v-btn @click="finish" class="action-button" :disabled="finishButtonDisabled"
-              >Finish</v-btn
-            >
+            <v-btn @click="finish" class="action-button bg-primaryGreen" :disabled="finishButtonDisabled">Finish</v-btn>
           </div>
         </div>
       </template>
@@ -215,7 +201,7 @@ const finish = () => {
           <v-card-text>{{ description }}</v-card-text>
         </div>
         <div class="button-container">
-          <v-btn @click="closeCard" class="action-button completed-btn">Completed</v-btn>
+          <v-btn @click="closeCard" class="action-button" color="lightBlue" text-color="white">Completed</v-btn>
         </div>
       </template>
     </v-card>
@@ -316,8 +302,6 @@ const finish = () => {
 .action-button {
   font-family: 'Poppins', sans-serif;
   border-radius: 50px;
-  background-color: rgb(var(--v-theme-primaryGreen));
-  color: white;
   min-width: 180px;
   height: 50px;
   font-size: 18px;
@@ -327,10 +311,6 @@ const finish = () => {
   justify-content: center;
   letter-spacing: normal;
   padding: 0 32px;
-}
-
-.action-button.completed-btn {
-  background-color: rgb(var(--v-theme-lightBlue));
 }
 
 /* Submission area styles */
