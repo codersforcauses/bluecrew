@@ -78,7 +78,13 @@ const requestPasswordReset = async () => {
 </script>
 
 <template>
-  <v-dialog v-model="isDialogVisible" :max-width="xs ? '100%' : '500px'" :fullscreen="xs" scrollable persistent>
+  <v-dialog
+    v-model="isDialogVisible"
+    :max-width="xs ? '100%' : '500px'"
+    :fullscreen="xs"
+    scrollable
+    persistent
+  >
     <v-card>
       <v-container>
         <v-row align="center">
@@ -114,22 +120,48 @@ const requestPasswordReset = async () => {
             <v-card-subtitle class="text-left subtitle mb-3 pa-0 text-primaryGreen">
               Username
             </v-card-subtitle>
-            <v-text-field v-model="username" placeholder="Enter your username" hide-details="auto" :rules="[required]"
-              outlined bg-color="primaryBrown" variant="outlined" :error-messages="errorMessage"
-              @focus="errorMessage = ''" />
+            <v-text-field
+              v-model="username"
+              placeholder="Enter your username"
+              hide-details="auto"
+              :rules="[required]"
+              outlined
+              bg-color="primaryBrown"
+              variant="outlined"
+              :error-messages="errorMessage"
+              @focus="errorMessage = ''"
+            />
             <v-card-subtitle class="text-left subtitle mt-3 mb-3 pa-0 text-primaryGreen">
               Password
             </v-card-subtitle>
-            <v-text-field v-model="password" placeholder="Enter your password" hide-details="auto" type="password"
-              :rules="[required]" outlined bg-color="primaryBrown" variant="outlined" :error-messages="errorMessage"
-              @focus="errorMessage = ''" />
+            <v-text-field
+              v-model="password"
+              placeholder="Enter your password"
+              hide-details="auto"
+              type="password"
+              :rules="[required]"
+              outlined
+              bg-color="primaryBrown"
+              variant="outlined"
+              :error-messages="errorMessage"
+              @focus="errorMessage = ''"
+            />
             <div class="mt-3">
-              <a class="text-subtitle-2 margin-left-adjust text-primaryGreen cursor-pointer"
-                @click.prevent="setCurrentPage('forgot-password')">Forgot Username or Password?
+              <a
+                class="text-subtitle-2 margin-left-adjust text-primaryGreen cursor-pointer"
+                @click.prevent="setCurrentPage('forgot-password')"
+                >Forgot Username or Password?
               </a>
             </div>
-            <v-btn class="d-flex button-custom justify-center mt-4 w-50 mx-auto" color="primaryBlue" rounded
-              elevation="12" type="submit" :disabled="!valid" :loading="loading">
+            <v-btn
+              class="d-flex button-custom justify-center mt-4 w-50 mx-auto"
+              color="primaryBlue"
+              rounded
+              elevation="12"
+              type="submit"
+              :disabled="!valid"
+              :loading="loading"
+            >
               Sign In
             </v-btn>
           </v-form>
@@ -137,7 +169,9 @@ const requestPasswordReset = async () => {
         <v-card-actions class="d-flex justify-center text-primaryGreen">
           <footer>
             Don't have an account?
-            <a class="text-primaryGreen cursor-pointer" @click.prevent="openRegisterModal">Sign up</a>
+            <a class="text-primaryGreen cursor-pointer" @click.prevent="openRegisterModal"
+              >Sign up</a
+            >
           </footer>
         </v-card-actions>
       </template>
@@ -150,14 +184,36 @@ const requestPasswordReset = async () => {
           </strong>
         </v-card-subtitle>
         <v-card-text>
-          <v-form v-model="emailFormValid" @submit.prevent="requestPasswordReset" validate-on="blur">
+          <v-form
+            v-model="emailFormValid"
+            @submit.prevent="requestPasswordReset"
+            validate-on="blur"
+          >
             <p class="text-center">Enter your email below and we'll send you a reset link.</p>
-            <v-text-field v-model="email" placeholder="Enter your email" hide-details="auto" required outlined
-              bg-color="primaryBrown" variant="outlined" type="email" :rules="[required, emailProbablyValid]"
-              :error-messages="emailError" @focus="emailError = ''" />
+            <v-text-field
+              v-model="email"
+              placeholder="Enter your email"
+              hide-details="auto"
+              required
+              outlined
+              bg-color="primaryBrown"
+              variant="outlined"
+              type="email"
+              :rules="[required, emailProbablyValid]"
+              :error-messages="emailError"
+              @focus="emailError = ''"
+            />
 
-            <v-btn class="d-flex justify-center mt-8 w-50 mx-auto" color="primaryBlue" :style="{ height: '50px' }"
-              rounded elevation="12" :loading="loading" type="submit" :disabled="!emailFormValid">
+            <v-btn
+              class="d-flex justify-center mt-8 w-50 mx-auto"
+              color="primaryBlue"
+              :style="{ height: '50px' }"
+              rounded
+              elevation="12"
+              :loading="loading"
+              type="submit"
+              :disabled="!emailFormValid"
+            >
               Send Email
             </v-btn>
           </v-form>
