@@ -19,6 +19,7 @@ const visibility = ref<0 | 1 | 2>(0)
 const bioError = ref<string>('')
 const messageStore = useMessageStore()
 const selectedAvatar = ref<0 | 1 | 2 | 3 | 4 | 5>(0)
+const loading = ref(false)
 
 const handleEditClick = () => {
   isEditing.value = true
@@ -32,33 +33,41 @@ const handleCancel = () => {
   isEditing.value = false
 }
 
-const handleApply = () => {
-  server
-    .put('update-preferences/', {
+const handleApply = async () => {
+  loading.value = true
+
+  try {
+    await server.put('update-preferences/', {
       avatar: selectedAvatar.value,
       bio: bio.value,
       visibility: visibility.value,
     })
-    .then(() => {
+
       const nonNullUser = userStore.userData!
       nonNullUser.avatar = selectedAvatar.value
       nonNullUser.bio = bio.value
       nonNullUser.visibility = visibility.value
       isEditing.value = false
+      
       messageStore.showMessage('Success', 'Preferences successfully changed!', 'success')
-    })
-    .catch((error: AxiosError) => {
-      if (
-        error.response &&
-        error.response.status === 400 &&
-        'bio' in (error.response.data as object)
-      ) {
-        bioError.value = 'Please enter a bio with at most 300 characters'
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        if (
+          error.response &&
+          error.response.status === 400 &&
+          'bio' in (error.response.data as object)
+        ) {
+          bioError.value = 'Please enter a bio with at most 300 characters'
+        } else {
+          messageStore.showMessage('Error', 'An unexpected error occurred. Please try again.', 'error')
+        }
       } else {
-        messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
+        messageStore.showMessage('Error', 'An unknown error occurred.', 'error')
       }
-    })
-}
+    } finally {
+      loading.value = false
+    }
+  }
 </script>
 
 <template>
@@ -185,6 +194,8 @@ const handleApply = () => {
                   prepend-icon="mdi-content-save"
                   color="primaryBlue"
                   block
+                  :loading="loading"
+                  :disabled="loading"
                   @click="handleApply"
                 >
                   Apply
