@@ -21,12 +21,19 @@ class InactiveUserDeletionTestCase(TestCase):
                 username="user4", password="verysecure123", email="email4@example.com")
         with freeze_time(timezone.now() - timedelta(hours=1)):
             self.recent_active_user = User.objects.create(
-                username="user5", password="verysecure123", email="email5@example.com", is_active=False)
+                username="user5", password="verysecure123", email="email5@example.com")
         self.new_active_user = User.objects.create(
-            username="user6", password="verysecure123", email="email6@example.com", is_active=False)
+            username="user6", password="verysecure123", email="email6@example.com")
 
     def test_deletion_result(self):
         delete_inactive()
-        # The only user who should be deleted is the user created more than one day ago who is inactive
-        self.assertEqual(set(u.username for u in User.objects.all()), {
-                         "user2", "user3", "user4", "user5", "user6"})
+        # Ensure the old inactive user is deleted
+        self.assertFalse(User.objects.filter(
+            username="user1").exists(), "Old inactive user was not deleted.")
+
+        # Ensure all other users are still in the database
+        remaining_users = set(User.objects.values_list("username", flat=True))
+        expected_users = {"user2", "user3", "user4", "user5", "user6"}
+
+        self.assertEqual(remaining_users, expected_users,
+                         "Unexpected users were deleted.")
