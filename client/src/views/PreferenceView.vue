@@ -33,41 +33,38 @@ const handleCancel = () => {
   isEditing.value = false
 }
 
-const handleApply = async () => {
+const handleApply = () => {
   loading.value = true
 
-  try {
-    await server.put('update-preferences/', {
+  server
+    .put('update-preferences/', {
       avatar: selectedAvatar.value,
       bio: bio.value,
       visibility: visibility.value,
     })
-
+    .then(() => {
       const nonNullUser = userStore.userData!
       nonNullUser.avatar = selectedAvatar.value
       nonNullUser.bio = bio.value
       nonNullUser.visibility = visibility.value
       isEditing.value = false
-      
       messageStore.showMessage('Success', 'Preferences successfully changed!', 'success')
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        if (
-          error.response &&
-          error.response.status === 400 &&
-          'bio' in (error.response.data as object)
-        ) {
-          bioError.value = 'Please enter a bio with at most 300 characters'
-        } else {
-          messageStore.showMessage('Error', 'An unexpected error occurred. Please try again.', 'error')
-        }
+    })
+    .catch((error: AxiosError) => {
+      if (
+        error.response &&
+        error.response.status === 400 &&
+        'bio' in (error.response.data as object)
+      ) {
+        bioError.value = 'Please enter a bio with at most 300 characters'
       } else {
-        messageStore.showMessage('Error', 'An unknown error occurred.', 'error')
+        messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
       }
-    } finally {
+    })
+    .finally(() => {
       loading.value = false
-    }
-  }
+    })
+}
 </script>
 
 <template>
@@ -194,9 +191,8 @@ const handleApply = async () => {
                   prepend-icon="mdi-content-save"
                   color="primaryBlue"
                   block
-                  :loading="loading"
-                  :disabled="loading"
                   @click="handleApply"
+                  :loading="loading"
                 >
                   Apply
                 </v-btn>
