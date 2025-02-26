@@ -11,6 +11,7 @@ import { useMessageStore } from '@/stores/message'
 
 const { mdAndDown } = useDisplay()
 const userStore = useUserStore()
+const gridSize = 4
 const isLoading = ref(true)
 
 const challengeInfos = ref<ChallengeInfo[]>([])
@@ -38,6 +39,69 @@ const fetchBingoGrid = async () => {
     })
 }
 
+const bingoRows = ref<boolean[]>(Array(gridSize).fill(false))
+const bingoCols = ref<boolean[]>(Array(gridSize).fill(false))
+const bingoDiagonal = ref<boolean[]>([false, false]) // [↘, ↙]
+
+const highlightBingo = async () => {
+  try {
+    const response = await server.patch('/complete-challenge/')
+    const { bingo_rows, bingo_cols, bingo_diag, full_bingo } = response.data
+
+    const bingos: BingoType[] = []
+
+    bingo_rows.forEach((row: number) => {
+      if (row !== -1) bingos.push({ type: 'row', index: row } as BingoType)
+    })
+    bingo_cols.forEach((col: number) => {
+      if (col !== -1) bingos.push({ type: 'column', index: col } as BingoType)
+    })
+    if (bingo_diag[0] !== -1) bingos.push({ type: 'diagonal', index: 0 } as BingoType)
+    if (bingo_diag[1] !== -1) bingos.push({ type: 'diagonal', index: 1 } as BingoType)
+
+    if (full_bingo) bingos.push({ type: 'full' } as BingoType)
+
+    for (const bingo of bingos) {
+      await animateBingo(bingo)
+    }
+  } catch (error) {
+    console.error('Failed to get highlighted information of bingo', error)
+  }
+}
+
+interface BingoType {
+  type: 'row' | 'column' | 'diagonal' | 'full'
+  index?: number
+}
+
+const animateBingo = async (bingo: BingoType) => {
+  return new Promise<void>((resolve) => {
+    switch (bingo.type) {
+      case 'row':
+        if (bingo.index !== undefined) bingoRows.value[bingo.index] = true
+        break
+      case 'column':
+        if (bingo.index !== undefined) bingoCols.value[bingo.index] = true
+        break
+      case 'diagonal':
+        if (bingo.index !== undefined) bingoDiagonal.value[bingo.index] = true
+        break
+      case 'full':
+        bingoRows.value.fill(true)
+        bingoCols.value.fill(true)
+        bingoDiagonal.value.fill(true)
+        break
+    }
+
+    setTimeout(() => {
+      bingoRows.value.fill(false)
+      bingoCols.value.fill(false)
+      bingoDiagonal.value.fill(false)
+      resolve()
+    }, 1500)
+  })
+}
+
 const selectedTile = ref<number | null>(null)
 const showChallengeCard = ref(false)
 const currentChallenge = ref<ChallengeInfo>(challengeInfos.value[0])
@@ -57,6 +121,7 @@ const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') 
   if (selectedTile.value !== null) {
     challengeInfos.value[selectedTile.value].status = newStatus
     currentChallenge.value.status = newStatus
+    highlightBingo()
   }
 }
 
@@ -119,6 +184,12 @@ onMounted(() => {
                 :key="`tile-${row}-${col}`"
                 v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
                 :selected="selectedTile === (row - 1) * 4 + (col - 1)"
+                :isBingo="
+                  bingoRows[row - 1] ||
+                  bingoCols[col - 1] ||
+                  (row === col && bingoDiagonal[0]) ||
+                  (row + col === 5 && bingoDiagonal[1])
+                "
                 @click="handleTileClick((row - 1) * 4 + (col - 1))"
               />
             </div>
