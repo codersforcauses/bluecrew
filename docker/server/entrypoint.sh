@@ -28,6 +28,14 @@ python manage.py collectstatic --noinput
 echo "Creating Django Superuser"
 python manage.py createsuperuser --noinput
 
+# Schedule Asynchronous Tasks
+echo "Scheduling Tasks"
+python manage.py schedule_tasks
+
+# Start Django-Q cluster
+echo "Starting Django-Q cluster"
+python manage.py qcluster
+
 # Run inbuilt Django server if ENV is development
 if [ "${APP_ENV^^}" = "DEVELOPMENT" ]; then
 
