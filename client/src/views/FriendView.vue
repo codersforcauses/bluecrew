@@ -407,30 +407,8 @@ onMounted(fetchFriendsData)
   font-weight: bold;
 }
 
-.friend-scroll {
-  max-height: 400px;
-  overflow-y: auto;
-}
-
 .search-field {
   max-width: 100%;
-}
-
-.friend-scroll::-webkit-scrollbar {
-  width: 8px;
-}
-
-.friend-scroll::-webkit-scrollbar-track {
-  background: rgb(var(--v-theme-creamWhite));
-}
-
-.friend-scroll::-webkit-scrollbar-thumb {
-  background: rgb(var(--v-theme-primaryBlue));
-  border-radius: 4px;
-}
-
-.friend-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgb(var(--v-theme-primaryPink));
 }
 
 .font-poppins {
