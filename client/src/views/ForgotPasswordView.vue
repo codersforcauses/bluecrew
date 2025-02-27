@@ -4,6 +4,7 @@ import { useMessageStore } from '@/stores/message'
 import { useUserStore } from '@/stores/user'
 import { useModalStore } from '@/stores/modal'
 import router from '@/router'
+import ErrorCorrectionRequest from '@/components/ErrorCorrectionRequest.vue'
 
 const props = defineProps<{ token?: string; uid?: string }>()
 const messageStore = useMessageStore()
@@ -14,11 +15,16 @@ const password = ref('')
 const confirmPassword = ref('')
 const loading = ref(false)
 const passwordErrors = ref('')
+const formSubmissionAttempted = ref(false)
 const required = (value: string) => !!value || 'Required.'
 const passwordsMatch = (value: string) => value === password.value || 'Passwords do not match.'
 const paramsInvalid = ref(false)
 
 const resetPassword = async () => {
+  formSubmissionAttempted.value = true
+  if (!isValid.value) {
+    return
+  }
   if (props.token && props.uid) {
     loading.value = true
     const resetResult = await userStore.resetPassword(password.value, props.uid, props.token)
@@ -39,6 +45,8 @@ const resetPassword = async () => {
       passwordErrors.value = resetResult[0]
     }
     loading.value = false
+  } else {
+    messageStore.showMessage('Error', 'Invalid password reset link', 'error')
   }
 }
 
@@ -54,7 +62,7 @@ onMounted(() => {
     <div class="reset-password">
       <h2 class="text-primaryGreen">Reset Password</h2>
       <p class="text-primaryGreen">Enter your new password below.</p>
-      <v-form v-model="isValid" @submit.prevent="resetPassword" validate-on="blur">
+      <v-form v-model="isValid" @submit.prevent="resetPassword" validate-on="invalid-input">
         <div class="input-group">
           <label class="text-primaryGreen" for="password">New Password</label>
           <v-text-field
@@ -94,10 +102,10 @@ onMounted(() => {
           font-family="Lilita One, cursive"
           rounded
           type="submit"
-          :disabled="!isValid || paramsInvalid"
           :loading="loading"
           >Reset Password</v-btn
         >
+        <ErrorCorrectionRequest v-if="formSubmissionAttempted && !isValid" />
       </v-form>
     </div>
   </div>
