@@ -4,6 +4,7 @@ import { useModalStore } from '@/stores/modal'
 import { useDisplay } from 'vuetify'
 import { useUserStore } from '@/stores/user'
 import { useMessageStore } from '@/stores/message'
+import ErrorCorrectionRequest from './ErrorCorrectionRequest.vue'
 
 const { xs } = useDisplay()
 const modalStore = useModalStore()
@@ -15,7 +16,9 @@ const password = ref('')
 const email = ref('')
 const emailError = ref('')
 const valid = ref(false)
+const formSubmissionAttempted = ref(false)
 const emailFormValid = ref(false)
+const emailFormSubmissionAttempted = ref(false)
 const loading = ref(false)
 
 const currentPage = ref<'login' | 'forgot-password'>('login')
@@ -45,35 +48,41 @@ const openRegisterModal = () => {
 }
 
 const submitForm = async () => {
-  loading.value = true
-  const body = {
-    username: username.value,
-    password: password.value,
+  formSubmissionAttempted.value = true
+  if (valid.value) {
+    loading.value = true
+    const body = {
+      username: username.value,
+      password: password.value,
+    }
+    const loginResult = await userStore.login(body)
+    if (loginResult === true) {
+      messageStore.showMessage('Success', 'Login success.', 'success')
+      closeDialog()
+    } else if (loginResult === false) {
+      messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
+    } else {
+      errorMessage.value = 'No user with the given username and password was found.'
+    }
+    loading.value = false
   }
-  const loginResult = await userStore.login(body)
-  if (loginResult === true) {
-    messageStore.showMessage('Success', 'Login success.', 'success')
-    closeDialog()
-  } else if (loginResult === false) {
-    messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
-  } else {
-    errorMessage.value = 'No user with the given username and password was found.'
-  }
-  loading.value = false
 }
 
 const requestPasswordReset = async () => {
-  loading.value = true
-  const resetResult = await userStore.requestPasswordReset(email.value)
-  if (resetResult === true) {
-    messageStore.showMessage('Success', 'Reset link sent', 'success')
-    closeDialog()
-  } else if (resetResult === false) {
-    messageStore.showMessage('Error', 'An unexpected error occured.', 'error')
-  } else {
-    emailError.value = resetResult
+  emailFormSubmissionAttempted.value = true
+  if (emailFormValid.value) {
+    loading.value = true
+    const resetResult = await userStore.requestPasswordReset(email.value)
+    if (resetResult === true) {
+      messageStore.showMessage('Success', 'Reset link sent', 'success')
+      closeDialog()
+    } else if (resetResult === false) {
+      messageStore.showMessage('Error', 'An unexpected error occured.', 'error')
+    } else {
+      emailError.value = resetResult
+    }
+    loading.value = false
   }
-  loading.value = false
 }
 </script>
 
@@ -116,7 +125,7 @@ const requestPasswordReset = async () => {
           <p class="text-center mb-4 text-primaryGreen" style="font-family: 'Lilita One', cursive">
             <b>Login to your existing account</b>
           </p>
-          <v-form v-model="valid" validate-on="blur" @submit.prevent="submitForm">
+          <v-form v-model="valid" validate-on="invalid-input" @submit.prevent="submitForm">
             <v-card-subtitle class="text-left subtitle mb-3 pa-0 text-primaryGreen">
               Username
             </v-card-subtitle>
@@ -159,11 +168,11 @@ const requestPasswordReset = async () => {
               rounded
               elevation="12"
               type="submit"
-              :disabled="!valid"
               :loading="loading"
             >
               Sign In
             </v-btn>
+            <ErrorCorrectionRequest v-if="formSubmissionAttempted && !valid" />
           </v-form>
         </v-card-text>
         <v-card-actions class="d-flex justify-center text-primaryGreen">
@@ -187,7 +196,7 @@ const requestPasswordReset = async () => {
           <v-form
             v-model="emailFormValid"
             @submit.prevent="requestPasswordReset"
-            validate-on="blur"
+            validate-on="invalid-input"
           >
             <p class="text-center">Enter your email below and we'll send you a reset link.</p>
             <v-text-field
@@ -212,10 +221,10 @@ const requestPasswordReset = async () => {
               elevation="12"
               :loading="loading"
               type="submit"
-              :disabled="!emailFormValid"
             >
               Send Email
             </v-btn>
+            <ErrorCorrectionRequest v-if="emailFormSubmissionAttempted && !emailFormValid" />
           </v-form>
         </v-card-text>
       </template>
