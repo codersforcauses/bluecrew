@@ -3,9 +3,10 @@ export interface Challenge {
   description: string
   type: 'Connect' | 'Understand' | 'Act'
   points: number
-  image: string | null
+  image?: string
   startDate: string
-  finishDate: string | null
+  finishDate?: string
+  imageDescription?: string
   completed: boolean
 }
 
