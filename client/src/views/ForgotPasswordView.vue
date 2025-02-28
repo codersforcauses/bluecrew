@@ -2,10 +2,13 @@
 import { defineProps, onMounted, ref } from 'vue'
 import { useMessageStore } from '@/stores/message'
 import { useUserStore } from '@/stores/user'
+import { useModalStore } from '@/stores/modal'
+import router from '@/router'
 
 const props = defineProps<{ token?: string; uid?: string }>()
 const messageStore = useMessageStore()
 const userStore = useUserStore()
+const modalStore = useModalStore()
 const isValid = ref(false)
 const password = ref('')
 const confirmPassword = ref('')
@@ -21,6 +24,8 @@ const resetPassword = async () => {
     const resetResult = await userStore.resetPassword(password.value, props.uid, props.token)
     if (resetResult === true) {
       messageStore.showMessage('Success', 'Password has been reset', 'success')
+      router.replace('/')
+      modalStore.openLogin()
     } else if (resetResult === false) {
       messageStore.showMessage(
         'Error',

@@ -206,7 +206,7 @@ const openLoginModal = () => {
           <template v-if="currentPage === 'register'">
             <div class="header">
               <button class="close-button" @click="closeDialog">
-                <v-icon icon="mdi-close-circle-outline"></v-icon>
+                <v-icon icon="mdi-close-circle-outline" />
               </button>
               <img src="/blingo-logo.svg" alt="logo" class="logo" />
             </div>
@@ -270,7 +270,7 @@ const openLoginModal = () => {
           <template v-if="currentPage === 'confirmation'">
             <div class="header">
               <button class="close-button" @click="closeDialog">
-                <v-icon icon="mdi-close-circle-outline"></v-icon>
+                <v-icon icon="mdi-close-circle-outline" />
               </button>
               <img src="/blingo-logo.svg" alt="Blingo Logo" class="logo" />
             </div>

@@ -136,13 +136,17 @@ class ProfilePageTileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TileInteraction
-        fields = ["image", "date_started", "date_completed", "completed"]
+        fields = ("image", "date_started", "date_completed",
+                  "completed", "description")
 
     def to_representation(self, instance):
         # This ensures the field names match the TypeScript interface
         data = super().to_representation(instance)
         data["finishDate"] = data.pop("date_completed")
         data["startDate"] = data.pop("date_started")
+        possibly_blank_description = data.pop("description")
+        if possibly_blank_description:
+            data["imageDescription"] = possibly_blank_description
         return data
 
 

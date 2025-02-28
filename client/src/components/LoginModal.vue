@@ -90,13 +90,13 @@ const requestPasswordReset = async () => {
         <v-row align="center">
           <template v-if="currentPage === 'forgot-password'">
             <button class="back-button" @click="setCurrentPage('login')">
-              <v-icon icon="mdi-arrow-left"></v-icon>
+              <v-icon icon="mdi-arrow-left" />
             </button>
           </template>
           <v-spacer />
 
           <button class="close-button" @click="closeDialog">
-            <v-icon icon="mdi-close-circle-outline"></v-icon>
+            <v-icon icon="mdi-close-circle-outline" />
           </button>
         </v-row>
       </v-container>
@@ -130,7 +130,7 @@ const requestPasswordReset = async () => {
               variant="outlined"
               :error-messages="errorMessage"
               @focus="errorMessage = ''"
-            ></v-text-field>
+            />
             <v-card-subtitle class="text-left subtitle mt-3 mb-3 pa-0 text-primaryGreen">
               Password
             </v-card-subtitle>
@@ -145,7 +145,7 @@ const requestPasswordReset = async () => {
               variant="outlined"
               :error-messages="errorMessage"
               @focus="errorMessage = ''"
-            ></v-text-field>
+            />
             <div class="mt-3">
               <a
                 class="text-subtitle-2 margin-left-adjust text-primaryGreen cursor-pointer"

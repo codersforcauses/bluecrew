@@ -88,7 +88,8 @@ def request_password_reset(request):
         f"{settings.FRONTEND_URL}/forgot-password/?uid64={encoded_user}&token={token}")
     content = render_to_string(
         "password_reset.html",
-        context={"url": url}
+        context={"url": url, "username": user.username,
+                 "name": user.first_name}
     )
     message = EmailMessage(
         "Bingo Password Reset",

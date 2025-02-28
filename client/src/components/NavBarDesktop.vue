@@ -1,6 +1,6 @@
 <template>
   <v-toolbar class="nav-bar bg-primaryWhite" density="comfortable">
-    <v-spacer></v-spacer>
+    <v-spacer />
     <v-toolbar-items class="nav-bar-items">
       <v-btn
         v-for="(page, index) in pages"
