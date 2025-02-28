@@ -3,7 +3,7 @@ export interface Challenge {
   description: string
   type: 'Connect' | 'Understand' | 'Act'
   points: number
-  image?: string
+  image: string | null
   startDate: string
   finishDate?: string
   imageDescription?: string
