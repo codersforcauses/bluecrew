@@ -63,7 +63,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     visibility = models.IntegerField(
         choices=Visibility,
         blank=False,
-        default=0
+        default=1
     )
 
     class Gender(models.IntegerChoices):
