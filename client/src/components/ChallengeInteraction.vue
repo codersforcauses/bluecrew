@@ -56,7 +56,13 @@ defineProps<Challenge>()
       <div v-show="show">
         <v-divider class="my-1" />
         <v-card-text>
-          <v-img width="100%" cover :src="`${backendUrl}${image}`" />
+          <template v-if="image">
+            <v-img class="user-image" :src="`${backendUrl}${image}`" />
+            <p v-if="imageDescription" class="font-weight-bold mt-4">
+              Description: <span class="font-weight-regular">{{ imageDescription }}</span>
+            </p>
+          </template>
+          <p v-else>No evidence found for this challenge :(</p>
         </v-card-text>
       </div>
     </v-expand-transition>
@@ -86,5 +92,9 @@ defineProps<Challenge>()
   font-size: 14px;
   color: #4a4a4a;
   font-family: poppins;
+}
+
+.user-image {
+  max-height: 80vh;
 }
 </style>
