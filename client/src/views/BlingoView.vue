@@ -39,34 +39,11 @@ const fetchBingoGrid = async () => {
     })
 }
 
-const bingoRows = ref<boolean[]>(Array(gridSize).fill(false))
-const bingoCols = ref<boolean[]>(Array(gridSize).fill(false))
-const bingoDiagonal = ref<boolean[]>([false, false]) // [↘, ↙]
-
-const highlightBingo = async () => {
-  try {
-    const response = await server.patch('/complete-challenge/')
-    const { bingo_rows, bingo_cols, bingo_diag, full_bingo } = response.data
-
-    const bingos: BingoType[] = []
-
-    bingo_rows.forEach((row: number) => {
-      if (row !== -1) bingos.push({ type: 'row', index: row } as BingoType)
-    })
-    bingo_cols.forEach((col: number) => {
-      if (col !== -1) bingos.push({ type: 'column', index: col } as BingoType)
-    })
-    if (bingo_diag[0] !== -1) bingos.push({ type: 'diagonal', index: 0 } as BingoType)
-    if (bingo_diag[1] !== -1) bingos.push({ type: 'diagonal', index: 1 } as BingoType)
-
-    if (full_bingo) bingos.push({ type: 'full' } as BingoType)
-
-    for (const bingo of bingos) {
-      await animateBingo(bingo)
-    }
-  } catch (error) {
-    console.error('Failed to get highlighted information of bingo', error)
-  }
+interface BingoData {
+  bingo_rows: number[]
+  bingo_cols: number[]
+  bingo_diag: number[]
+  full_bingo: boolean
 }
 
 interface BingoType {
@@ -74,29 +51,107 @@ interface BingoType {
   index?: number
 }
 
+const bingoRows = ref<boolean[]>(Array(gridSize).fill(false))
+const bingoCols = ref<boolean[]>(Array(gridSize).fill(false))
+const bingoDiagonal = ref<boolean[]>([false, false]) // [↘, ↙]
+
+const handleBingoCompleted = (bingoData: BingoData) => {
+  console.log('✅ Received Bingo Data:', bingoData)
+
+  const bingo_rows = Array.isArray(bingoData.bingo_rows)
+    ? bingoData.bingo_rows.filter((r) => r >= 0 && r < gridSize)
+    : []
+  const bingo_cols = Array.isArray(bingoData.bingo_cols)
+    ? bingoData.bingo_cols.filter((c) => (c >= 0 && c < gridSize) || c === -1)
+    : []
+  const bingo_diag = Array.isArray(bingoData.bingo_diag)
+    ? bingoData.bingo_diag.filter((d) => d === 0 || d === 3 || d === -1)
+    : []
+  const full_bingo = !!bingoData.full_bingo
+
+  console.log('📊 Processed Bingo Data:', {
+    Rows: bingo_rows,
+    Columns: bingo_cols,
+    Diagonal: bingo_diag,
+    FullBingo: full_bingo,
+  })
+
+  const bingos: BingoType[] = []
+
+  bingo_rows.forEach((row) => {
+    if (row >= 0 && row < gridSize) {
+      console.log(`📢 Row Bingo Achieved at Row ${row}`)
+      bingos.push({ type: 'row', index: row } as BingoType)
+    }
+  })
+
+  bingo_cols.forEach((col) => {
+    if (col >= 0 && col < gridSize) {
+      console.log(`📢 Column Bingo Achieved at Column ${col}`)
+      bingos.push({ type: 'column', index: col } as BingoType)
+    }
+  })
+
+  bingo_diag.forEach((diag) => {
+    if (diag === 0 || diag === 3) {
+      console.log(`📢 Diagonal Bingo Achieved at Index ${diag}`)
+      bingos.push({ type: 'diagonal', index: diag } as BingoType)
+    }
+  })
+
+  if (full_bingo) {
+    console.log('🎉 Full Bingo Achieved!')
+    bingos.push({ type: 'full' } as BingoType)
+  }
+
+  if (bingos.length > 0) {
+    ;(async () => {
+      for (const bingo of bingos) {
+        await animateBingo(bingo)
+      }
+    })()
+  } else {
+    console.warn('⚠️ No Bingo Achieved! Stopping animation.')
+  }
+}
+
 const animateBingo = async (bingo: BingoType) => {
   return new Promise<void>((resolve) => {
     switch (bingo.type) {
       case 'row':
-        if (bingo.index !== undefined) bingoRows.value[bingo.index] = true
+        if (bingo.index !== undefined) {
+          const updatedRows = [...bingoRows.value]
+          updatedRows[bingo.index] = true
+          bingoRows.value = updatedRows
+        }
         break
       case 'column':
-        if (bingo.index !== undefined) bingoCols.value[bingo.index] = true
+        if (bingo.index !== undefined) {
+          const updatedCols = [...bingoCols.value]
+          updatedCols[bingo.index] = true
+          bingoCols.value = updatedCols
+        }
         break
       case 'diagonal':
-        if (bingo.index !== undefined) bingoDiagonal.value[bingo.index] = true
+        if (bingo.index !== undefined) {
+          const updatedDiag = [...bingoDiagonal.value]
+          updatedDiag[bingo.index] = true
+          bingoDiagonal.value = updatedDiag
+        }
         break
       case 'full':
-        bingoRows.value.fill(true)
-        bingoCols.value.fill(true)
-        bingoDiagonal.value.fill(true)
+        bingoRows.value = Array(gridSize).fill(true)
+        bingoCols.value = Array(gridSize).fill(true)
+        bingoDiagonal.value = [true, true]
         break
     }
 
+    console.log('🔥 Bingo Highlight Triggered:', bingo)
+
     setTimeout(() => {
-      bingoRows.value.fill(false)
-      bingoCols.value.fill(false)
-      bingoDiagonal.value.fill(false)
+      bingoRows.value = Array(gridSize).fill(false)
+      bingoCols.value = Array(gridSize).fill(false)
+      bingoDiagonal.value = [false, false]
       resolve()
     }, 1500)
   })
@@ -119,9 +174,9 @@ const handleCloseChallenge = () => {
 
 const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') => {
   if (selectedTile.value !== null) {
+    console.log('Status changed')
     challengeInfos.value[selectedTile.value].status = newStatus
     currentChallenge.value.status = newStatus
-    highlightBingo()
   }
 }
 
@@ -153,6 +208,7 @@ onMounted(() => {
             :is-logged-in="userStore.isLoggedIn"
             @close="handleCloseChallenge"
             @status-change="handleStatusChange"
+            @bingoCompleted="handleBingoCompleted"
           />
         </component>
 
@@ -188,7 +244,7 @@ onMounted(() => {
                   bingoRows[row - 1] ||
                   bingoCols[col - 1] ||
                   (row === col && bingoDiagonal[0]) ||
-                  (row + col === 5 && bingoDiagonal[1])
+                  (row + col === gridSize + 1 && !!bingoDiagonal[1])
                 "
                 @click="handleTileClick((row - 1) * 4 + (col - 1))"
               />

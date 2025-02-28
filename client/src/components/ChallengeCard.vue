@@ -14,6 +14,14 @@ interface TaskSubmission {
   canShareOnSocialMedia: boolean
 }
 
+// Define interface for Bingo conditions
+interface BingoData {
+  bingo_rows: number[]
+  bingo_cols: number[]
+  bingo_diag: number[]
+  full_bingo: boolean
+}
+
 // Initialize modal store
 const modalStore = useModalStore()
 const messageStore = useMessageStore()
@@ -32,6 +40,7 @@ const emit = defineEmits<{
   (evt: 'close'): void
   (evt: 'status-change', status: ChallengeStatus): void
   (evt: 'task-completed', submission: TaskSubmission): void
+  (evt: 'bingoCompleted', bingoData: BingoData): void
 }>()
 
 // Define icons for different challenge types
@@ -114,9 +123,11 @@ const finish = () => {
         'Content-Type': 'multipart/form-data; boundary=${data._boundary}',
       },
     })
-    .then(() => {
+    .then((response) => {
       emit('task-completed', taskSubmission.value)
       emit('status-change', 'completed')
+      console.log('Bingo API Response:', response.data)
+      emit('bingoCompleted', response.data)
       taskSubmission.value.description = ''
       taskSubmission.value.image = null
       taskSubmission.value.canShareOnSocialMedia = false
