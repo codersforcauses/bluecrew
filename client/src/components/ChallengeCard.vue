@@ -31,9 +31,7 @@ const finishButtonDisabled = computed(() => maxLength(taskSubmission.value.descr
 // Define emits for component events
 const emit = defineEmits<{
   (evt: 'close'): void
-  (evt: 'status-change', status: ChallengeStatus): void
-  (evt: 'task-completed', submission: TaskSubmission): void
-  (evt: 'bingo-completed', bingoData: BingoData): void
+  (evt: 'status-change', status: ChallengeStatus, bingoData: BingoData | undefined): void
 }>()
 
 // Define icons for different challenge types
@@ -71,7 +69,7 @@ const startTask = () => {
   }
   server
     .post('/start-challenge/', { position: props.position })
-    .then(() => emit('status-change', 'started'))
+    .then(() => emit('status-change', 'started', undefined))
     .catch(() => {
       messageStore.showMessage(
         'Error',
@@ -117,9 +115,7 @@ const finish = () => {
       },
     })
     .then((response) => {
-      emit('task-completed', taskSubmission.value)
-      emit('status-change', 'completed')
-      emit('bingo-completed', response.data)
+      emit('status-change', 'completed', response.data as BingoData)
       taskSubmission.value.description = ''
       taskSubmission.value.image = null
       taskSubmission.value.canShareOnSocialMedia = false

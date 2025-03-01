@@ -40,107 +40,54 @@ const fetchBingoGrid = async () => {
     })
 }
 
-const bingoRows = ref<boolean[]>(Array(gridSize).fill(false))
-const bingoCols = ref<boolean[]>(Array(gridSize).fill(false))
-const bingoDiagonal = ref<boolean[]>([false, false]) // [↘, ↙]
+const explodingLocations = ref<boolean[]>(Array(gridSize * gridSize).fill(false))
+const bingoLocations = ref<boolean[]>(Array(gridSize * gridSize).fill(false))
 
-const handleBingoCompleted = (bingoData: BingoData) => {
-  console.log('✅ Received Bingo Data:', bingoData)
-
-  const bingo_rows = Array.isArray(bingoData.bingo_rows)
-    ? bingoData.bingo_rows.filter((r) => r >= 0 && r < gridSize)
-    : []
-  const bingo_cols = Array.isArray(bingoData.bingo_cols)
-    ? bingoData.bingo_cols.filter((c) => (c >= 0 && c < gridSize) || c === -1)
-    : []
-  const bingo_diag = Array.isArray(bingoData.bingo_diag)
-    ? bingoData.bingo_diag.filter((d) => d === 0 || d === 3 || d === -1)
-    : []
-  const full_bingo = !!bingoData.full_bingo
-
-  console.log('📊 Processed Bingo Data:', {
-    Rows: bingo_rows,
-    Columns: bingo_cols,
-    Diagonal: bingo_diag,
-    FullBingo: full_bingo,
-  })
-
-  const bingos: BingoType[] = []
-
-  bingo_rows.forEach((row) => {
-    if (row >= 0 && row < gridSize) {
-      console.log(`📢 Row Bingo Achieved at Row ${row}`)
-      bingos.push({ type: 'row', index: row } as BingoType)
-    }
-  })
-
-  bingo_cols.forEach((col) => {
-    if (col >= 0 && col < gridSize) {
-      console.log(`📢 Column Bingo Achieved at Column ${col}`)
-      bingos.push({ type: 'column', index: col } as BingoType)
-    }
-  })
-
-  bingo_diag.forEach((diag) => {
-    if (diag === 0 || diag === 3) {
-      console.log(`📢 Diagonal Bingo Achieved at Index ${diag}`)
-      bingos.push({ type: 'diagonal', index: diag } as BingoType)
-    }
-  })
-
-  if (full_bingo) {
-    console.log('🎉 Full Bingo Achieved!')
-    bingos.push({ type: 'full' } as BingoType)
-  }
-
-  if (bingos.length > 0) {
-    ;(async () => {
-      for (const bingo of bingos) {
-        await animateBingo(bingo)
-      }
-    })()
-  } else {
-    console.warn('⚠️ No Bingo Achieved! Stopping animation.')
-  }
-}
-
-const animateBingo = async (bingo: BingoType) => {
+const animateBingo = async (bingoType: BingoType, index?: number) => {
   return new Promise<void>((resolve) => {
-    switch (bingo.type) {
+    switch (bingoType) {
       case 'row':
-        if (bingo.index !== undefined) {
-          const updatedRows = [...bingoRows.value]
-          updatedRows[bingo.index] = true
-          bingoRows.value = updatedRows
+        if (index !== undefined) {
+          for (let i = 0; i < gridSize; i++) {
+            bingoLocations.value[4 * index + i] = true
+          }
         }
         break
       case 'column':
-        if (bingo.index !== undefined) {
-          const updatedCols = [...bingoCols.value]
-          updatedCols[bingo.index] = true
-          bingoCols.value = updatedCols
+        if (index !== undefined) {
+          for (let i = 0; i < gridSize; i++) {
+            bingoLocations.value[index + 4 * i] = true
+          }
         }
         break
       case 'diagonal':
-        if (bingo.index !== undefined) {
-          const updatedDiag = [...bingoDiagonal.value]
-          updatedDiag[bingo.index] = true
-          bingoDiagonal.value = updatedDiag
+        if (index !== undefined) {
+          for (let i = 0; i < gridSize; i++) {
+            bingoLocations.value[index + (index === 0 ? 5 : 3) * i] = true
+          }
         }
         break
       case 'full':
-        bingoRows.value = Array(gridSize).fill(true)
-        bingoCols.value = Array(gridSize).fill(true)
-        bingoDiagonal.value = [true, true]
+        bingoLocations.value = Array(gridSize * gridSize).fill(true)
         break
     }
 
-    console.log('🔥 Bingo Highlight Triggered:', bingo)
-
+    console.log('🔥 Bingo Highlight Triggered:', bingoType, index)
     setTimeout(() => {
-      bingoRows.value = Array(gridSize).fill(false)
-      bingoCols.value = Array(gridSize).fill(false)
-      bingoDiagonal.value = [false, false]
+      bingoLocations.value = Array(gridSize * gridSize).fill(false)
+      // we need to wait a short additional bit of time to ensure that certain indices
+      // of bingoLocations.value don't get immediately toggled back, which would mean
+      // that the animation would never be restarted
+      setTimeout(() => resolve(), 200)
+    }, 1000)
+  })
+}
+
+const animateTileCompletion = (tileIndex: number) => {
+  return new Promise<void>((resolve) => {
+    explodingLocations.value[tileIndex] = true
+    setTimeout(() => {
+      explodingLocations.value[tileIndex] = false
       resolve()
     }, 1500)
   })
@@ -159,15 +106,43 @@ const handleCloseChallenge = () => {
   selectedTile.value = null
 }
 
-const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') => {
+const handleStatusChange = async (
+  status: 'not started' | 'started' | 'completed',
+  bingoData: BingoData | undefined,
+) => {
   if (selectedTile.value !== null) {
-    challengeInfos.value[selectedTile.value].status = newStatus
-    if (newStatus === 'completed') {
+    challengeInfos.value[selectedTile.value].status = status
+    if (status === 'completed') {
+      const tileIndex = selectedTile.value
       // if a challenge is completed, close the challenge card so that the animations can be seen
       showChallengeCard.value = false
       selectedTile.value = null
+      // animation tile completion
+      await animateTileCompletion(tileIndex)
+      // now animate any bingos
+      if (bingoData) {
+        if (bingoData.bingo_row !== -1) {
+          await animateBingo('row', bingoData.bingo_row)
+        }
+        if (bingoData.bingo_col !== -1) {
+          await animateBingo('column', bingoData.bingo_col)
+        }
+        if (bingoData.bingo_diag !== -1) {
+          await animateBingo('diagonal', bingoData.bingo_diag)
+        }
+        if (bingoData.full_bingo) {
+          await animateBingo('full')
+        }
+      }
     }
   }
+}
+
+async function temp() {
+  await animateBingo('column', 1)
+  await animateBingo('row', 0)
+  await animateBingo('diagonal', 3)
+  await animateBingo('full')
 }
 
 onMounted(() => {
@@ -177,7 +152,7 @@ onMounted(() => {
 
 <template>
   <WaveBanner imageSrc="/homepage-scaled.jpg" />
-  <v-btn>temp</v-btn>
+  <v-btn @click="temp">temp</v-btn>
   <v-container :class="{ vertical: mdAndDown }">
     <v-row>
       <v-col lg="5" cols="12">
@@ -199,7 +174,6 @@ onMounted(() => {
             :is-logged-in="userStore.isLoggedIn"
             @close="handleCloseChallenge"
             @status-change="handleStatusChange"
-            @bingo-completed="handleBingoCompleted"
           />
         </component>
 
@@ -225,18 +199,18 @@ onMounted(() => {
 
         <template v-else>
           <div class="grid-content">
+            <div class="reward-text">
+              <p>Challenge Complete!</p>
+              <p>+100 points</p>
+            </div>
             <div class="d-flex justify-center" v-for="row in 4" :key="`row-${row}`">
               <BingoTile
                 v-for="col in 4"
                 :key="`tile-${row}-${col}`"
                 v-bind="challengeInfos[(row - 1) * 4 + (col - 1)]"
                 :selected="selectedTile === (row - 1) * 4 + (col - 1)"
-                :isBingo="
-                  bingoRows[row - 1] ||
-                  bingoCols[col - 1] ||
-                  (row === col && bingoDiagonal[0]) ||
-                  (row + col === gridSize + 1 && !!bingoDiagonal[1])
-                "
+                :is-exploding="explodingLocations[(row - 1) * 4 + (col - 1)]"
+                :isInBingo="bingoLocations[(row - 1) * 4 + (col - 1)]"
                 @click="handleTileClick((row - 1) * 4 + (col - 1))"
               />
             </div>
@@ -257,6 +231,7 @@ onMounted(() => {
   width: 100%;
   display: inline-block;
   transform-origin: center;
+  position: relative;
 }
 
 .blingo-title {
@@ -285,5 +260,18 @@ onMounted(() => {
   font-weight: bold;
   margin: 0.5rem 0;
   font-size: 1rem;
+}
+
+.reward-text {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  color: #009d00;
+  font-size: 20px;
+  font-weight: semibold;
+  font-family: Lilita One;
+  text-shadow: 1px 1px 2px black;
+  z-index: 2000;
 }
 </style>

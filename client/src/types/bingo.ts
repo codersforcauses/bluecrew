@@ -1,11 +1,21 @@
+import type { ChallengeStatus, ChallengeType } from './challenge'
+
 export interface BingoData {
-  bingo_rows: number[]
-  bingo_cols: number[]
-  bingo_diag: number[]
+  challenge_points: number
+  bingo_row: -1 | 0 | 1 | 2 | 3
+  bingo_col: -1 | 0 | 1 | 2 | 3
+  bingo_diag: -1 | 0 | 3
   full_bingo: boolean
+  bingo_points: number
 }
 
-export interface BingoType {
-  type: 'row' | 'column' | 'diagonal' | 'full'
-  index?: number
+export interface BingoTileProps {
+  title: string
+  type: ChallengeType
+  selected: boolean
+  status: ChallengeStatus
+  isExploding: boolean
+  isInBingo: boolean
 }
+
+export type BingoType = 'row' | 'column' | 'diagonal' | 'full'

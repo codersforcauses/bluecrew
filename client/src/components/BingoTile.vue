@@ -1,41 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import type { ChallengeType, ChallengeStatus } from '@/types/challenge'
+import { computed } from 'vue'
+import type { BingoTileProps } from '@/types/bingo'
 
-const props = defineProps<{
-  type: ChallengeType
-  title: string
-  status: ChallengeStatus
-  selected: boolean
-  isBingo: boolean
-}>()
-
-const isExploding = ref(false)
-const isFlashing = ref(false)
-
-watch(
-  () => props.isBingo,
-  (newBingo) => {
-    if (newBingo) {
-      isFlashing.value = true
-      setTimeout(() => {
-        isFlashing.value = false
-      }, 1500)
-    }
-  },
-)
-
-watch(
-  () => props.status,
-  (newStatus) => {
-    if (newStatus === 'completed') {
-      isExploding.value = true
-      setTimeout(() => {
-        isExploding.value = false
-      }, 1000)
-    }
-  },
-)
+const props = defineProps<BingoTileProps>()
 
 // Compute icon based on challenge type
 const icon = computed(() => {
@@ -52,11 +19,11 @@ const icon = computed(() => {
 const backgroundColour = computed(() => {
   switch (props.status) {
     case 'started':
-      return 'bg-primaryGreen'
+      return 'bg-primaryGreen-unimportant'
     case 'completed':
-      return 'bg-lightBlue'
+      return 'bg-lightBlue-unimportant'
     default:
-      return 'bg-creamWhite'
+      return 'bg-creamWhite-unimportant'
   }
 })
 
@@ -72,7 +39,7 @@ const textColour = computed(() => {
 
 const iconBackground = computed(() => {
   switch (backgroundColour.value) {
-    case 'bg-creamWhite':
+    case 'bg-creamWhite-unimportant':
       return 'dark'
     default:
       return 'light'
@@ -82,12 +49,11 @@ const iconBackground = computed(() => {
 
 <template>
   <div
-    v-show="isExploding"
     :class="[
-      backgroundColour,
       textColour,
+      backgroundColour,
       selected ? 'border-selected' : 'border-subtle',
-      isBingo ? 'bingo-highlight' : '',
+      isInBingo ? 'bingo-highlight' : '',
       isExploding ? 'explode-animation' : '',
     ]"
     class="outer-tile rounded-lg d-flex flex-column align-center cursor-pointer"
@@ -102,40 +68,32 @@ const iconBackground = computed(() => {
 .explode-animation {
   z-index: 1000;
   transform-origin: center;
-  animation: explode 1s ease-out 0.3s forwards;
+  animation: explode 1s ease-out 0.3s;
 }
 
 @keyframes explode {
-  0% {
+  from {
     transform: scale(1);
     opacity: 1;
   }
 
-  100% {
+  to {
     transform: scale(2);
     opacity: 0;
   }
 }
 
-@keyframes bingo-flash {
-  0% {
-    opacity: 1;
-    box-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
-  }
-
-  50% {
-    opacity: 0.5;
-    box-shadow: 0 0 20px rgba(255, 255, 0, 1);
-  }
-
-  100% {
-    opacity: 1;
-    box-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
-  }
+/* defining these classes so that they can be overriden in an animation */
+.bg-primaryGreen-unimportant {
+  background-color: rgb(var(--v-theme-primaryGreen));
 }
 
-.bingo-highlight {
-  animation: bingo-flash 1s ease-in-out infinite;
+.bg-lightBlue-unimportant {
+  background-color: rgb(var(--v-theme-lightBlue));
+}
+
+.bg-creamWhite-unimportant {
+  background-color: rgb(var(--v-theme-creamWhite));
 }
 
 .outer-tile {
@@ -151,6 +109,21 @@ const iconBackground = computed(() => {
   justify-content: center;
   position: relative;
   overflow: hidden;
+}
+
+.bingo-highlight {
+  animation: bingo-flash 1s ease-in-out;
+}
+
+@keyframes bingo-flash {
+  0%,
+  100% {
+    background-color: rgb(var(--v-theme-lightBlue));
+  }
+
+  50% {
+    background-color: #3fe0d5;
+  }
 }
 
 .border-subtle {
