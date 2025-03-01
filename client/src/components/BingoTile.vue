@@ -52,6 +52,7 @@ const iconBackground = computed(() => {
     :class="[
       textColour,
       backgroundColour,
+      interactionAllowed ? 'cursor-pointer' : 'cursor-not-allowed',
       selected ? 'border-selected' : 'border-subtle',
       isInBingo ? 'bingo-highlight' : '',
       isExploding ? 'explode-animation' : '',

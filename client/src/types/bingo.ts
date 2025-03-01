@@ -16,6 +16,7 @@ export interface BingoTileProps {
   status: ChallengeStatus
   isExploding: boolean
   isInBingo: boolean
+  interactionAllowed: boolean
 }
 
 export type BingoType = 'row' | 'column' | 'diagonal' | 'full'

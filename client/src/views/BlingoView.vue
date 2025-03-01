@@ -248,6 +248,7 @@ onMounted(() => {
                 :is-exploding="explodingLocations[(row - 1) * 4 + (col - 1)]"
                 :isInBingo="bingoLocations[(row - 1) * 4 + (col - 1)]"
                 @click="handleTileClick((row - 1) * 4 + (col - 1))"
+                :interaction-allowed="!tileInteractionsOff"
               />
             </div>
           </div>
