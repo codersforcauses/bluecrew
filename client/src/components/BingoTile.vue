@@ -32,7 +32,7 @@ watch(
       isExploding.value = true
       setTimeout(() => {
         isExploding.value = false
-      }, 500)
+      }, 1000)
     }
   },
 )
@@ -81,44 +81,38 @@ const iconBackground = computed(() => {
 </script>
 
 <template>
-  <transition name="explode">
-    <div
-      v-if="!isExploding"
-      :class="[
-        backgroundColour,
-        textColour,
-        selected ? 'border-selected' : 'border-subtle',
-        isBingo ? 'bingo-highlight' : '',
-      ]"
-      class="outer-tile rounded-lg d-flex flex-column align-center cursor-pointer"
-      :title="title"
-    >
-      <v-img class="icon" :class="iconBackground" :src="icon" />
-      <p class="tile-text text-center font-weight-bold">{{ title }}</p>
-    </div>
-  </transition>
+  <div
+    v-show="isExploding"
+    :class="[
+      backgroundColour,
+      textColour,
+      selected ? 'border-selected' : 'border-subtle',
+      isBingo ? 'bingo-highlight' : '',
+      isExploding ? 'explode-animation' : '',
+    ]"
+    class="outer-tile rounded-lg d-flex flex-column align-center cursor-pointer"
+    :title="title"
+  >
+    <v-img class="icon" :class="iconBackground" :src="icon" />
+    <p class="tile-text text-center font-weight-bold">{{ title }}</p>
+  </div>
 </template>
 
 <style scoped>
-.explode-enter-active {
-  position: absolute;
-  left: 50%;
-  top: 50%;
+.explode-animation {
+  z-index: 1000;
   transform-origin: center;
-  animation: explode 0.5s ease-out forwards;
+  animation: explode 1s ease-out 0.3s forwards;
 }
 
 @keyframes explode {
   0% {
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
     opacity: 1;
   }
-  50% {
-    transform: translate(-50%, -50%) scale(1.5);
-    opacity: 0.5;
-  }
+
   100% {
-    transform: translate(-50%, -50%) scale(2);
+    transform: scale(2);
     opacity: 0;
   }
 }
@@ -128,10 +122,12 @@ const iconBackground = computed(() => {
     opacity: 1;
     box-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
   }
+
   50% {
     opacity: 0.5;
     box-shadow: 0 0 20px rgba(255, 255, 0, 1);
   }
+
   100% {
     opacity: 1;
     box-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
@@ -191,6 +187,7 @@ const iconBackground = computed(() => {
 .icon.light {
   filter: invert();
 }
+
 .icon.dark {
   filter: contrast(100%) brightness(0%);
 }

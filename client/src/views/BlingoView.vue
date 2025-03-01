@@ -8,6 +8,7 @@ import ChallengeCard from '@/components/ChallengeCard.vue'
 import WaveBanner from '@/components/WaveBanner.vue'
 import server from '@/utils/server'
 import { useMessageStore } from '@/stores/message'
+import type { BingoData, BingoType } from '@/types/bingo'
 
 const { mdAndDown } = useDisplay()
 const userStore = useUserStore()
@@ -37,18 +38,6 @@ const fetchBingoGrid = async () => {
     .catch(() => {
       messageStore.showMessage('Error', 'Unexpected occured while fetching challenges.', 'error')
     })
-}
-
-interface BingoData {
-  bingo_rows: number[]
-  bingo_cols: number[]
-  bingo_diag: number[]
-  full_bingo: boolean
-}
-
-interface BingoType {
-  type: 'row' | 'column' | 'diagonal' | 'full'
-  index?: number
 }
 
 const bingoRows = ref<boolean[]>(Array(gridSize).fill(false))
@@ -159,11 +148,9 @@ const animateBingo = async (bingo: BingoType) => {
 
 const selectedTile = ref<number | null>(null)
 const showChallengeCard = ref(false)
-const currentChallenge = ref<ChallengeInfo>(challengeInfos.value[0])
 
 const handleTileClick = (index: number) => {
   selectedTile.value = index
-  currentChallenge.value = challengeInfos.value[index]
   showChallengeCard.value = true
 }
 
@@ -174,9 +161,12 @@ const handleCloseChallenge = () => {
 
 const handleStatusChange = (newStatus: 'not started' | 'started' | 'completed') => {
   if (selectedTile.value !== null) {
-    console.log('Status changed')
     challengeInfos.value[selectedTile.value].status = newStatus
-    currentChallenge.value.status = newStatus
+    if (newStatus === 'completed') {
+      // if a challenge is completed, close the challenge card so that the animations can be seen
+      showChallengeCard.value = false
+      selectedTile.value = null
+    }
   }
 }
 
@@ -187,6 +177,7 @@ onMounted(() => {
 
 <template>
   <WaveBanner imageSrc="/homepage-scaled.jpg" />
+  <v-btn>temp</v-btn>
   <v-container :class="{ vertical: mdAndDown }">
     <v-row>
       <v-col lg="5" cols="12">
@@ -203,12 +194,12 @@ onMounted(() => {
           transition="dialog-bottom-transition"
         >
           <ChallengeCard
-            v-bind="currentChallenge"
+            v-bind="challengeInfos[selectedTile]"
             :position="selectedTile"
             :is-logged-in="userStore.isLoggedIn"
             @close="handleCloseChallenge"
             @status-change="handleStatusChange"
-            @bingoCompleted="handleBingoCompleted"
+            @bingo-completed="handleBingoCompleted"
           />
         </component>
 
