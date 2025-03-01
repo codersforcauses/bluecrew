@@ -68,7 +68,7 @@ const iconBackground = computed(() => {
 .explode-animation {
   z-index: 1000;
   transform-origin: center;
-  animation: explode 1s ease-out 0.3s;
+  animation: explode 1s ease-out 0.2s;
 }
 
 @keyframes explode {
@@ -112,7 +112,7 @@ const iconBackground = computed(() => {
 }
 
 .bingo-highlight {
-  animation: bingo-flash 1s ease-in-out;
+  animation: bingo-flash 1.5s ease-in-out;
 }
 
 @keyframes bingo-flash {

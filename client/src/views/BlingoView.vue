@@ -14,9 +14,20 @@ const { mdAndDown } = useDisplay()
 const userStore = useUserStore()
 const gridSize = 4
 const isLoading = ref(true)
-
 const challengeInfos = ref<ChallengeInfo[]>([])
 const messageStore = useMessageStore()
+const tileInteractionsOff = ref<boolean>(false)
+
+const explodingLocations = ref<boolean[]>(Array(gridSize * gridSize).fill(false))
+const bingoLocations = ref<boolean[]>(Array(gridSize * gridSize).fill(false))
+const showReward = ref<boolean>(false)
+const rewardText = ref<string>('')
+const rewardPoints = ref<number>(0)
+
+const explosionAnimationLength = 2000
+const bingoAnimationLength = 1500
+const rewardAnimationEntryLength = 2000
+const rewardAnimationLeaveLength = 800
 
 const fetchBingoGrid = async () => {
   isLoading.value = true
@@ -39,9 +50,6 @@ const fetchBingoGrid = async () => {
       messageStore.showMessage('Error', 'Unexpected occured while fetching challenges.', 'error')
     })
 }
-
-const explodingLocations = ref<boolean[]>(Array(gridSize * gridSize).fill(false))
-const bingoLocations = ref<boolean[]>(Array(gridSize * gridSize).fill(false))
 
 const animateBingo = async (bingoType: BingoType, index?: number) => {
   return new Promise<void>((resolve) => {
@@ -72,14 +80,13 @@ const animateBingo = async (bingoType: BingoType, index?: number) => {
         break
     }
 
-    console.log('🔥 Bingo Highlight Triggered:', bingoType, index)
     setTimeout(() => {
       bingoLocations.value = Array(gridSize * gridSize).fill(false)
       // we need to wait a short additional bit of time to ensure that certain indices
       // of bingoLocations.value don't get immediately toggled back, which would mean
       // that the animation would never be restarted
       setTimeout(() => resolve(), 200)
-    }, 1000)
+    }, bingoAnimationLength)
   })
 }
 
@@ -89,7 +96,19 @@ const animateTileCompletion = (tileIndex: number) => {
     setTimeout(() => {
       explodingLocations.value[tileIndex] = false
       resolve()
-    }, 1500)
+    }, explosionAnimationLength)
+  })
+}
+
+const animateRewardText = (text: string, points: number) => {
+  return new Promise<void>((resolve) => {
+    rewardText.value = text
+    rewardPoints.value = points
+    showReward.value = true
+    setTimeout(() => {
+      showReward.value = false
+      setTimeout(() => resolve(), rewardAnimationLeaveLength)
+    }, rewardAnimationEntryLength)
   })
 }
 
@@ -97,8 +116,10 @@ const selectedTile = ref<number | null>(null)
 const showChallengeCard = ref(false)
 
 const handleTileClick = (index: number) => {
-  selectedTile.value = index
-  showChallengeCard.value = true
+  if (!tileInteractionsOff.value) {
+    selectedTile.value = index
+    showChallengeCard.value = true
+  }
 }
 
 const handleCloseChallenge = () => {
@@ -106,43 +127,55 @@ const handleCloseChallenge = () => {
   selectedTile.value = null
 }
 
-const handleStatusChange = async (
-  status: 'not started' | 'started' | 'completed',
-  bingoData: BingoData | undefined,
-) => {
-  if (selectedTile.value !== null) {
-    challengeInfos.value[selectedTile.value].status = status
-    if (status === 'completed') {
-      const tileIndex = selectedTile.value
-      // if a challenge is completed, close the challenge card so that the animations can be seen
-      showChallengeCard.value = false
-      selectedTile.value = null
-      // animation tile completion
-      await animateTileCompletion(tileIndex)
-      // now animate any bingos
-      if (bingoData) {
-        if (bingoData.bingo_row !== -1) {
-          await animateBingo('row', bingoData.bingo_row)
-        }
-        if (bingoData.bingo_col !== -1) {
-          await animateBingo('column', bingoData.bingo_col)
-        }
-        if (bingoData.bingo_diag !== -1) {
-          await animateBingo('diagonal', bingoData.bingo_diag)
-        }
-        if (bingoData.full_bingo) {
-          await animateBingo('full')
-        }
+const handleStart = (index: number) => {
+  challengeInfos.value[index].status = 'started'
+}
+
+const handleComplete = async (bingoData: BingoData, index: number) => {
+  challengeInfos.value[index].status = 'completed'
+  // if a challenge is completed, close the challenge card so that the animations can be seen
+  showChallengeCard.value = false
+  selectedTile.value = null
+  tileInteractionsOff.value = true
+  // animation tile completion
+  await Promise.all([
+    animateTileCompletion(index),
+    animateRewardText('Challenge Completed!', bingoData.challenge_points),
+  ])
+  // now animate any bingos
+  if (bingoData.bingo_points > 0) {
+    rewardText.value = 'Bingo!'
+    rewardPoints.value = bingoData.bingo_points
+    showReward.value = true
+    const bingoAnimationPromises = async () => {
+      if (bingoData.bingo_row !== -1) {
+        await animateBingo('row', bingoData.bingo_row)
+      }
+      if (bingoData.bingo_col !== -1) {
+        await animateBingo('column', bingoData.bingo_col)
+      }
+      if (bingoData.bingo_diag !== -1) {
+        await animateBingo('diagonal', bingoData.bingo_diag)
+      }
+      if (bingoData.full_bingo) {
+        await animateBingo('full')
       }
     }
+    await Promise.all([
+      bingoAnimationPromises(),
+      animateRewardText('Bingo!', bingoData.bingo_points),
+    ])
+    tileInteractionsOff.value = false
   }
 }
 
 async function temp() {
-  await animateBingo('column', 1)
-  await animateBingo('row', 0)
-  await animateBingo('diagonal', 3)
-  await animateBingo('full')
+  //await animateRewardText("Omg!", 100)
+  const bingoAnimationPromises = async () => {
+    await animateBingo('row', 1)
+    await animateBingo('column', 1)
+  }
+  await Promise.all([bingoAnimationPromises(), animateRewardText('Omg!', 100)])
 }
 
 onMounted(() => {
@@ -173,7 +206,8 @@ onMounted(() => {
             :position="selectedTile"
             :is-logged-in="userStore.isLoggedIn"
             @close="handleCloseChallenge"
-            @status-change="handleStatusChange"
+            @start="handleStart"
+            @complete="handleComplete"
           />
         </component>
 
@@ -199,10 +233,12 @@ onMounted(() => {
 
         <template v-else>
           <div class="grid-content">
-            <div class="reward-text">
-              <p>Challenge Complete!</p>
-              <p>+100 points</p>
-            </div>
+            <Transition name="show-reward">
+              <div v-show="showReward" class="reward-text">
+                <p>{{ rewardText }}</p>
+                <p>+{{ rewardPoints }} points</p>
+              </div>
+            </Transition>
             <div class="d-flex justify-center" v-for="row in 4" :key="`row-${row}`">
               <BingoTile
                 v-for="col in 4"
@@ -264,14 +300,42 @@ onMounted(() => {
 
 .reward-text {
   position: absolute;
-  left: 50%;
+  width: 100%;
   top: 50%;
-  transform: translateX(-50%) translateY(-50%);
-  color: #009d00;
-  font-size: 20px;
+  scale: 1;
+  transform: translateY(-50%);
+  transform-origin: top center;
+  color: #ffffff;
+  font-size: 30px;
   font-weight: semibold;
   font-family: Lilita One;
-  text-shadow: 1px 1px 2px black;
+  text-shadow: 0px 0px 10px black;
   z-index: 2000;
+}
+
+.show-reward-enter-active {
+  display: block;
+  animation: show-reward 1.5s ease forwards;
+}
+
+.show-reward-leave-active {
+  display: block;
+  animation: show-reward 0.5s ease reverse;
+}
+
+@keyframes show-reward {
+  from {
+    scale: 0;
+  }
+
+  to {
+    scale: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .reward-text {
+    font-size: 24px;
+  }
 }
 </style>
