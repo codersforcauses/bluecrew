@@ -169,15 +169,6 @@ const handleComplete = async (bingoData: BingoData, index: number) => {
   }
 }
 
-async function temp() {
-  //await animateRewardText("Omg!", 100)
-  const bingoAnimationPromises = async () => {
-    await animateBingo('row', 1)
-    await animateBingo('column', 1)
-  }
-  await Promise.all([bingoAnimationPromises(), animateRewardText('Omg!', 100)])
-}
-
 onMounted(() => {
   fetchBingoGrid()
 })
@@ -185,7 +176,6 @@ onMounted(() => {
 
 <template>
   <WaveBanner imageSrc="/homepage-scaled.jpg" />
-  <v-btn @click="temp">temp</v-btn>
   <v-container :class="{ vertical: mdAndDown }">
     <v-row>
       <v-col lg="5" cols="12">
