@@ -59,11 +59,11 @@ def get_bingo_grid(request):
             user=request.user, grid=active_grid)
         # By default, a tile will not have been started.
         for chal in grid['challenges']:
-            chal['status'] = "Not Started"
+            chal['status'] = "not started"
         # If a user interaction exists with a tile, change its completion status accordingly
         if user_interaction:
             for tile in user_interaction:
-                grid['challenges'][tile.position]['status'] = 'Completed' if tile.completed else 'Started'
+                grid['challenges'][tile.position]['status'] = 'completed' if tile.completed else 'started'
     return Response(grid, status=status.HTTP_200_OK)
 
 
@@ -112,13 +112,13 @@ def complete_challenge(request):
     challenge.total_completions += 1
     challenge.save()
 
-    user = request.user
-    user.total_points += challenge.points
-    user.save()
-
     bingos = check_bingo(tile)
     response = {'challenge_points': challenge.points}
     response.update(bingos)
+
+    user = request.user
+    user.total_points += challenge.points + bingos['bingo_points']
+    user.save()
 
     return Response(response, status.HTTP_200_OK)
 

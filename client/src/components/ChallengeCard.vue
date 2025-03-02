@@ -1,30 +1,31 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useModalStore } from '@/stores/modal'
-import { useDisplay } from 'vuetify'
 import type { ChallengeType, ChallengeStatus } from '@/types/challenge'
+import server from '@/utils/server'
 import { useMessageStore } from '@/stores/message'
-
-const { mobile } = useDisplay()
-
-const messageStore = useMessageStore()
+import FormData from 'form-data'
+import type { AxiosError } from 'axios'
 
 // Define interface for task submission
 interface TaskSubmission {
-  feedback: string
+  description: string
   image: File | null
   canShareOnSocialMedia: boolean
 }
 
 // Initialize modal store
 const modalStore = useModalStore()
-
+const messageStore = useMessageStore()
 // Initialize task submission state
 const taskSubmission = ref<TaskSubmission>({
-  feedback: '',
+  description: '',
   image: null,
   canShareOnSocialMedia: false,
 })
+const maxLength = (value: string) =>
+  value.length <= 500 || 'The description can be at must 500 characters.'
+const finishButtonDisabled = computed(() => maxLength(taskSubmission.value.description) !== true)
 
 // Define emits for component events
 const emit = defineEmits<{
@@ -48,6 +49,7 @@ const props = defineProps<{
   description: string
   status: ChallengeStatus
   isLoggedIn: boolean
+  position: number
 }>()
 
 // Handle opening login modal
@@ -65,7 +67,16 @@ const startTask = () => {
   if (!props.isLoggedIn) {
     return
   }
-  emit('status-change', 'started')
+  server
+    .post('/start-challenge/', { position: props.position })
+    .then(() => emit('status-change', 'started'))
+    .catch(() => {
+      messageStore.showMessage(
+        'Error',
+        'Unexpected occured while attempting to start challenge.',
+        'error',
+      )
+    })
 }
 
 // Handle image upload
@@ -79,18 +90,70 @@ const handleImageUpload = (event: Event) => {
 
 // Handle task finish
 const finish = () => {
-  if (!taskSubmission.value.feedback && !taskSubmission.value.image) {
-    messageStore.showMessage('Warning', 'Please provide feedback or upload an image', 'warning')
+  if (!taskSubmission.value.image) {
+    messageStore.showMessage('Warning', 'You must upload an image', 'warning')
     return
   }
-  emit('task-completed', taskSubmission.value)
-  emit('status-change', 'completed')
+  if (taskSubmission.value.image.size >= 5 * 1024 * 1024) {
+    messageStore.showMessage('Warning', 'Uploaded images can be at most 5MB', 'warning')
+    return
+  }
+  if (maxLength(taskSubmission.value.description) !== true) {
+    // don't allow submission if description is too long
+    return
+  }
+  const data = new FormData()
+  data.append('image', taskSubmission.value.image, taskSubmission.value.image?.name)
+  data.append('position', props.position)
+  data.append('consent', taskSubmission.value.canShareOnSocialMedia)
+  data.append('description', taskSubmission.value.description)
+  server
+    .patch('/complete-challenge/', data, {
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'multipart/form-data; boundary=${data._boundary}',
+      },
+    })
+    .then(() => {
+      emit('task-completed', taskSubmission.value)
+      emit('status-change', 'completed')
+      taskSubmission.value.description = ''
+      taskSubmission.value.image = null
+      taskSubmission.value.canShareOnSocialMedia = false
+    })
+    .catch((error: AxiosError) => {
+      let unhandled = true
+      if (error.response?.status === 400) {
+        const validationErrors = error.response?.data as { image?: [string, ...string[]] }
+        if (validationErrors.image) {
+          unhandled = false
+          if (validationErrors.image[0].startsWith('Upload a valid image')) {
+            messageStore.showMessage('Invalid Image', 'Please upload an image file.', 'warning')
+          } else {
+            messageStore.showMessage('Invalid Image', validationErrors.image[0], 'warning')
+          }
+        }
+      } else if (error.response?.status === 413) {
+        unhandled = false
+        messageStore.showMessage(
+          'Invalid Image',
+          'The image you uploaded is too large. Please upload an image less than 5MB.',
+          'warning',
+        )
+      }
+      if (unhandled) {
+        messageStore.showMessage(
+          'Error',
+          'Unexpected occured while attempting to complete challenge.',
+          'error',
+        )
+      }
+    })
 }
 </script>
 
 <template>
-  <div :class="['challenge-card-wrapper', { mobile: mobile }]">
-    <div v-if="mobile" class="overlay"></div>
+  <div :class="['challenge-card-wrapper']">
     <v-card color="primaryBlue" rounded class="challenge-card">
       <div class="header">
         <div class="headerIcon" style="display: flex; flex-direction: column">
@@ -100,7 +163,7 @@ const finish = () => {
         <div class="header-content">
           <v-card-title>{{ title }}</v-card-title>
         </div>
-        <v-icon icon="mdi-close-circle-outline" @click="closeCard"></v-icon>
+        <v-icon icon="mdi-close-circle-outline" @click="closeCard" />
       </div>
 
       <v-card-subtitle style="font-weight: bold">
@@ -112,36 +175,57 @@ const finish = () => {
           <v-card-text>{{ description }}</v-card-text>
         </div>
         <div class="button-container">
-          <v-btn v-if="!isLoggedIn" @click="openLoginModal" class="action-button">Login</v-btn>
-          <v-btn v-else @click="startTask" class="action-button">Start</v-btn>
+          <v-btn v-if="!isLoggedIn" @click="openLoginModal" class="action-button bg-primaryGreen"
+            >Login</v-btn
+          >
+          <v-btn v-else @click="startTask" class="action-button bg-primaryGreen">Start</v-btn>
         </div>
       </template>
 
       <template v-else-if="status === 'started'">
         <div class="description">
+          <v-checkbox
+            v-model="taskSubmission.canShareOnSocialMedia"
+            hide-details
+            label="I consent for my submission to be posted on social media"
+          />
           <div class="submission-area">
             <v-textarea
-              v-model="taskSubmission.feedback"
-              placeholder="Feedback"
+              v-model="taskSubmission.description"
+              placeholder="Description"
               class="custom-textarea"
               variant="plain"
-            ></v-textarea>
-
-            <div class="file-preview" v-if="taskSubmission.image">
-              <img src="/FileIcon.svg" alt="File icon" class="file-icon" />
-              <span class="file-name">{{ taskSubmission.image.name }}</span>
-            </div>
-
-            <div class="upload-button-wrapper">
-              <input type="file" id="file" @change="handleImageUpload" class="hidden-input" />
-              <label for="file">
-                <img src="/Upload.svg" alt="Upload icon" class="upload-icon" />
-              </label>
+              no-resize
+              :rules="[maxLength]"
+            />
+            <div class="d-flex">
+              <div v-if="taskSubmission.image" class="mb-2 ml-2 file-preview">
+                <img src="/FileIcon.svg" alt="File icon" class="file-icon" />
+                <p class="file-name">{{ taskSubmission.image.name }}</p>
+              </div>
+              <v-spacer />
+              <div class="mx-2 mt-6">
+                <input
+                  type="file"
+                  id="file"
+                  @change="handleImageUpload"
+                  class="hidden-input"
+                  accept="image/*"
+                />
+                <label for="file">
+                  <img src="/Upload.svg" alt="Upload icon" class="upload-icon" />
+                </label>
+              </div>
             </div>
           </div>
 
           <div class="button-container">
-            <v-btn @click="finish" class="action-button">Finish</v-btn>
+            <v-btn
+              @click="finish"
+              class="action-button bg-primaryGreen"
+              :disabled="finishButtonDisabled"
+              >Finish</v-btn
+            >
           </div>
         </div>
       </template>
@@ -151,7 +235,9 @@ const finish = () => {
           <v-card-text>{{ description }}</v-card-text>
         </div>
         <div class="button-container">
-          <v-btn @click="closeCard" class="action-button completed-btn">Completed</v-btn>
+          <v-btn @click="closeCard" class="action-button" color="lightBlue" text-color="white"
+            >Completed</v-btn
+          >
         </div>
       </template>
     </v-card>
@@ -160,35 +246,6 @@ const finish = () => {
 
 <style scoped>
 /* Card wrapper base styles */
-.challenge-card-wrapper {
-  width: 100%;
-  margin: 1rem 0;
-}
-
-/* Mobile specific styles */
-.challenge-card-wrapper.mobile {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 1rem;
-}
-
-/* Overlay only shows on mobile */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: -1;
-}
 
 /* Main card container */
 .challenge-card {
@@ -202,10 +259,6 @@ const finish = () => {
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
-}
-
-.mobile .challenge-card {
-  z-index: 1001;
 }
 
 /* Header section styles */
@@ -266,7 +319,6 @@ const finish = () => {
 }
 
 .description {
-  text-align: center;
   margin: 0;
   padding: 0 16px;
   width: 100%;
@@ -286,8 +338,6 @@ const finish = () => {
 .action-button {
   font-family: 'Poppins', sans-serif;
   border-radius: 50px;
-  background-color: #007d85 !important;
-  color: white !important;
   min-width: 180px;
   height: 50px;
   font-size: 18px;
@@ -297,10 +347,6 @@ const finish = () => {
   justify-content: center;
   letter-spacing: normal;
   padding: 0 32px;
-}
-
-.action-button.completed-btn {
-  background-color: #3fbee0 !important;
 }
 
 /* Submission area styles */
@@ -325,7 +371,7 @@ const finish = () => {
   min-height: 120px;
   color: rgb(var(--v-theme-primaryBlue));
   width: 100%;
-  resize: none;
+
   overflow-y: auto;
   font-family: 'Poppins', sans-serif;
 }
@@ -340,8 +386,8 @@ const finish = () => {
 
 /* Upload section styles */
 .upload-icon {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
 }
 
@@ -353,16 +399,6 @@ const finish = () => {
   display: none;
 }
 
-.file-preview {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-}
-
 .file-icon {
   width: 32px;
   height: 32px;
@@ -371,18 +407,14 @@ const finish = () => {
 .file-name {
   color: rgb(var(--v-theme-primaryBlue));
   font-size: 12px;
-  text-align: center;
   white-space: nowrap;
-  max-width: 84px;
   overflow: hidden;
   text-overflow: ellipsis;
   font-family: 'Poppins', sans-serif;
 }
 
-.upload-button-wrapper {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
+.file-preview {
+  min-width: 0;
 }
 
 /* Mobile responsive styles */
@@ -448,29 +480,8 @@ const finish = () => {
     font-size: 14px;
   }
 
-  .file-preview {
-    bottom: 16px;
-    left: 16px;
-  }
-
-  .file-icon {
-    width: 28px;
-    height: 28px;
-  }
-
   .file-name {
     font-size: 11px;
-    max-width: 42px;
-  }
-
-  .upload-button-wrapper {
-    bottom: 16px;
-    right: 16px;
-  }
-
-  .upload-icon {
-    width: 28px;
-    height: 28px;
   }
 
   .action-button {

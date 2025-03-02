@@ -144,7 +144,18 @@ const submitForm = async () => {
   }
   const registrationResult = await userStore.registerUser(body)
   if (registrationResult === true) {
-    setCurrentPage('confirmation')
+    const verificationResult = await userStore.requestEmailVerification(formData.value.email)
+    if (verificationResult === true) {
+      setCurrentPage('confirmation')
+    } else if (verificationResult === false) {
+      messageStore.showMessage(
+        'Error',
+        'An unexpected error occured while attempting to verify your email',
+        'error',
+      )
+    } else {
+      messageStore.showMessage('Error', verificationResult, 'warning')
+    }
   } else if (registrationResult === false) {
     messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
   } else {
@@ -195,7 +206,7 @@ const openLoginModal = () => {
           <template v-if="currentPage === 'register'">
             <div class="header">
               <button class="close-button" @click="closeDialog">
-                <v-icon icon="mdi-close-circle-outline"></v-icon>
+                <v-icon icon="mdi-close-circle-outline" />
               </button>
               <img src="/blingo-logo.svg" alt="logo" class="logo" />
             </div>
@@ -259,7 +270,7 @@ const openLoginModal = () => {
           <template v-if="currentPage === 'confirmation'">
             <div class="header">
               <button class="close-button" @click="closeDialog">
-                <v-icon icon="mdi-close-circle-outline"></v-icon>
+                <v-icon icon="mdi-close-circle-outline" />
               </button>
               <img src="/blingo-logo.svg" alt="Blingo Logo" class="logo" />
             </div>

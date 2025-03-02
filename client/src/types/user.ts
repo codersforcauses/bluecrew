@@ -45,3 +45,5 @@ export interface UserRegistrationFormFields {
   fieldType: 'text' | 'email' | 'password' | 'date'
   dropDownItems?: string[]
 }
+
+export type ResetPasswordErrors = 'invalid link' | [string, ...string[]]

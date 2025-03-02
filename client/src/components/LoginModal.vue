@@ -13,7 +13,9 @@ const messageStore = useMessageStore()
 const username = ref('')
 const password = ref('')
 const email = ref('')
+const emailError = ref('')
 const valid = ref(false)
+const emailFormValid = ref(false)
 const loading = ref(false)
 
 const currentPage = ref<'login' | 'forgot-password'>('login')
@@ -22,6 +24,7 @@ const setCurrentPage = (page: 'login' | 'forgot-password') => {
   currentPage.value = page
 }
 const required = (value: string) => !!value || 'Required.'
+const emailProbablyValid = (value: string) => /^\S+@\S+\.\S+$/.test(value) || 'Invalid e-mail.'
 const errorMessage = ref('')
 
 const isDialogVisible = computed({
@@ -58,6 +61,20 @@ const submitForm = async () => {
   }
   loading.value = false
 }
+
+const requestPasswordReset = async () => {
+  loading.value = true
+  const resetResult = await userStore.requestPasswordReset(email.value)
+  if (resetResult === true) {
+    messageStore.showMessage('Success', 'Reset link sent', 'success')
+    closeDialog()
+  } else if (resetResult === false) {
+    messageStore.showMessage('Error', 'An unexpected error occured.', 'error')
+  } else {
+    emailError.value = resetResult
+  }
+  loading.value = false
+}
 </script>
 
 <template>
@@ -73,13 +90,13 @@ const submitForm = async () => {
         <v-row align="center">
           <template v-if="currentPage === 'forgot-password'">
             <button class="back-button" @click="setCurrentPage('login')">
-              <v-icon icon="mdi-arrow-left"></v-icon>
+              <v-icon icon="mdi-arrow-left" />
             </button>
           </template>
           <v-spacer />
 
           <button class="close-button" @click="closeDialog">
-            <v-icon icon="mdi-close-circle-outline"></v-icon>
+            <v-icon icon="mdi-close-circle-outline" />
           </button>
         </v-row>
       </v-container>
@@ -92,11 +109,11 @@ const submitForm = async () => {
       <template v-if="currentPage === 'login'">
         <v-card-subtitle class="text-center subtitle mt-2 text-primaryGreen">
           <strong>
-            <h3><b>Welcome Back</b></h3>
+            <h3 style="font-family: 'Lilita One', cursive"><b>Welcome Back</b></h3>
           </strong>
         </v-card-subtitle>
         <v-card-text>
-          <p class="text-center subtitle mb-4 text-primaryGreen">
+          <p class="text-center mb-4 text-primaryGreen" style="font-family: 'Lilita One', cursive">
             <b>Login to your existing account</b>
           </p>
           <v-form v-model="valid" validate-on="blur" @submit.prevent="submitForm">
@@ -113,7 +130,7 @@ const submitForm = async () => {
               variant="outlined"
               :error-messages="errorMessage"
               @focus="errorMessage = ''"
-            ></v-text-field>
+            />
             <v-card-subtitle class="text-left subtitle mt-3 mb-3 pa-0 text-primaryGreen">
               Password
             </v-card-subtitle>
@@ -128,7 +145,7 @@ const submitForm = async () => {
               variant="outlined"
               :error-messages="errorMessage"
               @focus="errorMessage = ''"
-            ></v-text-field>
+            />
             <div class="mt-3">
               <a
                 class="text-subtitle-2 margin-left-adjust text-primaryGreen cursor-pointer"
@@ -167,26 +184,39 @@ const submitForm = async () => {
           </strong>
         </v-card-subtitle>
         <v-card-text>
-          <p class="text-center">Enter your email below and we'll send you a reset link.</p>
-          <v-text-field
-            v-model="email"
-            placeholder="Enter your email"
-            hide-details="auto"
-            required
-            outlined
-            class="bg-primaryBrown"
-            variant="outlined"
-          ></v-text-field>
-
-          <v-btn
-            class="d-flex justify-center mt-8 w-50 mx-auto"
-            color="primaryBlue"
-            :style="{ height: '50px' }"
-            rounded
-            elevation="12"
+          <v-form
+            v-model="emailFormValid"
+            @submit.prevent="requestPasswordReset"
+            validate-on="blur"
           >
-            Send Email
-          </v-btn>
+            <p class="text-center">Enter your email below and we'll send you a reset link.</p>
+            <v-text-field
+              v-model="email"
+              placeholder="Enter your email"
+              hide-details="auto"
+              required
+              outlined
+              bg-color="primaryBrown"
+              variant="outlined"
+              type="email"
+              :rules="[required, emailProbablyValid]"
+              :error-messages="emailError"
+              @focus="emailError = ''"
+            />
+
+            <v-btn
+              class="d-flex justify-center mt-8 w-50 mx-auto"
+              color="primaryBlue"
+              :style="{ height: '50px' }"
+              rounded
+              elevation="12"
+              :loading="loading"
+              type="submit"
+              :disabled="!emailFormValid"
+            >
+              Send Email
+            </v-btn>
+          </v-form>
         </v-card-text>
       </template>
     </v-card>
@@ -267,6 +297,7 @@ footer {
 .subtitle {
   font-weight: bold;
   opacity: 1;
+  font-size: 16px;
 }
 
 a {

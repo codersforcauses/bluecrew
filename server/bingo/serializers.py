@@ -19,6 +19,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
+        validated_data["is_active"] = False
         user = User.objects.create_user(
             **validated_data
         )
@@ -135,13 +136,17 @@ class ProfilePageTileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TileInteraction
-        fields = ["image", "date_started", "date_completed", "completed"]
+        fields = ("image", "date_started", "date_completed",
+                  "completed", "description")
 
     def to_representation(self, instance):
         # This ensures the field names match the TypeScript interface
         data = super().to_representation(instance)
         data["finishDate"] = data.pop("date_completed")
         data["startDate"] = data.pop("date_started")
+        possibly_blank_description = data.pop("description")
+        if possibly_blank_description:
+            data["imageDescription"] = possibly_blank_description
         return data
 
 
@@ -164,7 +169,7 @@ class ChallengeCompleteSerializer(serializers.ModelSerializer):
     # Serializer for completing challenge view.
     class Meta:
         model = TileInteraction
-        fields = ['position', 'consent', 'image']
+        fields = ['position', 'consent', 'image', 'description']
         extra_kwargs = {
             'position': {'required': True},
             'consent': {'required': True},

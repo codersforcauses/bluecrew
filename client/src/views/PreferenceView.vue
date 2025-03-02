@@ -19,6 +19,7 @@ const visibility = ref<0 | 1 | 2>(0)
 const bioError = ref<string>('')
 const messageStore = useMessageStore()
 const selectedAvatar = ref<0 | 1 | 2 | 3 | 4 | 5>(0)
+const loading = ref(false)
 
 const handleEditClick = () => {
   isEditing.value = true
@@ -33,6 +34,8 @@ const handleCancel = () => {
 }
 
 const handleApply = () => {
+  loading.value = true
+
   server
     .put('update-preferences/', {
       avatar: selectedAvatar.value,
@@ -57,6 +60,9 @@ const handleApply = () => {
       } else {
         messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
       }
+    })
+    .finally(() => {
+      loading.value = false
     })
 }
 </script>
@@ -83,7 +89,7 @@ const handleApply = () => {
               min-width="96"
               contain
               :src="avatarPaths[userStore.userData.avatar]"
-            ></v-img>
+            />
           </div>
         </v-col>
       </v-row>
@@ -154,7 +160,7 @@ const handleApply = () => {
                   variant="outlined"
                   @focus="bioError = ''"
                   bg-color="rgb(var(--v-theme-primaryBrown))"
-                ></v-textarea>
+                />
               </v-col>
             </v-row>
 
@@ -186,6 +192,7 @@ const handleApply = () => {
                   color="primaryBlue"
                   block
                   @click="handleApply"
+                  :loading="loading"
                 >
                   Apply
                 </v-btn>

@@ -5,7 +5,8 @@ export interface Challenge {
   points: number
   image: string | null
   startDate: string
-  finishDate: string | null
+  finishDate?: string
+  imageDescription?: string
   completed: boolean
 }
 

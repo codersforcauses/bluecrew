@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { useStorage, StorageSerializers } from '@vueuse/core'
 import { computed } from 'vue'
-import type { BackendUser, BackendUserErrors, User } from '@/types/user'
+import type { BackendUser, BackendUserErrors, ResetPasswordErrors, User } from '@/types/user'
 import server from '@/utils/server'
 import { isAxiosError } from 'axios'
 import router from '@/router'
@@ -45,7 +45,6 @@ export const useUserStore = defineStore('user', () => {
         if (error.response?.status === 401) {
           return 'invalid'
         }
-      } else {
       }
       return false
     }
@@ -66,6 +65,73 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  const requestEmailVerification = async (email: string): Promise<boolean | string> => {
+    try {
+      await server.post('/email-validation/', { email })
+      return true
+    } catch (error) {
+      if (isAxiosError(error)) {
+        if (error.response?.status === 400) {
+          return error.response.data as string
+        }
+      }
+      return false
+    }
+  }
+
+  const verifyEmail = async (uid: string, token: string): Promise<boolean> => {
+    try {
+      await server.post('/activate/', {
+        token,
+        uid64: uid,
+      })
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  const requestPasswordReset = async (email: string): Promise<boolean | string> => {
+    try {
+      await server.post('/request-reset/', { email })
+      return true
+    } catch (error) {
+      if (isAxiosError(error)) {
+        if (error.response?.status === 400) {
+          return error.response.data as string
+        }
+      }
+      return false
+    }
+  }
+
+  const resetPassword = async (
+    password: string,
+    uid: string,
+    token: string,
+  ): Promise<boolean | ResetPasswordErrors> => {
+    try {
+      await server.post('/reset-password/', {
+        password,
+        token,
+        uid64: uid,
+      })
+      return true
+    } catch (error) {
+      if (isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          return 'invalid link'
+        } else if (error.response?.status === 400) {
+          if (error.response?.data === 'User ID invalid.') {
+            return 'invalid link'
+          }
+          return error.response.data as [string, ...string[]]
+        }
+      }
+      return false
+    }
+  }
+
   return {
     userData,
     isLoggedIn,
@@ -76,5 +142,9 @@ export const useUserStore = defineStore('user', () => {
     logout,
     login,
     registerUser,
+    requestEmailVerification,
+    requestPasswordReset,
+    verifyEmail,
+    resetPassword,
   }
 })

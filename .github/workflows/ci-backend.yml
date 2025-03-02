@@ -82,7 +82,7 @@ jobs:
           POSTGRES_PASSWORD: password
           POSTGRES_PORT: 5432
           EMAIL_PORT: 1025
-          FRONTEND_URL: http://localhost:3000
+          FRONTEND_URLS: http://localhost:3000
           GITHUB_ACTION: true
         run: |
           source .venv/bin/activate
@@ -96,7 +96,8 @@ jobs:
           POSTGRES_PASSWORD: password
           POSTGRES_PORT: 5432
           EMAIL_PORT: 1025
-          FRONTEND_URL: http://localhost:3000
+          ACCOUNTS_EMAIL: no-reply@test.com
+          FRONTEND_URLS: http://localhost:3000
           GITHUB_ACTION: true
         run: |
           source .venv/bin/activate

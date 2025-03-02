@@ -21,7 +21,8 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-FRONTEND_URL = os.environ.get("FRONTEND_URL")
+FRONTEND_URLS = os.environ.get("FRONTEND_URLS").split()
+FRONTEND_URL = FRONTEND_URLS[0]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -72,6 +73,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "bingo",
     "sortedm2m",
+    "django_q"
 ]
 
 MIDDLEWARE = [
@@ -85,9 +87,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    FRONTEND_URL
-]
+CORS_ALLOWED_ORIGINS = FRONTEND_URLS
 
 CSRF_TRUSTED_ORIGINS = (
     os.environ.get("CSRF_TRUSTED_ORIGINS").split()
@@ -100,7 +100,7 @@ ROOT_URLCONF = "api.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": ["bingo/templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -130,6 +130,13 @@ DATABASES = {
     }
 }
 
+Q_CLUSTER = {
+    'name': 'DjangORM',
+    'workers': 1,
+    'timeout': 90,
+    'retry': 120,
+    'orm': 'default'
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -149,6 +156,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Email address to send account management emails
+ACCOUNTS_EMAIL = os.environ.get("ACCOUNTS_EMAIL")
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend" if DEBUG else "django.core.mail.backends.smtp.EmailBackend"
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
