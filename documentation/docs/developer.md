@@ -215,3 +215,7 @@ erDiagram
 ### Unit Tests
 
 Unit tests have been written to test various aspects of the backend (the models, the views, ect.). These tests can be run with `python manage.py test`.
+
+## Continuous Deployment
+
+At the time of writing, there is a GitHub action configure to upload a docker image for the server to a container registry whenever a push to the main branch occurs. Then in the VPS, [watchtower](https://github.com/containrrr/watchtower) is used to automatically pull this image and restart the server container using the new image.
