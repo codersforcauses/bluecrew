@@ -1,0 +1,34 @@
+site_name: Blingo Documentation
+copyright: Copyright Coders for Causes
+repo_url: https://github.com/codersforcauses/bluecrew/
+dev_addr: 127.0.0.1:8001
+
+nav:
+  - index.md
+  - developer.md
+  - staff.md
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)" # below here is a palette for light mode
+      primary: custom
+      scheme: default
+      toggle:
+        icon: material/brightness-4
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)" # below here is a palette for dark mode
+      primary: custom
+      scheme: slate
+      toggle:
+        icon: material/brightness-7
+        name: Switch to light mode
+  logo: img/blingo-octopus.svg
+  favicon: img/blingo-octopus.svg
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
