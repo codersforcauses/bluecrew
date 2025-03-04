@@ -23,6 +23,7 @@ const taskSubmission = ref<TaskSubmission>({
   image: null,
   canShareOnSocialMedia: false,
 })
+const loading = ref(false)
 const maxLength = (value: string) =>
   value.length <= 500 || 'The description can be at must 500 characters.'
 const finishButtonDisabled = computed(() => maxLength(taskSubmission.value.description) !== true)
@@ -67,6 +68,7 @@ const startTask = () => {
   if (!props.isLoggedIn) {
     return
   }
+  loading.value = true
   server
     .post('/start-challenge/', { position: props.position })
     .then(() => emit('status-change', 'started'))
@@ -77,6 +79,7 @@ const startTask = () => {
         'error',
       )
     })
+    .finally(() => (loading.value = false))
 }
 
 // Handle image upload
@@ -107,12 +110,14 @@ const finish = () => {
   data.append('position', props.position)
   data.append('consent', taskSubmission.value.canShareOnSocialMedia)
   data.append('description', taskSubmission.value.description)
+  loading.value = true
   server
     .patch('/complete-challenge/', data, {
       headers: {
         accept: 'application/json',
         'Content-Type': 'multipart/form-data; boundary=${data._boundary}',
       },
+      timeout: 0,
     })
     .then(() => {
       emit('task-completed', taskSubmission.value)
@@ -149,6 +154,7 @@ const finish = () => {
         )
       }
     })
+    .finally(() => (loading.value = false))
 }
 </script>
 
@@ -178,7 +184,9 @@ const finish = () => {
           <v-btn v-if="!isLoggedIn" @click="openLoginModal" class="action-button bg-primaryGreen"
             >Login</v-btn
           >
-          <v-btn v-else @click="startTask" class="action-button bg-primaryGreen">Start</v-btn>
+          <v-btn v-else @click="startTask" class="action-button bg-primaryGreen" :loading="loading"
+            >Start</v-btn
+          >
         </div>
       </template>
 
@@ -224,6 +232,7 @@ const finish = () => {
               @click="finish"
               class="action-button bg-primaryGreen"
               :disabled="finishButtonDisabled"
+              :loading="loading"
               >Finish</v-btn
             >
           </div>
