@@ -6,15 +6,15 @@ There are two user types: admin users and non-admin users.
 
 Non-admin users:
 
-* Interact with the web app as a typical user.
+- Interact with the web app as a typical user.
 
 Admin users:
 
-* Will not have a visible profile, and will not be visible on the leaderboard or in friend searches.
+- Will not have a visible profile, and will not be visible on the leaderboard or in friend searches.
 
-* Will have access to the admin dashboard.
+- Will have access to the admin dashboard.
 
-* Will have access to the admin page to select active bingo grid challenges.
+- Will have access to the admin page to select active bingo grid challenges.
 
 ## Admin Dashboard
 
@@ -58,7 +58,7 @@ To view the database of challenges, click on the "Challenges" tab on the left. Y
 
 ![Screenshot](img/view-challenges.png)
 
-To create a new challenge, press the "Add Challenge" button in the top right. You can view and/or edit the details of an existing challenge by clicking on that challenge in the list of challenges. This will bring you to a form with the ability to view/modify the name, description, type, and point-value of the challenge. The challenge's ID and total number of completitions by users playing the bingo game is also displayed.
+To create a new challenge, press the "Add Challenge" button in the top right. You can view and/or edit the details of an existing challenge by clicking on that challenge in the list of challenges. This will bring you to a form with the ability to view/modify the name, description, type, and point-value of the challenge. The challenge's ID and total number of completions by users playing the bingo game is also displayed.
 
 ![Screenshot](img/edit-challenge.png)
 
