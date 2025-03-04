@@ -27,7 +27,7 @@
 - Docker
 - Poetry for python package management
 - Mailgun for sending emails
-- Cloudflare for providing a SSL cerficate and DDoS protection
+- Cloudflare for providing a SSL certificate and DDoS protection
 - DockerHub, a container registry
 - Vercel for hosting the frontend
 - Digital Ocean for hosting the backend
@@ -41,15 +41,9 @@
 2. In the `server` folder, run `python manage.py runserver` to start the server at `localhost:8000`
 
 > Note:
-<<<<<<< HEAD
 > These instructions are for if you are using the dev container (recommended).
 
 > See the "Manual Setup" section below if you are not using the devcontainer.
-=======
-> These instructions are for if you are using the dev container (Recommended)/
-
-> For manual setup see end of README.
->>>>>>> origin
 
 ### Server
 

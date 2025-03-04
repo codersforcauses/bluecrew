@@ -10,5 +10,5 @@
   "shellcheck.ignorePatterns": {
     "**/.env*": true
   },
-  "cSpell.words": ["Blingo", "Mailgun"]
+  "cSpell.words": ["Blingo", "Mailgun", "Vuetify"]
 }
