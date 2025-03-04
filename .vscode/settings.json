@@ -9,5 +9,6 @@
   "typescript.tsdk": "${workspaceFolder}/client/node_modules/typescript/lib",
   "shellcheck.ignorePatterns": {
     "**/.env*": true
-  }
+  },
+  "cSpell.words": ["Blingo", "Mailgun"]
 }

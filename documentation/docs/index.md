@@ -1,5 +1,5 @@
 # Index
 
-[Developer Documentatation](developer.md)
+[Developer Documentation](developer.md)
 
-[Staff Documentatation](staff.md)
+[Staff Documentation](staff.md)

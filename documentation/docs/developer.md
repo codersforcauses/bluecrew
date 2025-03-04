@@ -41,9 +41,9 @@
 2. In the `server` folder, run `python manage.py runserver` to start the server at `localhost:8000`
 
 > Note:
-> These instructions are for if you are using the dev container (Recommended)/
+> These instructions are for if you are using the dev container (recommended).
 
-> For manual setup see end of README.
+> See the "Manual Setup" section below if you are not using the devcontainer.
 
 ### Server
 
