@@ -6,6 +6,7 @@ import server from '@/utils/server'
 import { useMessageStore } from '@/stores/message'
 import FormData from 'form-data'
 import type { AxiosError } from 'axios'
+import type { BingoData } from '@/types/bingo'
 
 // Define interface for task submission
 interface TaskSubmission {
@@ -30,8 +31,8 @@ const finishButtonDisabled = computed(() => maxLength(taskSubmission.value.descr
 // Define emits for component events
 const emit = defineEmits<{
   (evt: 'close'): void
-  (evt: 'status-change', status: ChallengeStatus): void
-  (evt: 'task-completed', submission: TaskSubmission): void
+  (evt: 'start', index: number): void
+  (evt: 'complete', bingoData: BingoData, index: number): void
 }>()
 
 // Define icons for different challenge types
@@ -69,7 +70,7 @@ const startTask = () => {
   }
   server
     .post('/start-challenge/', { position: props.position })
-    .then(() => emit('status-change', 'started'))
+    .then(() => emit('start', props.position))
     .catch(() => {
       messageStore.showMessage(
         'Error',
@@ -114,9 +115,8 @@ const finish = () => {
         'Content-Type': 'multipart/form-data; boundary=${data._boundary}',
       },
     })
-    .then(() => {
-      emit('task-completed', taskSubmission.value)
-      emit('status-change', 'completed')
+    .then((response) => {
+      emit('complete', response.data as BingoData, props.position)
       taskSubmission.value.description = ''
       taskSubmission.value.image = null
       taskSubmission.value.canShareOnSocialMedia = false
