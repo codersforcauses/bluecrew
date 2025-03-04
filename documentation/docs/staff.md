@@ -38,4 +38,18 @@ To delete one or more challenges, mark the checkboxes next to the challenges you
 
 ### Viewing submissions
 
+You can view the interactions between users and challenges by clicking on the "Tile Interactions" tab.
+
+![Screenshot](img/tile-interactions.png)
+
+Clicking on a particular tile interaction will bring up a display like below. If the challenge has been completed, a display of the image the user uploaded will be shown at the bottom. The "Consent" checkbox indicates whether the user has given consent for this image to be shared on social media.
+
+![Screenshot](img/viewing-tile-interaction.png)
+
+If you just want to see the submissions of a particular user, this can be done from the main website by navigating to "https://blingo.com.au/profile?username={username}", where "{username}" is replaced by the username of that particular user (you may need to be logged in as the admin account).
+
 ### Revoking submissions
+
+If you wish to revoke a user's submission, you can do so by pressing the delete button. The submission will then no longer be visible in the user's profile page. Alternatively, if you just wish to delete the image the user uploaded, then you can mark the "Clear" checkbox within the image field and press the "Save" button.
+
+![Screenshot](img/revoking-submission.png)
