@@ -16,10 +16,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-## The Bingo Grid
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
 ## Challenges
 
 To view the database of challenges, click on the "Challenges" tab on the left. You will then be presented with a list of the challenges that have been created so far.
@@ -33,6 +29,18 @@ To create a new challenge, press the "Add Challenge" button in the top right. Yo
 To delete one or more challenges, mark the checkboxes next to the challenges you want to delete, select "Delete selected challenges" from the dropdown menu, and press the "Go" button.
 
 ![Screenshot](img/delete-challenge.png)
+
+## The Bingo Grid
+
+This section will describe how to create a new bingo grid and make it active (i.e. make it be the bingo grid users will see and be able to interact with when they visit the "Blingo" page). Before creating the grid, you will first need to have created all of the challenges you wish to be part of the bingo grid (see the above section for how to do that).
+
+To create a new bingo grid, log into the main website (<https://blingo.com.au>) using your admin account and press the admin button in the navbar to go to <https://blingo.com.au/admin>. The page should look something like this:
+
+![Screenshot](img/admin-page.png)
+
+In each of the input boxes, input the ID of the challenge you wish to be located in that place and "Go Live!". You can refer to the admin dashboard for the IDs of the challenges. The result should be that the live bingo grid is updated.
+
+Aside: the reason the bingo grid is updated through the main website rather than through the admin dashboard like everything else is that the interface for editing the `BingoGrid` model that comes with Django via its admin dashboard is not at all user friendly. Thus, a custom interface has been made on the frontend for this task of updating the active bingo grid.
 
 ## User Submissions
 
