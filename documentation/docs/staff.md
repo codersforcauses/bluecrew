@@ -50,7 +50,7 @@ Alternatively, if you would like to give an existing user admin privileges, sele
 
 ## User Management
 
-The details of both admin and non-admin users may be accessed and edited by clicking the username of the user.
+The details of both admin and non-admin users may be accessed and edited by clicking the username of the user. These details include the gender identity and indigenous identity which the user provided when signing up. Users can also be created or deleted through this page.
 
 ## Challenges
 
