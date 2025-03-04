@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import type { ChallengeType, ChallengeStatus } from '@/types/challenge'
 import server from '@/utils/server'
@@ -26,7 +26,6 @@ const taskSubmission = ref<TaskSubmission>({
 })
 const maxLength = (value: string) =>
   value.length <= 500 || 'The description can be at must 500 characters.'
-const finishButtonDisabled = computed(() => maxLength(taskSubmission.value.description) !== true)
 
 // Define emits for component events
 const emit = defineEmits<{
@@ -101,6 +100,11 @@ const finish = () => {
   }
   if (maxLength(taskSubmission.value.description) !== true) {
     // don't allow submission if description is too long
+    messageStore.showMessage(
+      'Warning',
+      'Your description can have at most 500 characters',
+      'warning',
+    )
     return
   }
   const data = new FormData()
@@ -220,12 +224,7 @@ const finish = () => {
           </div>
 
           <div class="button-container">
-            <v-btn
-              @click="finish"
-              class="action-button bg-primaryGreen"
-              :disabled="finishButtonDisabled"
-              >Finish</v-btn
-            >
+            <v-btn @click="finish" class="action-button bg-primaryGreen">Finish</v-btn>
           </div>
         </div>
       </template>

@@ -8,6 +8,7 @@ import { ref } from 'vue'
 const isValid = ref(false)
 const errorMessage = ref('')
 const messageStore = useMessageStore()
+const required = (value: string) => !!value || 'Required.'
 const isInt = (val: string) =>
   val.length === 0 || /^[1-9]\d*$/.test(val) || 'Please enter a whole number'
 const initialContents = new Array(16).fill('')
@@ -23,8 +24,15 @@ function extractInvalidId(errorMessage: string): number | undefined {
 }
 
 function updateBingo() {
+  if (!isValid.value) {
+    messageStore.showMessage(
+      'Warning',
+      'Please enter a valid challenge ID in each cell.',
+      'warning',
+    )
+    return
+  }
   const intArray = challengeIds.value.map((s) => parseInt(s))
-  console.log(intArray)
   server
     .post('update-bingo-grid/', { challenges: intArray })
     .then(() => {
@@ -57,7 +65,7 @@ function updateBingo() {
   <p class="text-primaryGreen text-center">
     Please enter the IDs of the challenges you'd like for a new bingo grid
   </p>
-  <v-form v-model="isValid" @submit.prevent="updateBingo">
+  <v-form v-model="isValid" @submit.prevent="updateBingo" validate-on="invalid-input">
     <div class="d-flex flex-column align-center mt-5 px-5">
       <div v-for="row in 4" :key="row" class="d-flex flex-row ga-1 row mb-1">
         <v-text-field
@@ -67,12 +75,12 @@ function updateBingo() {
           variant="outlined"
           bg-color="primaryBrown"
           v-model="challengeIds[4 * (row - 1) + col - 1]"
-          :rules="[isInt]"
+          :rules="[required, isInt]"
           @focus="errorMessage = ''"
         />
       </div>
       <p class="text-center text-red">{{ errorMessage }}</p>
-      <v-btn type="submit" class="my-4 bg-primaryGreen" :disabled="!isValid">Go Live!</v-btn>
+      <v-btn type="submit" class="my-4 bg-primaryGreen">Go Live!</v-btn>
     </div>
   </v-form>
 </template>
