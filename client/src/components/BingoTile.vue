@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { ChallengeType, ChallengeStatus } from '@/types/challenge'
+import type { BingoTileProps } from '@/types/bingo'
 
-const props = defineProps<{
-  type: ChallengeType
-  title: string
-  status: ChallengeStatus
-  selected: boolean
-}>()
+const props = defineProps<BingoTileProps>()
 
 // Compute icon based on challenge type
 const icon = computed(() => {
@@ -21,15 +16,14 @@ const icon = computed(() => {
   }
 })
 
-// Compute background color based on status
 const backgroundColour = computed(() => {
   switch (props.status) {
     case 'started':
-      return 'bg-primaryGreen'
+      return 'bg-primaryGreen-unimportant'
     case 'completed':
-      return 'bg-lightBlue'
+      return 'bg-lightBlue-unimportant'
     default:
-      return 'bg-creamWhite'
+      return 'bg-creamWhite-unimportant'
   }
 })
 
@@ -43,10 +37,9 @@ const textColour = computed(() => {
   }
 })
 
-// Compute icon background based on background color
 const iconBackground = computed(() => {
   switch (backgroundColour.value) {
-    case 'bg-creamWhite':
+    case 'bg-creamWhite-unimportant':
       return 'dark'
     default:
       return 'light'
@@ -56,19 +49,54 @@ const iconBackground = computed(() => {
 
 <template>
   <div
-    :class="[backgroundColour, textColour, selected ? 'border-selected' : 'border-subtle']"
+    :class="[
+      textColour,
+      backgroundColour,
+      interactionAllowed ? 'cursor-pointer' : 'cursor-not-allowed',
+      selected ? 'border-selected' : 'border-subtle',
+      isInBingo ? 'bingo-highlight' : '',
+      isExploding ? 'explode-animation' : '',
+    ]"
     class="outer-tile rounded-lg d-flex flex-column align-center cursor-pointer"
     :title="title"
   >
     <v-img class="icon" :class="iconBackground" :src="icon" />
-    <p class="tile-text text-center font-weight-bold">
-      {{ title }}
-    </p>
+    <p class="tile-text text-center font-weight-bold">{{ title }}</p>
   </div>
 </template>
 
 <style scoped>
-/* Main tile container with fixed dimensions */
+.explode-animation {
+  z-index: 1000;
+  transform-origin: center;
+  animation: explode 1s ease-out 0.2s;
+}
+
+@keyframes explode {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* defining these classes so that they can be overriden in an animation */
+.bg-primaryGreen-unimportant {
+  background-color: rgb(var(--v-theme-primaryGreen));
+}
+
+.bg-lightBlue-unimportant {
+  background-color: rgb(var(--v-theme-lightBlue));
+}
+
+.bg-creamWhite-unimportant {
+  background-color: rgb(var(--v-theme-creamWhite));
+}
+
 .outer-tile {
   padding: 0.5rem;
   width: 150px;
@@ -81,9 +109,24 @@ const iconBackground = computed(() => {
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
 }
 
-/* Border styles for tile states */
+.bingo-highlight {
+  animation: bingo-flash 1.5s ease-in-out;
+}
+
+@keyframes bingo-flash {
+  0%,
+  100% {
+    background-color: rgb(var(--v-theme-lightBlue));
+  }
+
+  50% {
+    background-color: #3fe0d5;
+  }
+}
+
 .border-subtle {
   border: #4f4f4f 0.05rem solid;
 }
@@ -93,10 +136,8 @@ const iconBackground = computed(() => {
   box-shadow: 0.1rem 0.1rem 0.2rem 0.1rem #4f4f4f;
 }
 
-/* Text styling with overflow handling and hover effect */
 .tile-text {
   font-size: 0.9rem;
-  /* Increased from 0.6rem */
   line-height: 1.3;
   white-space: nowrap;
   overflow: hidden;
@@ -110,7 +151,6 @@ const iconBackground = computed(() => {
   z-index: 1;
 }
 
-/* Icon styling */
 .icon {
   width: 40%;
   height: 40%;
@@ -126,7 +166,6 @@ const iconBackground = computed(() => {
   filter: contrast(100%) brightness(0%);
 }
 
-/* Mobile responsive styles */
 @media (max-width: 600px) {
   .outer-tile {
     width: 120px;

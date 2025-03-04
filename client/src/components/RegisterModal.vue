@@ -5,6 +5,7 @@ import type { BackendUser, UserRegistrationForm, UserRegistrationFormFields } fr
 import { useDisplay } from 'vuetify'
 import { useUserStore } from '@/stores/user'
 import { useMessageStore } from '@/stores/message'
+import ErrorCorrectionRequest from './ErrorCorrectionRequest.vue'
 
 const { xs } = useDisplay()
 const modalStore = useModalStore()
@@ -101,6 +102,7 @@ const formFields: UserRegistrationFormFields[] = [
 
 const valid = ref(false)
 const loading = ref(false)
+const formSubmissionAttempted = ref(false)
 const required = (value: string) => !!value || 'Required.'
 const emailProbablyValid = (value: string) => /^\S+@\S+\.\S+$/.test(value) || 'Invalid e-mail.'
 const passwordsMatch = (value: string) =>
@@ -131,6 +133,10 @@ const setCurrentPage = (page: 'register' | 'confirmation') => {
 }
 
 const submitForm = async () => {
+  formSubmissionAttempted.value = true
+  if (!valid.value) {
+    return
+  }
   loading.value = true
   const body: BackendUser = {
     username: formData.value.username,
@@ -217,14 +223,15 @@ const openLoginModal = () => {
               v-model="valid"
               class="register-form"
               @submit.prevent="submitForm"
-              validate-on="blur"
+              validate-on="invalid-input"
             >
               <div v-for="(formField, index) in formFields" class="form-group" :key="index">
-                <label :for="formField.formAttribute" class="text-primaryGreen">{{
+                <label :for="`register-${formField.formAttribute}`" class="text-primaryGreen">{{
                   formField.fieldName
                 }}</label>
                 <v-select
                   v-if="formField.dropDownItems"
+                  :id="`register-${formField.formAttribute}`"
                   hide-details="auto"
                   :placeholder="formField.fieldPlaceholder"
                   v-model="formData[formField.formAttribute]"
@@ -234,6 +241,7 @@ const openLoginModal = () => {
                 />
                 <v-text-field
                   v-else
+                  :id="`register-${formField.formAttribute}`"
                   hide-details="auto"
                   :placeholder="formField.fieldPlaceholder"
                   v-model="formData[formField.formAttribute]"
@@ -250,13 +258,13 @@ const openLoginModal = () => {
                 color="primaryBlue"
                 :style="{ height: '50px' }"
                 rounded
-                :disabled="!valid"
                 :loading="loading"
                 elevation="12"
                 type="submit"
               >
                 Sign Up
               </v-btn>
+              <ErrorCorrectionRequest v-if="formSubmissionAttempted && !valid" />
             </v-form>
 
             <footer class="text-primaryGreen">
