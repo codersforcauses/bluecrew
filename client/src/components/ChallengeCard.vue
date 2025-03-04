@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import type { ChallengeType, ChallengeStatus } from '@/types/challenge'
 import server from '@/utils/server'
 import { useMessageStore } from '@/stores/message'
 import FormData from 'form-data'
 import type { AxiosError } from 'axios'
+import type { BingoData } from '@/types/bingo'
 
 // Define interface for task submission
 interface TaskSubmission {
@@ -26,13 +27,12 @@ const taskSubmission = ref<TaskSubmission>({
 const loading = ref(false)
 const maxLength = (value: string) =>
   value.length <= 500 || 'The description can be at must 500 characters.'
-const finishButtonDisabled = computed(() => maxLength(taskSubmission.value.description) !== true)
 
 // Define emits for component events
 const emit = defineEmits<{
   (evt: 'close'): void
-  (evt: 'status-change', status: ChallengeStatus): void
-  (evt: 'task-completed', submission: TaskSubmission): void
+  (evt: 'start', index: number): void
+  (evt: 'complete', bingoData: BingoData, index: number): void
 }>()
 
 // Define icons for different challenge types
@@ -71,7 +71,7 @@ const startTask = () => {
   loading.value = true
   server
     .post('/start-challenge/', { position: props.position })
-    .then(() => emit('status-change', 'started'))
+    .then(() => emit('start', props.position))
     .catch(() => {
       messageStore.showMessage(
         'Error',
@@ -103,6 +103,11 @@ const finish = () => {
   }
   if (maxLength(taskSubmission.value.description) !== true) {
     // don't allow submission if description is too long
+    messageStore.showMessage(
+      'Warning',
+      'Your description can have at most 500 characters',
+      'warning',
+    )
     return
   }
   const data = new FormData()
@@ -119,9 +124,8 @@ const finish = () => {
       },
       timeout: 0,
     })
-    .then(() => {
-      emit('task-completed', taskSubmission.value)
-      emit('status-change', 'completed')
+    .then((response) => {
+      emit('complete', response.data as BingoData, props.position)
       taskSubmission.value.description = ''
       taskSubmission.value.image = null
       taskSubmission.value.canShareOnSocialMedia = false
@@ -228,11 +232,7 @@ const finish = () => {
           </div>
 
           <div class="button-container">
-            <v-btn
-              @click="finish"
-              class="action-button bg-primaryGreen"
-              :disabled="finishButtonDisabled"
-              :loading="loading"
+            <v-btn @click="finish" class="action-button bg-primaryGreen" :loading="loading"
               >Finish</v-btn
             >
           </div>
