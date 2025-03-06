@@ -5,8 +5,8 @@ import type { ChallengeType, ChallengeStatus } from '@/types/challenge'
 import server from '@/utils/server'
 import { useMessageStore } from '@/stores/message'
 import FormData from 'form-data'
-import type { AxiosError } from 'axios'
 import type { BingoData } from '@/types/bingo'
+import type { ExtendedAxiosError } from '@/types/other'
 
 // Define interface for task submission
 interface TaskSubmission {
@@ -72,12 +72,8 @@ const startTask = () => {
   server
     .post('/start-challenge/', { position: props.position })
     .then(() => emit('start', props.position))
-    .catch(() => {
-      messageStore.showMessage(
-        'Error',
-        'Unexpected occured while attempting to start challenge.',
-        'error',
-      )
+    .catch((error: ExtendedAxiosError) => {
+      messageStore.handleUnexpectedError(error.config?.session_expired, false)
     })
     .finally(() => (loading.value = false))
 }
@@ -130,7 +126,7 @@ const finish = () => {
       taskSubmission.value.image = null
       taskSubmission.value.canShareOnSocialMedia = false
     })
-    .catch((error: AxiosError) => {
+    .catch((error: ExtendedAxiosError) => {
       let unhandled = true
       if (error.response?.status === 400) {
         const validationErrors = error.response?.data as { image?: [string, ...string[]] }
@@ -151,11 +147,7 @@ const finish = () => {
         )
       }
       if (unhandled) {
-        messageStore.showMessage(
-          'Error',
-          'Unexpected occured while attempting to complete challenge.',
-          'error',
-        )
+        messageStore.handleUnexpectedError(error.config?.session_expired, false)
       }
     })
     .finally(() => (loading.value = false))

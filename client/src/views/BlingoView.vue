@@ -9,6 +9,7 @@ import WaveBanner from '@/components/WaveBanner.vue'
 import server from '@/utils/server'
 import { useMessageStore } from '@/stores/message'
 import type { BingoData, BingoType } from '@/types/bingo'
+import type { ExtendedAxiosError } from '@/types/other'
 
 const { mdAndDown } = useDisplay()
 const userStore = useUserStore()
@@ -46,8 +47,8 @@ const fetchBingoGrid = async () => {
       })
       isLoading.value = false
     })
-    .catch(() => {
-      messageStore.showMessage('Error', 'Unexpected occured while fetching challenges.', 'error')
+    .catch((error: ExtendedAxiosError) => {
+      messageStore.handleUnexpectedError(error.config?.session_expired, false)
     })
 }
 

@@ -33,11 +33,7 @@ const resetPassword = async () => {
       router.replace('/')
       modalStore.openLogin()
     } else if (resetResult === false) {
-      messageStore.showMessage(
-        'Error',
-        'An unexpected error occurred while trying to reset your password.',
-        'error',
-      )
+      messageStore.handleUnexpectedError(undefined, false)
     } else if (resetResult === 'invalid link') {
       paramsInvalid.value = true
       messageStore.showMessage('Error', 'Invalid password reset link', 'error')

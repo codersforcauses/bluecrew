@@ -154,16 +154,12 @@ const submitForm = async () => {
     if (verificationResult === true) {
       setCurrentPage('confirmation')
     } else if (verificationResult === false) {
-      messageStore.showMessage(
-        'Error',
-        'An unexpected error occured while attempting to verify your email',
-        'error',
-      )
+      messageStore.handleUnexpectedError(undefined, false)
     } else {
       messageStore.showMessage('Error', verificationResult, 'warning')
     }
   } else if (registrationResult === false) {
-    messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
+    messageStore.handleUnexpectedError(undefined, true)
   } else {
     const nameMapping: Array<{
       serverName: keyof BackendUser

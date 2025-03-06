@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import WaveBanner from '@/components/WaveBanner.vue'
 import { useMessageStore } from '@/stores/message'
+import type { ExtendedAxiosError } from '@/types/other'
 import server from '@/utils/server'
-import type { AxiosError } from 'axios'
 import { ref } from 'vue'
 
 const isValid = ref(false)
@@ -43,7 +43,7 @@ function updateBingo() {
       )
       challengeIds.value = [...initialContents]
     })
-    .catch((error: AxiosError) => {
+    .catch((error: ExtendedAxiosError) => {
       const challenges = (error.response?.data as { challenges?: [string, ...string[]] })
         ?.challenges
 
@@ -53,7 +53,7 @@ function updateBingo() {
           ? `There does not exist a challenge with id ${invalidId}.`
           : challenges[0]
       } else {
-        messageStore.showMessage('Error', 'An unexpected error occurred', 'error')
+        messageStore.handleUnexpectedError(error.config?.session_expired, false)
       }
     })
 }

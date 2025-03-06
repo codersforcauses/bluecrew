@@ -6,8 +6,8 @@ import avatarPaths from '@/utils/avatar'
 import { useUserStore } from '@/stores/user'
 import type { User } from '@/types/user'
 import server from '@/utils/server'
-import { AxiosError } from 'axios'
 import { useMessageStore } from '@/stores/message'
+import type { ExtendedAxiosError } from '@/types/other'
 
 const { xs } = useDisplay()
 const userStore = useUserStore()
@@ -50,7 +50,7 @@ const handleApply = () => {
       isEditing.value = false
       messageStore.showMessage('Success', 'Preferences successfully changed!', 'success')
     })
-    .catch((error: AxiosError) => {
+    .catch((error: ExtendedAxiosError) => {
       if (
         error.response &&
         error.response.status === 400 &&
@@ -58,7 +58,7 @@ const handleApply = () => {
       ) {
         bioError.value = 'Please enter a bio with at most 300 characters'
       } else {
-        messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
+        messageStore.handleUnexpectedError(error.config?.session_expired, false)
       }
     })
     .finally(() => {

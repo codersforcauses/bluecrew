@@ -9,8 +9,8 @@ import WaveBanner from '@/components/WaveBanner.vue'
 import avatarPaths from '@/utils/avatar'
 import server from '@/utils/server'
 import { useMessageStore } from '@/stores/message'
-import type { AxiosError } from 'axios'
 import type { Challenge, UserProfile } from '@/types/profile'
+import type { ExtendedAxiosError } from '@/types/other'
 
 const props = defineProps<{
   username?: string
@@ -51,7 +51,7 @@ const initializeProfile = () => {
       permission.value = res.data.permission
       loading.value = false
     })
-    .catch((error: AxiosError) => {
+    .catch((error: ExtendedAxiosError) => {
       loading.value = false
       if (error.response?.status === 404) {
         messageStore.showMessage(
@@ -60,11 +60,7 @@ const initializeProfile = () => {
           'warning',
         )
       } else {
-        messageStore.showMessage(
-          'Error',
-          'Unexpected occured while fetching user profile.',
-          'error',
-        )
+        messageStore.handleUnexpectedError(error.config?.session_expired, false)
       }
     })
 }

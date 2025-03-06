@@ -6,6 +6,7 @@ import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useMessageStore } from '@/stores/message'
 import server from '@/utils/server'
+import type { ExtendedAxiosError } from '@/types/other'
 
 // What we receive from the API
 interface LeaderboardApiEntry {
@@ -42,35 +43,32 @@ const transformEntry = (
 })
 
 const fetchLeaderboard = async () => {
-  try {
-    isLoading.value = true
-    const response = await server.get<LeaderboardApiEntry[]>('/leaderboard/', {
+  isLoading.value = true
+  server
+    .get<LeaderboardApiEntry[]>('/leaderboard/', {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
     })
-
-    const data = response.data
-    if (userStore.normalUserLoggedIn && data.length > 0) {
-      const currentUserData = data[data.length - 1]
-      currentUser.value = transformEntry(currentUserData, true)
-      // Transform the data immediately when assigning
-      leaderboardData.value = data.slice(0, -1).map((entry) => transformEntry(entry))
-    } else {
-      // Not logged in, show all entries
-      leaderboardData.value = data.map((entry) => transformEntry(entry))
-    }
-  } catch (err: unknown) {
-    // Use unknown type and type guard to ensure type safety
-    if (err instanceof Error) {
-      messageStore.showMessage('Error', `Failed to fetch leaderboard data`, 'error')
-    } else {
-      messageStore.showMessage('Error', 'Failed to fetch leaderboard data', 'error')
-    }
-  } finally {
-    isLoading.value = false
-  }
+    .then((response) => {
+      const data = response.data
+      if (userStore.normalUserLoggedIn && data.length > 0) {
+        const currentUserData = data[data.length - 1]
+        currentUser.value = transformEntry(currentUserData, true)
+        // Transform the data immediately when assigning
+        leaderboardData.value = data.slice(0, -1).map((entry) => transformEntry(entry))
+      } else {
+        // Not logged in, show all entries
+        leaderboardData.value = data.map((entry) => transformEntry(entry))
+      }
+    })
+    .catch((error: ExtendedAxiosError) => {
+      messageStore.handleUnexpectedError(error.config?.session_expired, false)
+    })
+    .finally(() => {
+      isLoading.value = false
+    })
 }
 
 onMounted(() => {
