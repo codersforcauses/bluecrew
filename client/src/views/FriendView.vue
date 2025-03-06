@@ -168,7 +168,10 @@ onMounted(fetchFriendsData)
 </script>
 
 <template>
-  <WaveBanner imageSrc="/teambuilding-background.jpg" altText="Volunteers making sandcastles together" />
+  <WaveBanner
+    imageSrc="/teambuilding-background.jpg"
+    altText="Volunteers making sandcastles together"
+  />
   <v-container>
     <h2 class="friend-text text-primaryBlue mb-4 mb-sm-3 mb-md-4">Friends</h2>
 

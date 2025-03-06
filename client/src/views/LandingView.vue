@@ -24,11 +24,11 @@ const goToBingoPage = () => {
 </script>
 
 <template>
-  <v-container fluid class="fill-height pa-0 flex-column" :class="{ 'mt-14' : xs }">
+  <v-container fluid class="fill-height pa-0 flex-column" :class="{ 'mt-14': xs }">
     <v-row v-if="!xs">
-    <v-container class="pa-0">
-      <WaveBanner imageSrc="/colourful-coral.png" altText="Colourful coral" />
-    </v-container>
+      <v-container class="pa-0">
+        <WaveBanner imageSrc="/colourful-coral.png" altText="Colourful coral" />
+      </v-container>
     </v-row>
     <v-row class="flex-grow-1 w-100" align="center">
       <v-col cols="12" sm="6" align-self="center">

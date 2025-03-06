@@ -77,7 +77,7 @@ onMounted(() => {
     <v-progress-circular indeterminate color="primaryBlue" />
   </div>
 
-  <v-container v-else-if="profileData !== null" fluid class="pa-0 d-flex flex-column" >
+  <v-container v-else-if="profileData !== null" fluid class="pa-0 d-flex flex-column">
     <!-- Wave Banner Header -->
     <WaveBanner imageSrc="/sunset-beach.png" altText="Beach at sunset" />
 

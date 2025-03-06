@@ -69,7 +69,7 @@ const handleApply = () => {
 
 <template>
   <WaveBanner imageSrc="/drone-beach.jpg" altText="Drone shot of a beach" />
-  <v-container fluid class="pa-0 d-flex flex-column" v-if="userStore.userData" >
+  <v-container fluid class="pa-0 d-flex flex-column" v-if="userStore.userData">
     <!-- Main Profile View -->
     <template v-if="!isEditing">
       <!-- Profile Content -->
