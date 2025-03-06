@@ -82,7 +82,7 @@ onMounted(() => {
     <WaveBanner imageSrc="/sunset-beach.png" altText="Beach at sunset" />
 
     <!-- Profile Content -->
-    <v-row class="px-4 px-sm-16 mx-0 pt-10">
+    <v-row class="px-4 px-sm-16 mx-0 pt-4">
       <v-col cols="12" class="d-flex flex-column">
         <!-- Avatar and Basic Info -->
         <div class="d-flex align-start mb-4">

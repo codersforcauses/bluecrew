@@ -73,7 +73,7 @@ const handleApply = () => {
     <!-- Main Profile View -->
     <template v-if="!isEditing">
       <!-- Profile Content -->
-      <v-row class="px-4 px-sm-16 mx-0 pt-10">
+      <v-row class="px-4 px-sm-16 mx-0 pt-4">
         <v-col cols="12" class="d-flex flex-column">
           <!-- Avatar and Name Section -->
           <div class="d-flex align-start mb-4">

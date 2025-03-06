@@ -2,12 +2,14 @@
 import { useModalStore } from '@/stores/modal'
 import { useUserStore } from '@/stores/user'
 import { RouterView } from 'vue-router'
+import { useDisplay } from 'vuetify'
 import LoginModal from './components/LoginModal.vue'
 import BluecrewFooter from '@/components/BluecrewFooter.vue'
 import RegisterModal from '@/components/RegisterModal.vue'
 import NavBarWrapper from './components/NavBarWrapper.vue'
 import GenericMessage from '@/components/GenericMessage.vue'
 
+const { xs } = useDisplay()
 const modalStore = useModalStore()
 const userStore = useUserStore()
 </script>
@@ -15,7 +17,7 @@ const userStore = useUserStore()
 <template>
   <v-app>
     <NavBarWrapper />
-    <v-main class="main-content">
+    <v-main :class="{ 'mt-14': !xs }">
       <RouterView :key="userStore.isLoggedIn ? 1 : 0" />
       <GenericMessage />
     </v-main>

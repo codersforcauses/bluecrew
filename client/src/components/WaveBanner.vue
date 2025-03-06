@@ -51,7 +51,7 @@ defineProps({
 .wave-banner {
   position: relative;
   width: 100%;
-  height: 240px;
+  height: 200px;
   margin-bottom: 15px;
 }
 
