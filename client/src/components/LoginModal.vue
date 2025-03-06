@@ -60,7 +60,7 @@ const submitForm = async () => {
       messageStore.showMessage('Success', 'Login success.', 'success')
       closeDialog()
     } else if (loginResult === false) {
-      messageStore.showMessage('Error', 'An unexpected error occured. Please try again.', 'error')
+      messageStore.handleUnexpectedError(undefined, true)
     } else {
       errorMessage.value = 'No user with the given username and password was found.'
     }

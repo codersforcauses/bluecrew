@@ -26,6 +26,18 @@ export const useMessageStore = defineStore('message', () => {
     content.value = ''
   }
 
+  function handleUnexpectedError(sessionExpired: boolean | undefined, suggestRetry: boolean) {
+    if (sessionExpired) {
+      showMessage('Session Expired', 'Your session expired, so you have been logged out', 'warning')
+    } else {
+      showMessage(
+        'Error',
+        `An unexpected error occurred.${suggestRetry ? ' Please try again.' : ''}`,
+        'error',
+      )
+    }
+  }
+
   return {
     isOpen,
     title,
@@ -33,5 +45,6 @@ export const useMessageStore = defineStore('message', () => {
     type,
     showMessage,
     closeMessage,
+    handleUnexpectedError,
   }
 })
