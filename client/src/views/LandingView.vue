@@ -26,8 +26,8 @@ const goToBingoPage = () => {
 <template>
   <v-container fluid class="fill-height pa-0 flex-column">
     <v-row v-if="!xs" class="header">
-      <WaveBanner imageSrc="/teambuilding-background.jpg" />
-      <img src="/teambuilding-background.jpg" alt="Ocean Beach" class="header-image" />
+      <WaveBanner imageSrc="/colourful-coral.png" />
+      <img src="/colourful-coral.png" alt="Colourful Coral" class="header-image" />
     </v-row>
     <v-row class="flex-grow-1 w-100" align="center">
       <v-col cols="12" sm="6" align-self="center">
@@ -61,7 +61,7 @@ const goToBingoPage = () => {
                 size="x-large"
                 @click="goToBingoPage"
               >
-                Go to Bingo
+                Go to Blingo
               </v-btn>
             </template>
             <template v-else>

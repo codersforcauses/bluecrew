@@ -80,7 +80,7 @@ onMounted(() => {
 
 <template>
   <v-container class="custom-container">
-    <WaveBanner imageSrc="/teambuilding-background.jpg" />
+    <WaveBanner imageSrc="/blue-crew-group.jpg" />
   </v-container>
 
   <v-container>
