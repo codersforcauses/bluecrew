@@ -68,17 +68,12 @@ const handleApply = () => {
 </script>
 
 <template>
-  <v-container fluid class="pa-0 d-flex flex-column" v-if="userStore.userData">
-    <!-- Wave Banner in Both States -->
-    <v-row v-if="!xs" class="header">
-      <WaveBanner imageSrc="/drone-beach.jpg" />
-      <img src="/drone-beach.jpg" alt="Drone Beach" class="header-image" />
-    </v-row>
-
+  <WaveBanner imageSrc="/drone-beach.jpg" altText="Drone shot of a beach" />
+  <v-container fluid class="pa-0 d-flex flex-column" v-if="userStore.userData" >
     <!-- Main Profile View -->
     <template v-if="!isEditing">
       <!-- Profile Content -->
-      <v-row class="px-4 px-sm-16 mx-0">
+      <v-row class="px-4 px-sm-16 mx-0 pt-10">
         <v-col cols="12" class="d-flex flex-column">
           <!-- Avatar and Name Section -->
           <div class="d-flex align-start mb-4">
@@ -217,19 +212,6 @@ const handleApply = () => {
 </template>
 
 <style scoped>
-.header {
-  width: 100%;
-  height: 200px;
-  position: relative;
-  overflow: hidden;
-}
-
-.header-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 h3 {
   color: rgb(var(--v-theme-primaryGreen));
 }

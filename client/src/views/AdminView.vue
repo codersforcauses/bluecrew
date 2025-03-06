@@ -60,7 +60,7 @@ function updateBingo() {
 </script>
 
 <template>
-  <WaveBanner image-src="octopus-tentacles.png" />
+  <WaveBanner image-src="octopus-tentacles.png" altText="Bottom view of octopus tentacles" />
   <h2 class="text-center text-primaryBlue mb-4">Admin</h2>
   <p class="text-primaryGreen text-center">
     Please enter the IDs of the challenges you'd like for a new bingo grid

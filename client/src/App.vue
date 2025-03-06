@@ -24,9 +24,3 @@ const userStore = useUserStore()
   <RegisterModal v-if="modalStore.currentModal === 'register'" @close="modalStore.closeModal" />
   <LoginModal v-if="modalStore.currentModal === 'login'" @close="modalStore.closeModal" />
 </template>
-
-<style scoped>
-.main-content {
-  margin-top: 56px;
-}
-</style>
