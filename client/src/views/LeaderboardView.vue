@@ -77,10 +77,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-container class="custom-container">
-    <WaveBanner imageSrc="/teambuilding-background.jpg" />
-  </v-container>
-
+  <WaveBanner
+    imageSrc="/blue-crew-group.jpg"
+    altText="Volunteers standing on a beach with seaweed"
+  />
   <v-container>
     <h2 class="leaderboard-text text-primaryGreen mb-4 mb-sm-3 mb-md-4">Leaderboard</h2>
 

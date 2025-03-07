@@ -176,7 +176,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <WaveBanner imageSrc="/homepage-scaled.jpg" />
+  <WaveBanner imageSrc="/homepage-scaled.jpg" altText="Top view of people building sandcastles" />
   <v-container :class="{ vertical: mdAndDown }">
     <v-row>
       <v-col lg="5" cols="12">

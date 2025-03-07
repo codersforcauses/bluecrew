@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { useDisplay } from 'vuetify'
 import { useUserStore } from '@/stores/user'
 import { useModalStore } from '@/stores/modal'
 import { useRouter } from 'vue-router'
@@ -16,7 +15,6 @@ const props = defineProps<{
   username?: string
 }>()
 
-const { xs } = useDisplay()
 const userStore = useUserStore()
 const modalStore = useModalStore()
 const messageStore = useMessageStore()
@@ -74,15 +72,13 @@ onMounted(() => {
   <div v-if="loading" class="d-flex align-center justify-center h-100">
     <v-progress-circular indeterminate color="primaryBlue" />
   </div>
+
   <v-container v-else-if="profileData !== null" fluid class="pa-0 d-flex flex-column">
     <!-- Wave Banner Header -->
-    <v-row v-if="!xs" class="header">
-      <WaveBanner imageSrc="/teambuilding-background.jpg" />
-      <img src="/teambuilding-background.jpg" alt="Ocean Beach" class="header-image" />
-    </v-row>
+    <WaveBanner imageSrc="/sunset-beach.png" altText="Beach at sunset" />
 
     <!-- Profile Content -->
-    <v-row class="px-4 px-sm-16 mx-0">
+    <v-row class="px-4 px-sm-16 mx-0 pt-4">
       <v-col cols="12" class="d-flex flex-column">
         <!-- Avatar and Basic Info -->
         <div class="d-flex align-start mb-4">
@@ -124,19 +120,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.header {
-  width: 100%;
-  height: 200px;
-  position: relative;
-  overflow: hidden;
-}
-
-.header-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 h3 {
   color: rgb(var(--v-theme-primaryGreen));
 }

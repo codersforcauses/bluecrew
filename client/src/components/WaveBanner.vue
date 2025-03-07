@@ -2,7 +2,7 @@
   <div class="wave-banner-wrapper">
     <div class="wave-banner">
       <!-- Header Image -->
-      <v-img :src="imageSrc" class="header-image" cover />
+      <v-img :src="imageSrc" :alt="altText" class="header-image" cover />
 
       <!-- Custom Wave Shape -->
       <div class="custom-shape-divider-bottom-1736569822">
@@ -27,6 +27,11 @@ defineProps({
   imageSrc: {
     type: String,
     required: true,
+  },
+  altText: {
+    type: String,
+    required: false,
+    default: 'Banner image',
   },
 })
 </script>

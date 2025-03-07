@@ -24,10 +24,11 @@ const goToBingoPage = () => {
 </script>
 
 <template>
-  <v-container fluid class="fill-height pa-0 flex-column">
-    <v-row v-if="!xs" class="header">
-      <WaveBanner imageSrc="/teambuilding-background.jpg" />
-      <img src="/teambuilding-background.jpg" alt="Ocean Beach" class="header-image" />
+  <v-container fluid class="fill-height pa-0 flex-column" :class="{ 'mt-14': xs }">
+    <v-row v-if="!xs">
+      <v-container class="pa-0">
+        <WaveBanner imageSrc="/colourful-coral.png" altText="Colourful coral" />
+      </v-container>
     </v-row>
     <v-row class="flex-grow-1 w-100" align="center">
       <v-col cols="12" sm="6" align-self="center">
@@ -61,7 +62,7 @@ const goToBingoPage = () => {
                 size="x-large"
                 @click="goToBingoPage"
               >
-                Go to Bingo
+                Go to Blingo
               </v-btn>
             </template>
             <template v-else>
@@ -92,22 +93,6 @@ const goToBingoPage = () => {
 </template>
 
 <style scoped>
-.header {
-  width: 100%;
-  height: 200px;
-  position: relative;
-  overflow: hidden;
-  flex-grow: 0;
-  flex-shrink: 1;
-}
-
-.header-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: boxed;
-}
-
 .logo {
   width: 100%;
   max-width: 250px;
