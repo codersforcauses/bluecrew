@@ -6,4 +6,4 @@ class BingoConfig(AppConfig):
     name = "bingo"
 
     def ready(self):
-        import bingo.signals
+        import bingo.signals  # noqa
