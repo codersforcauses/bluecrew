@@ -19,9 +19,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from bingo.actions import export2csv
 
 # This will not show in production. We will need use nginx to serve the media files in production
 media = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+admin.site.add_action(export2csv, "csv_export_selected")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
