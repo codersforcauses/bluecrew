@@ -44,7 +44,12 @@ class FriendshipAdmin(admin.ModelAdmin):
     fields = list_display
 
 
-admin.site.register(BingoGrid)
+@admin.register(BingoGrid)
+class BingoGridAdmin(admin.ModelAdmin):
+    # disable the export2csv action
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        return {k: v for k, v in actions.items() if k != 'csv_export_selected'}
 
 
 @admin.register(TileInteraction)
