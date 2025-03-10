@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.contrib.admin import action
+from django.db.models import ForeignKey
 from .models import User, TileInteraction
 
 
@@ -7,8 +8,10 @@ def get_friendly_value(instance, field_name, value):
     display_method = f'get_{field_name}_display'
     if hasattr(instance, display_method):
         return getattr(instance, display_method)()
+    elif isinstance(field := type(instance)._meta.get_field(field_name), ForeignKey):
+        return str(field.related_model.objects.get(pk=value))
     else:
-        # If it's not a choice field, return the raw value
+        # If it's not a choice field or a foreign key, return the raw value
         return value
 
 
