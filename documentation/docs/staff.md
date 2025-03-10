@@ -97,3 +97,11 @@ If you just want to see the submissions of a particular user, this can be done f
 If you wish to revoke a user's submission, you can do so by pressing the delete button. The submission will then no longer be visible in the user's profile page. Alternatively, if you just wish to delete the image the user uploaded, then you can mark the "Clear" checkbox within the image field and press the "Save" button.
 
 ![Screenshot](img/revoking-submission.png)
+
+## Exporting
+
+The admin dashboard provides the option to export its data into CSV format. To do this, navigate to the database table you wish to export (the screenshot below shows the User table). Mark the checkbox in the top left to select all the rows (you can also select a subset of the rows if you prefer). Then select "Export selected objects as CSV" from the dropdown and press "Go". This will download a CSV file containing all the relevant data for the table you are viewing.
+
+![Screenshot](img/exporting.png)
+
+Note that staff users are not included in the CSV file resulting from exporting the User table.
