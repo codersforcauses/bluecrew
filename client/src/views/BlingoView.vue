@@ -182,7 +182,9 @@ onMounted(() => {
       <v-col lg="5" cols="12">
         <div class="mb-8">
           <h1 class="blingo-title text-primaryBlue text-center">Blingo</h1>
-          <h2 class="blingo-subtitle text-center text-primaryGreen">Connecting to the ocean</h2>
+          <h2 class="blingo-subtitle text-center text-primaryGreen">
+            Connecting people to our blue planet through positive actions
+          </h2>
         </div>
 
         <!-- Challenge Card -->
