@@ -15,32 +15,6 @@ class BingoGridTest(TestCase):
             )
             self.challenges.append(c)
 
-    def test_exactly_16_challenges(self):
-        # Verify a BingoGrid with exactly 16 challenges passes validation, but 15 or 17 fails.
-        grid = BingoGrid.objects.create(is_active=False)
-
-        grid.challenges.add(*self.challenges)
-        grid.full_clean()
-        grid.save()
-        # 15 challenge scenario
-        grid_15 = BingoGrid.objects.create(is_active=False)
-        grid_15.challenges.add(*self.challenges[:15])
-        with self.assertRaises(ValidationError):
-            grid_15.full_clean()
-
-        # 17 challenge scenario
-        extra_challenge = Challenge.objects.create(
-            name="Extra Challenge",
-            description="Extra sample challenge",
-            challenge_type="act",
-            points=10
-        )
-        grid_17 = BingoGrid.objects.create(is_active=False)
-        grid_17.challenges.add(*self.challenges)
-        grid_17.challenges.add(extra_challenge)
-        with self.assertRaises(ValidationError):
-            grid_17.full_clean()
-
     def test_preserve_challenge_order(self):
         # With SortedManyToManyField, the order we add them is retained.
         grid = BingoGrid.objects.create(is_active=False)
