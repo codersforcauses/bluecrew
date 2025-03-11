@@ -180,16 +180,6 @@ class BingoGrid(models.Model):
     is_active = models.BooleanField(default=False)
 
     def clean(self):
-        # Ensure exactly 16 challenges
-        # This only makes sense if the object is saved at least once (has a PK).
-        # If it's brand new, you won't have the M2M relationships set until after save.
-        if self.pk:
-            if self.challenges.count() != 16:
-                raise ValidationError(
-                    f"BingoGrid must have exactly 16 challenges (found {
-                        self.challenges.count()})."
-                )
-
         # Ensure only one active BingoGrid
         if self.is_active:
             active_count = BingoGrid.objects.filter(

@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
+from django.forms import ModelForm, ValidationError
 
 from .models import User, Challenge, Friendship, BingoGrid, TileInteraction
 
@@ -44,8 +45,26 @@ class FriendshipAdmin(admin.ModelAdmin):
     fields = list_display
 
 
+class BingoGridAdminForm(ModelForm):
+    class Meta:
+        model = BingoGrid
+        fields = ('grid_id', 'challenges', 'is_active')
+
+    def clean_challenges(self):
+        challenges = self.cleaned_data['challenges']
+        if len(challenges) != 16:
+            raise ValidationError(
+                "BingoGrid must have exactly 16 challenges."
+            )
+        return challenges
+
+
 @admin.register(BingoGrid)
 class BingoGridAdmin(admin.ModelAdmin):
+
+    # use the above form
+    form = BingoGridAdminForm
+
     # disable the export2csv action
     def get_actions(self, request):
         actions = super().get_actions(request)
